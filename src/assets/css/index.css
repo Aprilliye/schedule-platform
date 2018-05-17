@@ -1,0 +1,90 @@
+/*主页面*/
+.navbar header{
+    position: relative;
+    left:0;
+    top:0;
+}
+.logoimg{
+    position: absolute;
+    top:15px;
+    left:30px;
+}
+.main-menu{
+    width: 200px !important;
+}
+.left-div{
+    float: left;
+}
+.right-div{
+    width: auto;
+    height: auto;
+}
+.dropdown{
+    position: absolute;
+    right: 5px;
+    width: 100px;
+}
+.navbar header>.dropdown>.btn{
+    background: #3A6BCE;
+    color: red;
+    font-size: 16px;
+    border-left:1px solid white!important;
+    height: 60px;
+}
+.caret{
+    color: white;
+}
+/*人员管理*/
+.btnDefault{
+    display: inline-block;
+    width: auto;
+    height: auto;
+    border: 1px solid gainsboro;
+    border-radius: 5px;
+    padding: 0px 10px;
+    margin-top: 2px;
+}
+.bgGreen{
+    width: 100px;
+    height: 36px;
+    background-color: green;
+    color: white ;
+    margin-top: -3px;
+}
+#column-boxes td{
+    width: 100px;
+    padding: 0 5px;
+    text-align: center;
+}
+.float-left{
+    line-height: 32px;
+    margin-left: 10px;
+    float: left;
+}
+.wrapper{
+    height: 150px;
+}
+#userTable{
+    margin-top: 100px;
+}
+#userTable th{
+    padding-right: 10px;
+    margin-right: 10px;
+    word-break: keep-all;
+}
+.usermanage-model p{
+    line-height: 30px;
+    padding-top: 10px;
+}
+.usermanage-model label{
+    width: 100px;
+    margin-right: 10px;
+    padding-top: 10px;
+}
+/*人员分组*/
+.bgGreen span{
+    color: white;
+}
+.content-title{
+    font-size: 20px;
+}
