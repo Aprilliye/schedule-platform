@@ -32,7 +32,7 @@
                           系统设置
                       </template>
                       <router-link to="./user-manage" >
-                          <MenuItem name="1-1" active-name>
+                          <MenuItem name="1-1" class="active">
                               <span class="icon-19"></span>
                               人员管理
                           </MenuItem>

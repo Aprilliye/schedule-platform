@@ -10,6 +10,9 @@ import ScheduleAreaForm from '@/pages/scheduleAreaForm'
 import Workflow from '@/pages/workflow'
 
 Vue.use(Router)
+let router = new Router({
+  linkActiveClass:"active"
+});
 
 export default new Router({
   routes: [

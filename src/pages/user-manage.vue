@@ -3,8 +3,7 @@
         <form id="userForm">
             <div class="content-header">
                 <div class="float-left">
-                    <Button class="btnDefault bgGreen mansgebutton" type="button"@click="modal8 = true"><span>新增人员</span></Button>
-
+                    <button class="btnDefault bgGreen mansgebutton" type="button" @click="modal8 = true"><span>新增人员</span></button>
                     <a class="btnDefault" href="#" data-toggle="modal" data-target="#export">导入</a>
                     <a class="btnDefault" href="javascript:void(0)" onclick="printUserTemplate()">模板</a>
                 </div>
@@ -229,9 +228,9 @@
 </template>
 <script>
     export default {
-        data () {
+        data:function () {
         return {
-            modal8: false,
+            modal8: false
         }
     }
     }

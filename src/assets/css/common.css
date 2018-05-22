@@ -76,6 +76,15 @@ i {
 .header * {
     line-height: 60px;
 }
+.content-header{
+    min-height: 60px;
+    clear: both;
+    overflow: hidden;
+    padding-top: 10px;
+    border-bottom: 1px solid #e5e5e5;
+    width: 100%;
+    box-sizing: border-box;
+}
 .header .logo {
     height: 60px;
     width: 100%;

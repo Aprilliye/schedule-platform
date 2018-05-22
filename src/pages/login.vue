@@ -21,53 +21,27 @@
     </div>
 </template>
 <script>
+    import * as api from "../api/commonAPI";
     export default{
     }
-
+    function submitLogin(){
+        var name = $("#userCode").val();
+        var pass = $("#password").val();
+        if($.trim(name)=='' && $.trim(pass)==''){
+            $("#result").text("请输入用户名和密码");
+            return;
+        }
+        if($.trim(name)=='' && !$.trim(pass)==''){
+            $("#result").text("请输入用户名");
+            return;
+        }
+        if(!$.trim(name)=='' && $.trim(pass)==''){
+            $("#result").text("请输入密码");
+            return;
+        }
+        $("#loginForm").submit();
+    }
 </script>
-<script>
-    //    import '@/assets/js/alert.js'
-    //        $(function(){
-    //            //回车登录
-    //            $(document).keydown(function(e){
-    //                if(e.keyCode==13){
-    //                    submitLogin();
-    //                }
-    //            });
-    //            //登陆超时
-    //            if (window != top){
-    //                top.location.href = location.href + "?tag=sessionInvalid";
-    //                window.stop();
-    //            }
-    //        })
-    //        $(function(){
-    //            var tag = "$tag";
-    //            if ("sessionInvalid" == tag) {
-    //                Alert("fail", "登录超时，请重新登录！");
-    //                setTimeout(function(){
-    //                    location.href = "$path/";
-    //                },2000)
-    //            }
-    //        });
-    //        function submitLogin(){
-    //            var name = $("#userCode").val();
-    //            var pass = $("#password").val();
-    //            if($.trim(name)=='' && $.trim(pass)==''){
-    //                $("#result").text("请输入用户名和密码");
-    //                return;
-    //            }
-    //            if($.trim(name)=='' && !$.trim(pass)==''){
-    //                $("#result").text("请输入用户名");
-    //                return;
-    //            }
-    //            if(!$.trim(name)=='' && $.trim(pass)==''){
-    //                $("#result").text("请输入密码");
-    //                return;
-    //            }
-    //            $("#loginForm").submit();
-    //        }
-</script>
-
 <style>
     @import '../assets/css/login.css';
     @import '../assets/css/font.css';
