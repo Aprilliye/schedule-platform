@@ -14,7 +14,7 @@
                         <span class="icon-2"></span>
                         <input type="password" name="password" placeholder="登录密码" id="password">
                     </div>
-                    <router-link :to="{name: 'Login'}" class="btn-login" type="button" >登录</router-link>
+                    <router-link :to="{name: 'Index'}" class="btn-login" type="button" >登录</router-link>
                 </form>
             </div>
         </div>
@@ -70,5 +70,5 @@
 
 <style>
     @import '../assets/css/login.css';
-    /*@import '../assets/css/font.css';*/
+    @import '../assets/css/font.css';
 </style>

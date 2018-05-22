@@ -3,7 +3,7 @@
         <form id="userForm">
             <div class="content-header">
                 <div class="float-left">
-                    <Button class="btnDefault bgGreen" type="button"@click="modal8 = true">新增人员</Button>
+                    <Button class="btnDefault bgGreen mansgebutton" type="button"@click="modal8 = true"><span>新增人员</span></Button>
 
                     <a class="btnDefault" href="#" data-toggle="modal" data-target="#export">导入</a>
                     <a class="btnDefault" href="javascript:void(0)" onclick="printUserTemplate()">模板</a>
@@ -159,7 +159,7 @@
                 <label class="require">手机号</label>
                 <input id="editPhoneNumber" name="phoneNumber" type="text">
             </p>
-            <p>
+            <p class="managep">
                 <label class="require"id="heightp">生日 例:1990-12-12</label>
                 <input id="editBirthday" name="birthday" type="text">
             </p>
@@ -167,7 +167,7 @@
                 <label class="require">身份证</label>
                 <input id="editIdCode" name="idCode" type="text">
             </p>
-            <p>
+            <p class="managep">
                 <label class="require" id="heightpp">入职时间 例:1990-12-12</label>
                 <input id="editOnBoardDate" name="onBoardDate" type="text">
             </p>

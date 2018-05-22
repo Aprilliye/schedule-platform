@@ -70,12 +70,6 @@ i {
 }
 /* 顶部菜单栏 */
 .header {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    border: 0;
-    margin: 0 !important;
-    border-radius: 0;
     height: 60px;
     background: #3A6BCE;
 }
@@ -84,8 +78,7 @@ i {
 }
 .header .logo {
     height: 60px;
-    float: left;
-    width: 200px;
+    width: 100%;
     text-align: center;
     border-right: 1px solid #648EF1;
 }
@@ -98,21 +91,6 @@ i {
     font-size: 20px;
     letter-spacing: 2px;
     margin-left: 30px;
-}
-.header .header-left {
-    float: left;
-}
-.header .dropdown {
-    border-left: 1px solid #648EF1;
-    top: 0;
-}
-.header .dropdown button {
-    width: 120px;
-    outline-offset: 0;
-    height: 56px;
-    line-height: 56px;
-    border: 0;
-    border-radius: 0;
 }
 /* 顶部tab菜单 */
 section {
@@ -206,68 +184,7 @@ section .tab-content .slide-menu a.active span {
     overflow: hidden;
     clear: both;
 }
-/* 日历插件 */
-#calendar {
-    position: absolute;
-    width: 280px;
-    right: 0;
-    top: 60px;
-    background: #fff;
-    border-left: 1px solid #E5E5E5;
-}
-#calendar h2 {
-    font-size: 16px;
-    line-height: 59px;
-    padding: 0 10px;
-    overflow: hidden;
-    clear: both;
-    border-bottom: 1px solid #ddd;
-    font-weight: normal;
-}
-#calendar .clndr {
-    padding: 0 20px;
-}
-#calendar .clndr-controls {
-    width: 100%;
-    text-align: center;
-    position: relative;
-    padding: 10px 0 15px;
-}
-#calendar .clndr-controls .clndr-control-button {
-    position: absolute;
-    top: 10px;
-    left: 0px;
-    cursor: pointer;
-}
-#calendar .clndr-controls .rightalign {
-    right: 0px;
-    left: auto;
-}
-#calendar .clndr-controls .month {
-    color: #000;
-}
-#calendar .clndr-table {
-    width: 100%;
-}
-#calendar .clndr-table td {
-    padding: 3px 0;
-    text-align: center;
-}
-#calendar .clndr-table .day-contents {
-    width: 28px;
-    height: 28px;
-    border-radius: 14px;
-    line-height: 28px;
-}
-#calendar .clndr-table .last-month .day-contents,
-#calendar .clndr-table .next-month .day-contents {
-    color: #bbb;
-}
-#calendar .clndr-table .today .day-contents {
-    background: #648EF1;
-    color: #fff;
-    border-radius: 50%;
-}
+
 #myiframe {
     position: absolute;
     border: 0;

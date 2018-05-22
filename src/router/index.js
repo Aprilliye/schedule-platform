@@ -5,18 +5,21 @@ import Login from '@/pages/login'
 import Index  from '@/pages/index'
 import Usermanage from '@/pages/user-manage'
 import Grouping from '@/pages/grouping'
+import Role from '@/pages/role'
+import ScheduleAreaForm from '@/pages/scheduleAreaForm'
+import Workflow from '@/pages/workflow'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
-    //{
-    //  path: '/',
-    //  name: 'Login',
-    //  component: Login
-    //},
     {
       path: '/',
+      name: 'Login',
+      component: Login
+    },
+    {
+      path: '/index',
       name: 'Index',
       component: Index,
       children:[
@@ -29,6 +32,19 @@ export default new Router({
           path: '/grouping',
           name: 'Grouping',
           component: Grouping
+        },
+        {
+          path: '/role',
+          name: 'Role',
+          component: Role
+        }, {
+          path: '/scheduleAreaForm',
+          name: 'ScheduleAreaForm',
+          component: ScheduleAreaForm
+        },{
+          path: '/workflow',
+          name: 'Workflow',
+          component: Workflow
         }
       ]
     },
