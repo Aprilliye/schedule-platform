@@ -31,7 +31,7 @@
                       <template slot="title">
                           系统设置
                       </template>
-                      <router-link to="./user-manage" >
+                      <router-link to="./user-manage" id="indexRouter">
                           <MenuItem name="1-1" class="active">
                               <span class="icon-19"></span>
                               人员管理
@@ -71,7 +71,6 @@
                               工作流程
                           </MenuItem>
                       </router-link>
-
                   </Submenu>
                   <Submenu name="3">
                       <template slot="title">
@@ -81,10 +80,12 @@
                           <span class="icon-7"></span>
                           班次设置
                       </MenuItem>
-                      <MenuItem name="3-2">
-                          <span class="icon-8"></span>
-                          岗位设置
-                      </MenuItem>
+                      <router-link to="./postSetting" >
+                          <MenuItem name="3-2">
+                              <span class="icon-8"></span>
+                              岗位设置
+                          </MenuItem>
+                      </router-link>
                   </Submenu>
                   <Submenu name="4">
                       <template slot="title">

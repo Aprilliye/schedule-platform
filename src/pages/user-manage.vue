@@ -7,91 +7,125 @@
                     <a class="btnDefault" href="#" data-toggle="modal" data-target="#export">导入</a>
                     <a class="btnDefault" href="javascript:void(0)" onclick="printUserTemplate()">模板</a>
                 </div>
-                <table id="column-boxes">
-                    <tr>
-                        <td>身份证</td>
-                        <td>入职时间</td>
-                        <td>婚姻状况</td>
-                        <td>有无子女</td>
-                        <td>学历</td>
-                        <td>政治面貌</td>
-                        <td>入党时间</td>
-                        <td>住址</td>
-                        <td>证书编号</td>
-                        <td>证书类别</td>
-                        <td>人员编码</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="checkbox" value="3"/>
-                        </td>
-                        <td>
-                            <input type="checkbox" value="4" />
-                        </td>
-                        <td>
-                            <input type="checkbox" value="5" />
-                        </td>
-                        <td>
-                            <input type="checkbox" value="6" />
-                        </td>
-                        <td>
-                            <input type="checkbox" value="7" />
-                        </td>
-                        <td>
-                            <input type="checkbox" value="8" />
-                        </td>
-                        <td>
-                            <input type="checkbox" value="9" />
-                        </td>
-                        <td>
-                            <input type="checkbox" value="10" />
-                        </td>
-                        <td>
-                            <input type="checkbox" value="11" />
-                        </td>
-                        <td>
-                            <input type="checkbox" value="12" />
-                        </td>
-                        <td>
-                            <input type="checkbox" value="13" />
-                        </td>
-                    </tr>
-                </table>
+                <div class=" float-right">
+                    <div class="search-input float-left">
+                        <span class="icon-5"></span>
+                        <input type="text" placeholder="姓名" name="roleName">
+                    </div>
+                    <a class="btnDefault bgBlue queryBtn" href="javascript:;" onclick="getTableData()">查询</a>
+                </div>
+                <div class="clear"></div>
             </div>
-            <!-- 右侧内容 end -->
             <!-- 表格 start -->
             <div class="wrapper" style="overflow: scroll;">
+                <div class="choicebox">
+                    <table id="column-boxes" style="margin:20px auto">
+                        <tr>
+                            <td>身份证</td>
+                            <td>入职时间</td>
+                            <td>婚姻状况</td>
+                            <td>有无子女</td>
+                            <td>学历</td>
+                            <td>政治面貌</td>
+                            <td>入党时间</td>
+                            <td>住址</td>
+                            <td>证书编号</td>
+                            <td>证书类别</td>
+                            <td>人员编码</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <Checkbox v-model="single1" @on-change="checkcheckbox1"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="single2" @on-change="checkcheckbox2"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="single3" @on-change="checkcheckbox3"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="single4" @on-change="checkcheckbox4"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="single5" @on-change="checkcheckbox5"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="single6" @on-change="checkcheckbox6"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="single7" @on-change="checkcheckbox7"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="single8" @on-change="checkcheckbox8"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="single9" @on-change="checkcheckbox9"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="single10" @on-change="checkcheckbox10"></Checkbox>
+                            </td>
+                            <td>
+                                <Checkbox v-model="single11" @on-change="checkcheckbox11"></Checkbox>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <table class="table" id="userTable">
                     <thead>
                     <tr>
                         <th>操作</th>
                         <th>员工卡号</th>
                         <th>姓名</th>
-                        <th>身份证</th>
-                        <th>入职时间</th>
-                        <th>婚姻状况</th>
-                        <th>有无子女</th>
-                        <th>学历</th>
-                        <th>政治面貌</th>
-                        <th>入党时间</th>
-                        <th>住址</th>
-                        <th>站务员证书编号</th>
-                        <th>站务员证书等级</th>
-                        <th>人员编码</th>
-                        <th>消防证书编号</th>
-                        <th>综控员证书编号</th>
-                        <th>综控员证书级别</th>
                         <th>性别</th>
                         <th>电话</th>
                         <th>生日</th>
                         <th>岗位</th>
                         <th>站点</th>
                         <th>管理员</th>
+                        <th class="idcard float-left">身份证</th>
+                        <th class="entrytime float-left">入职时间</th>
+                        <th class="marriage float-left">婚姻状况</th>
+                        <th class="childhas float-left">有无子女</th>
+                        <th class="education float-left">学历</th>
+                        <th class="political float-left">政治面貌</th>
+                        <th class="partytime float-left">入党时间</th>
+                        <th class="homeaddress float-left">住址</th>
+                        <th class="certificatenumber float-left">站务员证书编号</th>
+                        <th class="certificategrade float-left">站务员证书等级</th>
+                        <th class="crewcode float-left">人员编码</th>
+                        <th class="certificatenumber float-left">消防证书编号</th>
+                        <th class="certificatenumber float-left">综控员证书编号</th>
+                        <th class="certificategrade float-left">综控员证书级别</th>
                     </tr>
                     </thead>
-                    <tbody id="userDataTable"></tbody>
+                    <tbody id="userDataTable">
+                    <tr>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>33</th>
+                        <th>44</th>
+                        <th>55</th>
+                        <th>66</th>
+                        <th>77</th>
+                        <th>88</th>
+                        <th class="idcard float-left">4</th>
+                        <th class="entrytime float-left">5</th>
+                        <th class="marriage float-left">6</th>
+                        <th class="childhas float-left">7</th>
+                        <th class="education float-left">8</th>
+                        <th class="political float-left">9</th>
+                        <th class="partytime float-left">0</th>
+                        <th class="homeaddress float-left">22</th>
+                        <th class="certificatenumber float-left">33</th>
+                        <th class="certificategrade float-left">44</th>
+                        <th class="crewcode float-left">55</th>
+                        <th class="certificatenumber float-left">66</th>
+                        <th class="certificatenumber float-left">77</th>
+                        <th class="certificategrade float-left">88</th>
+                    </tr>
+                    </tbody>
                 </table>
-                <div id="pager"></div>
             </div>
             <!-- 表格 end -->
         </form>
@@ -229,10 +263,100 @@
 <script>
     export default {
         data:function () {
-        return {
-            modal8: false
+            return {
+                modal8: false,
+                single1: false,
+                single3: false,
+                single4: false,
+                single5: false,
+                single2: false,
+                single6: false,
+                single7: false,
+                single8: false,
+                single9: false,
+                single10: false,
+                single11: false
+            }
+        },
+        methods:{
+            checkcheckbox1:function(){
+                if(this.single1){
+                    $(".idcard").css("display","block");
+                }else{
+                   $(".idcard").css("display","none");
+                }
+            },
+            checkcheckbox2:function(){
+                if(this.single2){
+                    $(".entrytime").css("display","block");
+                }else{
+                    $(".entrytime").css("display","none");
+                }
+            },
+            checkcheckbox3:function(){
+                if(this.single3){
+                    $(".marriage").css("display","block");
+                }else{
+                    $(".marriaged").css("display","none");
+                }
+            },
+            checkcheckbox4:function(){
+                if(this.single4){
+                    $(".childhas").css("display","block");
+                }else{
+                    $(".childhas").css("display","none");
+                }
+            },
+            checkcheckbox5:function(){
+                if(this.single5){
+                    $(".education").css("display","block");
+                }else{
+                    $(".education").css("display","none");
+                }
+            },
+            checkcheckbox6:function(){
+                if(this.single6){
+                    $(".political").css("display","block");
+                }else{
+                    $(".political").css("display","none");
+                }
+            },
+            checkcheckbox7:function(){
+                if(this.single7){
+                    $(".partytime").css("display","block");
+                }else{
+                    $(".partytime").css("display","none");
+                }
+            },
+            checkcheckbox8:function(){
+                if(this.single8){
+                    $(".homeaddress").css("display","block");
+                }else{
+                    $(".homeaddress").css("display","none");
+                }
+            },
+            checkcheckbox9:function(){
+                if(this.single9){
+                    $(".certificatenumber").css("display","block");
+                }else{
+                    $(".certificatenumber").css("display","none");
+                }
+            },
+            checkcheckbox10:function(){
+                if(this.single10){
+                    $(".certificategrade").css("display","block");
+                }else{
+                    $(".certificategrade").css("display","none");
+                }
+            },
+            checkcheckbox11:function(){
+                if(this.single11){
+                    $(".crewcode").css("display","block");
+                }else{
+                    $(".crewcode").css("display","none");
+                }
+            }
         }
-    }
     }
 </script>
 <style scoped>

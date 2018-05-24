@@ -8,6 +8,7 @@ import Grouping from '@/pages/grouping'
 import Role from '@/pages/role'
 import ScheduleAreaForm from '@/pages/scheduleAreaForm'
 import Workflow from '@/pages/workflow'
+import PostSetting from '@/pages/postSetting'
 
 Vue.use(Router)
 let router = new Router({
@@ -40,17 +41,25 @@ export default new Router({
           path: '/role',
           name: 'Role',
           component: Role
-        }, {
+        },
+        {
           path: '/scheduleAreaForm',
           name: 'ScheduleAreaForm',
           component: ScheduleAreaForm
-        },{
+        },
+        {
           path: '/workflow',
           name: 'Workflow',
           component: Workflow
+        },
+        {
+          path: '/postSetting',
+          name: 'Postsetting',
+          component: PostSetting
         }
       ]
     },
 
   ]
 })
+

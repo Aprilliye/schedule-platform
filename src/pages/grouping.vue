@@ -17,7 +17,7 @@
             北京地铁运三分公司
         </div>
         <div class="list">
-            <listBlock :zhanquName="zhanquName"></listBlock>
+
         </div>
 
     </div>
@@ -33,6 +33,7 @@
         },
         methods:{
             ok:function(){
+                $(".list").html('<listBlock :zhanquName="zhanquName"></listBlock>');
             }
         },
         components:{
