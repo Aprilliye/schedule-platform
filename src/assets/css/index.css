@@ -1,3 +1,7 @@
+.bold{
+    font-size: large;
+    font-weight: 700;
+}
 .red{
     color:red;
 }
@@ -66,8 +70,11 @@
     margin-top: 100px;
 }
 #userTable th{
+    width: 122px;
+    height: auto;
     padding-right: 10px;
     margin-right: 10px;
+    float: left;
     word-break: keep-all;
 }
 .usermanage-model p{
@@ -95,7 +102,9 @@
 }
 #userTable{
     margin: auto;
+    overflow: scroll;
 }
+
 /*人员分组*/
 .bgGreen{
     margin-left: 10px;
@@ -213,4 +222,15 @@
 }
 .settingp{
     margin-top: 10px;
+}
+/*班次设置*/
+.shiftform{
+    text-align: center;
+}
+.shifttitle{
+    border-left: 3px solid #3A6BCE;
+    padding: 5px;
+}
+.alldiv{
+    margin-left: 15px;
 }

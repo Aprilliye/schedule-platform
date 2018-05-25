@@ -9,6 +9,7 @@ import Role from '@/pages/role'
 import ScheduleAreaForm from '@/pages/scheduleAreaForm'
 import Workflow from '@/pages/workflow'
 import PostSetting from '@/pages/postSetting'
+import ShiftsSetting from '@/pages/shiftsSetting'
 
 Vue.use(Router)
 let router = new Router({
@@ -54,8 +55,13 @@ export default new Router({
         },
         {
           path: '/postSetting',
-          name: 'Postsetting',
+          name: 'PostSetting',
           component: PostSetting
+        },
+        {
+          path: '/shiftsSetting',
+          name: 'ShiftsSetting',
+          component: ShiftsSetting
         }
       ]
     },

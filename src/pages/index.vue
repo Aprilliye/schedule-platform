@@ -76,10 +76,12 @@
                       <template slot="title">
                           排班设置
                       </template>
-                      <MenuItem name="3-1">
-                          <span class="icon-7"></span>
-                          班次设置
-                      </MenuItem>
+                      <router-link to="./shiftsSetting" >
+                          <MenuItem name="3-1">
+                              <span class="icon-7"></span>
+                              班次设置
+                          </MenuItem>
+                      </router-link>
                       <router-link to="./postSetting" >
                           <MenuItem name="3-2">
                               <span class="icon-8"></span>

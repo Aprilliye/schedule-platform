@@ -17,7 +17,7 @@
                 <div class="clear"></div>
             </div>
             <!-- 表格 start -->
-            <div class="wrapper" style="overflow: scroll;">
+            <div class="wrapper">
                 <div class="choicebox">
                     <table id="column-boxes" style="margin:20px auto">
                         <tr>
@@ -70,62 +70,64 @@
                         </tr>
                     </table>
                 </div>
-                <table class="table" id="userTable">
-                    <thead>
-                    <tr>
-                        <th>操作</th>
-                        <th>员工卡号</th>
-                        <th>姓名</th>
-                        <th>性别</th>
-                        <th>电话</th>
-                        <th>生日</th>
-                        <th>岗位</th>
-                        <th>站点</th>
-                        <th>管理员</th>
-                        <th class="idcard float-left">身份证</th>
-                        <th class="entrytime float-left">入职时间</th>
-                        <th class="marriage float-left">婚姻状况</th>
-                        <th class="childhas float-left">有无子女</th>
-                        <th class="education float-left">学历</th>
-                        <th class="political float-left">政治面貌</th>
-                        <th class="partytime float-left">入党时间</th>
-                        <th class="homeaddress float-left">住址</th>
-                        <th class="certificatenumber float-left">站务员证书编号</th>
-                        <th class="certificategrade float-left">站务员证书等级</th>
-                        <th class="crewcode float-left">人员编码</th>
-                        <th class="certificatenumber float-left">消防证书编号</th>
-                        <th class="certificatenumber float-left">综控员证书编号</th>
-                        <th class="certificategrade float-left">综控员证书级别</th>
-                    </tr>
-                    </thead>
-                    <tbody id="userDataTable">
-                    <tr>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>33</th>
-                        <th>44</th>
-                        <th>55</th>
-                        <th>66</th>
-                        <th>77</th>
-                        <th>88</th>
-                        <th class="idcard float-left">4</th>
-                        <th class="entrytime float-left">5</th>
-                        <th class="marriage float-left">6</th>
-                        <th class="childhas float-left">7</th>
-                        <th class="education float-left">8</th>
-                        <th class="political float-left">9</th>
-                        <th class="partytime float-left">0</th>
-                        <th class="homeaddress float-left">22</th>
-                        <th class="certificatenumber float-left">33</th>
-                        <th class="certificategrade float-left">44</th>
-                        <th class="crewcode float-left">55</th>
-                        <th class="certificatenumber float-left">66</th>
-                        <th class="certificatenumber float-left">77</th>
-                        <th class="certificategrade float-left">88</th>
-                    </tr>
-                    </tbody>
-                </table>
+                <div class="table"  style="overflow: scroll;">
+                    <table id="userTable">
+                        <thead>
+                        <tr>
+                            <th>操作</th>
+                            <th>员工卡号</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>电话</th>
+                            <th>生日</th>
+                            <th>岗位</th>
+                            <th>站点</th>
+                            <th>管理员</th>
+                            <th class="idcard">身份证</th>
+                            <th class="entrytime">入职时间</th>
+                            <th class="marriage">婚姻状况</th>
+                            <th class="childhas">有无子女</th>
+                            <th class="education">学历</th>
+                            <th class="political">政治面貌</th>
+                            <th class="partytime">入党时间</th>
+                            <th class="homeaddress">住址</th>
+                            <th class="certificatenumber">站务员证书编号</th>
+                            <th class="certificategrade">站务员证书等级</th>
+                            <th class="crewcode">人员编码</th>
+                            <th class="certificatenumber">消防证书编号</th>
+                            <th class="certificatenumber">综控员证书编号</th>
+                            <th class="certificategrade">综控员证书级别</th>
+                        </tr>
+                        </thead>
+                        <tbody id="userDataTable">
+                        <tr>
+                            <th>11</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>33</th>
+                            <th>44</th>
+                            <th>55</th>
+                            <th>66</th>
+                            <th>77</th>
+                            <th>88</th>
+                            <th class="idcard">4</th>
+                            <th class="entrytime">5</th>
+                            <th class="marriage">6</th>
+                            <th class="childhas">7</th>
+                            <th class="education">8</th>
+                            <th class="political">9</th>
+                            <th class="partytime">0</th>
+                            <th class="homeaddress">22</th>
+                            <th class="certificatenumber">33</th>
+                            <th class="certificategrade">44</th>
+                            <th class="crewcode">55</th>
+                            <th class="certificatenumber">66</th>
+                            <th class="certificatenumber">77</th>
+                            <th class="certificategrade">88</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- 表格 end -->
         </form>
@@ -281,77 +283,77 @@
         methods:{
             checkcheckbox1:function(){
                 if(this.single1){
-                    $(".idcard").css("display","block");
+                    $(".idcard").css("display","inline-block");
                 }else{
                    $(".idcard").css("display","none");
                 }
             },
             checkcheckbox2:function(){
                 if(this.single2){
-                    $(".entrytime").css("display","block");
+                    $(".entrytime").css("display","inline-block");
                 }else{
                     $(".entrytime").css("display","none");
                 }
             },
             checkcheckbox3:function(){
                 if(this.single3){
-                    $(".marriage").css("display","block");
+                    $(".marriage").css("display","inline-block");
                 }else{
                     $(".marriaged").css("display","none");
                 }
             },
             checkcheckbox4:function(){
                 if(this.single4){
-                    $(".childhas").css("display","block");
+                    $(".childhas").css("display","inline-block");
                 }else{
                     $(".childhas").css("display","none");
                 }
             },
             checkcheckbox5:function(){
                 if(this.single5){
-                    $(".education").css("display","block");
+                    $(".education").css("display","inline-block");
                 }else{
                     $(".education").css("display","none");
                 }
             },
             checkcheckbox6:function(){
                 if(this.single6){
-                    $(".political").css("display","block");
+                    $(".political").css("display","inline-block");
                 }else{
                     $(".political").css("display","none");
                 }
             },
             checkcheckbox7:function(){
                 if(this.single7){
-                    $(".partytime").css("display","block");
+                    $(".partytime").css("display","inline-block");
                 }else{
                     $(".partytime").css("display","none");
                 }
             },
             checkcheckbox8:function(){
                 if(this.single8){
-                    $(".homeaddress").css("display","block");
+                    $(".homeaddress").css("display","inline-block");
                 }else{
                     $(".homeaddress").css("display","none");
                 }
             },
             checkcheckbox9:function(){
                 if(this.single9){
-                    $(".certificatenumber").css("display","block");
+                    $(".certificatenumber").css("display","inline-block");
                 }else{
                     $(".certificatenumber").css("display","none");
                 }
             },
             checkcheckbox10:function(){
                 if(this.single10){
-                    $(".certificategrade").css("display","block");
+                    $(".certificategrade").css("display","inline-block");
                 }else{
                     $(".certificategrade").css("display","none");
                 }
             },
             checkcheckbox11:function(){
                 if(this.single11){
-                    $(".crewcode").css("display","block");
+                    $(".crewcode").css("display","inline-block");
                 }else{
                     $(".crewcode").css("display","none");
                 }
