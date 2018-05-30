@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <div class="content-header">
             <button class=" btnDefault bgGreen" type="button" @click="modal8 = true"><span>新增岗位</span></button>
             <Modal title="新增岗位"

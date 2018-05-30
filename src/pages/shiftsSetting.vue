@@ -65,7 +65,7 @@
                             <div class="title">
                                 <b>24小时值班人数表</b>
                                 <div class="btn-group">
-                                    <a class="btnDefault bgGreen" @click="modal2=true">新增时间段</a>
+                                    <a class="btnDefault bgGreen" @click="modal.addTimeSlot=true">新增时间段</a>
                                     <a class="btnDefault bgGreen" @click="modal3=true">方案验算</a>
                                 </div>
                             </div>
@@ -127,8 +127,7 @@
         <Modal title="编辑班制"
                 v-model="modal.editShift"
                 :loading="true"
-                @on-ok="editShift('formValidate')"
-                >
+                @on-ok="editShift('formValidate')">
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="110">
                 <FormItem label="班制名称：" prop="name">
                     <Input v-model="formValidate.name" placeholder=""/>
@@ -163,18 +162,18 @@
                 </FormItem>
             </Form>
         </Modal>
-        <!-- 编辑排班人数表 -->
-        <Modal title="编辑"
-                v-model="modal2"
-                @on-ok="handleSubmit2('formValidate2')"
-                >
-            <Form ref="formValidate2" :model="formValidate2" :rules="ruleValidate2" :label-width="80">
-                <FormItem label="时间段" prop="timeduan">
-                    <TimePicker type="time" placeholder="Select time" style="width: 168px" format="HH:00"></TimePicker> 至 
-                    <TimePicker type="time" placeholder="Select time" style="width: 168px" format="HH:00"></TimePicker>
+        <!-- 新增时间段 -->
+        <Modal title="新增时间段"
+            v-model="modal.addTimeSlot"
+            :loading="true"
+            @on-ok="handleSubmit2('addTimeValidate')">
+            <Form ref="addTimeValidate" :model="addTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
+                <FormItem label="时间段" prop="timeSlot">
+                    <TimePicker v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"></TimePicker>
+                    <div class="ivu-form-item-error-tip" v-if="addTimeValidate.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
                 <FormItem label="值班人数" prop="shiftpeople">
-                    <Input v-model="formValidate2.shiftpeople" placeholder=""/>
+                    <Input v-model="addTimeValidate.shiftpeople" placeholder=""/>
                 </FormItem>
             </Form>
         </Modal>
@@ -185,10 +184,10 @@
         data:function () {
             return {
                 modal1:false,
-                modal2:false,
                 modal3:false,
                 modal: {
                     eidtShift: false,
+                    addTimeSlot:false,
                 },
                 cityList: [
                     {
@@ -240,9 +239,10 @@
                     maxMonthOffDuty:'',
                     maxYearOffDuty:''
                 },
-                formValidate2:{
-                    timeduan:'',
-                    shiftpeople:"2"
+                addTimeValidate:{
+                    timeSlot: '',
+                    shiftpeople: '2',
+                    ifTimeSlot: false
                 },
                 formValidate1:{
                     name:'',
@@ -252,7 +252,7 @@
                     shiftrele:'',
                     shiftpeople:"2"
                 },
-//                新增班制弹框
+                //    新增班制弹框
                 ruleValidate: {
                     name: [
                         { required: true, message: '班制名称不能为空', trigger: 'blur' }
@@ -282,16 +282,16 @@
                         { required: true, message: '年工时上限不能为空', trigger: 'blur' }
                     ]
                 },
-//                新增时间段弹框
-                ruleValidate2: {
-                    timeduan: [
-                        { required: true, message: '时间段不能为空', trigger: 'blur' }
+                //    新增时间段弹框
+                ruleAddTimeValidate: {
+                    timeSlot: [
+                        { required: true, type: 'array', min: 1, message: '时间段不能为空', trigger: 'blur' },
                     ],
                     shiftpeople: [
                         { required: true, message: '值班人数不能为空', trigger: 'blur' }
                     ]
                 },
-//                新增班次弹框
+                //  新增班次弹框
                 ruleValidate1: {
                     name: [
                         { required: true, message: '班次名称不能为空', trigger: 'blur' }
@@ -324,7 +324,6 @@
                         monthtime:'1',
                         yeartime:'1'
                     }
-
                 ],
                 columns1: [
                        {
@@ -457,7 +456,17 @@
                 })
             },
             handleSubmit2: function (name) {
+                let arr = this.addTimeValidate.timeSlot;
+                for(let i=0;i<arr.length;i++){
+                    if(arr[i] === ''){
+                        this.addTimeValidate.ifTimeSlot = true;
+                        return;
+                    } else {
+                        this.addTimeValidate.ifTimeSlot = false;
+                    }
+                }
                 this.$refs[name].validate((valid) => {
+                    
                     if (valid) {
                         this.$Message.success('修改成功');
                     } else {
@@ -485,7 +494,7 @@
                 this.data1.splice(index, 1);
             },
             editpeoplenumber:function(){
-                this.modal2=true;
+                this.modal.addTimeSlot=true;
             },
             remove2:function (index) {
                 this.data2.splice(index, 1);
@@ -498,6 +507,13 @@
             },
             del:function(){
                 this.modal3=false;
+            },
+            //  选择时间段
+            selectTime: function (arr) {
+                if(arr[1] === ''){
+                    arr = [];
+                }
+                this.addTimeValidate.timeSlot = arr;
             }
         }
     }

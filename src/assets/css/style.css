@@ -1,3 +1,6 @@
+* {
+  font-size: 14px;
+}
 ul {
   list-style: none;
 }
@@ -165,4 +168,21 @@ select {
 }
 .ivu-btn-primary span {
   color: #fff !important;
+}
+.ivu-form-item-error-tip {
+  font-size: 14px !important;
+}
+.ivu-table-wrapper {
+  margin-top: 20px;
+  border: 0;
+}
+.ivu-table th {
+  background: #D7E4FF;
+}
+.ivu-table-border td,
+.ivu-table-border th {
+  border-right: 0;
+}
+.ivu-table:after {
+  background: #fff;
 }
