@@ -254,12 +254,6 @@
     border-radius: 50%;
     background-color: silver;
 }
-.antoform td{
-    width: 136px;
-    height: 42px;
-    text-align: center;
-    border: 2px solid white;
-}
 .showBtn{
     display: none;
 }

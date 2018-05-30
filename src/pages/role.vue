@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <div id="newRole">
+    <div class="container">
             <div class="content-header">
                 <div class="float-left">
                     <a class="btnDefault bgGreen"  @click="roleConfigshow"><span>新增权限方案</span></a>
@@ -20,7 +19,6 @@
                         <Table class="roletable" stripe :columns="columns1" :data="data"></Table>
                 </div>
             </div>
-        </div>
         <div id="roleConfig">
             <div class="content-header">
                 <div class="float-left">
