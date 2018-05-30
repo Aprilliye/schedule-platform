@@ -1,0 +1,164 @@
+// out: ../css/style.css
+@border: #e5e5e5;
+ul{
+    list-style: none;
+}
+.container{
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+.ivu-tabs{
+    margin-top: 20px;
+}
+.title{
+    position: relative;
+    height: 44px;
+    b{
+        line-height: 44px;
+    }
+    .btn-group{
+        position: absolute;
+        left: 0;
+        top: 0;
+        a{
+            float: left;
+        }
+    }
+}
+.info{
+    width: 100%;
+    overflow: hidden;
+    clear: both;
+    padding: 10px 0;
+    box-sizing: border-box;
+    *{
+        float: left;
+        line-height: 24px;
+    }
+    li{
+        width: 300px;
+        padding: 8px 0;
+        label{
+            width: 120px;
+            text-align: right;
+            color: #999;
+        }
+    }
+}input,button,select{
+    outline: none !important;
+}
+button{
+    cursor: pointer;
+    background: #fff;
+    border-radius: 4px;
+    border: 0 !important;
+
+}
+.ivu-btn{
+    line-height: 1 !important;
+}
+.ivu-btn-loading{
+    pointer-events: painted !important;
+    &:before,i{
+        display:  none !important;
+    }
+    span{
+        margin-left: 0 !important;
+    }
+}
+/* 人员管理 */
+.clear{
+    overflow: hidden;
+    clear: both;
+    float: none !important;
+}
+.choicebox{
+    padding: 15px;
+    overflow: hidden;
+    clear: both;
+    margin-bottom:15px;
+    label{
+        padding: 5px 0;
+        margin-right: 10px;
+        &,*{
+            float: left
+        }
+        .ivu-checkbox{
+            margin-top: 5px;
+            margin-right: 7px;
+        }
+    }
+}
+.table{
+    width: 100%;
+    overflow-x: auto;
+}
+table{
+    min-width: 100%;
+    box-sizing: border-box;
+    td,th{
+        padding: 5px;
+        border-bottom: 1px solid @border;
+    }
+    th{
+        background: #D7E4FF;
+        line-height: 40px;
+        border: 0 !important;
+        text-align: left;
+    }
+    td{
+        line-height: 36px;
+    }
+}
+input,select{
+    border: 1px solid @border;
+    border-radius: 4px;
+    padding: 5px;
+    height: 36px;
+}
+.form{
+    width:100%;
+    padding: 10px;
+    &,*{
+        box-sizing: border-box;
+    }
+    *{
+        float: left;
+    }
+    li{
+        padding: 5px;
+        width: 50%;
+        padding: 10px 0;
+    }
+    label{
+        width: 120px;
+        text-align: right;
+        margin-right: 10px;
+        line-height: 36px;
+    }
+    .require{
+        label::before{
+            content: '*';
+            color: red;
+        }
+    }
+    input,select{
+        width: 240px;
+    }
+    .lang{
+        width: 100%;
+        input{
+            width: 615px;
+        }
+    }
+    .orange{
+        color: #ff6600;
+        width: 100%;
+        font-size: 12px;
+        margin-top: 8px;
+        margin-left: 110px;
+    }
+}
+.ivu-btn-primary span{
+    color: #fff !important;
+}

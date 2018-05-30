@@ -45,10 +45,11 @@
     display: inline-block;
     width: auto;
     height: auto;
-    border: 1px solid gainsboro;
+    /* border: 1px solid gainsboro; */
     border-radius: 5px;
     padding: 5px 10px;
     margin-top: 2px;
+    color: #fff;
 }
 .bgGreen{
     background-color: #39B44A;
@@ -78,28 +79,11 @@
     height: auto;
     padding-right: 10px;
     margin-right: 10px;
-    float: left;
-    word-break: keep-all;
+    white-space: nowrap;
 }
 .usermanage-model p{
     line-height: 30px;
     padding-top: 10px;
-}
-.usermanage-model label{
-    float: left;
-    clear: both;
-    width: 100px;
-    margin-right: 10px;
-    padding-top: 10px;
-}
-.usermanage-model input{
-    height: 25px;
-}
-.managep{
-    height: 100px;
-}
-#editBirthday,#editOnBoardDate {
-    margin-top: 20px;
 }
 .idcard,.entrytime,.marriage,.childhas,.education,.political,.partytime,.homeaddress,.certificatenumber,.certificategrade,.crewcode{
     display: none;
@@ -241,9 +225,6 @@
 .shifttitle{
     border-left: 3px solid #3A6BCE;
     padding: 5px;
-}
-.alldiv{
-    margin-left: 15px;
 }
 /*自动排班*/
 .iconmark{
