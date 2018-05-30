@@ -10,6 +10,7 @@ import ScheduleAreaForm from '@/pages/scheduleAreaForm'
 import Workflow from '@/pages/workflow'
 import PostSetting from '@/pages/postSetting'
 import ShiftsSetting from '@/pages/shiftsSetting'
+import AutoSchedule from '@/pages/autoSchedule'
 
 Vue.use(Router)
 let router = new Router({
@@ -19,14 +20,15 @@ let router = new Router({
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/login',
       name: 'Login',
       component: Login
     },
     {
-      path: '/index',
+      path: '/',
       name: 'Index',
       component: Index,
+      redirect: '/user-manage',
       children:[
         {
           path: '/user-manage',
@@ -62,6 +64,11 @@ export default new Router({
           path: '/shiftsSetting',
           name: 'ShiftsSetting',
           component: ShiftsSetting
+        },
+        {
+          path: '/autoSchedule',
+          name: 'AutoSchedule',
+          component: AutoSchedule
         }
       ]
     },
