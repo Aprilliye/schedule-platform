@@ -75,8 +75,15 @@ export default new Router({
         },
         {
           path:'/editJurisdiction',
-          name:' EditJurisdiction',
-          component: EditJurisdiction
+
+          name:'EditJurisdiction',
+          component:EditJurisdiction
+        },
+        //  新增排班
+        {
+            path:'/autoSchedule',
+            name:'autoSchedule',
+            component:AutoSchedule
         }
       ]
     }

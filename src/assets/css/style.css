@@ -202,6 +202,9 @@ select {
   margin-bottom: 20px;
 }
 /* 排班表格 */
+.postformtable {
+  margin-top: 20px;
+}
 .postformtable table {
   width: 100%;
 }
@@ -216,6 +219,9 @@ select {
 }
 .postformtable table td {
   background: #DCDEE0;
+}
+.scheduleForm td {
+  text-align: center;
 }
 .selectbutton .icon-5 {
   margin-left: 10px;
