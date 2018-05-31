@@ -49,7 +49,8 @@ ul{
             color: #999;
         }
     }
-}input,button,select{
+}
+input,button,select{
     outline: none !important;
 }
 button{
@@ -97,29 +98,37 @@ button{
 .table{
     width: 100%;
     overflow-x: auto;
+    table{
+        min-width: 100%;
+        box-sizing: border-box;
+        td,th{
+            
+            border-bottom: 1px solid @border;
+        }
+        th{
+            background: #D7E4FF;
+            line-height: 40px;
+            border: 0 !important;
+            text-align: left;
+        }
+        td{
+            line-height: 36px;
+        }
+    }
 }
 table{
-    min-width: 100%;
-    box-sizing: border-box;
+    &,td,th{
+        border-collapse: collapse;
+    }
     td,th{
         padding: 5px;
-        border-bottom: 1px solid @border;
-    }
-    th{
-        background: #D7E4FF;
-        line-height: 40px;
-        border: 0 !important;
-        text-align: left;
-    }
-    td{
-        line-height: 36px;
     }
 }
 input,select{
     border: 1px solid @border;
     border-radius: 4px;
     padding: 5px;
-    height: 36px;
+    height: 30px;
 }
 .form{
     width:100%;
@@ -187,4 +196,30 @@ input,select{
     width: 1200px;
     height: 200px;
     margin-bottom: 20px;
+}
+/* 排班表格 */
+.postformtable{
+    table{
+        width: 100%;
+        th,td{
+            height: 40px;
+            border: 2px solid #fff;
+        }
+        th{
+            color: #fff;
+            background: #767C85;
+        }
+        td{
+            background: #DCDEE0;
+        }
+    }
+}
+.selectbutton{
+    .icon-5{
+        margin-left: 10px;
+    }
+}
+.tabItem{
+    display: inline-block;
+    margin-left: 10px;
 }

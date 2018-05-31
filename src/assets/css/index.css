@@ -43,16 +43,18 @@
 /*人员管理*/
 .btnDefault{
     display: inline-block;
-    width: auto;
-    height: auto;
-    /* border: 1px solid gainsboro; */
+    min-width: 80px;
+    line-height: 20px;
+    border: 1px solid #e5e5e5 !important;
+    box-sizing: border-box;
     border-radius: 5px;
     padding: 5px 10px;
-    margin-top: 2px;
-    color: #fff;
+    text-align: center;
 }
 .bgGreen{
     background-color: #39B44A;
+    color: #fff !important;
+    border:1px solid #39B44A !important;
 }
 .mansgebutton{
     margin-top: -3px;
@@ -60,6 +62,7 @@
 .bgBlue{
     background-color: #3A6BCE;
     color: white !important;
+    border:1px solid #3A6BCE !important;
 }
 #column-boxes td{
     width: 100px;
@@ -167,8 +170,7 @@
 .search-input {
     padding-left: 5px;
     margin-right: 10px;
-    width: 300px;
-    line-height: 38px;
+    box-sizing: border-box;
     border: 1px solid #e5e5e5;
     border-radius: 5px;
     background: #fff;
@@ -235,10 +237,9 @@
 /*排班表格*/
  .selectbutton {
      display: inline-block;
-    width: 200px;
-    line-height: 36px;
+    line-height: 30px;
     border: 1px solid #e5e5e5;
-    border-radius: 3px;
+    border-radius: 4px;
 }
 .colori{
     display: inline-block;
@@ -250,7 +251,6 @@
 .postformtable td{
     width: 120px;
     height: 35px;
-    border: 1px solid white;
     text-align: center;
 }
 /*工作流程*/

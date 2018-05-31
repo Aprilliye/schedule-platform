@@ -261,7 +261,7 @@ export default {
                 shiftrele:'',
                 shiftpeople:"2"
             },
-            //    新增班制弹框
+            //  新增班制弹框
             ruleValidate: {
                 name: [
                     { required: true, message: '班制名称不能为空', trigger: 'blur' }
@@ -291,7 +291,7 @@ export default {
                     { required: true, message: '年工时上限不能为空', trigger: 'blur' }
                 ]
             },
-            //    新增时间段弹框
+            //  新增时间段弹框
             ruleAddTimeValidate: {
                 timeSlot: [
                     { required: true, type: 'array', min: 1, message: '时间段不能为空', trigger: 'blur' },
