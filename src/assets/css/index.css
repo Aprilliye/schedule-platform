@@ -269,11 +269,6 @@
     border-left: 3px solid #3A6BCE;
     padding: 5px;
 }
-.btneditshift{
-    position: absolute;
-    left:0px ;
-    top:100px;
-}
 /*自动排班*/
 .iconmark{
     display: inline-block;

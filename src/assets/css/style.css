@@ -32,6 +32,8 @@ ul {
   clear: both;
   padding: 10px 0;
   box-sizing: border-box;
+  margin-top: 10px;
+  border: 1px solid #e5e5e5;
 }
 .info * {
   float: left;

@@ -15,9 +15,12 @@
                     <div class="shifts-content">
                         <!--班制表-->
                         <div class="shiftform">
-                            <p class="title">
+                            <div class="title">
                                 <b>班制表</b>
-                            </p>
+                                <div class="btn-group">
+                                    <a class="btnDefault bgGreen" href="javascript:;" @click="beforeEditShift">编辑班制</a>
+                                </div>
+                            </div>
                             <ul class="info">
                                 <li>
                                     <label>班制名称：</label>
@@ -55,9 +58,6 @@
                                     <label>年工时上限：</label>
                                     <span>{{info.maxYearOffDuty}}</span>
                                 </li>
-                                <li>
-                                    <a class="btnDefault bgGreen btneditshift" href="javascript:;" @click="beforeEditShift">编辑班制</a>
-                                </li>
                             </ul>
                         </div>
                         <!--24小时值班人数表-->
@@ -91,11 +91,15 @@
         <Modal
             v-model="modal3"
             title="方案验算">
-            <p>每日总工时:&nbsp;&nbsp;&nbsp;<span>45小时</span></p>
-            <p>总排班人数:&nbsp;&nbsp;&nbsp;<input><Button type="primary" style="margin-left: 10px">开始验算</Button></p>
-            <div slot="footer">
-                <Button type="primary"  @click="del">确定</Button>
-            </div>
+            <Form :label-width="90">
+                <FormItem label="每日总工时" prop="totalHours">
+                    <span>45小时</span>
+                </FormItem>
+                <FormItem label="总排班人数" prop="totalPerson" required>
+                    <Input placeholder="请输入排班总人数" width="200"/>
+                    <Button type="primary">开始验算</Button>
+                </FormItem>
+            </Form>
         </Modal>
         <!-- 编辑班次表 -->
         <Modal title="编辑"
@@ -104,22 +108,22 @@
             >
             <Form ref="formValidate1" :model="formValidate1" :rules="ruleValidate1" :label-width="80">
                 <FormItem label="班次名称" prop="name">
-                    <Input v-model="formValidate1.name" placeholder=""></Input>
+                    <Input v-model="formValidate1.name" placeholder=""/>
                 </FormItem>
                 <FormItem label="起止时间" prop="starttime">
-                    <Input v-model="formValidate1.starttime" placeholder=""></Input>
+                    <Input v-model="formValidate1.starttime" placeholder=""/>
                 </FormItem>
                 <FormItem label="本班工时" prop="shifttime">
-                    <Input v-model="formValidate1.shifttime" placeholder=""></Input>
+                    <Input v-model="formValidate1.shifttime" placeholder=""/>
                 </FormItem>
                 <FormItem label="班次间隔" prop="shiftspace">
-                    <Input v-model="formValidate1.shiftspace" placeholder=""></Input>
+                    <Input v-model="formValidate1.shiftspace" placeholder=""/>
                 </FormItem>
                 <FormItem label="班次关联" prop="shiftrele">
-                    <Input v-model="formValidate1.shiftrele" placeholder=""></Input>
+                    <Input v-model="formValidate1.shiftrele" placeholder=""/>
                 </FormItem>
                 <FormItem label="值班人数" prop="shiftpeople">
-                    <Input v-model="formValidate1.shiftpeople" placeholder=""></Input>
+                    <Input v-model="formValidate1.shiftpeople" placeholder=""/>
                 </FormItem>
             </Form>
         </Modal>
@@ -127,7 +131,8 @@
         <Modal title="编辑班制"
                 v-model="modal.editShift"
                 :loading="true"
-                @on-ok="editShift('formValidate')">
+                @on-ok="editShift('formValidate')"
+                @on-cancel="handleCancel('formValidate')">
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="110">
                 <FormItem label="班制名称：" prop="name">
                     <Input v-model="formValidate.name" placeholder=""/>
@@ -166,10 +171,11 @@
         <Modal title="新增时间段"
             v-model="modal.addTimeSlot"
             :loading="true"
-            @on-ok="handleSubmit2('addTimeValidate')">
+            @on-ok="handleSubmit2('addTimeValidate')"
+            @on-cancel="handleCancel('addTimeValidate')">
             <Form ref="addTimeValidate" :model="addTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
-                <FormItem label="时间段" prop="timeSlot">
-                    <TimePicker v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"></TimePicker>
+                <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
+                    <TimePicker  v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addTimeValidate.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
                 <FormItem label="值班人数" prop="shiftpeople">
@@ -240,7 +246,7 @@
                     maxYearOffDuty:''
                 },
                 addTimeValidate:{
-                    timeSlot: '',
+                    timeSlot: [],
                     shiftpeople: '2',
                     ifTimeSlot: false
                 },
@@ -460,18 +466,23 @@
                 for(let i=0;i<arr.length;i++){
                     if(arr[i] === ''){
                         this.addTimeValidate.ifTimeSlot = true;
+                        $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
                         return;
                     } else {
+                        $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
                         this.addTimeValidate.ifTimeSlot = false;
                     }
                 }
                 this.$refs[name].validate((valid) => {
-                    
                     if (valid) {
                         this.$Message.success('修改成功');
+                        this.modal.addTimeSlot = false;
+                        
                     } else {
                         this.$Message.error('修改失败');
                     }
+                    this.addTimeValidate.timeSlot = [];
+                    this.addTimeValidate.ifTimeSlot = false;
                 })
             },
             handleSubmit1: function (name) {
@@ -514,6 +525,11 @@
                     arr = [];
                 }
                 this.addTimeValidate.timeSlot = arr;
+            },
+            handleCancel: function (name) {
+                this.$refs[name].resetFields();
+                this.addTimeValidate.ifTimeSlot = false;
+                $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
             }
         }
     }
