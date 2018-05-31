@@ -85,6 +85,7 @@
                             <th width="80">生日</th>
                             <th width="80">岗位</th>
                             <th width="80">站点</th>
+                            <th width="80">站区</th>
                             <th width="80">管理员</th>
                             <th width="80" v-show="tableItem[0].ifShow">身份证</th>
                             <th width="120" v-show="tableItem[1].ifShow">入职时间</th>
@@ -104,29 +105,160 @@
                         </thead>
                         <tbody id="userDataTable">
                         <tr>
-                            <td>11</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>33</td>
-                            <td>44</td>
-                            <td>55</td>
-                            <td>66</td>
-                            <td>77</td>
-                            <td>88</td>
-                            <td v-show="tableItem[0].ifShow">--</td>
-                            <td v-show="tableItem[1].ifShow">--</td>
-                            <td v-show="tableItem[2].ifShow">--</td>
-                            <td v-show="tableItem[3].ifShow">--</td>
-                            <td v-show="tableItem[4].ifShow">--</td>
-                            <td v-show="tableItem[5].ifShow">--</td>
-                            <td v-show="tableItem[6].ifShow">--</td>
-                            <td v-show="tableItem[7].ifShow">--</td>
-                            <td v-show="tableItem[8].ifShow">--</td>
-                            <td v-show="tableItem[9].ifShow">--</td>
-                            <td v-show="tableItem[10].ifShow">--</td>
-                            <td v-show="tableItem[11].ifShow">--</td>
-                            <td v-show="tableItem[12].ifShow">--</td>
-                            <td v-show="tableItem[13].ifShow">--</td>
+                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF" @click="addPersonModalfake = true">修改</a></td>
+                            <td>60502868</td>
+                            <td>梅松</td>
+                            <td>男</td>
+                            <td>13810582556</td>
+                            <td>1990-12-12</td>
+                            <td>站区长</td>
+                            <td>西直门</td>
+                            <td>西直门</td>
+                            <td>站区</td>
+                            <td v-show="tableItem[0].ifShow">110108198212142712</td>
+                            <td v-show="tableItem[1].ifShow">1990-12-12</td>
+                            <td v-show="tableItem[2].ifShow">已婚</td>
+                            <td v-show="tableItem[3].ifShow">未育</td>
+                            <td v-show="tableItem[4].ifShow">高中以下</td>
+                            <td v-show="tableItem[5].ifShow">群众</td>
+                            <td v-show="tableItem[6].ifShow">2008-05-01</td>
+                            <td v-show="tableItem[7].ifShow">北京市石景山区古城南路19号楼</td>
+                            <td v-show="tableItem[8].ifShow">1401061060501034</td>
+                            <td v-show="tableItem[9].ifShow">站务初级</td>
+                            <td v-show="tableItem[10].ifShow">156598965236566</td>
+                            <td v-show="tableItem[11].ifShow">5963265595466658</td>
+                            <td v-show="tableItem[12].ifShow">1401061060501034</td>
+                            <td v-show="tableItem[13].ifShow">站务初级</td>
+                        </tr>
+                        <tr>
+                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF">修改</a></td>
+                            <td>60506796</td>
+                            <td>伊坤</td>
+                            <td>男</td>
+                            <td>13785663247</td>
+                            <td>1992-10-6</td>
+                            <td>站务员</td>
+                            <td>西直门</td>
+                            <td>西直门</td>
+                            <td></td>
+                            <td v-show="tableItem[0].ifShow">110106199210060344</td>
+                            <td v-show="tableItem[1].ifShow">2017-7-28</td>
+                            <td v-show="tableItem[2].ifShow">已婚</td>
+                            <td v-show="tableItem[3].ifShow">未育</td>
+                            <td v-show="tableItem[4].ifShow">本科</td>
+                            <td v-show="tableItem[5].ifShow">共产党员</td>
+                            <td v-show="tableItem[6].ifShow">2006-10-11</td>
+                            <td v-show="tableItem[7].ifShow">北京市丰台区花乡羊坊花园西院1-5-404</td>
+                            <td v-show="tableItem[8].ifShow">1701061060500643</td>
+                            <td v-show="tableItem[9].ifShow">站务初级</td>
+                            <td v-show="tableItem[10].ifShow">7852632594125789</td>
+                            <td v-show="tableItem[11].ifShow">1458962574123658</td>
+                            <td v-show="tableItem[12].ifShow">1752695213699541</td>
+                            <td v-show="tableItem[13].ifShow">站务初级</td>
+                        </tr>
+                        <tr>
+                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF">修改</a></td>
+                            <td>60508808</td>
+                            <td>李璇</td>
+                            <td>女</td>
+                            <td>13051679861</td>
+                            <td>1994-02-12</td>
+                            <td>站务员</td>
+                            <td>西直门</td>
+                            <td>西直门</td>
+                            <td></td>
+                            <td v-show="tableItem[0].ifShow">110108199402123410</td>
+                            <td v-show="tableItem[1].ifShow">2015-2-12</td>
+                            <td v-show="tableItem[2].ifShow">未婚</td>
+                            <td v-show="tableItem[3].ifShow">未育</td>
+                            <td v-show="tableItem[4].ifShow">大专</td>
+                            <td v-show="tableItem[5].ifShow">共青团员</td>
+                            <td v-show="tableItem[6].ifShow">2010-01-1</td>
+                            <td v-show="tableItem[7].ifShow">北京市丰台区青塔蔚园10号楼101</td>
+                            <td v-show="tableItem[8].ifShow">5269541236985423</td>
+                            <td v-show="tableItem[9].ifShow">站务初级</td>
+                            <td v-show="tableItem[10].ifShow">4152956325841256</td>
+                            <td v-show="tableItem[11].ifShow">5962354852695412</td>
+                            <td v-show="tableItem[12].ifShow">5963258412596584</td>
+                            <td v-show="tableItem[13].ifShow">站务初级</td>
+                        </tr>
+                        <tr>
+                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF">修改</a></td>
+                            <td>60507613</td>
+                            <td>黄旭</td>
+                            <td>男</td>
+                            <td>13811914821</td>
+                            <td>1994-01-28</td>
+                            <td>站区长</td>
+                            <td>西直门</td>
+                            <td>西直门</td>
+                            <td></td>
+                            <td v-show="tableItem[0].ifShow">131002199401282015</td>
+                            <td v-show="tableItem[1].ifShow">2015-07-03</td>
+                            <td v-show="tableItem[2].ifShow">未婚</td>
+                            <td v-show="tableItem[3].ifShow">未育</td>
+                            <td v-show="tableItem[4].ifShow">大专</td>
+                            <td v-show="tableItem[5].ifShow">共青团员</td>
+                            <td v-show="tableItem[6].ifShow">2015-12-11</td>
+                            <td v-show="tableItem[7].ifShow">北京市西城区寿长街2号</td>
+                            <td v-show="tableItem[8].ifShow">5952362515895255</td>
+                            <td v-show="tableItem[9].ifShow">站务初级</td>
+                            <td v-show="tableItem[10].ifShow">985625412695459</td>
+                            <td v-show="tableItem[11].ifShow">595213695845258</td>
+                            <td v-show="tableItem[12].ifShow">596235158745953</td>
+                            <td v-show="tableItem[13].ifShow">站务初级</td>
+                        </tr>
+                        <tr>
+                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF">修改</a></td>
+                            <td>60502986</td>
+                            <td>薛婷婷</td>
+                            <td>女</td>
+                            <td>13811580959</td>
+                            <td>1990-05-07</td>
+                            <td>站务员</td>
+                            <td>西直门</td>
+                            <td>西直门</td>
+                            <td></td>
+                            <td v-show="tableItem[0].ifShow">110224199005073822</td>
+                            <td v-show="tableItem[1].ifShow">1997-1-7</td>
+                            <td v-show="tableItem[2].ifShow">未婚</td>
+                            <td v-show="tableItem[3].ifShow">未育</td>
+                            <td v-show="tableItem[4].ifShow">大专</td>
+                            <td v-show="tableItem[5].ifShow">共青团员</td>
+                            <td v-show="tableItem[6].ifShow">2012-08-23</td>
+                            <td v-show="tableItem[7].ifShow">北京市大兴区安定镇杜庄屯十一条</td>
+                            <td v-show="tableItem[8].ifShow">5956321478952695</td>
+                            <td v-show="tableItem[9].ifShow">站务初级</td>
+                            <td v-show="tableItem[10].ifShow">5236598451259635</td>
+                            <td v-show="tableItem[11].ifShow">5963251489562359</td>
+                            <td v-show="tableItem[12].ifShow">5956321584596325</td>
+                            <td v-show="tableItem[13].ifShow">站务初级</td>
+                        </tr>
+                        <tr>
+                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF">修改</a></td>
+                            <td>60502979</td>
+                            <td>王宇</td>
+                            <td>男</td>
+                            <td>13581550834</td>
+                            <td>1988-07-13</td>
+                            <td>站务员</td>
+                            <td>西直门</td>
+                            <td>西直门</td>
+                            <td></td>
+                            <td v-show="tableItem[0].ifShow">110109198807132528</td>
+                            <td v-show="tableItem[1].ifShow">2008-6-9</td>
+                            <td v-show="tableItem[2].ifShow">未婚</td>
+                            <td v-show="tableItem[3].ifShow">未育</td>
+                            <td v-show="tableItem[4].ifShow">大专</td>
+                            <td v-show="tableItem[5].ifShow">共青团员</td>
+                            <td v-show="tableItem[6].ifShow">2002-08-23</td>
+                            <td v-show="tableItem[7].ifShow">北京市门头沟区王平镇东王平村55-4</td>
+                            <td v-show="tableItem[8].ifShow">5956325415896523</td>
+                            <td v-show="tableItem[9].ifShow">站务初级</td>
+                            <td v-show="tableItem[10].ifShow">5126985459654159</td>
+                            <td v-show="tableItem[11].ifShow">5236985412563596</td>
+                            <td v-show="tableItem[12].ifShow">5963214874523695</td>
+                            <td v-show="tableItem[13].ifShow">站务初级</td>
                         </tr>
                         </tbody>
                     </table>
@@ -278,6 +410,150 @@
                     <li class="clear"></li>
                 </ul>
         </Modal>
+        <!--编辑人员-->
+        <Modal class="usermanage-model"
+               title="编辑人员"
+               v-model="addPersonModalfake"
+               width="800"
+               :mask-closable="false">
+            <ul class="form">
+                <li>
+                    <label>员工卡号</label>
+                    <input name="cardNum" type="text" v-model="addPersonfake.cardNum">
+                </li>
+                <li>
+                    <label>人员编码</label>
+                    <input name="code" type="text" v-model="addPersonfake.code">
+                </li>
+                <li class="require">
+                    <label class="require">姓名</label>
+                    <input name="name" type="text" v-model="addPersonfake.name">
+                </li>
+                <li>
+                    <label>站区/站点</label>
+                    <select name="station" class=" reset-input" v-model="addPersonfake.station">
+                        <option value="">请选择</option>
+                        <option value=""></option>
+                    </select>
+                </li>
+                <li class="require">
+                    <label class="require">岗位</label>
+                    <select name="postName" v-model="addPersonfake.post">
+                        <option value="">请选择</option>
+                        <option value=""></option>
+                    </select>
+                </li>
+                <li>
+                    <label>管理员</label>
+                    <select name="manager" v-model="addPersonfake.manager">
+                        <option value="0" selected="selected">否</option>
+                        <option value="1">是</option>
+                    </select>
+                </li>
+                <li>
+                    <label class="red">密码</label>
+                    <input type="text" name="password" v-model="addPersonfake.psw">
+                    <span class="orange">请记录此密码作为下次登录用</span>
+                </li>
+                <li>
+                    <label>权限方案</label>
+                    <select name="plan" v-model="addPersonfake.plan">
+                        <option value="">请选择</option>
+                        <option value=""></option>
+                    </select>
+                </li>
+                <li class="require">
+                    <label class="require">性别</label>
+                    <select name="sex" v-model="addPersonfake.sex">
+                        <option value="">男</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </li>
+                <li class="require">
+                    <label class="require">手机号</label>
+                    <input name="phoneNumber" type="text" v-model="addPersonfake.phoneNumber">
+                </li>
+                <li class="require">
+                    <label class="require" id="heightp">生日</label>
+                    <input name="birthday" type="text" v-model="addPersonfake.birthday">
+                </li>
+                <li class="require">
+                    <label class="require">身份证</label>
+                    <input name="idCode" type="text" v-model="addPersonfake.idCode">
+                </li>
+                <li class="require">
+                    <label class="require" id="heightpp">入职时间</label>
+                    <input name="onBoardDate" type="text" placeholder="例2015-03-06" v-model="addPersonfake.onBoardDate">
+                </li>
+                <li class="require">
+                    <label class="require">婚否</label>
+                    <select name="isMarried" v-model="addPersonfake.isMarried">
+                        <option value="">请选择</option>
+                        <option value="已婚">已婚</option>
+                        <option value="未婚">未婚</option>
+                    </select>
+                </li>
+                <li class="require">
+                    <label class="require">生育</label>
+                    <select name="hasChild" v-model="addPersonfake.hasChild">
+                        <option value="">请选择</option>
+                        <option value="已育">已育</option>
+                        <option value="未育">未育</option>
+                    </select>
+                </li>
+                <li class="require">
+                    <label class="require">学历</label>
+                    <select name="eduBackGround" v-model="addPersonfake.eduBackGround">
+                        <option value="">高中以下</option>
+                        <option value="高中以下">高中以下</option>
+                        <option value="大专">大专</option>
+                        <option value="本科">本科</option>
+                        <option value="硕士">硕士</option>
+                        <option value="博士以上">博士以上</option>
+                    </select>
+                </li>
+                <li class="require">
+                    <label class="require">政治面貌</label>
+                    <select name="isPartyMember" v-model="addPersonfake.isPartyMember">
+                        <option value="">共青团员</option>
+                        <option value="群众">群众</option>
+                        <option value="共青团员">共青团员</option>
+                        <option value="共产党员">共产党员</option>
+                        <option value="民主党派">民主党派</option>
+                    </select>
+                </li>
+                <li>
+                    <label>入党时间</label>
+                    <input name="joinDate" type="text" v-model="addPersonfake.joinDate">
+                </li>
+                <li>
+                    <label class="require">站务员证书编号</label>
+                    <input name="stationCertificateNum" type="text" v-model="addPersonfake.stationCertificateNum">
+                </li>
+                <li>
+                    <label class="require">站务员证等级</label>
+                    <input name="stationCertificateGrade" type="text" v-model="addPersonfake.stationCertificateGrade">
+                </li>
+                <li class="lang require">
+                    <label class="require">住址</label>
+                    <input name="address" type="text" v-model="addPersonfake.address">
+                </li>
+                <li>
+                    <label class="require">消防证书编号</label>
+                    <input name="fireControlCertificateNum" type="text" v-model="addPersonfake.fireControlCertificateNum">
+                </li>
+                <li>
+                    <label class="require">综控员证书编号</label>
+                    <input name="controllerCertificateNum" type="text" v-model="addPersonfake.controllerCertificateNum">
+                </li>
+                <li>
+                    <label class="require">综控员证书级别</label>
+                    <input name="controllerCertificateGrade" type="text" v-model="addPersonfake.controllerCertificateGrade">
+                </li>
+                <li class="clear"></li>
+            </ul>
+        </Modal>
     </div>
 </template>
 <script>
@@ -285,6 +561,7 @@
         data:function () {
             return {
                 addPersonModal: false,
+                addPersonModalfake:false,
                 tableItem: [
                     {
                         name: '身份证',
@@ -369,6 +646,32 @@
                     fireControlCertificateNum: '',
                     controllerCertificateNum: '',
                     controllerCertificateGrade: ''
+                },
+                addPersonfake: {
+                    cardNum: '60502868',
+                    code: '1401061060501034',
+                    name: '梅松',
+                    station: '西直门',
+                    postName: '站区长',
+                    manager: '站区',
+                    password: '123456',
+                    plan: '',
+                    sex: '男',
+                    phoneNumber: '13810582556',
+                    birthday: '1990-12-12',
+                    idCode: '110108198212142712',
+                    onBoardDate: '1990-12-12',
+                    isMarried: '已婚',
+                    hasChild: '未育',
+                    eduBackGround: '高中以下',
+                    isPartyMember: '群众',
+                    joinDate: '2008-05-01',
+                    stationCertificateNum: '401061060501034',
+                    stationCertificateGrade: '站务初级',
+                    address: '北京市石景山区古城南路19号楼',
+                    fireControlCertificateNum: '156598965236566',
+                    controllerCertificateNum: '5963265595466658',
+                    controllerCertificateGrade: '站务初级'
                 }
                     
             }

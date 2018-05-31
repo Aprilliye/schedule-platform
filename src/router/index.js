@@ -11,6 +11,7 @@ import Workflow from '@/pages/workflow'
 import PostSetting from '@/pages/postSetting'
 import ShiftsSetting from '@/pages/shiftsSetting'
 import AutoSchedule from '@/pages/autoSchedule'
+import AddJurisdiction from '@/pages/addJurisdiction'
 
 Vue.use(Router)
 let router = new Router({
@@ -66,13 +67,13 @@ export default new Router({
           component: ShiftsSetting
         },
         {
-          path: '/autoSchedule',
-          name: 'AutoSchedule',
-          component: AutoSchedule
+          path:'/addJurisdiction',
+          name:'AddJurisdiction',
+          component:AddJurisdiction
         }
-      ]
-    },
 
+      ]
+    }
   ]
 })
 

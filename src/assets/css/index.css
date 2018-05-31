@@ -182,8 +182,51 @@
     margin-right: 10px;
     float: left;
 }
-#roleConfig{
-    display:none;
+.table-container{
+    margin-top: 20px;
+}
+.rolesystemset,.roleschedulmanage,.roleschedulset,.rolereport{
+    border-bottom: 1px solid #e5e5e5
+}
+.thead{
+    line-height: 50px;
+    width: 100%;
+    background-color:#D7E4FF;
+    color:black;
+}
+.thead span{
+    display: inline-block;
+    width: 33%;
+    text-align: center;
+}
+.rolecheckbox{
+    display: block;
+}
+.tbody{
+    width: 100%;
+}
+.rolecheckallbox,.rolecheckboxdiv,.roledescribe{
+    padding-top: 20px;
+    float: left;
+    width: 33%;
+    text-align: center;
+}
+.btnback{
+    display: inline-block;
+    width: auto;
+    height: auto;
+     border: 1px solid gainsboro;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-top: 2px;
+}
+.roleSchemedescription{
+    width: 300px;
+    height: 78px;
+}
+.requireredstar:before{
+    content: "*";
+    color: red;
 }
 /*排班表格*/
  .selectbutton {
@@ -225,6 +268,11 @@
 .shifttitle{
     border-left: 3px solid #3A6BCE;
     padding: 5px;
+}
+.btneditshift{
+    position: absolute;
+    left:0px ;
+    top:100px;
 }
 /*自动排班*/
 .iconmark{

@@ -1,52 +1,38 @@
 <template>
     <div class="container">
-            <div class="content-header">
-                <div class="float-left">
-                    <a class="btnDefault bgGreen"  @click="roleConfigshow"><span>新增权限方案</span></a>
+        <div class="roleboforeadd">
+            <div class="container">
+                <div class="content-header">
+                    <div class="float-left">
+                        <a class="btnDefault bgGreen"  @click="roleConfigshow"><span>新增权限方案</span></a>
+                    </div>
+                    <div class=" float-right">
+                        <form class="form-container" id="roleForm1">
+                            <div class="search-input float-left">
+                                <span class="icon-5"></span>
+                                <input type="text" placeholder="权限方案名称" name="roleName" v-model="roleName">
+                            </div>
+                            <a class="btnDefault bgBlue queryBtn" href="javascript:;" onclick="getTableData()">查询</a>
+                        </form>
+                    </div>
                 </div>
-                <div class=" float-right">
-                    <form class="form-container" id="roleForm1">
-                        <div class="search-input float-left">
-                            <span class="icon-5"></span>
-                            <input type="text" placeholder="权限方案名称" name="roleName">
-                        </div>
-                        <a class="btnDefault bgBlue queryBtn" href="javascript:;" onclick="getTableData()">查询</a>
-                    </form>
-                </div>
-            </div>
-            <div class="panel-body">
-                <div class="table-container">
+                <div class="panel-body">
+                    <div class="table-container">
                         <Table class="roletable" stripe :columns="columns1" :data="data"></Table>
-                </div>
-            </div>
-        <div id="roleConfig">
-            <div class="content-header">
-                <div class="float-left">
-                    <a class="btnDefault bgBlue" href="javascript:;" onclick="updateRole()">提交</a>
-                    <a class="btnDefault">返回</a>
-                </div>
-            </div>
-            <div class="panel-body">
-                <form id="roleForm2" class="form-container">
-                    <input type="hidden" id="permissionIds" name="permissionIds"/>
-                    <input type="hidden" name="roleId" id="roleId" value="$!role.roleId">
-                    <div class="form_line">
-                        <label class="require red-star">权限方案名称：</label>
-                        <input type="text" name="roleName" value="">
                     </div>
-                    <div class="form_line">
-                        <label class="float-left">权限方案描述：</label>
-                        <textarea name="comment" rows="3"></textarea>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script>
     export default {
+        created:function(){
+        this.request();
+        },
         data:function () {
         return {
+            roleName:'',
             columns1: [
                 {
                     title: '权限方案名称',
@@ -63,7 +49,7 @@
                     align: 'center',
                     render: (h, params) => {
                         return h('div', [
-                            h('button', {
+                            h('a', {
                                 props: {
                                     type: 'primary',
                                     size: 'small'
@@ -77,7 +63,7 @@
                                     }
                                 }
                             }, '权限配置'),
-                            h('button', {
+                            h('a', {
                                 props: {
                                     type: 'error',
                                     size: 'small'
@@ -95,22 +81,22 @@
             data: [
                 {
                     roleName: '管理员',
-                    description: 18,
+                    description: '--',
                     type: '启用'
                 },
                 {
                     roleName: '管理员',
-                    description: 18,
+                    description: '--',
                     type: '启用'
                 },
                 {
                     roleName: '管理员',
-                    description: 18,
+                    description: '--',
                     type: '启用'
                 },
                 {
                     roleName: '管理员',
-                    description: 18,
+                    description: '--',
                     type: '启用'
                 }
             ]
@@ -118,10 +104,6 @@
     },
         methods:{
             show:function (index) {
-                this.$Modal.info({
-                    title: 'User Info',
-                    content: ''
-                })
             },
             remove:function (index) {
                 if(this.data[index].type==="禁用"){
@@ -131,8 +113,11 @@
                 }
             },
             roleConfigshow:function(){
-                $("#newRole").css("display","none");
-                $("#roleConfig").css("display","block");
+                this.$router.push("/addJurisdiction");
+            },
+            request:function(){
+            },
+            checkAllsystemset:function(){
             }
         }
     }

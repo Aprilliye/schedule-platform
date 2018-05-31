@@ -56,7 +56,7 @@
                                     <span>{{info.maxYearOffDuty}}</span>
                                 </li>
                                 <li>
-                                    <a class="btnDefault bgGreen" href="javascript:;" @click="beforeEditShift">编辑班制</a>
+                                    <a class="btnDefault bgGreen btneditshift" href="javascript:;" @click="beforeEditShift">编辑班制</a>
                                 </li>
                             </ul>
                         </div>
