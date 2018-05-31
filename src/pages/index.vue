@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
       <div class="navbar header">
           <Row>
               <Col span="3">

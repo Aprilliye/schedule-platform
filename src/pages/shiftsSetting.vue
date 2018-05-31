@@ -106,7 +106,7 @@
         <Modal title="新增班次"
                v-model="modal.addClass"
                 @on-ok="handleSubmit1('addFormValidateClass')"
-               @on-cancel="handleCancel('formValidate')"
+               @on-cancel="handleCancel('addFormValidateClass')"
                :loading="true"
             >
             <Form ref="addFormValidateClass" :model="addFormValidateClass" :label-width="80">
@@ -135,6 +135,7 @@
                v-model="modal.editShifyClass"
                :loading="true"
                @on-ok="handleSubmit1('formValidate1')"
+               @on-cancel="handleCancel('formValidate1')"
                 >
             <Form ref="formValidate1" :model="formValidate1" :rules="ruleValidate1" :label-width="80">
                 <FormItem label="班次名称" prop="name">
@@ -276,14 +277,12 @@ let echarts = require('echarts');
 export default {
     data:function () {
         return {
-            modal1:false,
             modal3:false,
             modal: {
                 editShift:false,
                 addShift:false,
                 addTimeSlot:false,
                 editTimeSlot:false,
-                addShifyClass:false,
                 editShifyClass:false,
                 addClass:false
             },
@@ -624,7 +623,7 @@ export default {
             this.data2.splice(index, 1);
         },
         edite:function(){
-            this.modal1=true
+            this.modal.editShifyClass=true
         },
         remove1:function (index) {
             this.data1.splice(index, 1);

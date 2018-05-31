@@ -21,6 +21,7 @@ let router = new Router({
 
 export default new Router({
   routes: [
+      
     {
       path: '/login',
       name: 'Login',
@@ -74,8 +75,8 @@ export default new Router({
         },
         {
           path:'/editJurisdiction',
-          name:'EditJurisdiction',
-          component:EditJurisdiction
+          name:' EditJurisdiction',
+          component: EditJurisdiction
         }
       ]
     }
