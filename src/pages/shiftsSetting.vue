@@ -673,7 +673,7 @@ export default {
                 },
                 yAxis: {
                     type: 'value',
-                    splitLine:{show: false},
+                    splitLine:{show: false}
                 },
                 series: [
                     {
@@ -729,7 +729,11 @@ export default {
                     return false;
                 }
             })
+<<<<<<< HEAD
         },
+=======
+        }
+>>>>>>> a4badca386a7c689774da27b0f6bf89af588d840
     }
 }
 </script>
