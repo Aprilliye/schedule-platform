@@ -9,7 +9,7 @@
                    >
                 <p>
                     站区名称
-                    <input id="editUserCode" name="userCode" type="text" >
+                    <input id="editUserCode" name="userCode" type="text" v-model="stationName">
                 </p>
             </Modal>
         </div>
@@ -17,7 +17,7 @@
             北京地铁运三分公司
         </div>
         <div class="list">
-
+            <listBlock v-for="item in arr" :title="item"></listBlock>
         </div>
 
     </div>
@@ -28,12 +28,14 @@
         data:function () {
             return {
                 modal8: false,
-                zhanquName:'西直门'
+                arr: ['西直门'],
+                stationName: ''
             }
         },
         methods:{
             ok:function(){
-                $(".list").html('<listBlock :zhanquName="zhanquName"></listBlock>');
+
+                this.arr.push(this.stationName);
             }
         },
         components:{

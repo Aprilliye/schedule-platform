@@ -1,66 +1,40 @@
 <template>
     <div>
         <!-- 右侧内容 start -->
-        <div class="content-header" style="overflow:visible;">
+        <div class="content-header">
             <div>
-                <a class="btnDefault active float-left" href="#tab1" onclick="zbftn()" data-toggle="tab">周表</a>
-                <a class="btnDefault float-left" href="#tab2" onclick="ybftn()" data-toggle="tab">月表</a>
-                <div class="tab-content ">
-                    <div id="tab1" class="tab-pane active ">
-                        <div class="form_line">
-                            <div class=" timePick float-left">
-                                <label>时间段</label>
-                                <select id="dateSelec" name="dateSelect">
-                                    <option value="一周">一周</option>
-                                    <option value="两周">二周</option>
-                                </select>
-                            </div>
-                            <div class='input-group float-left '>
-                                <DatePicker type="date" placeholder="" style="width: 130px">
-                                </DatePicker>
-                                <span>至</span>
-                            </div>
-
-                            <div class='input-group float-left'>
-                                <DatePicker type="date"  placeholder="" style="width: 130px">
-                                </DatePicker>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+                <a class="btnDefault bgBlue " @click="weektablebutton">周表</a>
+                <a class="btnDefault" @click="monthtablebutton">月表</a>
+                <span class="nonetable">时间段</span>
+                <Select class="nonetable" v-model="model1" style="width:200px">
+                    <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                </Select>
+                <DatePicker class="nonetable" type="date"placeholder="请选择时间" style="width: 200px"></DatePicker>至
+                <DatePicker class="nonetable" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker>
+                <span class="showtable">时间段</span>
+                <DatePicker class="showtable" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker>
             </div>
-            <div class="clear"></div>
-            <div class="">
-                <div class="form_line float-left">
-                    <label>站区</label>
-                    <select name="stationArea" id="stationAreaQuery">
-                        <option value="">请选择</option>
-                        <option value="$!group.groupCode">$!group.groupName</option>
-                    </select>
-                </div>
-                <div class="form_line float-left ">
-                    <label>站点</label>
-                    <select name="station" id="stationQuery">
-                        <option value="">请选择</option>
-                    </select>
-                </div>
-                <div class="form_line  float-left">
-                    <label>站点</label>
-                    <select name="station" id="postName">
-                        <option value="站务员">站务员</option>
-                        <option value="替班员">替班员</option>
-                    </select>
-                </div>
-                <div class="search-input float-left">
-                    <span class="icon-5"></span>
-                    <input type="text" name="queryData" id="queryData" placeholder="姓名/编号">
-                </div>
-                <a class="btnDefault bgBlue queryBtn float-left" onclick="queryBtn()" href="javascript:;">查询</a>
-                <a class="btnDefault float-left" href="javascript:;" onclick="myPrint()">导出</a>
-                <a class="btnDefault float-left" href="javascript:;" onclick="mySinglePrint()">导出个人</a>
+            <div style="margin-top: 20px">
+                <span>站区</span>
+                <Select v-model="model2" style="width:200px">
+                    <Option v-for="item in cityList2" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                </Select>
+                <span>站点</span>
+                <Select v-model="model3" style="width:200px">
+                    <Option v-for="item in cityList3" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                </Select>
+                <span>岗位</span>
+                <Select v-model="model4" style="width:200px">
+                    <Option v-for="item in cityList4" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                </Select>
+                <p class="selectbutton">
+                    <span class="icon-5" ></span>
+                    <input type="text" placeholder="姓名/编号" style="border: 0">
+                </p>
+                <a class="btnDefault bgBlue " >查询</a>
+                <a class="btnDefault">导出</a>
+                <a class="btnDefault">个人</a>
             </div>
-            <div class="clear"></div>
         </div>
         <!-- 右侧内容 end -->
 
@@ -68,7 +42,53 @@
 </template>
 <script>
     export default {
+        data:function () {
+            return {
+                cityList: [
+                    {
+                        value: '1',
+                        label: '一周'
+                    },
+                    {
+                        value: '2',
+                        label: '两周'
+                    }
 
+                ],
+                model1: '1',
+                model2: '',
+                model3: '',
+                model4: '',
+                cityList2: [
+                    {
+                        value: '1',
+                        label: '西直门'
+                    }
+                ],
+                cityList3: [
+                    {
+                        value: '1',
+                        label: '西直门'
+                    }
+                ],
+                 cityList4: [
+                     {
+                         value: '1',
+                         label: '替班员'
+                     }
+                 ]
+            }
+        },
+        methods:{
+            monthtablebutton:function(){
+                $(".nonetable").css("display","none");
+                $(".showtable").css("display","inline-block");
+            },
+            weektablebutton:function(){
+                $(".nonetable").css("display","inline-block");
+                $(".showtable").css("display","none");
+            }
+        }
     }
 </script>
 <style scoped>

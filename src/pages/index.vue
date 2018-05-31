@@ -60,17 +60,26 @@
                               排班表格
                           </MenuItem>
                       </router-link>
-                      <MenuItem name="2-2">
-                          <span class="icon-6"></span>
-                          自动排班
+                      <router-link to="./autoSchedule" >
+                          <MenuItem name="2-2">
+                              <span class="icon-6"></span>
+                              新增排班
+                          </MenuItem>
+                      </router-link>
+                      <MenuItem name="2-3">
+                          <Icon  type="clipboard" class="iconsize"></Icon>
+                          备班排班
                       </MenuItem>
-                      <MenuItem name="2-3">备班排班</MenuItem>
                       <router-link to="./workflow" >
                           <MenuItem name="2-4">
-                              <span class="icon-6"></span>
+                              <Icon type="code-working"class="iconsize"></Icon>
                               工作流程
                           </MenuItem>
                       </router-link>
+                      <MenuItem name="2-5">
+                          <Icon  type="ios-paper" class="iconsize"></Icon>
+                          我的排班
+                      </MenuItem>
                   </Submenu>
                   <Submenu name="3">
                       <template slot="title">
