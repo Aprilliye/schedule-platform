@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <div class="menu">
             <p class="menu-head" style="font-size: 13px"></p>
             <ul class="nav nav-tabs">
@@ -8,7 +8,6 @@
         </div>
         <div class="content">
             <div class="content-header" style="overflow:visible;display: inline-block">
-
                 <div class="form-container">
                     <div id="autoForm"></div>
                     <div class="form_line" id="timepick" style="display: none">
@@ -22,9 +21,9 @@
 
                     </div>
                     <div class="form_line">
-                        <a class="btnDefault bgOrange autoBtn" id="btnLoad" @click="loadtemplate">加载模板</a>
-                        <a class="btnDefault bgBlue autoBtn" id="btnGenerate">建立模板</a>
-                        <a class="btnDefault bgGreen autoBtn" id="btnSave">保存排班</a>
+                        <button class="btnDefault bgOrange autoBtn" id="btnLoad" @click="loadtemplate">加载模板</button>
+                        <button class="btnDefault bgBlue autoBtn" id="btnGenerate">建立模板</button>
+                        <button class="btnDefault bgGreen autoBtn" id="btnSave">保存排班</button>
                     </div>
                     <div class="form_line">
                         <p class="noPlan" style="display: none;"><em>?</em>日平均<span id="dailyAverage" class="blue"></span>小时,
@@ -40,7 +39,7 @@
             <div class="wrapper" style="padding-top:0;">
                 <div class="tab-content">
                     <div class="tab-pane in active" id="tab1">
-                        <div class="schedule">
+                        <div class="schedule postformtable">
                             <table class="scheduleForm" >
                                 <thead>
                                 <tr id="theHead0"></tr>
@@ -87,10 +86,13 @@
                         label: '西直门替班员'
                     }
                 ],
+                globalShiftCounts: {},
+                globalShiftIds: []
             }
         },
         methods:{
             loadtemplate:function(){
+                let self = this;
                 let result={
                     "codes" : {
                         "13" : [ "1B1", "1B2", "1C", "1D", "1E", "1F", "1G", "1H1", "1H2", "1I" ],
@@ -5699,7 +5701,7 @@
                 $("#timepick").show();
                 $("#btnSave").show();
                 var data = result.data;
-                console.log(data)
+                console.log(result)
                 $("#theHead0").empty();
                 var w = parseInt($('.scheduleForm').width()/9)-4;
                 $("#theHead0").append("<th width='"+ w +"'>站务员</th>");
@@ -5725,19 +5727,113 @@
                     $("#" + tdId).css("background-color", "#" + template.shiftColor);
                 }
                 $("td[tLength]").each(function (n) {
-                    calcWeeklyTime(n);
+                    self.calcWeeklyTime(n);
                 });
-                globalShiftCounts=result.shifts;
-                globalShiftIds=result.shiftIds;
+                self.globalShiftCounts=result.shifts;
+                self.globalShiftIds=result.shiftIds;
                 $("#btnLoad").hide();
                 //codes = result.codes;
                 //setCodes();
-                calcAverage();
-                initUserTable(result.users);
-                drawOwners(result.owners);
+                self.calcAverage();
+                self.initUserTable(result.users);
+                result.owners && self.drawOwners(result.owners);
                 $("th[thead]").each(function(n) {
-                    calcDailySchedule(n);
+                    self.calcDailySchedule(n);
                 });
+            },
+            calcWeeklyTime: function (n) {
+                if (n != null && n != undefined) {
+                    var timeTd = $("td[tLength]:eq(" + n + ")");
+                    var works = $(timeTd).closest("tr").find("div[duration]");
+                    var time = 0;
+                    for (var i = 0; i < works.length; i++) {
+                        time += parseInt($(works[i]).attr("duration"));
+                    }
+                    $(timeTd).text(time / 60);
+                    if (time == 0) {
+                        $(timeTd).html("<button class='btnDefault bgOrange autoBtn' name='btnRemoveLine' weekNumber=" + n + ">删除本行</button>")
+                    }
+                }
+            },
+            calcAverage: function () {
+                var times = 0;
+                var length = $("[tdType=-1]").length;
+                $("div[duration]").each(function (n) {
+                    times += parseInt($(this).attr("duration"));
+                });
+                var daily = times / length / 60 / 7;
+                var weekly = daily * 7;
+                var monthly = daily * 30;
+                var yearly = daily * 365;
+                $("#dailyAverage").text(Math.round(daily * 1000) / 1000);
+                $("#weeklyAverage").text(Math.round(weekly * 1000) / 1000);
+                $("#monthlyAverage").text(Math.round(monthly * 1000) / 1000);
+                $("#yearlyAverage").text(Math.round(yearly * 1000) / 1000);
+                $("#minimiumWorkerCount").text(length);
+                $(".noPlan").show();
+            },
+            initUserTable: function (users) {
+                $(".user-table").empty();
+                var rowNum = users.length / 6;
+                {
+                    var tr = $("<tr></tr>");
+                    $(tr).append($("<td userId='-1' userName=''>取消</td>"));
+                    $(".user-table").append(tr);
+                }
+                for (var i = 0; i < rowNum; i++) {
+                    var tr = $("<tr></tr>");
+                    for (var j = 0; j < 6; j++) {
+                        var index = i * 6 + j;
+                        if (index >= users.length) {
+                            continue;
+                        }
+                        var user = users[index];
+                        var td = $("<td></td>");
+                        td.attr("userId", user.userId).attr("userName", user.userName);
+                        td.text(user.userName);
+                        $(tr).append(td);
+                    }
+                    $(".user-table").append(tr);
+                }
+            },
+            drawOwners: function (owners) {
+                for (var i = 0; i < owners.length; i++) {
+                    var userId = owners[i].userId;
+                    var userName = owners[i].userName;
+                    var week = owners[i].weekNumber;
+                    $("[tdType=-1]:eq(" + week + ")").attr("userId", userId).text(userName);
+                    $(".user-table td[userId='" + userId + "']").css("color", "orange");
+                }
+            },
+            calcDailySchedule: function (n) {
+                var header=$("th[thead="+n+"]");
+                var array=$("[tdType="+n+"]>div");
+                var counts={};
+                for(var i=0;i<array.length;i++){
+                    var id=$(array[i]).attr("shiftId")+"";
+                    if(!counts[id]){
+                        counts[id]=0;
+                    }
+                    counts[id]+=1;
+                }
+                var html="";
+                for(var i=0;i<this.globalShiftIds.length;i++){
+                    var index = this.globalShiftIds[i];
+                    var c = counts[index];
+                    var num = this.globalShiftCounts[index].shiftNum;
+                    html += "<span";
+                    if(c!=num){
+                        html+=" style='color:red'";
+                    }else {
+                        html+=" style='color:white'";
+                    }
+                    html += ">";
+                    html += this.globalShiftCounts[index].shiftName;
+                    html += ":";
+                    html += c;
+                    html += "</span><br/>";
+                }
+                $(header).html(html);
             }
         }
     }
