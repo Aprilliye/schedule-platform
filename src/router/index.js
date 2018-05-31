@@ -12,6 +12,7 @@ import PostSetting from '@/pages/postSetting'
 import ShiftsSetting from '@/pages/shiftsSetting'
 import AutoSchedule from '@/pages/autoSchedule'
 import AddJurisdiction from '@/pages/addJurisdiction'
+import EditJurisdiction from '@/pages/editJurisdiction'
 
 Vue.use(Router)
 let router = new Router({
@@ -70,8 +71,12 @@ export default new Router({
           path:'/addJurisdiction',
           name:'AddJurisdiction',
           component:AddJurisdiction
+        },
+        {
+          path:'/editJurisdiction',
+          name:'EditJurisdiction',
+          component:EditJurisdiction
         }
-
       ]
     }
   ]

@@ -228,6 +228,10 @@
     content: "*";
     color: red;
 }
+.checkboxtitle{
+    font-size: 17px;
+    font-weight: 700;
+}
 /*排班表格*/
  .selectbutton {
      display: inline-block;

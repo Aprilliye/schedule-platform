@@ -12,7 +12,9 @@
                                 <span class="icon-5"></span>
                                 <input type="text" placeholder="权限方案名称" name="roleName" v-model="roleName">
                             </div>
-                            <a class="btnDefault bgBlue queryBtn" href="javascript:;" onclick="getTableData()">查询</a>
+                            <a class="btnDefault bgBlue queryBtn float-left" href="javascript:;" @click="getTableData">查询</a>
+                            <div class="clear"></div>
+                            <span style="color: red;margin-left: 80px" v-show="roleNameShow">权限方案名称不能为空</span>
                         </form>
                     </div>
                 </div>
@@ -27,12 +29,10 @@
 </template>
 <script>
     export default {
-        created:function(){
-        this.request();
-        },
         data:function () {
         return {
             roleName:'',
+            roleNameShow:false,
             columns1: [
                 {
                     title: '权限方案名称',
@@ -55,7 +55,8 @@
                                     size: 'small'
                                 },
                                 style: {
-                                    marginRight: '5px'
+                                    marginRight: '5px',
+                                    color:"#0000FF"
                                 },
                                 on: {
                                     click: () => {
@@ -67,6 +68,9 @@
                                 props: {
                                     type: 'error',
                                     size: 'small'
+                                },
+                                style: {
+                                    color:"#0000FF"
                                 },
                                 on: {
                                     click: () => {
@@ -104,6 +108,7 @@
     },
         methods:{
             show:function (index) {
+                this.$router.push("/editJurisdiction")
             },
             remove:function (index) {
                 if(this.data[index].type==="禁用"){
@@ -115,9 +120,13 @@
             roleConfigshow:function(){
                 this.$router.push("/addJurisdiction");
             },
-            request:function(){
-            },
-            checkAllsystemset:function(){
+            getTableData:function(){
+                if(this.roleName){
+                    this.roleNameShow=false;
+                }else{
+                    this.roleNameShow=true;
+                    return false;
+                }
             }
         }
     }
