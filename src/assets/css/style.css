@@ -100,30 +100,38 @@ button {
   width: 100%;
   overflow-x: auto;
 }
-table {
+.table table {
   min-width: 100%;
   box-sizing: border-box;
 }
-table td,
-table th {
-  padding: 5px;
+.table table td,
+.table table th {
   border-bottom: 1px solid #e5e5e5;
 }
-table th {
+.table table th {
   background: #D7E4FF;
   line-height: 40px;
   border: 0 !important;
   text-align: left;
 }
-table td {
+.table table td {
   line-height: 36px;
+}
+table,
+table td,
+table th {
+  border-collapse: collapse;
+}
+table td,
+table th {
+  padding: 5px;
 }
 input,
 select {
   border: 1px solid #e5e5e5;
   border-radius: 4px;
   padding: 5px;
-  height: 36px;
+  height: 30px;
 }
 .form {
   width: 100%;
@@ -187,4 +195,46 @@ select {
 }
 .ivu-table:after {
   background: #fff;
+}
+#echart {
+  width: 1200px;
+  height: 200px;
+  margin-bottom: 20px;
+}
+/* 排班表格 */
+.postformtable table {
+  width: 100%;
+}
+.postformtable table th,
+.postformtable table td {
+  height: 40px;
+  border: 2px solid #fff;
+}
+.postformtable table th {
+  color: #fff;
+  background: #767C85;
+}
+.postformtable table td {
+  background: #DCDEE0;
+}
+.selectbutton .icon-5 {
+  margin-left: 10px;
+}
+.tabItem {
+  display: inline-block;
+  margin-left: 10px;
+}
+/* 模态框 */
+.ivu-modal-confirm-body {
+  margin-top: -20px;
+  padding-top: 20px;
+}
+.ivu-modal-confirm-body .ivu-icon-help-circled {
+  color: #f90;
+  font-size: 26px;
+  margin-left: 15px;
+}
+.ivu-modal-confirm-body p {
+  font-size: 14px;
+  line-height: 24px;
 }

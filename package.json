@@ -13,10 +13,11 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "echarts": "^4.1.0",
     "iview": "^2.14.0-rc.1",
+    "storejs": "^1.0.16",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1",
-    "storejs": "^1.0.16"
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

@@ -9,7 +9,6 @@
         <Tabs value="name1" :animated="false">
             <TabPane label="西直门五班制" name="name1">
                 <div class="panel-body">
-                    <!--不同班制button位置-->
                     <div class="buttonblock"></div>
                     <div class="shifts-content">
                         <!--班制表-->
@@ -59,16 +58,18 @@
                                 </li>
                             </ul>
                         </div>
+                        
                         <!--24小时值班人数表-->
                         <div class="twentyfourform">
+                            <div id="echart" v-show="showEchart"></div>
                             <div class="title">
                                 <b>24小时值班人数表</b>
                                 <div class="btn-group">
                                     <a class="btnDefault bgGreen" @click="modal.addTimeSlot=true">新增时间段</a>
-                                    <a class="btnDefault bgGreen" @click="modal3=true">方案验算</a>
+                                    <a class="btnDefault bgGreen" @click="initEchart">方案验算</a>
                                 </div>
                             </div>
-                            <Table :columns="columns2" :data="data2"></Table>
+                            <Table :columns="onDutyColumns" :data="onDutyData"></Table>
                         </div>
                         <!--班次表-->
                         <div class="banciform">
@@ -78,16 +79,17 @@
                                     <a class="btnDefault bgGreen" @click="modal.addClass=true">新增班次</a>
                                 </div>
                             </div>
-                            <Table :columns="columns1" :data="data1"></Table>
+                            <Table :columns="shiftColumns" :data="shiftData"></Table>
                         </div>
                     </div>
+                    
                 </div>
             </TabPane>
             <TabPane label="标签二" name="name2">标签二的内容</TabPane>
             <TabPane label="标签三" name="name3">标签三的内容</TabPane>
         </Tabs>
         <!--方案验算-->
-        <Modal
+        <!-- <Modal
             v-model="modal3"
             title="方案验算">
             <Form :label-width="90">
@@ -95,11 +97,11 @@
                     <span>45小时</span>
                 </FormItem>
                 <FormItem label="总排班人数" prop="totalPerson" required>
-                    <Input placeholder="请输入排班总人数" width="200"/>
-                    <Button type="primary">开始验算</Button>
+                    <Col span="12"><Input placeholder="请输入排班总人数" width="200"/></Col>
+                    <button class="ivu-btn ivu-btn-primary ivu-btn-large" style="margin-left:10px;">开始验算</button>
                 </FormItem>
             </Form>
-        </Modal>
+        </Modal> -->
         <!-- 新增班次表 -->
         <Modal title="新增班次"
                v-model="modal.addClass"
@@ -270,256 +272,211 @@
     </div>
 </template>
 <script >
-    export default {
-        data:function () {
-            return {
-                modal3:false,
-                modal: {
-                    editShift:false,
-                    addShift:false,
-                    addTimeSlot:false,
-                    editTimeSlot:false,
-                    addShifyClass:false,
-                    editShifyClass:false,
-                    addClass:false
+let echarts = require('echarts');
+export default {
+    data:function () {
+        return {
+            modal1:false,
+            modal3:false,
+            modal: {
+                editShift:false,
+                addShift:false,
+                addTimeSlot:false,
+                editTimeSlot:false,
+                addShifyClass:false,
+                editShifyClass:false,
+                addClass:false
+            },
+            cityList: [
+                {
+                    value: '1',
+                    label: '站务员'
                 },
-                cityList: [
-                    {
-                        value: '1',
-                        label: '站务员'
-                    },
-                    {
-                        value: '2',
-                        label: '站区长'
-                    },
-                    {
-                        value: '3',
-                        label: '替班员'
-                    }
-                ],
-                info: {
-                    name: '西直门替班员',
-                    stationArea: '西直门',
-                    station: '西直门',
-                    minWeekHours: 30,
-                    maxWeekHours: 40,
-                    minWeekOffDuty: 1, 
-                    maxWeekOffDuty: 1, 
-                    maxMonthOffDuty: 180,
-                    maxYearOffDuty: 2000                 
+                {
+                    value: '2',
+                    label: 'London'
+                },
+                {
+                    value: '3',
+                    label: 'Sydney'
+                },
+                {
+                    value: '4',
+                    label: 'Ottawa'
+                },
+                {
+                    value: '5',
+                    label: 'Paris'
+                },
+                {
+                    value: '6',
+                    label: 'Canberra'
+                }
+            ],
+            info: {
+                name: '西直门替班员',
+                stationArea: '西直门',
+                station: '西直门',
+                minWeekHours: 30,
+                maxWeekHours: 40,
+                minWeekOffDuty: 1, 
+                maxWeekOffDuty: 1, 
+                maxMonthOffDuty: 180,
+                maxYearOffDuty: 2000                 
 
-                },
-                modelpost:"",
-                formValidate: {
-                    name: '',
-                    stationArea: '',
-                    station:'',
-                    minWeekHours:'',
-                    maxWeekHours:'',
-                    minWeekOffDuty:'',
-                    maxWeekOffDuty:'',
-                    maxMonthOffDuty:'',
-                    maxYearOffDuty:''
-                },
-                addFormValidate:{
-                    name: '',
-                    stationArea: '',
-                    station:'',
-                    minWeekHours:'',
-                    maxWeekHours:'',
-                    minWeekOffDuty:'',
-                    maxWeekOffDuty:'',
-                    maxMonthOffDuty:'',
-                    maxYearOffDuty:''
-                },
-                addTimeValidate:{
-                    timeSlot: [],
-                    shiftpeople: '2',
-                    ifTimeSlot: false
-                },
-                formValidate1:{
-                    name:'',
-                    starttime:'',
-                    shifttime:'',
-                    shiftspace:'',
-                    shiftrele:'',
-                    shiftpeople:"2"
-                },
-                addFormValidateClass:{
-                    name:'',
-                    starttime:'',
-                    shifttime:'',
-                    shiftspace:'',
-                    shiftrele:'',
-                    shiftpeople:"2"
-                },
-                //    编辑班制弹框
-                ruleValidate: {
-                    name: [
-                        { required: true, message: '班制名称不能为空', trigger: 'blur' }
-                    ],
-                    stationArea: [
-                        { required: true, message: '站区不能为空', trigger: 'change' }
-                    ],
-                    station: [
-                        { required: true, message: '站点不能为空', trigger: 'change' }
-                    ],
-                    minWeekHours: [
-                        { required: true, message: '周工时下限不能为空', trigger: 'blur' }
-                    ],
-                    maxWeekHours: [
-                        { required: true, message: '周工时上限不能为空', trigger: 'blur' }
-                    ],
-                    minWeekOffDuty: [
-                        { required: true, message: '每周最少修班不能为空', trigger: 'blur' }
-                    ],
-                    maxWeekOffDuty: [
-                        { required: true, message: '每周最多休班不能为空', trigger: 'blur' }
-                    ],
-                    maxMonthOffDuty: [
-                        { required: true, message: '月工时上限不能为空', trigger: 'blur' }
-                    ],
-                    maxYearOffDuty: [
-                        { required: true, message: '年工时上限不能为空', trigger: 'blur' }
-                    ]
-                },
-                //    新增时间段弹框
-                ruleAddTimeValidate: {
-                    timeSlot: [
-                        { required: true, type: 'array', min: 1, message: '时间段不能为空', trigger: 'blur' },
-                    ],
-                    shiftpeople: [
-                        { required: true, message: '值班人数不能为空', trigger: 'blur' }
-                    ]
-                },
-                //  新增班次弹框
-                ruleValidate1: {
-                    name: [
-                        { required: true, message: '班次名称不能为空', trigger: 'blur' }
-                    ],
-                    starttime: [
-                        { required: true, message: '起止时间不能为空', trigger: 'blur' }
-                    ],
-                    shifttime: [
-                        { required: true, message: '本班工时不能为空', trigger: 'blur' }
-                    ],
-                    shiftspace: [
-                        { required: true, message: '班次间隔不能为空', trigger: 'blur' }
-                    ],
-                    shiftrele: [
-                        { required: true, message: '班次关联不能为空', trigger: 'blur' }
-                    ],
-                    shiftpeople: [
-                        { required: true, message: '值班人数不能为空', trigger: 'blur' }
-                    ]
-                },
-                data: [
-                    {
-                        name: '西直门替班员',
-                        stion:'西直门',
-                        site:'西直门',
-                        weektime1:'1',
-                        weektime2:'1',
-                        weekdayoff1:'1',
-                        weekdayoff2:'1',
-                        monthtime:'1',
-                        yeartime:'1'
-                    }
+            },
+            modelpost:"",
+            formValidate: {
+                name: '',
+                stationArea: '',
+                station:'',
+                minWeekHours:'',
+                maxWeekHours:'',
+                minWeekOffDuty:'',
+                maxWeekOffDuty:'',
+                maxMonthOffDuty:'',
+                maxYearOffDuty:''
+            },
+            addTimeValidate:{
+                timeSlot: [],
+                shiftpeople: '2',
+                ifTimeSlot: false
+            },
+            formValidate1:{
+                name:'',
+                starttime:'',
+                shifttime:'',
+                shiftspace:'',
+                shiftrele:'',
+                shiftpeople:"2"
+            },
+            addFormValidateClass:{
+                name:'',
+                starttime:'',
+                shifttime:'',
+                shiftspace:'',
+                shiftrele:'',
+                shiftpeople:"2"
+            },
+            addFormValidate:{
+                name: '',
+                stationArea: '',
+                station:'',
+                minWeekHours:'',
+                maxWeekHours:'',
+                minWeekOffDuty:'',
+                maxWeekOffDuty:'',
+                maxMonthOffDuty:'',
+                maxYearOffDuty:''
+            },
+            //  新增班制弹框
+            ruleValidate: {
+                name: [
+                    { required: true, message: '班制名称不能为空', trigger: 'blur' }
                 ],
-                columns1:[
-                       {
-                           title: '班制名称',
-                           align: 'center',
-                           key: 'name'
-                       },
-                       {
-                           title: '起止时间',
-                           align: 'center',
-                           key: 'starttime'
-                       },
-                       {
-                           title: '本班工时',
-                           align: 'center',
-                           key: 'shifttime'
-                       },
-                       {
-                           title: '班次间隔',
-                           align: 'center',
-                           key: 'shiftspace'
-                       },
-                       {
-                           title: '班次关联',
-                           align: 'center',
-                           key: 'shiftrele'
-                       },
-                       {
-                           title: '值班人数',
-                           align: 'center',
-                           key: 'shiftpeople'
-                       },
-                       {
-                           title: '操作',
-                           align: 'center',
-                           key: 'action',
-                           render: (h, params) => {
-                               return h('div', [
-                                   h('a', {
-                                       style: {
-                                           marginRight: '5px'
-                                       },
-                                       on: {
-                                           click: () => {
-                                               this.edite(params.index)
-                                           }
-                                       }
-                                   }, '编辑'),
-                                   h('a', {
-                                       on: {
-                                           click: () => {
-                                               this.remove1(params.index)
-                                           }
-                                       }
-                                   }, '删除')
-                               ]);
-                           }
-                       }
-                   ],
-                data1:[
-                    {
-                    name:"早班",
-                    starttime:"07:00-14:00",
-                    shifttime:"7小时",
-                    shiftspace:"12.0",
-                    shiftrele:"",
-                    shiftpeople:"4"
-                },
-                    {
-                        name:"晚班",
-                        starttime:"14:00-21:00",
-                        shifttime:"7小时",
-                        shiftspace:"12.0",
-                        shiftrele:"",
-                        shiftpeople:"1"
-                    },
-                    {
-                        name:"白班",
-                        starttime:"07:00-17:00",
-                        shifttime:"7小时",
-                        shiftspace:"12.0",
-                        shiftrele:"",
-                        shiftpeople:"1"
-                    },
+                stationArea: [
+                    { required: true, message: '站区不能为空', trigger: 'change' }
                 ],
-                columns2: [
+                station: [
+                    { required: true, message: '站点不能为空', trigger: 'change' }
+                ],
+                minWeekHours: [
+                    { required: true, message: '周工时下限不能为空', trigger: 'blur' }
+                ],
+                maxWeekHours: [
+                    { required: true, message: '周工时上限不能为空', trigger: 'blur' }
+                ],
+                minWeekOffDuty: [
+                    { required: true, message: '每周最少修班不能为空', trigger: 'blur' }
+                ],
+                maxWeekOffDuty: [
+                    { required: true, message: '每周最多休班不能为空', trigger: 'blur' }
+                ],
+                maxMonthOffDuty: [
+                    { required: true, message: '月工时上限不能为空', trigger: 'blur' }
+                ],
+                maxYearOffDuty: [
+                    { required: true, message: '年工时上限不能为空', trigger: 'blur' }
+                ]
+            },
+            //  新增时间段弹框
+            ruleAddTimeValidate: {
+                timeSlot: [
+                    { required: true, type: 'array', min: 1, message: '时间段不能为空', trigger: 'blur' },
+                ],
+                shiftpeople: [
+                    { required: true, message: '值班人数不能为空', trigger: 'blur' }
+                ]
+            },
+            //  新增班次弹框
+            ruleValidate1: {
+                name: [
+                    { required: true, message: '班次名称不能为空', trigger: 'blur' }
+                ],
+                starttime: [
+                    { required: true, message: '起止时间不能为空', trigger: 'blur' }
+                ],
+                shifttime: [
+                    { required: true, message: '本班工时不能为空', trigger: 'blur' }
+                ],
+                shiftspace: [
+                    { required: true, message: '班次间隔不能为空', trigger: 'blur' }
+                ],
+                shiftrele: [
+                    { required: true, message: '班次关联不能为空', trigger: 'blur' }
+                ],
+                shiftpeople: [
+                    { required: true, message: '值班人数不能为空', trigger: 'blur' }
+                ]
+            },
+            data: [
+                {
+                    name: '西直门替班员',
+                    stion:'西直门',
+                    site:'西直门',
+                    weektime1:'1',
+                    weektime2:'1',
+                    weekdayoff1:'1',
+                    weekdayoff2:'1',
+                    monthtime:'1',
+                    yeartime:'1'
+                }
+            ],
+            shiftColumns: [
                     {
-                        title: '时间段',
+                        title: '班制名称',
                         align: 'center',
-                        key: 'timeduan'
+                        key: 'name'
+                    },
+                    {
+                        title: '起止时间',
+                        align: 'center',
+                        key: 'timeSlot'
+                    },
+                    {
+                        title: '本班工时',
+                        align: 'center',
+                        key: 'shiftHours'
+                    },
+                    {
+                        title: '班次间隔',
+                        align: 'center',
+                        key: 'shiftSpace'
+                    },
+                    {
+                        title: '班次关联',
+                        align: 'center',
+                        key: 'shiftRele'
                     },
                     {
                         title: '值班人数',
                         align: 'center',
-                        key: 'shiftpeople'
+                        key: 'shiftPeople'
+                    },
+                    {
+                        title: '每周最多休班',
+                        align: 'center',
+                        key: 'maxWeekdayOff'
                     },
                     {
                         title: '操作',
@@ -529,136 +486,252 @@
                             return h('div', [
                                 h('a', {
                                     style: {
-                                        marginRight: '10px'
+                                        marginRight: '5px'
                                     },
                                     on: {
                                         click: () => {
-                                            this.editpeoplenumber(params.index)
+                                            this.edite(params.index)
                                         }
                                     }
                                 }, '编辑'),
                                 h('a', {
                                     on: {
                                         click: () => {
-                                            this.remove2(params.index)
+                                            this.remove1(params.index)
                                         }
                                     }
                                 }, '删除')
                             ]);
                         }
-
                     }
                 ],
-                data2:[
-                    {
-                    timeduan:"07:00-14:00",
-                    shiftpeople:"4"
+            shiftData:[
+                {name: '早班', timeSlot: '07:00-14:00', shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 4, maxWeekdayOff: '2天'},
+                {name: '晚班', timeSlot: '14:00-21:00', shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1, maxWeekdayOff: '2天'},
+                {name: '白班', timeSlot: '07:00-17:00', shiftTime: '10小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1, maxWeekdayOff: '2天'}
+            ],
+            onDutyColumns: [
+                {
+                    title: '时间段',
+                    align: 'center',
+                    key: 'timeSlot'
                 },
+                {
+                    title: '值班人数',
+                    align: 'center',
+                    key: 'shiftPeople'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    key: 'action',
+                    render: (h, params) => {
+                        return h('div', [
+                            h('a', {
+                                style: {
+                                    marginRight: '10px'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.editpeoplenumber(params.index)
+                                    }
+                                }
+                            }, '编辑'),
+                            h('a', {
+                                on: {
+                                    click: () => {
+                                        this.remove2(params.index)
+                                    }
+                                }
+                            }, '删除')
+                        ]);
+                    }
+
+                }
+            ],
+            onDutyData:[
+                {timeSlot:"00:00-07:00", shiftPeople: 2 },
+                {timeSlot:"07:00-09:00", shiftPeople: 8 },
+                {timeSlot:"09:00-11:00", shiftPeople: 4 },
+                {timeSlot:"11:00-13:00", shiftPeople: 4 },
+                {timeSlot:"13:00-17:00", shiftPeople: 4 },
+                {timeSlot:"17:00-19:00", shiftPeople: 4 },
+                {timeSlot:"19:00-24:00", shiftPeople: 2 },
+            ],
+            showEchart: false
+        }
+    },
+    methods:{
+        chiocepost: function(){
+
+        },
+        editShift: function (name) {
+            this.$refs[name].validate((valid) => {
+                if (valid) {
+                    this.$Message.success('修改成功');
+                } else {
+                    this.$Message.error('修改失败');
+                }
+            })
+        },
+        handleSubmit2: function (name) {
+            let arr = this.addTimeValidate.timeSlot;
+            for(let i=0;i<arr.length;i++){
+                if(arr[i] === ''){
+                    this.addTimeValidate.ifTimeSlot = true;
+                    $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
+                    return;
+                } else {
+                    $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
+                    this.addTimeValidate.ifTimeSlot = false;
+                }
+            }
+            this.$refs[name].validate((valid) => {
+                if (valid) {
+                    this.$Message.success('修改成功');
+                    this.modal.addTimeSlot = false;
+                    
+                } else {
+                    this.$Message.error('修改失败');
+                }
+                this.addTimeValidate.timeSlot = [];
+                this.addTimeValidate.ifTimeSlot = false;
+            })
+        },
+        handleSubmit1: function (name) {
+            this.$refs[name].validate((valid) => {
+                if (valid) {
+                    this.$Message.success('修改成功');
+                } else {
+                    this.$Message.error('修改失败');
+                }
+            })
+        },
+        beforeEditShift: function () {
+            let obj = this.info; 
+            for(let key in obj){
+                this.formValidate[key] = obj[key];
+            }
+            this.modal.editShift = true;
+        },
+        remove:function (index) {
+            this.data1.splice(index, 1);
+        },
+        editpeoplenumber:function(){
+            this.modal.addTimeSlot=true;
+        },
+        remove2:function (index) {
+            this.data2.splice(index, 1);
+        },
+        edite:function(){
+            this.modal1=true
+        },
+        remove1:function (index) {
+            this.data1.splice(index, 1);
+        },
+        del:function(){
+            this.modal3=false;
+        },
+        //  选择时间段
+        selectTime: function (arr) {
+            if(arr[1] === ''){
+                arr = [];
+            }
+            this.addTimeValidate.timeSlot = arr;
+        },
+        handleCancel: function (name) {
+            this.$refs[name].resetFields();
+            this.addTimeValidate.ifTimeSlot = false;
+            $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
+        },
+        //  图表
+        initEchart: function () {
+            let myChart = echarts.init(document.getElementById('echart'));
+            let arr = [];
+            for(let i=1;i<=24;i++){
+                let str = i<10 ? '0'+i+':00' : i+':00'
+                arr.push(str);
+            }
+            // 指定图表的配置项和数据
+            let option = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['值班人数表','班次表']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: arr
+                },
+                yAxis: {
+                    type: 'value',
+                    splitLine:{show: false}
+                },
+                series: [
                     {
-                        timeduan:"14:00-21:00",
-                        shiftpeople:"2"
+                        name:'值班人数表',
+                        type:'line',
+                        data: this.countOnDutyNum(this.onDutyData)
+                    },
+                    {
+                        name: '班次表',
+                        type: 'line',
+                        data: this.countOnDutyNum(this.shiftData)
                     }
                 ]
-            }
+            };
+            // 使用刚指定的配置项和数据显示图表
+            myChart.setOption(option, true);
+            this.showEchart = true;
         },
-        methods:{
-            chiocepost: function(){
-
-            },
-            editShift: function (name) {
-                this.$refs[name].validate((valid) => {
-                    if (valid) {
-                        this.$Message.success('修改成功');
-                    } else {
-                        this.$Message.error('修改失败');
-                    }
-                })
-            },
-            addShift:function(name){
-                this.$refs[name].validate((valid) => {
-                    if (valid) {
-                        this.$Message.success('修改成功');
-                    } else {
-                        this.$Message.error('修改失败');
-                        return false;
-                    }
-                })
-            },
-            handleCancelAdd:function(){
-
-            },
-            handleSubmit2: function (name) {
-                let arr = this.addTimeValidate.timeSlot;
-                for(let i=0;i<arr.length;i++){
-                    if(arr[i] === ''){
-                        this.addTimeValidate.ifTimeSlot = true;
-                        $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
-                        return;
-                    } else {
-                        $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
-                        this.addTimeValidate.ifTimeSlot = false;
-                    }
-                }
-                this.$refs[name].validate((valid) => {
-                    if (valid) {
-                        this.$Message.success('修改成功');
-                        this.modal.addTimeSlot = false;
-                        
-                    } else {
-                        this.$Message.error('修改失败');
-                    }
-                    this.addTimeValidate.timeSlot = [];
-                    this.addTimeValidate.ifTimeSlot = false;
-                })
-            },
-            handleSubmit1: function (name) {
-                this.$refs[name].validate((valid) => {
-                    if (valid) {
-                        this.$Message.success('修改成功');
-                    } else {
-                        this.$Message.error('修改失败');
-                    }
-                })
-            },
-            beforeEditShift: function () {
-                let obj = this.info; 
-                for(let key in obj){
-                    this.formValidate[key] = obj[key];
-                }
-                this.modal.editShift = true;
-            },
-            remove:function (index) {
-                this.data1.splice(index, 1);
-            },
-            editpeoplenumber:function(){
-                this.modal.editTimeSlot=true;
-            },
-            remove2:function (index) {
-                this.data2.splice(index, 1);
-            },
-            edite:function(){
-                this.modal.editShifyClass=true
-            },
-            remove1:function (index) {
-                this.data1.splice(index, 1);
-            },
-            del:function(){
-                this.modal3=false;
-            },
-            //  选择时间段
-            selectTime: function (arr) {
-                if(arr[1] === ''){
-                    arr = [];
-                }
-                this.addTimeValidate.timeSlot = arr;
-            },
-            handleCancel: function (name) {
-                this.$refs[name].resetFields();
-                this.addTimeValidate.ifTimeSlot = false;
-                $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
+        //  计算各时间段值班人数
+        countOnDutyNum: function (array) {
+            let map = new Map();
+            for(var i=1;i<=24;i++){
+                map.set(i, 0);
             }
+            for(let obj of array){
+                let arr = obj.timeSlot.split('-');
+                let n = obj.shiftPeople;
+                if(arr[1]<arr[0]){
+                    for(let i = parseInt(arr[0])+1;i<=24;i++){
+                        map.set(i, map.get(i)+n);
+                    }
+                    for(let i=1;i<=parseInt(arr[1]);i++){
+                        map.set(i, map.get(i)+n);
+                    }
+                } else {
+                    for(let i=parseInt(arr[0])+1;i<=parseInt(arr[1]);i++){
+                        map.set(i, map.get(i)+n);
+                    }
+                }
+            }
+            let arr = [];
+            for(let i=1;i<=24;i++){
+                arr.push(map.get(i));
+            }
+            return arr;
+        },
+        addShift:function(name){
+            this.$refs[name].validate((valid) => {
+                if (valid) {
+                    this.$Message.success('修改成功');
+                } else {
+                    this.$Message.error('修改失败');
+                    return false;
+                }
+            })
         }
     }
+}
 </script>
 <style scoped>
     @import '../assets/css/index.css';
