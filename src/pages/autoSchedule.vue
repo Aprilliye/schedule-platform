@@ -65,14 +65,15 @@
             </div>
         </div>
         <div id="btnChange" style="display:none">
-            <a class="btnDefault bgOrange autoBtn" href="javascript:;">交换</a>
+            <a class="btnDefault bgOrange" href="javascript:;">交换</a>
         </div>
         
         <Modal v-model="showUserModal"
             id="usersModal"
             title="选择站务员" 
             width="600"
-            @on-ok="selectUser">
+            @on-ok="selectUser"
+            @on-cancel="cancel">
             <button type="button" class="btnDefault bgBlue" @click="handleCancel">取消</button>
             <div class="userList">
                 <span v-for="(item,index) in users" :key="index" @click="clickUser" :code="item.userId">{{item.userName}}</span>
@@ -5771,7 +5772,7 @@ let self = null;
                     }
                     $(timeTd).text(time / 60);
                     if (time == 0) {
-                        $(timeTd).html("<button class='btnDefault bgOrange autoBtn' name='btnRemoveLine' weekNumber=" + n + ">删除本行</button>")
+                        $(timeTd).html("<a href='javascript:;' class='deleteItem' name='btnRemoveLine' weekNumber=" + n + ">删除本行</a>")
                     }
                 }
             },
@@ -5864,52 +5865,112 @@ let self = null;
             //  选择站务员
             selectUser: function () {
                 $('.userName[code="'+ this.userId +'"]').html('');
-                $('.td-active').attr('code', this.userId).html(this.userName);
+                $('.userName.td-active').attr('code', this.userId).html(this.userName).removeClass('td-active');
             },
             //  取消站务员
             handleCancel: function () {
-                $('.td-active').html('');
+                $('.userName.td-active').html('').removeClass('td-active');
                 this.showUserModal = false;
+            },
+            //  点击选择站务员模态框取消按钮
+            cancel: function () {
+                $('.userName.td-active').removeClass('td-active');
             }
 
         }
     }
-    $(document).on("click", "td[tdType]", function (e) {
-        var type = $(this).attr("tdType");
-        if(type==-1||type>6){
-            return ;
-        }
-        if ($(this).hasClass("td-active")) {
-            $(this).removeClass("td-active");
-            $("#btnChange").hide();
-        } else {
-            var actived = $(".td-active");
-            if (actived.length > 1) {
-                Alert("不可选中", "选中节点过多");
-                return;
-            } else if (actived.length == 0) {
-                $(this).addClass("td-active");
-            } else {
-                var a = actived[0];
-                $(this).addClass("td-active");
-                $("#btnChange").css({"top":(e.pageY+20)+'px',"left":(e.pageX+30)+'px'}).show().find('a').show();
+    $(function () {
+        //  点击表格交换排班
+        $(document).on("click", "td[tdType]", function (e) {
+            var type = $(this).attr("tdType");
+            if(type==-1 || type>6){
+                return ;
             }
-        }
-    });
-    //  点击站务员表格
-    $(document).on("click", ".userName", function (e) {
-        $('#usersModal').find('.active').removeClass('active');
-        self.showUserModal = true;
-        $(".userName").removeClass("td-active");
-        $(this).addClass("td-active");
-        $(".user-table td").css("color", "green");
-        $("[tdType=-1]").each(function () {
-            var userId = $(this).attr("userId");
-            if (userId.length > 0) {
-                $(".user-table td[userId=" + userId + "]").css("color", "orange");
+            if ($(this).hasClass("td-active")) {
+                $(this).removeClass("td-active");
+                $("#btnChange").hide();
+            } else {
+                var actived = $(".td-active");
+                if (actived.length > 1) {
+                    self.$Message.error("不可选中,选中节点过多");
+                    return;
+                } else if (actived.length == 0) {
+                    $(this).addClass("td-active");
+                } else {
+                    var a = actived[0];
+                    $(this).addClass("td-active");
+                    $("#btnChange").css({"top":(e.pageY-20)+'px',"left":(e.pageX-100)+'px'}).show().find('a').show();
+                }
             }
         });
-    });
+        //  点击站务员表格
+        $(document).on("click", ".userName", function (e) {
+            $('#usersModal').find('.active').removeClass('active');
+            self.showUserModal = true;
+            $(".userName").removeClass("td-active");
+            $(this).addClass("td-active");
+            $(".user-table td").css("color", "green");
+            $("[tdType=-1]").each(function () {
+                var userId = $(this).attr("userId");
+                if (userId.length > 0) {
+                    $(".user-table td[userId=" + userId + "]").css("color", "orange");
+                }
+            });
+        });
+        //  交换排班
+        $(document).on("click", "#btnChange", function () {
+            var actived = $(".td-active");
+            if (actived.length != 2) {
+                self.$Message.error("操作失败，无法定位交换节点");
+                return;
+            }
+            var first = actived[0];
+            var last = actived[1];
+            var type = $(first).attr("tdType");
+            var id1 = first.id;
+            var id2 = last.id;
+            var modelId = $("select").val();
+            var fhtml = $(first).html();
+            var lhtml = $(last).html();
+            $(first).removeClass("td-active");
+            $(last).removeClass("td-active");
+            var fbgcolor = $(first).css("background-color");
+            var lbgcolor = $(last).css("background-color");
+            $(first).html(lhtml);
+            $(last).html(fhtml);
+            $(first).css("background-color", lbgcolor);
+            $(last).css("background-color", fbgcolor);
+            $("#btnChange").hide();
+            $("td[tLength]").each(function (n) {
+                self.calcWeeklyTime(n);
+            });
+            $("th[thead]").each(function(n) {
+                self.calcDailySchedule(n);
+            });
+        });
+        //  删除一行排班
+        $(document).on("click", "[name=btnRemoveLine]", function () {
+            var weekNumber = $(this).attr("weekNumber");
+            var modelId = $("select").val();
+            var line = $(this).closest("tr");
+            $(line).remove();
+            self.calcAverage();
+            // jQuery.ajax({
+            //     type: "get",
+            //     url: "$path/removeWeekTemplate?modelId=" + modelId + "&weekNumber=" + weekNumber,
+            //     data: null,
+            //     dataType: "json",
+            //     error: function (e, c, a) {
+            //         Alert('fail', "网络错误");
+            //     },
+            //     success: function (result) {
+            //         $(line).remove();
+            //         calcAverage();
+            //     }
+            // });
+        });
+    })
+    
 </script>
 <style scoped>
     @import '../assets/css/index.css';

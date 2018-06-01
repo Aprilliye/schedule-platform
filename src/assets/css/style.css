@@ -266,3 +266,16 @@ select {
   border-color: #ff6600;
   color: #ff6600;
 }
+.td-active {
+  background: #f6f6f6 !important;
+}
+#btnChange {
+  position: absolute;
+  z-index: 100;
+}
+.deleteItem {
+  background: red;
+  color: #fff !important;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
