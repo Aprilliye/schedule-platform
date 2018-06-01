@@ -71,6 +71,35 @@ i {
 .borders-0 {
     border-radius: 0;
 }
+/*人员管理*/
+.btnDefault{
+    display: inline-block;
+    min-width: 80px;
+    line-height: 20px;
+    border: 1px solid #e5e5e5 !important;
+    box-sizing: border-box;
+    border-radius: 5px;
+    padding: 5px 10px;
+    text-align: center;
+}
+.bgGreen{
+    background-color: #39B44A;
+    color: #fff !important;
+    border:1px solid #39B44A !important;
+}
+.mansgebutton{
+    margin-top: -3px;
+}
+.bgBlue{
+    background-color: #3A6BCE;
+    color: white !important;
+    border:1px solid #3A6BCE !important;
+}
+.bgOrange{
+    background: #ff6600 !important;
+    color: #fff !important;
+    border-color: #ff6600 !important;
+}
 /* 顶部菜单栏 */
 .header {
     height: 60px;
@@ -286,4 +315,8 @@ section .tab-content .slide-menu a.active span {
     z-index: 9;
     display: none;
 }
-
+.postformtable td{
+    width: 120px;
+    height: 35px;
+    text-align: center;
+}

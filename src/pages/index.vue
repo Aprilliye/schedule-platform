@@ -76,10 +76,12 @@
                                 工作流程
                             </MenuItem>
                         </router-link>
-                        <MenuItem name="2-5">
-                            <Icon  type="ios-paper" class="iconsize"></Icon>
-                            我的排班
-                        </MenuItem>
+                        <router-link to="/mySchedule" >
+                            <MenuItem name="2-5">
+                                <Icon  type="ios-paper" class="iconsize"></Icon>
+                                我的排班
+                            </MenuItem>
+                        </router-link>
                     </Submenu>
                     <Submenu name="3">
                         <template slot="title">

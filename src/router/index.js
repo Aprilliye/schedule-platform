@@ -1,18 +1,19 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import Login from '@/pages/login'
-import Index  from '@/pages/index'
-import Usermanage from '@/pages/user-manage'
-import Grouping from '@/pages/grouping'
-import Role from '@/pages/role'
-import ScheduleAreaForm from '@/pages/scheduleAreaForm'
-import Workflow from '@/pages/workflow'
-import PostSetting from '@/pages/postSetting'
-import ShiftsSetting from '@/pages/shiftsSetting'
-import AutoSchedule from '@/pages/autoSchedule'
-import AddJurisdiction from '@/pages/addJurisdiction'
-import EditJurisdiction from '@/pages/editJurisdiction'
+import Vue from 'vue';
+import Router from 'vue-router';
+import HelloWorld from '@/components/HelloWorld';
+import Login from '@/pages/login';
+import Index  from '@/pages/index';
+import Usermanage from '@/pages/user-manage';
+import Grouping from '@/pages/grouping';
+import Role from '@/pages/role';
+import ScheduleAreaForm from '@/pages/scheduleAreaForm';
+import Workflow from '@/pages/workflow';
+import PostSetting from '@/pages/postSetting';
+import ShiftsSetting from '@/pages/shiftsSetting';
+import AutoSchedule from '@/pages/autoSchedule';
+import AddJurisdiction from '@/pages/addJurisdiction';
+import EditJurisdiction from '@/pages/editJurisdiction';
+import mySchedule from '@/pages/mySchedule';
 
 Vue.use(Router)
 let router = new Router({
@@ -93,6 +94,12 @@ export default new Router({
             path:'/autoSchedule',
             name:'autoSchedule',
             component:AutoSchedule
+        },
+        //  我的排班
+        {
+            path:'/mySchedule',
+            name: 'mySchedule',
+            component: mySchedule
         }
       ]
     }
