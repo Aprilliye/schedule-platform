@@ -28,7 +28,7 @@
                     <li v-for="(item,index) in blockSpanList" :key="index">
                         <span class="blockspan" >{{item}}</span>
                         <a class="icon-1 delete" @click="removeLine"></a>
-                        <a class="icon-4 edit"></a>
+                        <a class="icon-4 edit" @click="editLine"></a>
                     </li>
                 </ul>
             </div>
@@ -276,6 +276,22 @@
                 var target = e.target || e.srcElement;
                 if (target.parentNode.tagName.toLowerCase() == "li") {
                      target.parentNode.remove();
+                }
+            },
+//            编辑站点
+            editLine:function(){
+                var e = e || window.event;
+                var targetBlock = e.target || e.srcElement;
+                var innerText=targetBlock.parentNode.firstChild.innerHTML;
+                var check=$("#n").length;
+                if(check<=0){
+                    targetBlock.parentNode.firstChild.innerHTML ='<input type="text" id="n" value='+innerText+' />';
+                    $("#n").blur(function(){
+                        var value=$("#n").val();
+                        targetBlock.parentNode.firstChild.innerHTML=value;
+                    });
+                }else{
+                    return false
                 }
             },
             //设置管理员
