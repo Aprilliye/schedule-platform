@@ -65,7 +65,96 @@
         <Modal
                title="设置管理员"
                v-model="setUserManager"
+               :loading="true"
+               @on-ok="setUserManagerMethod('setManager')"
+               @on-cancel="cancelSet('setManager')"
                 >
+            <Form ref="setManager" :model="setManager" :rules="ruleValidate" :label-width="110">
+                <FormItem label="员工卡号：" prop="cardNum">
+                    <Input v-model="setManager.cardNum" placeholder=""/>
+                </FormItem>
+                <FormItem label="人员编码：" prop="peopleNum">
+                    <Input v-model="setManager.peopleNum" placeholder=""/>
+                </FormItem>
+                <FormItem label="姓名：" prop="name">
+                    <Input v-model="setManager.name" placeholder=""/>
+                </FormItem>
+                <FormItem label="站区/站点：" prop="stationArea">
+                    <Select v-model="setManager.stationArea" placeholder="请选择">
+                        <Option value="">西直门</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="岗位：" prop="post">
+                    <Select v-model="setManager.post" placeholder="请选择">
+                        <Option value="">站区员</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="管理员：" prop="manager">
+                    <Select v-model="setManager.manager" placeholder="请选择">
+                        <Option value="">是</Option>
+                        <Option value="">否</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="手机号：" prop="phoneNum">
+                    <Input v-model="setManager.phoneNum" placeholder=""/>
+                </FormItem>
+                <FormItem label="性别：" prop="sexuality">
+                    <Select v-model="setManager.sexuality" placeholder="请选择">
+                        <Option value="">男</Option>
+                        <Option value="">女</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="生日：" prop="birthday">
+                    <Input v-model="setManager.birthday" placeholder="例:1990-12-12"/>
+                </FormItem>
+                <FormItem label="身份证：" prop="idCard">
+                    <Input v-model="setManager.idCard" placeholder=""/>
+                </FormItem>
+                <FormItem label="入职时间：" prop="entryTime">
+                    <Input v-model="setManager.entryTime" placeholder="例：1990-12-12"/>
+                </FormItem>
+                <FormItem label="婚否：" prop="maritalStatus">
+                    <Select v-model="setManager.maritalStatus" placeholder="请选择">
+                        <Option value="">已婚</Option>
+                        <Option value="">未婚</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="生育：" prop="birthStatus">
+                    <Select v-model="setManager.birthStatus" placeholder="请选择">
+                        <Option value="">已育</Option>
+                        <Option value="">未育</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="学历：" prop="education">
+                    <Select v-model="setManager.education" placeholder="请选择">
+                        <Option value="">高中以下</Option>
+                        <Option value="">专科</Option>
+                        <Option value="">本科</Option>
+                        <Option value="">硕士</Option>
+                        <Option value="">博士以上</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="政治面貌：" prop="politicalStatus">
+                    <Select v-model="setManager.politicalStatus" placeholder="请选择">
+                        <Option value="">群众</Option>
+                        <Option value="">共青团员</Option>
+                        <Option value="">共产党团</Option>
+                        <Option value="">民主党派</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="入党时间：" prop="enterPartyTime">
+                    <Input v-model="setManager.enterPartyTime" placeholder=""/>
+                </FormItem>
+                <FormItem label="住址：" prop="address">
+                    <Input v-model="setManager.address" placeholder=""/>
+                </FormItem>
+                <FormItem label="证书编号：" prop="certificatesNum">
+                    <Input v-model="setManager.certificatesNum" placeholder=""/>
+                </FormItem>
+                <FormItem label="证书类型：" prop="certificatesType">
+                    <Input v-model="setManager.certificatesType" placeholder=""/>
+                </FormItem>
+            </Form>
         </Modal>
     </div>
 </template>
@@ -78,20 +167,76 @@
                 setUserManager:false,
                 blockSpanList:["西直门"],
                 addStationName:'',
-                stationAreaName:''
+                stationAreaName:'',
+                setManager:{
+                    cardNum:'',
+                    peopleNum:'',
+                    name:'',
+                    stationArea:'',
+                    post:'',
+                    manager:'',
+                    phoneNum:'',
+                    sexuality:'',
+                    birthday:'',
+                    idCard:'',
+                    entryTime:'',
+                    maritalStatus:'',
+                    birthStatus:'',
+                    education:'',
+                    politicalStatus:'',
+                    enterPartyTime:'',
+                    address:'',
+                    certificatesNum:'',
+                    certificatesType:''
+                },
+                ruleValidate:{
+                    name:[{
+                         required:true,message:'姓名不能为空'
+                    }],
+                    post:[{
+                        required:true,message:'岗位不能为空'
+                    }],
+                    phxoneNum:[{
+                        required:true,message:'手机号不能为空'
+                    }],
+                    sexuality:[{
+                        required:true,message:'性别不能为空'
+                    }],
+                    birthday:[{
+                        required:true,message:'生日不能为空'
+                    }],
+                    idCard:[{
+                        required:true,message:'身份证不能为空'
+                    }],
+                    entryTime:[{
+                        required:true,message:'入职时间不能为空'
+                    }],
+                    maritalStatus:[{
+                        required:true,message:'婚否不能为空'
+                    }],
+                    birthStatus:[{
+                        required:true,message:'生育不能为空'
+                    }],
+                    education:[{
+                        required:true,message:'学历不能为空'
+                    }],
+                    politicalStatus:[{
+                        required:true,message:'政治面貌不能为空'
+                    }],
+                    address:[{
+                        required:true,message:'住址不能为空'
+                    }]
+                }
 
             }
         },
         props:['title','name'],
         methods:{
             //删除站区
-            removestation:function(){
+            removestation:function() {
                 var e = e || window.event;
                 var targetBlock = e.target || e.srcElement;
-                console.log(targetBlock.parentNode.parentNode.parentNode.parentNode);
-//                if (target.parentNode.tagName.toLowerCase() == "li") {
-//                   target.parentNode.remove();
-//                }
+                targetBlock.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
             },
             //添加站点
             addStationMethod:function(){
@@ -132,6 +277,20 @@
                 if (target.parentNode.tagName.toLowerCase() == "li") {
                      target.parentNode.remove();
                 }
+            },
+            //设置管理员
+            setUserManagerMethod:function(name){
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        this.$Message.success('修改成功');
+                    } else {
+                        this.$Message.error('修改失败');
+                    }
+                })
+            },
+            //取消设置
+            cancelSet:function(name){
+                this.$refs[name].resetFields();
             }
         }
     }
