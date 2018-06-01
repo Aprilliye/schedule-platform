@@ -14,6 +14,7 @@ import AutoSchedule from '@/pages/autoSchedule';
 import AddJurisdiction from '@/pages/addJurisdiction';
 import EditJurisdiction from '@/pages/editJurisdiction';
 import mySchedule from '@/pages/mySchedule';
+import candidateSchedule from '@/pages/candidateSchedule';
 
 Vue.use(Router)
 let router = new Router({
@@ -100,7 +101,13 @@ export default new Router({
             path:'/mySchedule',
             name: 'mySchedule',
             component: mySchedule
-        }
+        },
+        //  备班排班
+        {
+            path:'/candidateSchedule',
+            name: 'candidateSchedule',
+            component: candidateSchedule
+        },
       ]
     }
   ]

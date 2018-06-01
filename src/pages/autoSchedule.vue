@@ -12,13 +12,12 @@
                     <div id="autoForm"></div>
                     <div class="form_line" id="timepick" style="display: none">
                         <span class="title">选择开始日期</span>
-                <span class='input-group datetimepicker'>
-                    <input type='text' name="startAt" id="startAt" class="form-control"/>
-                    <em class="input-group-addon">
-                        <i class="glyphicon glyphicon-calendar"></i>
-                    </em>
-                </span>
-
+                        <span class='input-group datetimepicker'>
+                            <input type='text' name="startAt" id="startAt" class="form-control"/>
+                            <em class="input-group-addon">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </em>
+                        </span>
                     </div>
                     <div class="form_line">
                         <button class="btnDefault bgOrange autoBtn" id="btnLoad" @click="loadtemplate">加载模板</button>

@@ -66,10 +66,13 @@
                                 新增排班
                             </MenuItem>
                         </router-link>
-                        <MenuItem name="2-3">
-                            <Icon  type="clipboard" class="iconsize"></Icon>
-                            备班排班
-                        </MenuItem>
+                        <router-link :to="{name: 'candidateSchedule'}" >
+                            <MenuItem name="2-3">
+                                <Icon  type="clipboard" class="iconsize"></Icon>
+                                备班排班
+                            </MenuItem>
+                        </router-link>
+                        
                         <router-link to="./workflow" >
                             <MenuItem name="2-4">
                                 <Icon type="code-working" class="iconsize"></Icon>
@@ -82,6 +85,7 @@
                                 我的排班
                             </MenuItem>
                         </router-link>
+                        
                     </Submenu>
                     <Submenu name="3">
                         <template slot="title">
