@@ -1,3 +1,7 @@
+.turnRed{
+    color: red;
+    display: none;
+}
 .bold{
     font-size: large;
     font-weight: 700;
@@ -96,7 +100,7 @@
     overflow: scroll;
 }
 
-/*人员分组*/
+/*站区设置*/
 .bgGreen{
     margin-left: 10px;
 }
@@ -165,6 +169,15 @@
     display: block;
     width: 80px;
     height: 30px
+}
+.addStationLabel{
+    display: inline-block;
+    width: 70px;
+    height:40px;
+    text-align: right;
+}
+.listBlockSpan{
+    margin-left: 10px;
 }
 /*权限管理页面*/
 .search-input {
@@ -258,7 +271,7 @@
     background-color: #aaaaaa !important;
 }
 /*岗位设置*/
-.lableright{
+.labelright{
     margin-left: 17px;
 }
 .settingp{

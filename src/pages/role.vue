@@ -84,22 +84,17 @@
             ],
             data: [
                 {
-                    roleName: '管理员',
+                    roleName: '系统管理员',
                     description: '--',
                     type: '启用'
                 },
                 {
-                    roleName: '管理员',
+                    roleName: '站区管理员',
                     description: '--',
                     type: '启用'
                 },
                 {
-                    roleName: '管理员',
-                    description: '--',
-                    type: '启用'
-                },
-                {
-                    roleName: '管理员',
+                    roleName: '普通用户',
                     description: '--',
                     type: '启用'
                 }

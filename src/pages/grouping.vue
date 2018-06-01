@@ -1,15 +1,19 @@
 <template>
     <div>
         <div class="content-header">
-            <button class=" btnDefault bgGreen" type="button" @click="modal8 = true"><span>新增站区</span></button>
-            <Modal class="usermanage-model"
-                   title="新增站区"
-                   v-model="modal8"
-                   @on-ok="ok"
+            <button class=" btnDefault bgGreen" type="button" @click="addStationArea = true"><span>新增站区</span></button>
+            <Modal
+                    title="新增站区"
+                   v-model="addStationArea"
+                   @on-ok="addStationAreaMethod"
                    >
                 <p>
-                    站区名称
+                    <label class="addStationLabel"> 站区名称：</label>
                     <input id="editUserCode" name="userCode" type="text" v-model="stationName">
+                </p>
+                <p>
+                    <label class="addStationLabel">管理员：</label>
+                    <input id="editUserManager" name="userCode" type="text" v-model="stationAreaName">
                 </p>
             </Modal>
         </div>
@@ -17,9 +21,8 @@
             北京地铁运三分公司
         </div>
         <div class="list">
-            <listBlock v-for="item in arr" :title="item"></listBlock>
+            <listBlock v-for="(item,index) in arr" :key="index" :title="item"></listBlock>
         </div>
-
     </div>
 </template>
 <script>
@@ -27,13 +30,14 @@
     export default {
         data:function () {
             return {
-                modal8: false,
+                addStationArea: false,
                 arr: ['西直门'],
-                stationName: ''
+                stationName: '',
+                stationAreaName:''
             }
         },
         methods:{
-            ok:function(){
+            addStationAreaMethod:function(){
 
                 this.arr.push(this.stationName);
             }
