@@ -21,16 +21,16 @@
                     <th>星期日</th>
                     <th>总工时</th>
                 </tr>
-                <tr v-for="(item, index) in users" :key="index">
+                <tr v-for="item in users" :key="item.userId">
                     <td code="item.userId">{{item.userName}}</td>
-                    <td @click="beforeSelectShift"></td>
-                    <td @click="beforeSelectShift"></td>
-                    <td @click="beforeSelectShift"></td>
-                    <td @click="beforeSelectShift"></td>
-                    <td @click="beforeSelectShift"></td>
-                    <td @click="beforeSelectShift"></td>
-                    <td @click="beforeSelectShift"></td>
-                    <td @click="beforeSelectShift"></td>
+                    <td @click="beforeSelectShift" :key="item.userId+'-1'"></td>
+                    <td @click="beforeSelectShift" :key="item.userId+'-2'"></td>
+                    <td @click="beforeSelectShift" :key="item.userId+'-3'"></td>
+                    <td @click="beforeSelectShift" :key="item.userId+'-4'"></td>
+                    <td @click="beforeSelectShift" :key="item.userId+'-5'"></td>
+                    <td @click="beforeSelectShift" :key="item.userId+'-6'"></td>
+                    <td @click="beforeSelectShift" :key="item.userId+'-7'"></td>
+                    <td></td>
                 </tr>
             </table>
         </div>
@@ -69,9 +69,9 @@ export default {
                     shiftName: '班制二',
                     shiftId: 2,
                     users: [
-                        {userName: '张海军', userId: 0 },
-                        {userName: '王素梅', userId: 1},
-                        {userName: '王磊', userId: 2}
+                        {userName: '张海军', userId: 7 },
+                        {userName: '王素梅', userId: 8},
+                        {userName: '王磊', userId: 9}
                     ],
                 },
             ],
@@ -118,6 +118,7 @@ export default {
         },
         // 点击单元格选择班次
         beforeSelectShift: function (e) {
+            $('.currentTd').removeClass('currentTd');
             $(e.target).addClass('currentTd');
             this.shiftsModal = true;
         },
@@ -129,7 +130,7 @@ export default {
         },
         //  选择班次确定
         selectShift: function () {
-            $('.currentTd').html(this.currentShift.shiftName).attr('code', this.currentShift.shiftId).removeClass('currentTd');    
+            $('.currentTd').html(this.currentShift.shiftName).attr('code', this.currentShift.shiftId);    
             $('.userList').find('.active').removeClass('active');        
         },
     }
