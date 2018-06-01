@@ -250,12 +250,7 @@
 /*排班表格*/
  .selectbutton {
      display: inline-block;
-<<<<<<< HEAD
-    width: 200px;
-    line-height: 36px;
-=======
     line-height: 30px;
->>>>>>> 2c0669b50c4e451e07c4a33238e69fa721a4a64d
     border: 1px solid #e5e5e5;
     border-radius: 4px;
 }
@@ -291,12 +286,9 @@
     border-left: 3px solid #3A6BCE;
     padding: 5px;
 }
-<<<<<<< HEAD
 .alldiv{
     margin-left: 15px;
 }
-=======
->>>>>>> 2c0669b50c4e451e07c4a33238e69fa721a4a64d
 /*自动排班*/
 .iconmark{
     display: inline-block;
@@ -306,15 +298,12 @@
     border-radius: 50%;
     background-color: silver;
 }
-<<<<<<< HEAD
 .antoform td{
     width: 136px;
     height: 42px;
     text-align: center;
     border: 2px solid white;
 }
-=======
->>>>>>> 2c0669b50c4e451e07c4a33238e69fa721a4a64d
 .showBtn{
     display: none;
 }
