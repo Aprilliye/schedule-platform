@@ -69,11 +69,13 @@
         </div>
         
         <Modal v-model="showUserModal"
+            id="usersModal"
             title="选择站务员" 
             width="600"
             @on-ok="selectUser">
+            <button type="button" class="btnDefault bgBlue" @click="handleCancel">取消</button>
             <div class="userList">
-                <span v-for="(item,index) in users" :key="index" @click="clickUser">{{item.userName}}</span>
+                <span v-for="(item,index) in users" :key="index" @click="clickUser" :code="item.userId">{{item.userName}}</span>
             </div>
         </Modal>
     </div>
@@ -102,6 +104,7 @@ let self = null;
                 users: [],
                 showUserModal: false,
                 userName: '',
+                userId: null
             }
         },
         mounted: function () {
@@ -5855,11 +5858,20 @@ let self = null;
             clickUser: function (e) {
                 let obj = $(e.target);
                 this.userName = obj.html();
+                this.userId = obj.attr('code');
                 obj.toggleClass('active').siblings().removeClass('active');
             },
+            //  选择站务员
             selectUser: function () {
-                $('.td-active').html(this.userName);
+                $('.userName[code="'+ this.userId +'"]').html('');
+                $('.td-active').attr('code', this.userId).html(this.userName);
+            },
+            //  取消站务员
+            handleCancel: function () {
+                $('.td-active').html('');
+                this.showUserModal = false;
             }
+
         }
     }
     $(document).on("click", "td[tdType]", function (e) {
@@ -5884,7 +5896,9 @@ let self = null;
             }
         }
     });
+    //  点击站务员表格
     $(document).on("click", ".userName", function (e) {
+        $('#usersModal').find('.active').removeClass('active');
         self.showUserModal = true;
         $(".userName").removeClass("td-active");
         $(this).addClass("td-active");

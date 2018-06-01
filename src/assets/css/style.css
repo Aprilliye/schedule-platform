@@ -245,12 +245,14 @@ select {
   line-height: 24px;
 }
 /* 站务员列表 */
-.userList {
-  padding: 10px;
+#usersModal .btnDefault {
+  margin: 10px;
+}
+#usersModal .userList {
   overflow: hidden;
   clear: both;
 }
-.userList span {
+#usersModal .userList span {
   float: left;
   width: 70px;
   text-align: center;
@@ -260,7 +262,7 @@ select {
   cursor: pointer;
   border-radius: 4px;
 }
-.userList .active {
+#usersModal .userList .active {
   border-color: #ff6600;
   color: #ff6600;
 }
