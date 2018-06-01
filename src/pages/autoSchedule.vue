@@ -38,6 +38,9 @@
             <!-- 表格 start -->
             <div class="wrapper" style="padding-top:0;">
                 <div class="tab-content">
+                    <div class="tab-pane" id="tab2">
+                        <p class="noPlan"><em>?</em>请选择各个岗位的排班方案，并点击右侧的<span class="blue">生成模板</span>按钮</p>
+                    </div>
                     <div class="tab-pane in active" id="tab1">
                         <div class="schedule postformtable">
                             <table class="scheduleForm" >
@@ -49,9 +52,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="tab-pane" id="tab2">
-                        <p class="noPlan"><em>?</em>请选择各个岗位的排班方案，并点击右侧的<span class="blue">生成模板</span>按钮</p>
-                    </div>
+                    
                 </div>
             </div>
             <!-- 表格 end -->
@@ -66,9 +67,19 @@
         <div id="btnChange" style="display:none">
             <a class="btnDefault bgOrange autoBtn" href="javascript:;">交换</a>
         </div>
+        
+        <Modal v-model="showUserModal"
+            title="选择站务员" 
+            width="600"
+            @on-ok="selectUser">
+            <div class="userList">
+                <span v-for="(item,index) in users" :key="index" @click="clickUser">{{item.userName}}</span>
+            </div>
+        </Modal>
     </div>
 </template>
 <script>
+let self = null;
     export default {
         data:function () {
             return {
@@ -87,12 +98,17 @@
                     }
                 ],
                 globalShiftCounts: {},
-                globalShiftIds: []
+                globalShiftIds: [],
+                users: [],
+                showUserModal: false,
+                userName: '',
             }
+        },
+        mounted: function () {
+            self = this;
         },
         methods:{
             loadtemplate:function(){
-                let self = this;
                 let result={
                     "codes" : {
                         "13" : [ "1B1", "1B2", "1C", "1D", "1E", "1F", "1G", "1H1", "1H2", "1I" ],
@@ -5711,7 +5727,7 @@
                 $("#theHead0").append("<th width='"+ w +"'>周工时</th>");
                 $("#theBody").empty();
                 for (var i = 0; i <= result.weeks; i++) {
-                    var node = "<tr  ><td class='userName' tdType='-1' userId='' weekNumber='" + i + "'></td>";
+                    var node = "<tr><td class='userName' tdType='-1' userId='' weekNumber='" + i + "'></td>";
                     for (var j = 0; j < 7; j++) {
                         node += "<td tdType='" + j + "' id='row" + i + "col" + j + "' ></td>";
                     }
@@ -5735,7 +5751,8 @@
                 //codes = result.codes;
                 //setCodes();
                 self.calcAverage();
-                self.initUserTable(result.users);
+                //self.initUserTable(result.users);
+                self.users = result.users;
                 result.owners && self.drawOwners(result.owners);
                 $("th[thead]").each(function(n) {
                     self.calcDailySchedule(n);
@@ -5834,9 +5851,51 @@
                     html += "</span><br/>";
                 }
                 $(header).html(html);
+            },
+            clickUser: function (e) {
+                let obj = $(e.target);
+                this.userName = obj.html();
+                obj.toggleClass('active').siblings().removeClass('active');
+            },
+            selectUser: function () {
+                $('.td-active').html(this.userName);
             }
         }
     }
+    $(document).on("click", "td[tdType]", function (e) {
+        var type = $(this).attr("tdType");
+        if(type==-1||type>6){
+            return ;
+        }
+        if ($(this).hasClass("td-active")) {
+            $(this).removeClass("td-active");
+            $("#btnChange").hide();
+        } else {
+            var actived = $(".td-active");
+            if (actived.length > 1) {
+                Alert("不可选中", "选中节点过多");
+                return;
+            } else if (actived.length == 0) {
+                $(this).addClass("td-active");
+            } else {
+                var a = actived[0];
+                $(this).addClass("td-active");
+                $("#btnChange").css({"top":(e.pageY+20)+'px',"left":(e.pageX+30)+'px'}).show().find('a').show();
+            }
+        }
+    });
+    $(document).on("click", ".userName", function (e) {
+        self.showUserModal = true;
+        $(".userName").removeClass("td-active");
+        $(this).addClass("td-active");
+        $(".user-table td").css("color", "green");
+        $("[tdType=-1]").each(function () {
+            var userId = $(this).attr("userId");
+            if (userId.length > 0) {
+                $(".user-table td[userId=" + userId + "]").css("color", "orange");
+            }
+        });
+    });
 </script>
 <style scoped>
     @import '../assets/css/index.css';

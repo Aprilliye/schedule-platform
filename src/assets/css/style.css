@@ -244,3 +244,23 @@ select {
   font-size: 14px;
   line-height: 24px;
 }
+/* 站务员列表 */
+.userList {
+  padding: 10px;
+  overflow: hidden;
+  clear: both;
+}
+.userList span {
+  float: left;
+  width: 70px;
+  text-align: center;
+  line-height: 30px;
+  margin: 5px 10px;
+  border: 1px solid #e5e5e5;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.userList .active {
+  border-color: #ff6600;
+  color: #ff6600;
+}
