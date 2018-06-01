@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <div class="container">
         <div class="content-block">
             <div class="blockheader">
                 <span class="listBlockSpan changeStationName">
                     {{title}}
                 </span>
                 <span class="listBlockSpan">
-                    <label>管理员：</label>
+                    <label>管理员：{{name}}</label>
                 </span>
                 <div class="rgbutton">
                     <Dropdown>
@@ -82,16 +82,23 @@
 
             }
         },
-        props:['title'],
+        props:['title','name'],
         methods:{
+            //删除站区
             removestation:function(){
-                $(".content-block").css("display","none")
+                var e = e || window.event;
+                var targetBlock = e.target || e.srcElement;
+                console.log(targetBlock.parentNode.parentNode.parentNode.parentNode);
+//                if (target.parentNode.tagName.toLowerCase() == "li") {
+//                   target.parentNode.remove();
+//                }
             },
             //添加站点
             addStationMethod:function(){
                 if(this.addStationName){
                     this.blockSpanList.push(this.addStationName);
                     this.addStationName='';
+                    $(".stationNameRed").css("display","none");
                     this.addStation=false;
                 }else{
                     $(".stationNameRed").css("display","inline-block");
@@ -99,6 +106,7 @@
                 }
 
             },
+            //取消添加
             canselAdd:function(){
                 $(".stationNameRed").css("display","none");
                 this.addStationName='';
@@ -110,20 +118,20 @@
                 if(this.stationAreaName){
                     $(".changeStationName").text(this.stationAreaName);
                     this.stationAreaName='';
+                    $(".stationAreaNameRed").css("display","none");
                     this.renameStation=false;
                 }else{
                     $(".stationAreaNameRed").css("display","inline-block");
                     return false;
                 }
             },
+            //删除站点
             removeLine:function(){
-                var rowIndex;
                 var e = e || window.event;
                 var target = e.target || e.srcElement;
                 if (target.parentNode.tagName.toLowerCase() == "li") {
                      target.parentNode.remove();
                 }
-                console.log( rowIndex);
             }
         }
     }
