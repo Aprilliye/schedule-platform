@@ -86,20 +86,6 @@
     export default {
         data:function () {
             return {
-                cityList: [
-                    {
-                        value: '1',
-                        label: '西直门'
-                    }
-                ],
-                model1: '',
-                model2: '',
-                cityList2: [
-                    {
-                        value: '1',
-                        label: '西直门替班员'
-                    }
-                ],
                 globalShiftCounts: {},
                 globalShiftIds: [],
                 users: [],

@@ -6,11 +6,11 @@
                 <button class="btnDefault" :class="{'bgBlue': !showTabItem }" @click="showTabItem=false">月表</button>
                 <div class="tabItem" v-show="showTabItem">
                     <span>时间段：</span>
-                    <Select v-model="model1" style="width:200px">
-                        <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    <Select v-model="timeQuantum" style="width:200px">
+                        <Option v-for="item in timeQuantumList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                     </Select>
-                    <DatePicker type="date" placeholder="请选择时间" style="width: 200px"></DatePicker> 至 
-                    <DatePicker type="date" placeholder="请选择时间" style="width: 200px"></DatePicker>
+                    <DatePicker :value="beginValue" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker> 至
+                    <DatePicker :value="endValue" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker>
                 </div>
                 <div class="tabItem" v-show="!showTabItem">
                     <span>时间段：</span>
@@ -19,16 +19,16 @@
             </div>
             <div style="margin-top: 20px">
                 <span>站区：</span>
-                <Select v-model="model2" style="width:200px">
-                    <Option v-for="item in cityList2" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                <Select v-model="stationArea" style="width:200px">
+                    <Option v-for="item in stationAreaList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
                 <span>站点：</span>
-                <Select v-model="model3" style="width:200px">
-                    <Option v-for="item in cityList3" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                <Select v-model="station" style="width:200px">
+                    <Option v-for="item in stationList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
                 <span>岗位：</span>
-                <Select v-model="model4" style="width:200px">
-                    <Option v-for="item in cityList4" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                <Select v-model="post" style="width:200px">
+                    <Option v-for="item in postList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
                 <p class="selectbutton">
                     <span class="icon-5" ></span>
@@ -87,11 +87,32 @@
     </div>
 </template>
 <script>
+    //获取当前时间
+    function get(){
+        var newDate;
+        var myDate = new Date();
+        var year = myDate.getFullYear();
+        var month = myDate.getMonth()+1;
+        var date = myDate.getDate();
+        if(month<10){
+            if(date<10){
+                newDate=year+'-0'+month+'-0'+date;
+            }else{
+                newDate=year+'-0'+month+'-'+date;
+            }
+        }else{
+            newDate=year+'-'+month+'-'+date;
+        }
+        return newDate;
+    };
+    var newDate=get();
 export default {
   data: function() {
     return {
-      showTabItem: false,
-      cityList: [
+        beginValue:newDate,
+        endValue:'2017-2-1',
+      showTabItem: true,
+        timeQuantumList: [
         {
           value: "1",
           label: "一周"
@@ -101,23 +122,23 @@ export default {
           label: "两周"
         }
       ],
-      model1: "1",
-      model2: "",
-      model3: "",
-      model4: "",
-      cityList2: [
+        timeQuantum: "1",
+        stationArea: "",
+        station: "",
+        post: "",
+        stationAreaList: [
         {
           value: "1",
           label: "西直门"
         }
       ],
-      cityList3: [
+        stationList: [
         {
           value: "1",
           label: "西直门"
         }
       ],
-      cityList4: [
+        postList: [
         {
           value: "1",
           label: "替班员"
@@ -127,6 +148,7 @@ export default {
   },
   methods: {}
 };
+
 </script>
 <style scoped>
 @import "../assets/css/index.css";

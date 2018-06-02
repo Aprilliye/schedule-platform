@@ -65,67 +65,68 @@
         <Modal
                title="设置管理员"
                v-model="setUserManager"
+               width="800px"
                :loading="true"
                @on-ok="setUserManagerMethod('setManager')"
                @on-cancel="cancelSet('setManager')"
                 >
-            <Form ref="setManager" :model="setManager" :rules="ruleValidate" :label-width="110">
-                <FormItem label="员工卡号：" prop="cardNum">
+            <Form ref="setManager" :model="setManager" :rules="ruleValidate" :label-width="100">
+                <FormItem label="员工卡号：" prop="cardNum" class="setWidth">
                     <Input v-model="setManager.cardNum" placeholder=""/>
                 </FormItem>
-                <FormItem label="人员编码：" prop="peopleNum">
+                <FormItem label="人员编码：" prop="peopleNum" class="setWidth">
                     <Input v-model="setManager.peopleNum" placeholder=""/>
                 </FormItem>
-                <FormItem label="姓名：" prop="name">
+                <FormItem label="姓名：" prop="name" class="setWidth">
                     <Input v-model="setManager.name" placeholder=""/>
                 </FormItem>
-                <FormItem label="站区/站点：" prop="stationArea">
+                <FormItem label="站区/站点：" prop="stationArea" class="setWidth">
                     <Select v-model="setManager.stationArea" placeholder="请选择">
                         <Option value="">西直门</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="岗位：" prop="post">
+                <FormItem label="岗位：" prop="post" class="setWidth">
                     <Select v-model="setManager.post" placeholder="请选择">
                         <Option value="">站区员</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="管理员：" prop="manager">
+                <FormItem label="管理员：" prop="manager" class="setWidth">
                     <Select v-model="setManager.manager" placeholder="请选择">
                         <Option value="">是</Option>
                         <Option value="">否</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="手机号：" prop="phoneNum">
+                <FormItem label="手机号：" prop="phoneNum" class="setWidth">
                     <Input v-model="setManager.phoneNum" placeholder=""/>
                 </FormItem>
-                <FormItem label="性别：" prop="sexuality">
+                <FormItem label="性别：" prop="sexuality" class="setWidth">
                     <Select v-model="setManager.sexuality" placeholder="请选择">
                         <Option value="">男</Option>
                         <Option value="">女</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="生日：" prop="birthday">
+                <FormItem label="生日：" prop="birthday" class="setWidth">
                     <Input v-model="setManager.birthday" placeholder="例:1990-12-12"/>
                 </FormItem>
-                <FormItem label="身份证：" prop="idCard">
+                <FormItem label="身份证：" prop="idCard" class="setWidth">
                     <Input v-model="setManager.idCard" placeholder=""/>
                 </FormItem>
-                <FormItem label="入职时间：" prop="entryTime">
+                <FormItem label="入职时间：" prop="entryTime" class="setWidth">
                     <Input v-model="setManager.entryTime" placeholder="例：1990-12-12"/>
                 </FormItem>
-                <FormItem label="婚否：" prop="maritalStatus">
+                <FormItem label="婚否：" prop="maritalStatus" class="setWidth">
                     <Select v-model="setManager.maritalStatus" placeholder="请选择">
                         <Option value="">已婚</Option>
                         <Option value="">未婚</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="生育：" prop="birthStatus">
+                <FormItem label="生育：" prop="birthStatus" class="setWidth">
                     <Select v-model="setManager.birthStatus" placeholder="请选择">
                         <Option value="">已育</Option>
                         <Option value="">未育</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="学历：" prop="education">
+                <FormItem label="学历：" prop="education" class="setWidth">
                     <Select v-model="setManager.education" placeholder="请选择">
                         <Option value="">高中以下</Option>
                         <Option value="">专科</Option>
@@ -134,7 +135,7 @@
                         <Option value="">博士以上</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="政治面貌：" prop="politicalStatus">
+                <FormItem label="政治面貌：" prop="politicalStatus" class="setWidth">
                     <Select v-model="setManager.politicalStatus" placeholder="请选择">
                         <Option value="">群众</Option>
                         <Option value="">共青团员</Option>
@@ -142,18 +143,19 @@
                         <Option value="">民主党派</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="入党时间：" prop="enterPartyTime">
+                <FormItem label="入党时间：" prop="enterPartyTime" class="setWidth">
                     <Input v-model="setManager.enterPartyTime" placeholder=""/>
                 </FormItem>
-                <FormItem label="住址：" prop="address">
+                <FormItem label="住址：" prop="address" class="setWidth">
                     <Input v-model="setManager.address" placeholder=""/>
                 </FormItem>
-                <FormItem label="证书编号：" prop="certificatesNum">
+                <FormItem label="证书编号：" prop="certificatesNum" class="setWidth">
                     <Input v-model="setManager.certificatesNum" placeholder=""/>
                 </FormItem>
-                <FormItem label="证书类型：" prop="certificatesType">
+                <FormItem label="证书类型：" prop="certificatesType" class="setWidth">
                     <Input v-model="setManager.certificatesType" placeholder=""/>
                 </FormItem>
+                <p class="clear"></p>
             </Form>
         </Modal>
     </div>

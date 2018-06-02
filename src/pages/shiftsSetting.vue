@@ -105,27 +105,28 @@
         <!-- 新增班次表 -->
         <Modal title="新增班次"
                v-model="modal.addClass"
-                @on-ok="handleSubmit1('addFormValidateClass')"
+                @on-ok="handleSubmit('addFormValidateClass')"
                @on-cancel="handleCancel('addFormValidateClass')"
                :loading="true"
             >
-            <Form ref="addFormValidateClass" :model="addFormValidateClass" :label-width="80">
-                <FormItem label="班次名称" prop="name" :rules="{required:true,message:'班次名称不能为空'}">
+            <Form ref="addFormValidateClass" :model="addFormValidateClass" :rules="ruleValidate1" :label-width="80">
+                <FormItem label="班次名称" prop="name">
                     <Input v-model="addFormValidateClass.name" placeholder=""/>
                 </FormItem>
-                <FormItem label="起止时间" prop="starttime" :rules="{required:true,message:'起止时间不能为空'}">
-                    <Input v-model="addFormValidateClass.starttime" placeholder=""/>
+                <FormItem label="起止时间" prop="timeSlot"element-id="timeSlot">
+                    <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"></TimePicker>
+                    <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
-                <FormItem label="本班工时" prop="shifttime" :rules="{required:true,message:'本班工时不能为空'}">
+                <FormItem label="本班工时" prop="shifttime">
                     <Input v-model="addFormValidateClass.shifttime" placeholder=""/>
                 </FormItem>
-                <FormItem label="班次间隔" prop="shiftspace" :rules="{required:true,message:'班次间隔不能为空'}">
+                <FormItem label="班次间隔" prop="shiftspace">
                     <Input v-model="addFormValidateClass.shiftspace" placeholder=""/>
                 </FormItem>
-                <FormItem label="班次关联" prop="shiftrele" :rules="{required:true,message:'班次关联不能为空'}">
+                <FormItem label="班次关联" prop="shiftrele">
                     <Input v-model="addFormValidateClass.shiftrele" placeholder=""/>
                 </FormItem>
-                <FormItem label="值班人数" prop="shiftpeople" :rules="{required:true,message:'值班人数不能为空'}">
+                <FormItem label="值班人数" prop="shiftpeople">
                     <Input v-model="addFormValidateClass.shiftpeople" placeholder=""/>
                 </FormItem>
             </Form>
@@ -134,27 +135,28 @@
         <Modal title="编辑班次"
                v-model="modal.editShifyClass"
                :loading="true"
-               @on-ok="handleSubmit1('formValidate1')"
-               @on-cancel="handleCancel('formValidate1')"
+               @on-ok="handleSubmit('addFormValidateClass')"
+               @on-cancel="handleCancel('addFormValidateClass')"
                 >
-            <Form ref="formValidate1" :model="formValidate1" :rules="ruleValidate1" :label-width="80">
+            <Form ref="addFormValidateClass" :model="addFormValidateClass" :rules="ruleValidate1" :label-width="80">
                 <FormItem label="班次名称" prop="name">
-                    <Input v-model="formValidate1.name" placeholder=""/>
+                    <Input v-model="addFormValidateClass.name" placeholder=""/>
                 </FormItem>
-                <FormItem label="起止时间" prop="starttime">
-                    <Input v-model="formValidate1.starttime" placeholder=""/>
+                <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot">
+                    <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"></TimePicker>
+                    <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
                 <FormItem label="本班工时" prop="shifttime">
-                    <Input v-model="formValidate1.shifttime" placeholder=""/>
+                    <Input v-model="addFormValidateClass.shifttime" placeholder=""/>
                 </FormItem>
                 <FormItem label="班次间隔" prop="shiftspace">
-                    <Input v-model="formValidate1.shiftspace" placeholder=""/>
+                    <Input v-model="addFormValidateClass.shiftspace" placeholder=""/>
                 </FormItem>
                 <FormItem label="班次关联" prop="shiftrele">
-                    <Input v-model="formValidate1.shiftrele" placeholder=""/>
+                    <Input v-model="addFormValidateClass.shiftrele" placeholder=""/>
                 </FormItem>
                 <FormItem label="值班人数" prop="shiftpeople">
-                    <Input v-model="formValidate1.shiftpeople" placeholder=""/>
+                    <Input v-model="addFormValidateClass.shiftpeople" placeholder=""/>
                 </FormItem>
             </Form>
         </Modal>
@@ -170,12 +172,13 @@
                 </FormItem>
                 <FormItem label="站区：" prop="stationArea">
                     <Select v-model="formValidate.stationArea" placeholder="请选择">
-                        <Option value="">西直门</Option>
+                        <Option value="xizhimen">西直门</Option>
+                        <Option value="chegongzhuang">车公庄</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="站点：" prop="station">
                     <Select v-model="formValidate.station" placeholder="请选择">
-                        <Option value="">西直门</Option>
+                        <Option value="xizhimenstation">西直门</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="周工时下限：" prop="minWeekHours">
@@ -210,12 +213,12 @@
                 </FormItem>
                 <FormItem label="站区：" prop="stationArea" :rules="{required:true,message:'站区不能为空'}">
                     <Select v-model="addFormValidate.stationArea" placeholder="请选择">
-                        <Option value="">西直门</Option>
+                        <Option value="xizhimenstation">西直门</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="站点：" prop="station" :rules="{required:true,message:'站点不能为空'}">
                     <Select v-model="addFormValidate.station" placeholder="请选择">
-                        <Option value="">西直门</Option>
+                        <Option value="xizhimen">西直门</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="周工时下限：" prop="minWeekHours" :rules="{required:true,message:'周工时下限不能为空不能为空'}">
@@ -293,23 +296,15 @@ export default {
                 },
                 {
                     value: '2',
-                    label: 'London'
+                    label: '管理员'
                 },
                 {
                     value: '3',
-                    label: 'Sydney'
+                    label: '站务员'
                 },
                 {
                     value: '4',
-                    label: 'Ottawa'
-                },
-                {
-                    value: '5',
-                    label: 'Paris'
-                },
-                {
-                    value: '6',
-                    label: 'Canberra'
+                    label: '值班站长'
                 }
             ],
             info: {
@@ -338,24 +333,17 @@ export default {
             },
             addTimeValidate:{
                 timeSlot: [],
-                shiftpeople: '2',
+                shiftpeople: '',
                 ifTimeSlot: false
             },
-            formValidate1:{
-                name:'',
-                starttime:'',
-                shifttime:'',
-                shiftspace:'',
-                shiftrele:'',
-                shiftpeople:"2"
-            },
             addFormValidateClass:{
+                timeSlot: [],
                 name:'',
-                starttime:'',
                 shifttime:'',
                 shiftspace:'',
                 shiftrele:'',
-                shiftpeople:"2"
+                shiftpeople:"",
+                ifTimeSlot:false
             },
             addFormValidate:{
                 name: '',
@@ -411,9 +399,6 @@ export default {
             ruleValidate1: {
                 name: [
                     { required: true, message: '班次名称不能为空', trigger: 'blur' }
-                ],
-                starttime: [
-                    { required: true, message: '起止时间不能为空', trigger: 'blur' }
                 ],
                 shifttime: [
                     { required: true, message: '本班工时不能为空', trigger: 'blur' }
@@ -568,6 +553,8 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     this.$Message.success('修改成功');
+                    this.$refs[name].resetFields();
+                    this.modal.editShift=false;
                 } else {
                     this.$Message.error('修改失败');
                 }
@@ -589,12 +576,40 @@ export default {
                 if (valid) {
                     this.$Message.success('修改成功');
                     this.modal.addTimeSlot = false;
-                    
+                    this.$refs[name].resetFields();
+
+
                 } else {
                     this.$Message.error('修改失败');
                 }
                 this.addTimeValidate.timeSlot = [];
                 this.addTimeValidate.ifTimeSlot = false;
+            })
+        },
+        handleSubmit:function(name){
+            let arr = this.addFormValidateClass.timeSlot;
+            for(let i=0;i<arr.length;i++){
+                if(arr[i]===''){
+                    this.addFormValidateClass.ifTimeSlot = true;
+                    $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
+                    return;
+                }else{
+                    $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
+                    this.addTimeValidate.ifTimeSlot = false;
+                }
+            }
+            this.$refs[name].validate((valid) => {
+                if (valid) {
+                    this.$Message.success('修改成功');
+                    this.modal.addClass=false
+                    this.modal.editShifyClass=false
+                    this.$refs[name].resetFields();
+
+                } else {
+                    this.$Message.error('修改失败');
+                }
+                this.addFormValidateClass.timeSlot = [];
+                this.addFormValidateClass.ifTimeSlot = false;
             })
         },
         handleSubmit1: function (name) {
@@ -613,20 +628,17 @@ export default {
             }
             this.modal.editShift = true;
         },
-        remove:function (index) {
-            this.data1.splice(index, 1);
-        },
         editpeoplenumber:function(){
             this.modal.addTimeSlot=true;
         },
         remove2:function (index) {
-            this.data2.splice(index, 1);
+            this.onDutyData.splice(index, 1);
         },
         edite:function(){
             this.modal.editShifyClass=true
         },
         remove1:function (index) {
-            this.data1.splice(index, 1);
+            this.shiftData.splice(index, 1);
         },
         del:function(){
             this.modal3=false;
@@ -723,6 +735,8 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     this.$Message.success('修改成功');
+                    this.$refs[name].resetFields();
+                    this.modal.addShift=false;
                 } else {
                     this.$Message.error('修改失败');
                     return false;

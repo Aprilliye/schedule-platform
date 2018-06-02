@@ -118,6 +118,7 @@
             getTableData:function(){
                 if(this.roleName){
                     this.roleNameShow=false;
+                    this.roleName='';
                 }else{
                     this.roleNameShow=true;
                     return false;

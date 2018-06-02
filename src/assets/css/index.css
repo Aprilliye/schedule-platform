@@ -25,6 +25,9 @@
     clear: both;
 }
 /*主页面*/
+.left-div{
+    margin-top:60Px ;
+}
 .dropdown>.btn{
     padding-left: 10px;
     margin-right: 10px;
@@ -156,6 +159,11 @@
 .listBlockSpan{
     margin-left: 10px;
 }
+.setWidth{
+    width: 350px;
+    float: left;
+}
+
 /*权限管理页面*/
 .search-input {
     padding-left: 5px;

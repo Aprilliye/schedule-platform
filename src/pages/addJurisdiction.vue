@@ -9,7 +9,7 @@
         <div class="panel-body">
             <form id="roleForm2" class="form-container">
                 <input type="hidden" id="permissionIds" name="permissionIds"/>
-                <input type="hidden" name="roleId" id="roleId" value="$!role.roleId">
+                <input type="hidden" name="roleId" id="roleId" value="">
                 <div class="form_line">
                     <label class="requireredstar">权限方案名称：</label>
                     <input type="text" name="roleName" v-model="addroleName">
@@ -471,6 +471,8 @@
                         return false;
                     }else{
                         this.updateRolespan=false;
+                        this.addroleName='';
+                        this.addrolecomment='';
                     }
             }
         }

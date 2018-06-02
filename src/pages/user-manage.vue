@@ -22,56 +22,6 @@
                     <CheckboxGroup>
                         <Checkbox  v-for="(item,index) in tableItem" :key="index" :label="item.name" v-model="item.ifShow"></Checkbox>
                     </CheckboxGroup>
-                    <!-- <table id="column-boxes" style="margin:20px auto">
-                        <tr>
-                            <td>身份证</td>
-                            <td>入职时间</td>
-                            <td>婚姻状况</td>
-                            <td>有无子女</td>
-                            <td>学历</td>
-                            <td>政治面貌</td>
-                            <td>入党时间</td>
-                            <td>住址</td>
-                            <td>证书编号</td>
-                            <td>证书类别</td>
-                            <td>人员编码</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <Checkbox v-model="single1" @on-change="checkcheckbox1"></Checkbox>
-                            </td>
-                            <td>
-                                <Checkbox v-model="single2" @on-change="checkcheckbox2"></Checkbox>
-                            </td>
-                            <td>
-                                <Checkbox v-model="single3" @on-change="checkcheckbox3"></Checkbox>
-                            </td>
-                            <td>
-                                <Checkbox v-model="single4" @on-change="checkcheckbox4"></Checkbox>
-                            </td>
-                            <td>
-                                <Checkbox v-model="single5" @on-change="checkcheckbox5"></Checkbox>
-                            </td>
-                            <td>
-                                <Checkbox v-model="single6" @on-change="checkcheckbox6"></Checkbox>
-                            </td>
-                            <td>
-                                <Checkbox v-model="single7" @on-change="checkcheckbox7"></Checkbox>
-                            </td>
-                            <td>
-                                <Checkbox v-model="single8" @on-change="checkcheckbox8"></Checkbox>
-                            </td>
-                            <td>
-                                <Checkbox v-model="single9" @on-change="checkcheckbox9"></Checkbox>
-                            </td>
-                            <td>
-                                <Checkbox v-model="single10" @on-change="checkcheckbox10"></Checkbox>
-                            </td>
-                            <td>
-                                <Checkbox v-model="single11" @on-change="checkcheckbox11"></Checkbox>
-                            </td>
-                        </tr>
-                    </table> -->
                 </div>
                 <div class="table">
                     <table id="userTable">
@@ -105,7 +55,7 @@
                         </thead>
                         <tbody id="userDataTable">
                         <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF" @click="addPersonModalfake = true">修改</a></td>
+                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">删除</a><a style="color: #0000FF" @click="addPersonModalfake = true">修改</a></td>
                             <td>60502868</td>
                             <td>梅松</td>
                             <td>男</td>
@@ -131,7 +81,7 @@
                             <td v-show="tableItem[13].ifShow">站务初级</td>
                         </tr>
                         <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF">修改</a></td>
+                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
                             <td>60506796</td>
                             <td>伊坤</td>
                             <td>男</td>
@@ -157,7 +107,7 @@
                             <td v-show="tableItem[13].ifShow">站务初级</td>
                         </tr>
                         <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF">修改</a></td>
+                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
                             <td>60508808</td>
                             <td>李璇</td>
                             <td>女</td>
@@ -183,7 +133,7 @@
                             <td v-show="tableItem[13].ifShow">站务初级</td>
                         </tr>
                         <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF">修改</a></td>
+                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
                             <td>60507613</td>
                             <td>黄旭</td>
                             <td>男</td>
@@ -209,7 +159,7 @@
                             <td v-show="tableItem[13].ifShow">站务初级</td>
                         </tr>
                         <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF">修改</a></td>
+                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
                             <td>60502986</td>
                             <td>薛婷婷</td>
                             <td>女</td>
@@ -220,7 +170,7 @@
                             <td>西直门</td>
                             <td></td>
                             <td v-show="tableItem[0].ifShow">110224199005073822</td>
-                            <td v-show="tableItem[1].ifShow">1997-1-7</td>
+                            <td v-show="tableItem[1].ifShow">1997-01-07</td>
                             <td v-show="tableItem[2].ifShow">未婚</td>
                             <td v-show="tableItem[3].ifShow">未育</td>
                             <td v-show="tableItem[4].ifShow">大专</td>
@@ -235,7 +185,7 @@
                             <td v-show="tableItem[13].ifShow">站务初级</td>
                         </tr>
                         <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF">删除</a><a style="color: #0000FF">修改</a></td>
+                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
                             <td>60502979</td>
                             <td>王宇</td>
                             <td>男</td>
@@ -246,7 +196,7 @@
                             <td>西直门</td>
                             <td></td>
                             <td v-show="tableItem[0].ifShow">110109198807132528</td>
-                            <td v-show="tableItem[1].ifShow">2008-6-9</td>
+                            <td v-show="tableItem[1].ifShow">2008-06-09</td>
                             <td v-show="tableItem[2].ifShow">未婚</td>
                             <td v-show="tableItem[3].ifShow">未育</td>
                             <td v-show="tableItem[4].ifShow">大专</td>
@@ -289,14 +239,14 @@
                         <label>站区/站点</label>
                         <select name="station" class=" reset-input" v-model="addPerson.station">
                             <option value="">请选择</option>
-                            <option value="$!group.groupCode">$!group.groupName</option>
+                            <option value=""></option>
                         </select>
                     </li>
                     <li class="require">
                         <label class="require">岗位</label>
                         <select name="postName" v-model="addPerson.post">
                             <option value="">请选择</option>
-                            <option value="$!post.postCode">$!post.postName</option>
+                            <option value=""></option>
                         </select>
                     </li>
                     <li>
@@ -315,7 +265,7 @@
                         <label>权限方案</label>
                         <select name="plan" v-model="addPerson.plan">
                             <option value="">请选择</option>
-                            <option value="$!role.roleId">$!role.roleName</option>
+                            <option value=""></option>
                         </select>
                     </li>
                     <li class="require">
@@ -432,22 +382,22 @@
                 <li>
                     <label>站区/站点</label>
                     <select name="station" class=" reset-input" v-model="addPersonfake.station">
-                        <option value="">请选择</option>
+                        <option value="" selected="selected">西直门</option>
                         <option value=""></option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">岗位</label>
                     <select name="postName" v-model="addPersonfake.post">
-                        <option value="">请选择</option>
+                        <option value="" selected="selected">站区长</option>
                         <option value=""></option>
                     </select>
                 </li>
                 <li>
                     <label>管理员</label>
                     <select name="manager" v-model="addPersonfake.manager">
-                        <option value="0" selected="selected">否</option>
-                        <option value="1">是</option>
+                        <option value="0">否</option>
+                        <option value="1" selected="selected">是</option>
                     </select>
                 </li>
                 <li>
@@ -458,14 +408,13 @@
                 <li>
                     <label>权限方案</label>
                     <select name="plan" v-model="addPersonfake.plan">
-                        <option value="">请选择</option>
+                        <option value="">最高权限</option>
                         <option value=""></option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">性别</label>
                     <select name="sex" v-model="addPersonfake.sex">
-                        <option value="">男</option>
                         <option value="男">男</option>
                         <option value="女">女</option>
                     </select>
@@ -475,7 +424,7 @@
                     <input name="phoneNumber" type="text" v-model="addPersonfake.phoneNumber">
                 </li>
                 <li class="require">
-                    <label class="require" id="heightp">生日</label>
+                    <label class="require" id="heightpDay">生日</label>
                     <input name="birthday" type="text" v-model="addPersonfake.birthday">
                 </li>
                 <li class="require">
@@ -483,21 +432,20 @@
                     <input name="idCode" type="text" v-model="addPersonfake.idCode">
                 </li>
                 <li class="require">
-                    <label class="require" id="heightpp">入职时间</label>
+                    <label class="require" id="heightppTime">入职时间</label>
                     <input name="onBoardDate" type="text" placeholder="例2015-03-06" v-model="addPersonfake.onBoardDate">
                 </li>
                 <li class="require">
                     <label class="require">婚否</label>
                     <select name="isMarried" v-model="addPersonfake.isMarried">
                         <option value="">请选择</option>
-                        <option value="已婚">已婚</option>
+                        <option value="已婚" selected = "selected">已婚</option>
                         <option value="未婚">未婚</option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">生育</label>
                     <select name="hasChild" v-model="addPersonfake.hasChild">
-                        <option value="">请选择</option>
                         <option value="已育">已育</option>
                         <option value="未育">未育</option>
                     </select>
@@ -558,10 +506,10 @@
 </template>
 <script>
     export default {
-        data:function () {
+        data: function () {
             return {
                 addPersonModal: false,
-                addPersonModalfake:false,
+                addPersonModalfake: false,
                 tableItem: [
                     {
                         name: '身份证',
@@ -619,7 +567,7 @@
                         name: '综控员证书级别',
                         ifShow: false
                     },
-                ],   
+                ],
                 selectedItmes: [],
                 addPerson: {
                     cardNum: '',
@@ -673,90 +621,16 @@
                     controllerCertificateNum: '5963265595466658',
                     controllerCertificateGrade: '站务初级'
                 }
-                    
+
             }
         },
+        //删除一行
         methods:{
-            handleSelected: function () {
-                console.log(1111)
-                console.log(this.selectedItmes)
-            },
-            checkcheckbox1:function(){
-                if(this.single1){
-                    $(".idcard").css("display","inline-block");
-                }else{
-                   $(".idcard").css("display","none");
-                }
-            },
-            checkcheckbox2:function(){
-                if(this.single2){
-                    $(".entrytime").css("display","inline-block");
-                }else{
-                    $(".entrytime").css("display","none");
-                }
-            },
-            checkcheckbox3:function(){
-                if(this.single3){
-                    $(".marriage").css("display","inline-block");
-                }else{
-                    $(".marriaged").css("display","none");
-                }
-            },
-            checkcheckbox4:function(){
-                if(this.single4){
-                    $(".childhas").css("display","inline-block");
-                }else{
-                    $(".childhas").css("display","none");
-                }
-            },
-            checkcheckbox5:function(){
-                if(this.single5){
-                    $(".education").css("display","inline-block");
-                }else{
-                    $(".education").css("display","none");
-                }
-            },
-            checkcheckbox6:function(){
-                if(this.single6){
-                    $(".political").css("display","inline-block");
-                }else{
-                    $(".political").css("display","none");
-                }
-            },
-            checkcheckbox7:function(){
-                if(this.single7){
-                    $(".partytime").css("display","inline-block");
-                }else{
-                    $(".partytime").css("display","none");
-                }
-            },
-            checkcheckbox8:function(){
-                if(this.single8){
-                    $(".homeaddress").css("display","inline-block");
-                }else{
-                    $(".homeaddress").css("display","none");
-                }
-            },
-            checkcheckbox9:function(){
-                if(this.single9){
-                    $(".certificatenumber").css("display","inline-block");
-                }else{
-                    $(".certificatenumber").css("display","none");
-                }
-            },
-            checkcheckbox10:function(){
-                if(this.single10){
-                    $(".certificategrade").css("display","inline-block");
-                }else{
-                    $(".certificategrade").css("display","none");
-                }
-            },
-            checkcheckbox11:function(){
-                if(this.single11){
-                    $(".crewcode").css("display","inline-block");
-                }else{
-                    $(".crewcode").css("display","none");
-                }
+            removeLine:function(){
+                var e = e || window.event;
+                var target = e.target || e.srcElement;
+                target.parentNode.parentNode.remove();
+                console.log(target);
             }
         }
     }

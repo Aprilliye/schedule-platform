@@ -471,6 +471,8 @@
                     return false;
                 }else{
                     this.updateRolespan=false;
+                    this.addroleName='';
+                    this.addrolecomment='';
                 }
             }
         }
