@@ -51,17 +51,18 @@
             </div>
             <div class="clear"></div>
             <div class="postformtable" v-show="showTable">
+                <!--周表-->
                 <table>
                     <tr>
                         <th rowspan="2">姓名</th>
                         <th rowspan="2">岗位</th>
-                        <th>5.29</th>
-                        <th>5.30</th>
-                        <th>5.31</th>
                         <th>6.1</th>
-                        <th>6.2</th>
+                        <th>6.1</th>
                         <th>6.3</th>
                         <th>6.4</th>
+                        <th>6.5</th>
+                        <th>6.6</th>
+                        <th>6.7</th>
                         <th colspan="3">总计：7天</th>
                     </tr>
                     <tr>
@@ -77,59 +78,90 @@
                         <th>结余</th>
                     </tr>
                     <tr v-for="item in weekdata" :key="item.userId">
-                        <td>{{item.userName}}</td>
-                        <td>{{item.postName}}</td>
-                        <td v-for="(list, index) in item.schedule" :key="'aa'+index">
-                            {{list.name}}
+                        <!--周表人物信息气泡提示-->
+                        <td>
+                        <Poptip trigger="hover" placement="right" width="400">
+                            {{item.userName}}
+                            <div class="showMessage" slot="content">
+                                <table class="messageTable">
+                                    <thead>
+                                    <tr>
+                                        <th>电话</th>
+                                        <th>住址</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{messageData[0].phoneName}}</td>
+                                        <td>{{messageData[0].address}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Poptip>
                         </td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
+                        <td>{{item.postName}}</td>
+                        <!--周表点击事件-->
+                        <td v-for="(list, index) in item.schedule" :key="'aa'+index">
+                        <Poptip trigger="click" placement="bottom" width="60">
+                            <span style="margin: 20px">{{list.name}}</span>
+                            <div class="showAddClick" slot="content">
+                                <table class="addClickTable">
+                                    <tr><td @click="editVocationModal">假期编辑</td></tr>
+                                    <tr><td @click="shiftChangeModal">班次变更</td></tr>
+                                    <tr><td @click="provisionalDispositionModal">临时安排</td></tr>
+                                    <tr><td @click="absenteeismModal">旷工缺勤</td></tr>
+                                    <tr><td @click="overtimeModal">补班加班</td></tr>
+                                    <tr><td @click="substituteModal">替班</td></tr>
+                                    <tr><td @click="transferModal">调离</td></tr>
+                                    <tr><td>撤销</td></tr>
+                                </table>
+                            </div>
+                        </Poptip>
+                        </td>
+                        <td>{{item.planWorkHour}}</td>
+                        <td>{{item.actualWorkHour}}</td>
+                        <td>{{item.balance}}</td>
                     </tr>
-                    <!--<tr><td>许迪萌</td><td>站务员</td><td>3I2</td><td>休</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>-->
-                    <!--<tr><td>郭冬云</td><td>站务员</td><td>5I</td><td>6</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>-->
-                    <!--<tr><td>那孟超</td><td>站务员</td><td>1H1</td><td>5I</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>-->
-                    <!--<tr><td>王伟</td><td>站务员</td><td>2A1</td><td>1G</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>-->
-                    <!--<tr><td>李珊珊</td><td>站务员</td><td>6</td><td>休</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>-->
                 </table>
             </div>
             <div class="postformtable" v-show="!showTabItem">
-              <table>
+                <!--月表-->
+              <table class="monthTable">
                 <tr>
                   <th rowspan="2">姓名</th>
                   <th rowspan="2">岗位</th>
-                  <th>5.1</th>
-                  <th>5.2</th>
-                  <th>5.3</th>
-                  <th>5.4</th>
-                  <th>5.5</th>
-                  <th>5.6</th>
-                  <th>5.7</th>
-                  <th>5.8</th>
-                  <th>5.9</th>
-                  <th>5.10</th>
-                  <th>5.11</th>
-                  <th>5.12</th>
-                  <th>5.13</th>
-                  <th>5.14</th>
-                  <th>5.15</th>
-                  <th>5.16</th>
-                  <th>5.17</th>
-                  <th>5.18</th>
-                  <th>5.19</th>
-                  <th>5.20</th>
-                  <th>5.21</th>
-                  <th>5.22</th>
-                  <th>5.23</th>
-                  <th>5.24</th>
-                  <th>5.25</th>
-                  <th>5.26</th>
-                  <th>5.27</th>
-                  <th>5.28</th>
-                  <th>5.29</th>
-                  <th>5.30</th>
-                  <th>5.31</th>
-                  <th colspan="3">总计：31天</th>
+                  <th>6.1</th>
+                  <th>6.2</th>
+                  <th>6.3</th>
+                  <th>6.4</th>
+                  <th>6.5</th>
+                  <th>6.6</th>
+                  <th>6.7</th>
+                  <th>6.8</th>
+                  <th>6.9</th>
+                  <th>6.10</th>
+                  <th>6.11</th>
+                  <th>6.12</th>
+                  <th>6.13</th>
+                  <th>6.14</th>
+                  <th>6.15</th>
+                  <th>6.16</th>
+                  <th>6.17</th>
+                  <th>6.18</th>
+                  <th>6.19</th>
+                  <th>6.20</th>
+                  <th>6.21</th>
+                  <th>6.22</th>
+                  <th>6.23</th>
+                  <th>6.24</th>
+                  <th>6.25</th>
+                  <th>6.26</th>
+                  <th>6.27</th>
+                  <th>6.28</th>
+                  <th>6.29</th>
+                  <th>6.30</th>
+                  <th colspan="3">总计：30天</th>
                 </tr>
                 <tr>
                   <th>二</th>
@@ -162,16 +194,56 @@
                   <th>一</th>
                   <th>二</th>
                   <th>三</th>
-                  <th>四</th>
                   <th>计划工时</th>
                   <th>实际工时</th>
                   <th>结余</th>
                 </tr>
-                <tr><td>许迪萌</td><td>站务员</td><td>3I2</td><td>休</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td>郭冬云</td><td>站务员</td><td>5I</td><td>6</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td>那孟超</td><td>站务员</td><td>1H1</td><td>5I</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td>王伟</td><td>站务员</td><td>2A1</td><td>1G</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                <tr><td>李珊珊</td><td>站务员</td><td>6</td><td>休</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr v-for="item in monthdata" :key="item.userId">
+                    <td>
+                        <!--月表人物信息气泡提示-->
+                        <Poptip trigger="hover" placement="right" width="400">
+                            {{item.userName}}
+                            <div class="showMessage" slot="content">
+                                <table class="messageTable">
+                                    <thead>
+                                    <tr>
+                                        <th>电话</th>
+                                        <th>住址</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{messageData[0].phoneName}}</td>
+                                        <td>{{messageData[0].address}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Poptip>
+                    </td>
+                    <td>{{item.postName}}</td>
+                    <!--月表点击事件-->
+                    <td v-for="(list, index) in item.schedule" :key="'aa'+index">
+                        <Poptip trigger="click" placement="bottom" width="60">
+                            <span style="margin: 20px">{{list.name}}</span>
+                            <div class="showAddClick" slot="content">
+                                <table class="addClickTable">
+                                    <tr><td @click="editVocationModal">假期编辑</td></tr>
+                                    <tr><td @click="shiftChangeModal">班次变更</td></tr>
+                                    <tr><td @click="provisionalDispositionModal">临时安排</td></tr>
+                                    <tr><td @click="absenteeismModal">旷工缺勤</td></tr>
+                                    <tr><td @click="overtimeModal">补班加班</td></tr>
+                                    <tr><td @click="substituteModal">替班</td></tr>
+                                    <tr><td @click="transferModal">调离</td></tr>
+                                    <tr><td>撤销</td></tr>
+                                </table>
+                            </div>
+                        </Poptip>
+                    </td>
+                    <td>{{item.planWorkHour}}</td>
+                    <td>{{item.actualWorkHour}}</td>
+                    <td>{{item.balance}}</td>
+                </tr>
               </table>
             </div>
         </div>
@@ -442,44 +514,903 @@ export default {
       ],
         weekdata: [
             {
-                userName: 'Lily',
+                userName: '许迪萌',
                 postName: '站务员',
                 userId: 1,
+                planWorkHour:46,
+                actualWorkHour:46,
+                balance:0,
                 schedule: [
                     {
                         date: '6.1',
-                        name: '早班'
+                        name: '6'
                     },
                     {
                         date: '6.2',
-                        name: '早班'
+                        name: '休'
                     },
                     {
                         date: '6.3',
-                        name: '早班'
+                        name: '1I'
                     },
                     {
                         date: '6.4',
-                        name: '早班'
+                        name: '4c'
                     },
                     {
                         date: '6.5',
-                        name: '早班'
+                        name: '5I'
                     },
                     {
                         date: '6.6',
-                        name: '早班'
+                        name: '6'
                     },
                     {
                         date: '6.7',
-                        name: '早班'
+                        name: '休'
+                    },
+                ]
+            },
+            {
+                userName: '郭冬云',
+                postName: '站务员',
+                userId: 2,
+                planWorkHour:38,
+                actualWorkHour:38,
+                balance:0,
+                schedule: [
+                    {
+                        date: '6.1',
+                        name: '1c'
+                    },
+                    {
+                        date: '6.2',
+                        name: '1B2'
+                    },
+                    {
+                        date: '6.3',
+                        name: '3A3'
+                    },
+                    {
+                        date: '6.4',
+                        name: '休'
+                    },
+                    {
+                        date: '6.5',
+                        name: '1H1'
+                    },
+                    {
+                        date: '6.6',
+                        name: '5I'
+                    },
+                    {
+                        date: '6.7',
+                        name: '6'
+                    },
+                ]
+            },
+            {
+                userName:'龚紫腾',
+                postName:'站务员',
+                userId:3,
+                planWorkHour:28,
+                actualWorkHour:28,
+                balance:0,
+                schedule:[
+                    {
+                        date: '6.1',
+                        name: '休'
+                    },
+                    {
+                        date: '6.2',
+                        name: '5D'
+                    },
+                    {
+                        date: '6.3',
+                        name: '6'
+                    },
+                    {
+                        date: '6.4',
+                        name: '休'
+                    },
+                    {
+                        date: '6.5',
+                        name: '2A1'
+                    },
+                    {
+                        date: '6.6',
+                        name: '1G'
+                    },
+                    {
+                        date: '6.7',
+                        name: '休'
+                    },
+                ]
+            },
+            {
+                userName:'那孟超',
+                postName:'站务员',
+                userId:4,
+                planWorkHour:36,
+                actualWorkHour:36,
+                balance:0,
+                schedule:[
+                    {
+                        date: '6.1',
+                        name: '3A1'
+                    },
+                    {
+                        date: '6.2',
+                        name: '3A2'
+                    },
+                    {
+                        date: '6.3',
+                        name: '休'
+                    },
+                    {
+                        date: '6.4',
+                        name: '5A1'
+                    },
+                    {
+                        date: '6.5',
+                        name: '6'
+                    },
+                    {
+                        date: '6.6',
+                        name: '休'
+                    },
+                    {
+                        date: '6.7',
+                        name: '2I1'
+                    },
+                ]
+            },
+            {
+                userName:'王维',
+                postName:'站务员',
+                userId:5,
+                planWorkHour:37,
+                actualWorkHour:37,
+                balance:0,
+                schedule:[
+                    {
+                        date: '6.1',
+                        name: '1D'
+                    },
+                    {
+                        date: '6.2',
+                        name: '4H'
+                    },
+                    {
+                        date: '6.3',
+                        name: '休'
+                    },
+                    {
+                        date: '6.4',
+                        name: '1B1'
+                    },
+                    {
+                        date: '6.5',
+                        name: '休'
+                    },
+                    {
+                        date: '6.6',
+                        name: '2A1'
+                    },
+                    {
+                        date: '6.7',
+                        name: '5B'
                     },
                 ]
             }
+        ],
+        monthdata:[
+            {
+                userName: '许迪萌',
+                postName: '站务员',
+                userId: 1,
+                planWorkHour:165,
+                actualWorkHour:165,
+                balance:0,
+                schedule: [
+                    {
+                        date: '6.1',
+                        name: '6'
+                    },
+                    {
+                        date: '6.2',
+                        name: '休'
+                    },
+                    {
+                        date: '6.3',
+                        name: '1I'
+                    },
+                    {
+                        date: '6.4',
+                        name: '4c'
+                    },
+                    {
+                        date: '6.5',
+                        name: '5I'
+                    },
+                    {
+                        date: '6.6',
+                        name: '6'
+                    },
+                    {
+                        date: '6.7',
+                        name: '休'
+                    },
+                    {
+                        date: '6.8',
+                        name: '1C'
+                    },
+                    {
+                        date: '6.9',
+                        name: '1B2'
+                    },
+                    {
+                        date: '6.10',
+                        name: '3A3'
+                    },
+                    {
+                        date: '6.11',
+                        name: '休'
+                    },
+                    {
+                        date: '6.12',
+                        name: '1H1'
+                    },
+                    {
+                        date: '6.13',
+                        name: '5I'
+                    },
+                    {
+                        date: '6.14',
+                        name: '6'
+                    },
+                    {
+                        date: '6.15',
+                        name: '休'
+                    },
+                    {
+                        date: '6.16',
+                        name: '5D'
+                    },
+                    {
+                        date: '6.17',
+                        name: '6'
+                    },
+                    {
+                        date: '6.18',
+                        name: '休'
+                    },
+                    {
+                        date: '6.19',
+                        name: '2A1'
+                    },
+                    {
+                        date: '6.20',
+                        name: '1G'
+                    },
+                    {
+                        date: '6.21',
+                        name: '休'
+                    },
+                    {
+                        date: '6.22',
+                        name: '3A1'
+                    },
+                    {
+                        date: '6.23',
+                        name: '3A2'
+                    },
+                    {
+                        date: '6.24',
+                        name: '休'
+                    },
+                    {
+                        date: '6.25',
+                        name: '5A1'
+                    },
+                    {
+                        date: '6.26',
+                        name: '6'
+                    },
+                    {
+                        date: '6.27',
+                        name: '休'
+                    },
+                    {
+                        date: '6.28',
+                        name: '2I1'
+                    },
+                    {
+                        date: '6.29',
+                        name: '1D'
+                    },
+                    {
+                        date: '6.30',
+                        name: '4H'
+                    },
+                ]
+            },
+            {
+                userName: '郭冬云',
+                postName: '站务员',
+                userId: 2,
+                planWorkHour:158,
+                actualWorkHour:158,
+                balance:0,
+                schedule: [
+                    {
+                        date: '6.1',
+                        name: '1c'
+                    },
+                    {
+                        date: '6.2',
+                        name: '1B2'
+                    },
+                    {
+                        date: '6.3',
+                        name: '3A3'
+                    },
+                    {
+                        date: '6.4',
+                        name: '休'
+                    },
+                    {
+                        date: '6.5',
+                        name: '1H1'
+                    },
+                    {
+                        date: '6.6',
+                        name: '5I'
+                    },
+                    {
+                        date: '6.7',
+                        name: '6'
+                    },
+                    {
+                        date: '6.8',
+                        name: '1C'
+                    },
+                    {
+                        date: '6.9',
+                        name: '休'
+                    },
+                    {
+                        date: '6.10',
+                        name: '5D'
+                    },
+                    {
+                        date: '6.11',
+                        name: '6'
+                    },
+                    {
+                        date: '6.12',
+                        name: '休'
+                    },
+                    {
+                        date: '6.13',
+                        name: '2A1'
+                    },
+                    {
+                        date: '6.14',
+                        name: '1G'
+                    },
+                    {
+                        date: '6.15',
+                        name: '休'
+                    },
+                    {
+                        date: '6.16',
+                        name: '3A1'
+                    },
+                    {
+                        date: '6.17',
+                        name: '3A2'
+                    },
+                    {
+                        date: '6.18',
+                        name: '休'
+                    },
+                    {
+                        date: '6.19',
+                        name: '5A1'
+                    },
+                    {
+                        date: '6.20',
+                        name: '6'
+                    },
+                    {
+                        date: '6.21',
+                        name: '休'
+                    },
+                    {
+                        date: '6.22',
+                        name: '2I1'
+                    },
+                    {
+                        date: '6.23',
+                        name: '1D'
+                    },
+                    {
+                        date: '6.24',
+                        name: '4H'
+                    },
+                    {
+                        date: '6.25',
+                        name: '休'
+                    },
+                    {
+                        date: '6.26',
+                        name: '1B1'
+                    },
+                    {
+                        date: '6.27',
+                        name: '休'
+                    },
+                    {
+                        date: '6.28',
+                        name: '2A1'
+                    },
+                    {
+                        date: '6.29',
+                        name: '5B'
+                    },
+                    {
+                        date: '6.30',
+                        name: '6'
+                    }
+                ]
+            },
+            {
+                userName:'龚紫腾',
+                postName:'站务员',
+                userId:3,
+                planWorkHour:148,
+                actualWorkHour:148,
+                balance:0,
+                schedule:[
+                    {
+                        date: '6.1',
+                        name: '休'
+                    },
+                    {
+                        date: '6.2',
+                        name: '5D'
+                    },
+                    {
+                        date: '6.3',
+                        name: '6'
+                    },
+                    {
+                        date: '6.4',
+                        name: '休'
+                    },
+                    {
+                        date: '6.5',
+                        name: '2A1'
+                    },
+                    {
+                        date: '6.6',
+                        name: '1G'
+                    },
+                    {
+                        date: '6.7',
+                        name: '休'
+                    },
+                    {
+                        date: '6.8',
+                        name: '1D'
+                    },
+                    {
+                        date: '6.9',
+                        name: '4H'
+                    },
+                    {
+                        date: '6.10',
+                        name: '休'
+                    },
+                    {
+                        date: '6.11',
+                        name: '1B1'
+                    },
+                    {
+                        date: '6.12',
+                        name: '休'
+                    },
+                    {
+                        date: '6.13',
+                        name: '2A1'
+                    },
+                    {
+                        date: '6.14',
+                        name: '5B'
+                    },
+                    {
+                        date: '6.15',
+                        name: '6'
+                    },
+                    {
+                        date: '6.16',
+                        name: '休'
+                    },
+                    {
+                        date: '6.17',
+                        name: '5I'
+                    },
+                    {
+                        date: '6.18',
+                        name: '6'
+                    },
+                    {
+                        date: '6.19',
+                        name: '休'
+                    },
+                    {
+                        date: '6.20',
+                        name: '1H2'
+                    },
+                    {
+                        date: '6.21',
+                        name: '1B2'
+                    },
+                    {
+                        date: '6.22',
+                        name: '3A2'
+                    },
+                    {
+                        date: '6.23',
+                        name: '休'
+                    },
+                    {
+                        date: '6.24',
+                        name: '4H'
+                    },
+                    {
+                        date: '6.25',
+                        name: '休'
+                    },
+                    {
+                        date: '6.26',
+                        name: '1B1'
+                    },
+                    {
+                        date: '6.27',
+                        name: '休'
+                    },
+                    {
+                        date: '6.28',
+                        name: '2A1'
+                    },
+                    {
+                        date: '6.29',
+                        name: '5B'
+                    },
+                    {
+                        date: '6.30',
+                        name: '6'
+                    }
+                ]
+            },
+            {
+                userName:'那孟超',
+                postName:'站务员',
+                userId:4,
+                planWorkHour:164,
+                actualWorkHour:164,
+                balance:0,
+                schedule:[
+                    {
+                        date: '6.1',
+                        name: '3A1'
+                    },
+                    {
+                        date: '6.2',
+                        name: '3A2'
+                    },
+                    {
+                        date: '6.3',
+                        name: '休'
+                    },
+                    {
+                        date: '6.4',
+                        name: '5A1'
+                    },
+                    {
+                        date: '6.5',
+                        name: '6'
+                    },
+                    {
+                        date: '6.6',
+                        name: '休'
+                    },
+                    {
+                        date: '6.7',
+                        name: '2I1'
+                    },
+                    {
+                        date: '6.8',
+                        name: '6'
+                    },
+                    {
+                        date: '6.9',
+                        name: '休'
+                    },
+                    {
+                        date: '6.10',
+                        name: '5I'
+                    },
+                    {
+                        date: '6.11',
+                        name: '6'
+                    },
+                    {
+                        date: '6.12',
+                        name: '休'
+                    },
+                    {
+                        date: '6.13',
+                        name: '1H2'
+                    },
+                    {
+                        date: '6.14',
+                        name: '1B2'
+                    },
+                    {
+                        date: '6.15',
+                        name: '3A2'
+                    },
+                    {
+                        date: '6.16',
+                        name: '休'
+                    },
+                    {
+                        date: '6.17',
+                        name: '1G'
+                    },
+                    {
+                        date: '6.18',
+                        name: '2I1'
+                    },
+                    {
+                        date: '6.19',
+                        name: '5F'
+                    },
+                    {
+                        date: '6.20',
+                        name: '6'
+                    },
+                    {
+                        date: '6.21',
+                        name: '休'
+                    },
+                    {
+                        date: '6.22',
+                        name: '2A2'
+                    },
+                    {
+                        date: '6.23',
+                        name: '1H2'
+                    },
+                    {
+                        date: '6.24',
+                        name: '4B'
+                    },
+                    {
+                        date: '6.25',
+                        name: '3I1'
+                    },
+                    {
+                        date: '6.26',
+                        name: '休'
+                    },
+                    {
+                        date: '6.27',
+                        name: '2A2'
+                    },
+                    {
+                        date: '6.28',
+                        name: '休'
+                    },
+                    {
+                        date: '6.29',
+                        name: '5G'
+                    },
+                    {
+                        date: '6.30',
+                        name: '6'
+                    }
+                ]
+            },
+            {
+                userName:'王维',
+                postName:'站务员',
+                planWorkHour:164,
+                actualWorkHour:164,
+                balance:0,
+                userId:5,
+                schedule:[
+                    {
+                        date: '6.1',
+                        name: '1D'
+                    },
+                    {
+                        date: '6.2',
+                        name: '4H'
+                    },
+                    {
+                        date: '6.3',
+                        name: '休'
+                    },
+                    {
+                        date: '6.4',
+                        name: '1B1'
+                    },
+                    {
+                        date: '6.5',
+                        name: '休'
+                    },
+                    {
+                        date: '6.6',
+                        name: '2A1'
+                    },
+                    {
+                        date: '6.7',
+                        name: '5B'
+                    },
+                    {
+                        date: '6.8',
+                        name: '3A2'
+                    },
+                    {
+                        date: '6.9',
+                        name: '休'
+                    },
+                    {
+                        date: '6.10',
+                        name: '1G'
+                    },
+                    {
+                        date: '6.11',
+                        name: '2I1'
+                    },
+                    {
+                        date: '6.12',
+                        name: '5F'
+                    },
+                    {
+                        date: '6.13',
+                        name: '6'
+                    },
+                    {
+                        date: '6.14',
+                        name: '休'
+                    },
+                    {
+                        date: '6.15',
+                        name: '2A2'
+                    },
+                    {
+                        date: '6.16',
+                        name: '1H2'
+                    },
+                    {
+                        date: '6.17',
+                        name: '4B'
+                    },
+                    {
+                        date: '6.18',
+                        name: '3I1'
+                    },
+                    {
+                        date: '6.19',
+                        name: '休'
+                    },
+                    {
+                        date: '6.20',
+                        name: '2A2'
+                    },
+                    {
+                        date: '6.21',
+                        name: '休'
+                    },
+                    {
+                        date: '6.22',
+                        name: '5G'
+                    },
+                    {
+                        date: '6.23',
+                        name: '6'
+                    },
+                    {
+                        date: '6.24',
+                        name: '2A1'
+                    },
+                    {
+                        date: '6.25',
+                        name: '休'
+                    },
+                    {
+                        date: '6.26',
+                        name: '1B2'
+                    },
+                    {
+                        date: '6.27',
+                        name: '5A2'
+                    },
+                    {
+                        date: '6.28',
+                        name: '6'
+                    },
+                    {
+                        date: '6.29',
+                        name: '休'
+                    },
+                    {
+                        date: '6.30',
+                        name: '5A1'
+                    },
+                ]
+            }
+        ],
+        messageData:[
+            {
+                phoneName:"13683618528",
+                address:'北京市石景山区古城南路19号楼'
+            },
+            {
+                phoneName:"13785663247",
+                address:'北京市丰台区花乡羊坊花园西院1-5-404'
+            },
+            {
+                phoneName:"13051679861",
+                address:'北京市丰台区青塔蔚园10号楼101'
+            },
+            {
+                phoneName:"13811914821",
+                address:'北京市西城区寿长街2号'
+            },
+            {
+                phoneName:"13581550834",
+                address:'北京市门头沟区王平镇东王平村55-4'
+            },
         ]
     };
   },
-  methods: {}
+  methods: {
+      //模态框出现去掉气泡提示框
+      editVocationModal:function(){
+          $(".ivu-poptip-popper").css("display","none");
+          this.modal.editVocation=true;
+      },
+      shiftChangeModal:function(){
+          $(".ivu-poptip-popper").css("display","none");
+          this.modal.shiftChange=true;
+      },
+      provisionalDispositionModal:function(){
+          $(".ivu-poptip-popper").css("display","none");
+          this.modal.provisionalDisposition=true;
+      },
+      absenteeismModal:function(){
+          $(".ivu-poptip-popper").css("display","none");
+          this.modal.absenteeism=true;
+      },
+      overtimeModal:function(){
+          $(".ivu-poptip-popper").css("display","none");
+          this.modal. overtime=true;
+      },
+      substituteModal:function(){
+          $(".ivu-poptip-popper").css("display","none");
+          this.modal.substitute=true;
+      },
+      transferModal:function(){
+          $(".ivu-poptip-popper").css("display","none");
+          this.modal.transfer=true;
+      }
+  }
 };
 //获取当前时间
 var myDate = new Date();
