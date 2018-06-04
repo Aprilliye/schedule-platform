@@ -104,7 +104,12 @@
                         <!--周表点击事件-->
                         <td v-for="(list, index) in item.schedule" :key="'aa'+index">
                         <Poptip trigger="click" placement="bottom" width="60">
+                            <Poptip trigger="hover" placement="top" width="60">
                             <span style="margin: 20px">{{list.name}}</span>
+                                <div class="showDetail" slot="content">
+                                    <p> </p>
+                                </div>
+                            </Poptip>
                             <div class="showAddClick" slot="content">
                                 <table class="addClickTable">
                                     <tr><td @click="editVocationModal">假期编辑</td></tr>
@@ -223,9 +228,11 @@
                     </td>
                     <td>{{item.postName}}</td>
                     <!--月表点击事件-->
-                    <td v-for="(list, index) in item.schedule" :key="'aa'+index">
+                    <td v-for="(list, index) in item.schedule" :key="'bb'+index">
                         <Poptip trigger="click" placement="bottom" width="60">
+                            <Poptip trigger="hover" title="Title" content="content">
                             <span style="margin: 20px">{{list.name}}</span>
+                            </Poptip>
                             <div class="showAddClick" slot="content">
                                 <table class="addClickTable">
                                     <tr><td @click="editVocationModal">假期编辑</td></tr>
@@ -251,7 +258,7 @@
         <Modal
                 v-model="modal.editVocation"
                 title="假期编辑"
-                @on-ok=""
+                @on-ok="editVocationMethod"
                 @on-cancel="">
             <Form :model="editVocationForm" :label-width="80">
                 <FormItem label="假期类型">
@@ -275,11 +282,11 @@
                     </Select>
                 </FormItem>
                 <FormItem label="假期时间">
-                    <DatePicker type="date" placeholder="" style="width: 190px"></DatePicker>至
-                    <DatePicker type="date" placeholder="" style="width: 190px" class="float-right"></DatePicker>
+                    <DatePicker v-model="editVocationForm.begin" type="date" placeholder="" style="width: 190px"></DatePicker>至
+                    <DatePicker v-model="editVocationForm.finish" type="date" placeholder="" style="width: 190px" class="float-right"></DatePicker>
                 </FormItem>
                 <FormItem label="备注">
-                    <textarea name="remark" class="vocationRemark"></textarea>
+                    <textarea v-model="editVocationForm.textarea" name="remark" class="vocationRemark"></textarea>
                 </FormItem>
             </Form>
         </Modal>
@@ -287,6 +294,8 @@
         <Modal
                 v-model="modal.shiftChange"
                 title="班次变更"
+                @on-ok="shiftChangeMethod"
+                @on-cancel=""
                 >
             <Form :model="shiftChangeForm" :label-width="80">
                 <FormItem label="班次">
@@ -301,6 +310,8 @@
         <Modal
                 v-model="modal.provisionalDisposition"
                 title="临时安排"
+                @on-ok="provisionalDispositionMethod"
+                @cancel=""
                 >
             <Form :model="provisionalDispositionForm" :label-width="100">
                 <FormItem label="临时安排类型">
@@ -333,6 +344,8 @@
         <Modal
                 v-model="modal.absenteeism"
                 title="旷工缺勤"
+                @on-ok="absenteeismMethod"
+                @on-cancel=""
                 >
             <Form :model="absenteeismForm" :label-width="80">
             <FormItem label="缺勤工时">
@@ -356,6 +369,8 @@
         <Modal
                 v-model="modal.overtime"
                 title="补班加班"
+                @on-ok="overtimeMethod"
+                @on-cancel=""
                 >
             <Form :model="overtimeForm" :label-width="80">
             <FormItem label="加班工时">
@@ -379,6 +394,8 @@
         <Modal
                 v-model="modal.substitute"
                 title="替班"
+                @on-ok="substituteMethod"
+                @on-cancel=""
                 >
             <Form :model="substituteForm" :label-width="80">
                 <FormItem label="站区">
@@ -444,6 +461,14 @@ export default {
         endValue:afterWeekDate,
         showTable:true,
         showTabItem: true,
+        targetModal:{
+            targetVocation:'',
+            targetShiftChange:'',
+            targetArrange:'',
+            targetAbsenteeism:'',
+            targetOvertime:'',
+            targetSubstitute:''
+        },
         timeQuantumList: [
         {
           value: "1",
@@ -1381,31 +1406,80 @@ export default {
     };
   },
   methods: {
-      //模态框出现去掉气泡提示框
+      //假期编辑模态框出现去掉气泡提示框
       editVocationModal:function(){
           $(".ivu-poptip-popper").css("display","none");
           this.modal.editVocation=true;
+          var e = e || window.event;
+          var target = e.target || e.srcElement;
+          this.targetModal.targetVocation=target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
       },
+      //假期编辑模态框确定提交
+      editVocationMethod:function(event){
+          this.targetModal.targetVocation.className='yellow';
+          console.log(this.targetModal.targetVocation.$index);
+      },
+      //班次变更模态框出现去掉气泡提示框
       shiftChangeModal:function(){
           $(".ivu-poptip-popper").css("display","none");
           this.modal.shiftChange=true;
+          var e = e || window.event;
+          var target = e.target || e.srcElement;
+          this.targetModal.targetShiftChange=target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
       },
+      //班次变更背景
+      shiftChangeMethod:function(){
+          this.targetModal.targetShiftChange.className='pink';
+      },
+      //临时安排模态框出现去掉气泡提示框
       provisionalDispositionModal:function(){
           $(".ivu-poptip-popper").css("display","none");
           this.modal.provisionalDisposition=true;
+          var e = e || window.event;
+          var target = e.target || e.srcElement;
+          this.targetModal.targetArrange=target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
       },
+      //临时安排背景
+      provisionalDispositionMethod:function(){
+          this.targetModal.targetArrange.className='blue';
+      },
+      //旷工缺勤模态框出现去掉气泡提示框
       absenteeismModal:function(){
           $(".ivu-poptip-popper").css("display","none");
           this.modal.absenteeism=true;
+          var e = e || window.event;
+          var target = e.target || e.srcElement;
+          this.targetModal.targetAbsenteeism=target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
       },
+      //旷工缺勤背景
+      absenteeismMethod:function(){
+          this.targetModal.targetAbsenteeism.className='redBackground';
+      },
+      //加班补班模态框出现去掉气泡提示框
       overtimeModal:function(){
           $(".ivu-poptip-popper").css("display","none");
           this.modal. overtime=true;
+          var e = e || window.event;
+          var target = e.target || e.srcElement;
+          this.targetModal.targetOvertime=target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
       },
+      //补班加班背景
+      overtimeMethod:function(){
+          this.targetModal.targetOvertime.className='green';
+      },
+      //替班模态框出现去掉气泡提示框
       substituteModal:function(){
           $(".ivu-poptip-popper").css("display","none");
           this.modal.substitute=true;
+          var e = e || window.event;
+          var target = e.target || e.srcElement;
+          this.targetModal.targetSubstitute=target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
       },
+      //替班背景
+      substituteMethod:function(){
+          this.targetModal.targetSubstitute.className='darkGreen';
+      },
+      //调离模态框出现去掉气泡提示框
       transferModal:function(){
           $(".ivu-poptip-popper").css("display","none");
           this.modal.transfer=true;
