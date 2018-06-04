@@ -80,11 +80,11 @@
             </div>
         </div>
         <!-- 按钮 -->
-        <div class="btnGroup">
+        <div class="btnGroup" v-show="showBtn.add || showBtn.edit || showBtn.submit || showBtn.delete">
             <button type="button" class="btnDefault bgGreen" v-show="showBtn.add" @click="handleAdd">新建</button>
             <button type="button" class="btnDefault bgGreen" v-show="showBtn.edit" @click="handleEdit">修改</button>
             <button type="button" class="btnDefault bgGreen" v-show="showBtn.submit" @click="handleConfirm">提交</button>
-            <button type="button" class="btnDefault bgRed" v-show="showBtn.delete">删除</button> 
+            <button type="button" class="btnDefault bgRed" v-show="showBtn.delete" @click="handleDelete">删除</button> 
             <button type="button" class="btnDefault" v-show="showBtn.add || showBtn.submit" @click="handleCancel">取消</button>
             <div class="colorSelector" v-show="showBtn.input">
                 <input type="text" v-model="workflowText">
@@ -111,7 +111,6 @@
                 data: items,
                 //  按钮显示状态
                 showBtn: {
-                    //btnGroup: false,
                     add: false,
                     edit: false,
                     submit: false,
@@ -122,12 +121,14 @@
                 colorArr: ['FF0000', 'FFFFFF', '00FF00', '5588FF', '00FFFF', 'FFFF00', 'cccccc', '70DB93', 'D9D919', '7093DB', 'C0C0C0', '527F76', '93DB70', 'FF7F00', 'CFB53B', 'EBC79E' , 'FF6EC7', '7D7DFF', '9370DB', 'EAEAAE', 'C0D9D9'],
                 currentColor: '',
                 ifEdit: false,  //  确定按钮事件状态
+                currentTd: null   //   当前操作的单元格
             }
         },
         methods:{
             //  点击单元格
             clickTd: function (e) {
                 let obj = $(e.target);
+                this.currentTd = obj;
                 let top = e.clientY - 40;
                 let left = e.clientX - 300;
                 let L = $('.gray').length;
@@ -222,6 +223,28 @@
                 this.showBtn.edit = false;
                 this.showBtn.delete = false;
                 this.ifEdit = true;
+            },
+            //  删除工作流程
+            handleDelete: function () {
+                let currentTd = this.currentTd;
+                this.$Modal.confirm({
+                    content: '确定删除工作流程吗？',
+                    onOk: () => {
+                        this.currentTd.html('');
+                        let n = currentTd.attr('colspan');
+                        let str = '';
+                        for(let i=0;i<n-1;i++){
+                            str += '';
+                            $('<td></td>').insertBefore(currentTd);
+                        }
+                        currentTd.removeAttr('colspan').removeClass('gray');
+                        this.showBtn.delete = false;
+                        this.showBtn.edit = false;
+                    },
+                    onCancel: () => {
+                        this.$Message.info('Clicked cancel');
+                    }
+                });
             }
         }
     }
