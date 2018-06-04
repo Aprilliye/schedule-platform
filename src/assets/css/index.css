@@ -250,6 +250,20 @@
     width: 400px;
     height: 80px;
 }
+.showMessage {
+    width: auto;
+    height: auto;
+    background-color: sandybrown!important;
+}
+.showMessage table td,.showMessage table th{
+    background-color: sandybrown!important;
+}
+.showAddClick .addClickTable td{
+    border: 1px solid #e5e5e5;
+    height: 10px;
+    background-color: white;
+    font-size: 14px;
+}
 /*工作流程*/
 .td-active {
     background-color: #aaaaaa !important;
