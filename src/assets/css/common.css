@@ -100,6 +100,11 @@ i {
     color: #fff !important;
     border-color: #ff6600 !important;
 }
+.bgRed{
+    background: red !important;
+    color: #fff !important;
+    border-color: red !important;
+}
 /* 顶部菜单栏 */
 .header {
     height: 60px;
