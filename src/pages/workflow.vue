@@ -8,46 +8,6 @@
             <a class="btnDefault bgBlue btnworkflow" onclick="loadWorkFlow()">加载工作流程</a>
         </div>
         <div class="panel-body">
-            <div>
-                <div class="colorPanel">
-                    <div>
-                        <input class="operateUnit" style='display: none;' size="50" id='contentInput'/>
-                    </div>
-                    <div>
-                        <table style="display: none;" class="operateUnit" id="colorTable">
-                            <tr>
-                                <td color-value="FF0000" style="background-color: #FF0000"></td>
-                                <td color-value="FFFFFF" style="background-color: #FFFFFF"></td>
-                                <td color-value="00FF00" style="background-color: #00FF00"></td>
-                                <td color-value="5588FF" style="background-color: #5588FF"></td>
-                                <td color-value="00FFFF" style="background-color: #00FFFF"></td>
-                                <td color-value="FFFF00" style="background-color: #FFFF00"></td>
-                            </tr>
-                            <tr>
-                                <td color-value="cccccc" style="background-color: #cccccc"></td>
-                                <td color-value="70DB93" style="background-color: #70DB93"></td>
-                                <td color-value="D9D919" style="background-color: #D9D919"></td>
-                                <td color-value="7093DB" style="background-color: #7093DB"></td>
-                                <td color-value="C0C0C0" style="background-color: #C0C0C0"></td>
-                                <td color-value="527F76" style="background-color: #527F76"></td>
-                            </tr>
-                            <tr>
-                                <td color-value="93DB70" style="background-color: #93DB70"></td>
-                                <td color-value="FF7F00" style="background-color: #FF7F00"></td>
-                                <td color-value="CFB53B" style="background-color: #CFB53B"></td>
-                                <td color-value="EBC79E" style="background-color: #EBC79E"></td>
-                                <td color-value="FF6EC7" style="background-color: #FF6EC7"></td>
-                                <td color-value="7D7DFF" style="background-color: #7D7DFF"></td>
-                            </tr>
-                            <tr>
-                                <td color-value="9370DB" style="background-color: #9370DB"></td>
-                                <td color-value="EAEAAE" style="background-color: #EAEAAE"></td>
-                                <td color-value="C0D9D9" style="background-color: #C0D9D9"></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
             <!-- 右侧内容 start -->
             <div id="shiftTemplate">
                 <table cellpadding=0 cellspacing=0 tableType="shiftTable" class="workflowTable">
@@ -63,12 +23,12 @@
                             <tr :code="'tr'+index+'-'+post.index+'0'">
                                 <td rowspan="2" colspan="3">{{post.index}}</td>
                                 <template v-for="n in 24">
-                                    <td v-for="m in 6" @click="clickTd" width="30"></td>
+                                    <td v-for="m in 6" @click="clickTd" width="30" :code="'atd'+index+'-'+post.index+'0'+'-'+n"></td>
                                 </template>
                             </tr>
                             <tr :code="'tr'+index+'-'+post.index+'1'">
                                 <template v-for="n in 24">
-                                    <td v-for="m in 6" @click="clickTd"></td>
+                                    <td v-for="m in 6" @click="clickTd" :code="'btd'+index+'-'+post.index+'0'+'-'+n"></td>
                                 </template>
                             </tr>
                         </template>
@@ -87,7 +47,7 @@
             <button type="button" class="btnDefault bgRed" v-show="showBtn.delete" @click="handleDelete">删除</button> 
             <button type="button" class="btnDefault" v-show="showBtn.add || showBtn.submit" @click="handleCancel">取消</button>
             <div class="colorSelector" v-show="showBtn.input">
-                <input type="text" v-model="workflowText">
+                <input type="text" v-model.trim="workflowText">
                 <ul>
                     <li v-for="color in colorArr" :style="'background:#'+color" @click="pickUp"></li>
                 </ul>
@@ -98,6 +58,7 @@
 <script>
     import {showColorPanel} from '../assets/js/workflow.js';
     import {items} from '../assets/data/workflow.js';
+    let self = null;
     export default {
         data:function () {
             return {
@@ -124,52 +85,13 @@
                 currentTd: null   //   当前操作的单元格
             }
         },
+        created: function () {
+            self = this;
+        },
         methods:{
             //  点击单元格
             clickTd: function (e) {
-                let obj = $(e.target);
-                this.currentTd = obj;
-                let top = e.clientY - 40;
-                let left = e.clientX - 300;
-                let L = $('.gray').length;
-                let parent = obj.parent();
-                /** 有颜色单元格 */
-                if(obj.attr('style')){
-                    obj.removeAttr('style');
-                    obj.addClass('gray');
-                    this.workflowText = obj.html();
-                    this.showBtn.edit = true;
-                    this.showBtn.delete = true;
-                    return;
-                }
-                /**  无颜色的单元格  */
-                //  如果两个单元格不在同一行
-                if(L == 1){
-                    let code1 = $('.gray').parent().attr('code');
-                    let code2 = parent.attr('code');
-                    if(code1 !== code2){
-                        this.$Message.error('只能选择同一行的两个时间点！');
-                        return;
-                    }
-                }
-                if(obj.hasClass('gray')){
-                    obj.removeClass('gray');
-                    L--;
-                } else {
-                    if(L==2){
-                        this.$Message.error('只能选择两个时间点！');
-                        return;
-                    }
-                    obj.addClass('gray');
-                    L++;  
-                }
                 
-                if(L == 2){
-                    $('.btnGroup').css({'left': left + 'px', 'top': top + 'px'});
-                    this.showBtn.add = true;
-                } else {
-                    this.showBtn.add = false;
-                }
             },
             //  新建工作流程
             handleAdd: function () {
@@ -187,11 +109,15 @@
             },
             //  确定操作
             handleConfirm: function () {
-                /** 新增确定事件 */
                 if(!this.currentColor){
                     this.$Message.warning('请选择背景色！');
                     return;
                 }
+                if(!this.workflowText){
+                    this.$Message.warning('工作流程内容不能为空！');
+                    return;
+                }
+                /** 新增确定事件 */
                 if(!this.ifEdit){
                     let startTd = $('.gray').eq(0);
                     let endTd = $('.gray').eq(1);
@@ -213,8 +139,13 @@
             },
             //  取消操作
             handleCancel: function () {
+                this.currentColor = '';
+                let currentTd = this.currentTd;
+                currentTd.css('background-color', this.currentColor);
                 $('.gray').removeClass('gray');
-                this.showBtn.add = false;
+                for(let obj in this.showBtn){
+                    this.showBtn[obj] = false;
+                }
             },
             //  修改工作流程
             handleEdit: function () {
@@ -242,12 +173,65 @@
                         this.showBtn.edit = false;
                     },
                     onCancel: () => {
-                        this.$Message.info('Clicked cancel');
+                        currentTd.css('background-color', this.currentColor).removeClass('gray');
+                        this.showBtn.delete = false;
+                        this.showBtn.edit = false;
                     }
                 });
             }
         }
     }
+    $(function () {
+        $(document).on('click', '#shiftTemplate td[code]', function (e) {
+            let obj = $(e.target);
+            self.currentTd = obj;
+            let top = e.clientY - 40;
+            let left = e.clientX - 300;
+            let L = $('.gray').length;
+            let parent = obj.parent();
+            /** 有颜色单元格 */
+            if(obj.attr('style')){
+                obj.removeAttr('style');
+                obj.addClass('gray');
+                self.workflowText = obj.html();
+                self.showBtn.edit = true;
+                self.showBtn.delete = true;
+                return;
+            }
+            /**  无颜色的单元格  */
+            //  如果两个单元格不在同一行
+            if(L == 1){
+                let code1 = $('.gray').parent().attr('code');
+                let code2 = parent.attr('code');
+                if(code1 !== code2){
+                    self.$Message.error('只能选择同一行的两个时间点！');
+                    return;
+                }
+            }
+            if(obj.hasClass('gray')){
+                obj.removeClass('gray');
+                L--;
+            } else {
+                if(L==2){
+                    self.$Message.error('只能选择两个时间点！');
+                    return;
+                }
+                obj.addClass('gray');
+                L++;  
+            }
+            
+            if(L == 2){
+                left = left>1000 ? 1000 : left;
+                let scrollTop = $(window).scrollTop();
+                top += scrollTop;
+                $('.btnGroup').css({'left': left + 'px', 'top': top + 'px'});
+                self.showBtn.add = true;
+            } else {
+                self.showBtn.add = false;
+            }
+        })
+    })
+    
 </script>
 <style scoped>
     @import '../assets/css/index.css';

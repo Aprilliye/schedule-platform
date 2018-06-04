@@ -310,7 +310,7 @@ select {
 .btnGroup {
   position: absolute;
   z-index: 10;
-  width: 360px;
+  width: 260px;
   height: 40px;
   padding: 20px;
 }
@@ -324,11 +324,14 @@ select {
 .colorSelector {
   margin-top: 10px;
   float: left;
-  width: 260px;
+  width: 600px;
   height: 150px;
   background: #fff;
   padding: 20px;
   box-shadow: 0 0 10px #666;
+}
+.colorSelector input {
+  width: 560px;
 }
 .colorSelector ul {
   width: 211px;
