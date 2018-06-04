@@ -246,7 +246,10 @@
     margin-right: 5px;
     margin-bottom: -4px;
 }
-
+.vocationRemark{
+    width: 400px;
+    height: 80px;
+}
 /*工作流程*/
 .td-active {
     background-color: #aaaaaa !important;
