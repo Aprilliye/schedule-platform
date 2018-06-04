@@ -284,15 +284,72 @@ select {
 }
 /* 工作流程 */
 .workflowTable {
-  border: 1x solid #999;
+  border: 1x solid #666;
   width: 2300px;
+  table-layout: fixed;
   text-align: center;
 }
 .workflowTable th,
 .workflowTable td {
-  border: 1px solid #999;
+  border: 1px solid #666;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  word-break: keep-all;
 }
 .workflowTable th {
   line-height: 40px;
   font-size: 16px;
+}
+.workflowTable td {
+  height: 30px;
+}
+.workflowTable .gray {
+  background: #aaa;
+}
+.btnGroup {
+  position: absolute;
+  z-index: 10;
+  width: 360px;
+  height: 40px;
+  padding: 20px;
+}
+.btnGroup button {
+  float: left;
+  margin: 5px;
+}
+.btnGroup .bgGreen {
+  margin-left: 5px !important;
+}
+.colorSelector {
+  margin-top: 10px;
+  float: left;
+  width: 260px;
+  height: 150px;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px #666;
+}
+.colorSelector ul {
+  width: 211px;
+  margin-top: 10px;
+  overflow: hidden;
+  clear: both;
+  border-top: 1px solid #666;
+  border-left: 1px solid #666;
+}
+.colorSelector ul li {
+  float: left;
+  width: 30px;
+  height: 20px;
+  box-sizing: border-box;
+  border-right: 1px solid #666;
+  border-bottom: 1px solid #666;
+  font-family: "Ionicons";
+  text-align: center;
+  cursor: pointer;
+}
+.colorSelector ul li.active::before {
+  content: "\F121";
+  color: #333;
 }

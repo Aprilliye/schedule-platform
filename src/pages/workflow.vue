@@ -11,15 +11,6 @@
             <div>
                 <div class="colorPanel">
                     <div>
-                        <a class="btnDefault bgGreen operateUnit" id="remFlow" onclick="deleteWorkflowContent()" href="javascript:;"
-                           style="display: none;">删除</a>
-                        <a class="btnDefault bgOrange operateUnit" id="addFlow" @click="addWorkflowContent" style="display: none;">新建</a>
-                        <a class="btnDefault bgBlue operateUnit" id="updateFlow" onclick="updateWorkFlowContent()" href="javascript:;"
-                           style="display: none;">修改</a>
-                        <a class="btnDefault bgGreen operateUnit" id="submitFlow" onclick="submitWorkFlowContent()" href="javascript:;"
-                           style="display: none;">提交</a>
-                    </div>
-                    <div>
                         <input class="operateUnit" style='display: none;' size="50" id='contentInput'/>
                     </div>
                     <div>
@@ -62,26 +53,45 @@
                 <table cellpadding=0 cellspacing=0 tableType="shiftTable" class="workflowTable">
                     <template v-for="(item, index) in data">
                         <tr>
-                            <th colspan=145 tdType='title' height=40 class='font4'>{{item.shiftName+":"+item.timeSlot}}</th>
+                            <th colspan=147 tdType='title' height=40 class='font4'>{{item.shiftName+":"+item.timeSlot}}</th>
                         </tr>
                         <tr>
-                            <td width='60'>编号</td>
+                            <td colspan="3">编号</td>
                             <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n<10?'0'+n:n)+':00' }}</td>
                         </tr>
-                        <tr v-for="post in item.postArr">
-                            <td>{{post.index}}</td>
-                            <template v-for="n in 24">
-                                <td v-for="m in 6"></td>
-                            </template>
-                        </tr>
+                        <template v-for="post in item.postArr">
+                            <tr :code="'tr'+index+'-'+post.index+'0'">
+                                <td rowspan="2" colspan="3">{{post.index}}</td>
+                                <template v-for="n in 24">
+                                    <td v-for="m in 6" @click="clickTd" width="30"></td>
+                                </template>
+                            </tr>
+                            <tr :code="'tr'+index+'-'+post.index+'1'">
+                                <template v-for="n in 24">
+                                    <td v-for="m in 6" @click="clickTd"></td>
+                                </template>
+                            </tr>
+                        </template>
                     </template>
                 </table>
             </div>
 
             <div id="content">
-
             </div>
-
+        </div>
+        <!-- 按钮 -->
+        <div class="btnGroup">
+            <button type="button" class="btnDefault bgGreen" v-show="showBtn.add" @click="handleAdd">新建</button>
+            <button type="button" class="btnDefault bgGreen" v-show="showBtn.edit" @click="handleEdit">修改</button>
+            <button type="button" class="btnDefault bgGreen" v-show="showBtn.submit" @click="handleConfirm">提交</button>
+            <button type="button" class="btnDefault bgRed" v-show="showBtn.delete">删除</button> 
+            <button type="button" class="btnDefault" v-show="showBtn.add || showBtn.submit" @click="handleCancel">取消</button>
+            <div class="colorSelector" v-show="showBtn.input">
+                <input type="text" v-model="workflowText">
+                <ul>
+                    <li v-for="color in colorArr" :style="'background:#'+color" @click="pickUp"></li>
+                </ul>
+            </div>           
         </div>
     </div>
 </template>
@@ -98,70 +108,120 @@
                     }
                 ],
                 model: '',
-                data: items
+                data: items,
+                //  按钮显示状态
+                showBtn: {
+                    //btnGroup: false,
+                    add: false,
+                    edit: false,
+                    submit: false,
+                    delete: false,
+                    input: false
+                },
+                workflowText: '',
+                colorArr: ['FF0000', 'FFFFFF', '00FF00', '5588FF', '00FFFF', 'FFFF00', 'cccccc', '70DB93', 'D9D919', '7093DB', 'C0C0C0', '527F76', '93DB70', 'FF7F00', 'CFB53B', 'EBC79E' , 'FF6EC7', '7D7DFF', '9370DB', 'EAEAAE', 'C0D9D9'],
+                currentColor: '',
+                ifEdit: false,  //  确定按钮事件状态
             }
         },
-        mounted:function(){
-            $(document).on("click", "[tdValue]", function (event) {
-                var L = $(".td-active").length;
-                if ($(this).hasClass("td-active")) {
-                    $(this).removeClass("td-active");
-                    if ($(this).attr("colspan")>0&&!$(this).attr("contentId")) {
-                        var value=parseInt($(this).attr("tdValue"));
-                        var colspan=$(this).attr("colspan");
-                        $(this).attr("colspan",1);
-                        for(var i=colspan-1;i>0;i--){
-                            var v=value+i*10;
-                            var td=$("<td tdType='minutes' width=15 tdValue='"+v+"'></td>");
-                            $(this).after(td);
-                        }
-                    }
-                } else {
-                    if(L>1){
-                        alert('只能选择两个时间节点！');
-                        return false;
-                        }
-                    $(this).addClass("td-active");
-                    showColorPanel(event);
-                    if (L == 1) {
-                        $(".operateUnit").hide();
-                        $("#addFlow").show();
-                    }
-                    if ($(this).attr("contentId")) {
-                        $("#remFlow").show();
-                        $("#updateFlow").show();
-                    }
-                }
-            });
-        },
-        
         methods:{
-            addWorkflowContent:function(){
-                var first = $(".td-active:first");
-                var workflowId = $(first).closest("tr").attr("trWorkflowId");
-                if (!workflowId) {
-                    alert("没有创建流程");
+            //  点击单元格
+            clickTd: function (e) {
+                let obj = $(e.target);
+                let top = e.clientY - 40;
+                let left = e.clientX - 300;
+                let L = $('.gray').length;
+                let parent = obj.parent();
+                /** 有颜色单元格 */
+                if(obj.attr('style')){
+                    obj.removeAttr('style');
+                    obj.addClass('gray');
+                    this.workflowText = obj.html();
+                    this.showBtn.edit = true;
+                    this.showBtn.delete = true;
                     return;
                 }
-                var tr = $(first).closest("tr");
-                var start = parseInt($(first).attr("tdValue"));
-                var rowNum = $(tr).attr("trType");
-                var last = $(tr).find(".td-active:last");
-                var end = parseInt($(last).attr("tdValue"));
-                $(".td-active").each(function () {
-                    $(this).removeClass(".td-active");
-                });
-                $("#addFlow").hide();
-
-                for (var l = start + 10; l <= end; l += 10) {
-                    $(tr).find("[tdValue=" + l + "]").remove();
+                /**  无颜色的单元格  */
+                //  如果两个单元格不在同一行
+                if(L == 1){
+                    let code1 = $('.gray').parent().attr('code');
+                    let code2 = parent.attr('code');
+                    if(code1 !== code2){
+                        this.$Message.error('只能选择同一行的两个时间点！');
+                        return;
+                    }
                 }
-                var td = $(tr).find("[tdValue=" + start + "]");
-                $(td).attr("colspan", (end - start + 10) / 10);
-
-                $("#contentInput").show().focus();
-                $("#colorTable").show();
-                $("#submitFlow").show();
+                if(obj.hasClass('gray')){
+                    obj.removeClass('gray');
+                    L--;
+                } else {
+                    if(L==2){
+                        this.$Message.error('只能选择两个时间点！');
+                        return;
+                    }
+                    obj.addClass('gray');
+                    L++;  
+                }
+                
+                if(L == 2){
+                    $('.btnGroup').css({'left': left + 'px', 'top': top + 'px'});
+                    this.showBtn.add = true;
+                } else {
+                    this.showBtn.add = false;
+                }
+            },
+            //  新建工作流程
+            handleAdd: function () {
+                this.ifEdit = false;
+                this.showBtn.add = false;
+                this.showBtn.submit = true;
+                this.showBtn.input = true;
+            },
+            // 选择颜色
+            pickUp: function (e) {
+                let obj = $(e.target);
+                obj.toggleClass('active');
+                obj.siblings().removeClass('active');
+                this.currentColor = obj.hasClass('active') ? obj.css('background-color') : '';
+            },
+            //  确定操作
+            handleConfirm: function () {
+                /** 新增确定事件 */
+                if(!this.currentColor){
+                    this.$Message.warning('请选择背景色！');
+                    return;
+                }
+                if(!this.ifEdit){
+                    let startTd = $('.gray').eq(0);
+                    let endTd = $('.gray').eq(1);
+                    let start = startTd.index();
+                    let end = endTd.index();
+                    let parent = startTd.parent();
+                    for(let i = start+1;i<=end;i++){
+                        parent.find('td').eq(i).addClass('remove');
+                    }
+                    $('.remove').remove();
+                    startTd.attr('colspan', end-start+1);
+                }
+                
+                $('.gray').html(this.workflowText).attr('title', this.workflowText).css('background-color', this.currentColor);
+                $('.gray').removeClass('gray');
+                this.workflowText = '';
+                this.showBtn.submit = false;
+                this.showBtn.input = false;
+            },
+            //  取消操作
+            handleCancel: function () {
+                $('.gray').removeClass('gray');
+                this.showBtn.add = false;
+            },
+            //  修改工作流程
+            handleEdit: function () {
+                this.showBtn.submit = true;
+                this.showBtn.input = true;
+                this.showBtn.edit = false;
+                this.showBtn.delete = false;
+                this.ifEdit = true;
             }
         }
     }
