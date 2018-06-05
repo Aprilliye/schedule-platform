@@ -264,6 +264,24 @@
     background-color: white;
     font-size: 14px;
 }
+.yellow{
+    background-color: #fffc00;
+}
+.pink{
+    background-color: #ff9191;
+}
+.blue{
+    background-color: #3A6BCE;
+}
+.redBackground{
+    background-color: #b10000;
+}
+.green{
+    background-color: #00d537;
+}
+.darkGreen{
+    background-color: #008121;
+}
 /*工作流程*/
 .td-active {
     background-color: #aaaaaa !important;
