@@ -250,20 +250,24 @@
     width: 400px;
     height: 80px;
 }
-.showMessage {
-    width: auto;
-    height: auto;
-    background-color: sandybrown!important;
-}
-.showMessage table td,.showMessage table th{
-    background-color: sandybrown!important;
-}
-.showAddClick .addClickTable td{
+.vocationDiv{
     border: 1px solid #e5e5e5;
-    height: 10px;
+    width: 100px;
+    height: 260px;
+    cursor:pointer;
+    display: none;
+    position: fixed;
+    top:0px;
+    left:0px;
     background-color: white;
-    font-size: 14px;
 }
+.vocationDiv div{
+    border-bottom: 1px solid #e5e5e5;
+    width: 100px;
+    line-height: 25px;
+    text-align: center;
+}
+
 .yellow{
     background-color: #fffc00;
 }
