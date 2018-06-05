@@ -266,6 +266,11 @@ select {
   border-color: #ff6600;
   color: #ff6600;
 }
+#usersModal .userList .selected {
+  background: #ff6600;
+  border-color: #ff6600;
+  color: #fff;
+}
 .td-active {
   background: #f6f6f6 !important;
 }
@@ -355,4 +360,18 @@ select {
 .colorSelector ul li.active::before {
   content: "\F121";
   color: #333;
+}
+.result {
+  width: 100%;
+  margin-top: 10px;
+}
+.result * {
+  line-height: 30px;
+}
+.result b {
+  color: #ff6600;
+  padding: 0 5px;
+}
+.red {
+  color: red;
 }

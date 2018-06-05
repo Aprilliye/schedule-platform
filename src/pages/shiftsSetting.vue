@@ -66,7 +66,7 @@
                                 <b>24小时值班人数表</b>
                                 <div class="btn-group">
                                     <a class="btnDefault bgGreen" @click="modal.addTimeSlot=true">新增时间段</a>
-                                    <a class="btnDefault bgGreen" @click="initEchart">方案验算</a>
+                                    <a class="btnDefault bgBlue" style="margin-left:10px;" @click="initEchart">方案验算</a>
                                 </div>
                             </div>
                             <Table :columns="onDutyColumns" :data="onDutyData"></Table>
@@ -88,20 +88,6 @@
             <TabPane label="标签二" name="name2">标签二的内容</TabPane>
             <TabPane label="标签三" name="name3">标签三的内容</TabPane>
         </Tabs>
-        <!--方案验算-->
-        <!-- <Modal
-            v-model="modal3"
-            title="方案验算">
-            <Form :label-width="90">
-                <FormItem label="每日总工时" prop="totalHours">
-                    <span>45小时</span>
-                </FormItem>
-                <FormItem label="总排班人数" prop="totalPerson" required>
-                    <Col span="12"><Input placeholder="请输入排班总人数" width="200"/></Col>
-                    <button class="ivu-btn ivu-btn-primary ivu-btn-large" style="margin-left:10px;">开始验算</button>
-                </FormItem>
-            </Form>
-        </Modal> -->
         <!-- 新增班次表 -->
         <Modal title="新增班次"
                v-model="modal.addClass"

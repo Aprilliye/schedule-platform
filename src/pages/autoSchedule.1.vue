@@ -2,53 +2,45 @@
     <div class="container">
         <div class="content">
             <div class="content-header">
-                <div class="tabItem">
-                    <span>选择班制：</span>
-                    <Select v-model="currentShift" style="width:200px">
-                        <Option v-for="(item, index) in shifts" :value="item" :key="index">{{ item }}</Option>
-                    </Select>
-                    <button class="btnDefault bgOrange" @click="loadtemplate">加载模板</button>
-                    <button class="btnDefault bgBlue">生成模板</button>
-                    <button class="btnDefault bgGreen" v-show="showSaveBtn">保存排班</button>
-                    <p class="result" v-show="showResult">
-                        <span>日平均<b>{{result.dayAverage}}</b>小时，</span>
-                        <span>周平均<b>{{result.weekAverage}}</b>小时，</span>
-                        <span>30日平均<b>{{result.monthAverage}}</b>小时，</span>
-                        <span>365日平均<b>{{result.yearAverage}}</b>小时，</span>
-                        <span>最少人数<b>{{result.minPeople}}</b>人</span>
-                    </p>
+                <div class="form-container">
+                    <div id="autoForm"></div>
+                    <div class="form_line" id="timepick" style="display: none">
+                        <span class="title">选择开始日期</span>
+                        <span class='input-group datetimepicker'>
+                            <input type='text' name="startAt" id="startAt" class="form-control"/>
+                            <em class="input-group-addon">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </em>
+                        </span>
+                    </div>
+                    <div class="form_line">
+                        <button class="btnDefault bgOrange autoBtn" id="btnLoad" @click="loadtemplate">加载模板</button>
+                        <button class="btnDefault bgBlue autoBtn" id="btnGenerate">建立模板</button>
+                        <button class="btnDefault bgGreen autoBtn" id="btnSave">保存排班</button>
+                    </div>
+                    <div class="form_line">
+                        <p class="noPlan" style="display: none;"><em>?</em>日平均<span id="dailyAverage" class="blue"></span>小时,
+                            周平均<span id="weeklyAverage" class="blue"></span>小时,
+                            30日平均<span id="monthlyAverage" class="blue"></span>小时,
+                            365日平均<span id="yearlyAverage" class="blue"></span>小时,
+                            最少人数<span id="minimiumWorkerCount" class="blue"></span>人</p>
+                    </div>
+                    <div class="clear"></div>
                 </div>
             </div>
             <!-- 表格 start -->
             <div class="wrapper" style="padding-top:0;">
                 <div class="tab-content">
                     <div class="tab-pane" id="tab2">
-                        <p class="result">请选择各个岗位的排班方案，并点击右侧的<b>生成模板</b>按钮</p>
+                        <p class="noPlan"><em>?</em>请选择各个岗位的排班方案，并点击右侧的<span class="blue">生成模板</span>按钮</p>
                     </div>
                     <div class="tab-pane in active" id="tab1">
                         <div class="schedule postformtable">
                             <table class="scheduleForm" >
                                 <thead>
-                                <tr id="theHead0">
-                                    <th>站务员</th>
-                                    <th>{{week.monday}}</th>
-                                    <th>{{week.tuesday}}</th>
-                                    <th>{{week.wednesday}}</th>
-                                    <th>{{week.thursday}}</th>
-                                    <th>{{week.friday}}</th>
-                                    <th>{{week.saturday}}</th>
-                                    <th>{{week.sunday}}</th>
-                                    <th>周工时</th>
-                                </tr>
+                                <tr id="theHead0"></tr>
                                 </thead>
                                 <tbody id="theBody">
-                                    <tr v-for="n in weekNum" :key="n">
-                                        <td class="userName" :id="'user'+n" @click="clickUserTd"></td>
-                                        <td v-for="m in 7" :key="'td'+ m" :code="'td'+(n-1)+'-'+(m-1)"></td>
-                                        <td class="workHours">
-                                            <button type="button" class="deleteItem" v-show="(n === currentTr) && showDelete">删除本行</button>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -58,7 +50,8 @@
             </div>
             <!-- 表格 end -->
             <div id="remarks"></div>
-            <div id="select-user">
+            <div id="select-user"
+                 style="display: none;background-color:white;position:absolute;left: 30%; top: 30%; z-index: 20">
                 <table class="user-table">
 
                 </table>
@@ -76,14 +69,14 @@
             @on-cancel="cancel">
             <button type="button" class="btnDefault bgBlue" @click="handleCancel">取消</button>
             <div class="userList">
-                <span :class="{'selected': userIds.has(item.userId)}" v-for="(item,index) in users" :key="index" @click="clickUser" :code="item.userId">{{item.userName}}</span>
+                <span v-for="(item,index) in users" :key="index" @click="clickUser" :code="item.userId">{{item.userName}}</span>
             </div>
         </Modal>
     </div>
 </template>
 <script>
     let self = null;
-    import {result} from '@/assets/data/data.js'
+    import {result} from '@/assets/js/data.js'
     export default {
         data:function () {
             return {
@@ -93,34 +86,7 @@
                 showUserModal: false,
                 userName: '',
                 userId: null,
-                result: result,
-                shifts: ['班制一','班制二'],
-                currentShift: '',
-                showSaveBtn: false,
-                showResult: false,
-                result: {
-                    dayAverage: 0,
-                    weekAverage: 0,
-                    monthAverage: 0,
-                    yearAverage: 0,
-                    minPeople: 0
-                },
-                week: {
-                    monday: '--',
-                    tuesday: '--',
-                    wednesday: '--',
-                    thursday: '--',
-                    friday: '--',
-                    saturday: '--',
-                    sunday: '--',
-                },
-                weekNum: result.weeks,
-                currentTr: null,
-                showDelete: false,
-                totalHours: 0,
-                weekMinHours: 0,
-                weekMaxHours: 0,
-                userIds: new Set(),     //  存放已选择的站务员id
+                result: result
             }
         },
         mounted: function () {
@@ -128,27 +94,48 @@
         },
         methods:{
             loadtemplate:function(){
-                let data = result.data;
-                let dataLen = data.length;
-
-                for(let i=0;i<dataLen;i++){
-                    let obj = data[i];
-                    let n = obj.weekNumber;
-                    let m = obj.weekDay;
-                    let hours = obj.shiftMinutes/60;
-                    this.totalHours += hours;
-                    $('[code="td'+ n + '-'+ m +'"]').html(obj.shiftName).css('background-color', '#' + obj.shiftColor).attr('data-hours', hours);
+                $(".buttonnone").css("display","none");
+                $(".showBtn").css("display","inline-block");
+                var modelId = $("select").val();
+                var stationId = $(".menu .active a").attr("data-groupId");
+                $("#tab1").addClass("active");
+                $("#timepick").show();
+                $("#btnSave").show();
+                var data = result.data;
+                self.result = result;
+                $("#theHead0").empty();
+                var w = parseInt($('.scheduleForm').width()/9)-4;
+                $("#theHead0").append("<th width='"+ w +"'>站务员</th>");
+                for (var i = 0; i < 7; i++) {
+                    $("#theHead0").append("<th width='"+ w +"' thead=" + i + ">" + i + "</th>");
                 }
-                self.calcAverage();
-                $(".workHours").each(function (n) {
+                $("#theHead0").append("<th width='"+ w +"'>周工时</th>");
+                $("#theBody").empty();
+                for (var i = 0; i <= result.weeks; i++) {
+                    var node = "<tr><td class='userName' tdType='-1' userId='' weekNumber='" + i + "'></td>";
+                    for (var j = 0; j < 7; j++) {
+                        node += "<td tdType='" + j + "' id='row" + i + "col" + j + "' ></td>";
+                    }
+                    node += "<td tdType='8' id='time" + i + "' tLength='" + i + "'>0</td>";
+                    node += "</tr>";
+                    $("#theBody").append(node);
+                }
+                for (var i = 0; i < data.length; i++) {
+                    var template = data[i];
+                    var tdId = "row" + template.weekNumber + "col" + template.weekDay;
+                    var html = "<div style='width:100%;height:100%;' duration=" + template.shiftMinutes + " templateId='"+template.id+"' shiftId='" + template.shiftId + "' >" + template.serialNumber + "</div>";
+                    $("#" + tdId).html(html);
+                    $("#" + tdId).css("background-color", "#" + template.shiftColor);
+                }
+                $("td[tLength]").each(function (n) {
                     self.calcWeeklyTime(n);
                 });
-                self.globalShiftCounts = result.shifts;
-                self.globalShiftIds = result.shiftIds;
+                self.globalShiftCounts=result.shifts;
+                self.globalShiftIds=result.shiftIds;
                 $("#btnLoad").hide();
                 //codes = result.codes;
                 //setCodes();
-                
+                self.calcAverage();
                 //self.initUserTable(result.users);
                 self.users = result.users;
                 result.owners && self.drawOwners(result.owners);
@@ -156,43 +143,36 @@
                     self.calcDailySchedule(n);
                 });
             },
-            //  计算周工时
             calcWeeklyTime: function (n) {
-                if(!n){
-                    return;
-                }
-                let currentTd = $(".workHours:eq(" + n + ")");
-                let works = currentTd.parent().find("td[data-hours]");
-                let hours = 0;
-                for (let i = 0; i < works.length; i++) {
-                    hours += parseInt(works.eq(i).attr('data-hours'));
-                }
-                //  低于或者高于平均值的百分之十显示红色
-                if(hours>this.weekMaxHours || hours<this.weekMinHours){
-                    currentTd.addClass('red');
-                }
-                currentTd.text(hours);
-                //  如果排班为空，显示删除本行按钮
-                if (hours == 0) {
-                    this.currentTr = n;
-                    this.showDelete = true;
+                if (n != null && n != undefined) {
+                    var timeTd = $("td[tLength]:eq(" + n + ")");
+                    var works = $(timeTd).closest("tr").find("div[duration]");
+                    var time = 0;
+                    for (var i = 0; i < works.length; i++) {
+                        time += parseInt($(works[i]).attr("duration"));
+                    }
+                    $(timeTd).text(time / 60);
+                    if (time == 0) {
+                        $(timeTd).html("<a href='javascript:;' class='deleteItem' name='btnRemoveLine' weekNumber=" + n + ">删除本行</a>")
+                    }
                 }
             },
-            //  计算工时平均值
             calcAverage: function () {
-                let length = result.weeks;
-                let daily = this.totalHours / length / 7;
-                let weekly = daily * 7;
-                let monthly = daily * 30;
-                let yearly = daily * 365;
-                this.weekMinHours = weekly * 0.9;
-                this.weekMaxHours = weekly * 1.1;
-                self.result.dayAverage = Math.round(daily * 1000) / 1000;
-                self.result.weekAverage = Math.round(weekly * 1000) / 1000;
-                self.result.monthAverage = Math.round(monthly * 1000) / 1000;
-                self.result.yearAverage = Math.round(yearly * 1000) / 1000;
-                self.result.minPeople = length;
-                self.showResult = true;
+                var times = 0;
+                var length = $("[tdType=-1]").length;
+                $("div[duration]").each(function (n) {
+                    times += parseInt($(this).attr("duration"));
+                });
+                var daily = times / length / 60 / 7;
+                var weekly = daily * 7;
+                var monthly = daily * 30;
+                var yearly = daily * 365;
+                $("#dailyAverage").text(Math.round(daily * 1000) / 1000);
+                $("#weeklyAverage").text(Math.round(weekly * 1000) / 1000);
+                $("#monthlyAverage").text(Math.round(monthly * 1000) / 1000);
+                $("#yearlyAverage").text(Math.round(yearly * 1000) / 1000);
+                $("#minimiumWorkerCount").text(length);
+                $(".noPlan").show();
             },
             initUserTable: function (users) {
                 $(".user-table").empty();
@@ -257,34 +237,14 @@
                 }
                 $(header).html(html);
             },
-            //  点击站务员表格
-            clickUserTd: function (e) {
-                let obj = $(e.target);
-                $('#usersModal').find('.active').removeClass('active');
-                this.showUserModal = true;
-                $(".userName").removeClass("td-active");
-                obj.addClass("td-active");
-                $(".user-table td").css("color", "green");
-                $("[tdType=-1]").each(function () {
-                    let userId = $(this).attr("userId");
-                    if (userId.length > 0) {
-                        $(".user-table td[userId=" + userId + "]").css("color", "orange");
-                    }
-                });
-            },
-            //  选择站务员
             clickUser: function (e) {
                 let obj = $(e.target);
                 this.userName = obj.html();
                 this.userId = obj.attr('code');
                 obj.toggleClass('active').siblings().removeClass('active');
             },
-            
-            //  确定选择站务员
+            //  选择站务员
             selectUser: function () {
-                if(this.userId){
-                    this.userIds.add(this.userId);
-                }
                 $('.userName[code="'+ this.userId +'"]').html('');
                 $('.userName.td-active').attr('code', this.userId).html(this.userName).removeClass('td-active');
             },
@@ -326,7 +286,17 @@
         });
         //  点击站务员表格
         $(document).on("click", ".userName", function (e) {
-            
+            $('#usersModal').find('.active').removeClass('active');
+            self.showUserModal = true;
+            $(".userName").removeClass("td-active");
+            $(this).addClass("td-active");
+            $(".user-table td").css("color", "green");
+            $("[tdType=-1]").each(function () {
+                var userId = $(this).attr("userId");
+                if (userId.length > 0) {
+                    $(".user-table td[userId=" + userId + "]").css("color", "orange");
+                }
+            });
         });
         //  交换排班
         $(document).on("click", "#btnChange", function () {
