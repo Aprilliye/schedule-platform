@@ -14,7 +14,8 @@
                 </Form>
             </Modal>
             <Modal title="编辑岗位"
-                v-model="editPostModal">
+                v-model="editPostModal"
+                on-ok="editPost">
                 <Form :label-width="80">
                     <FormItem label="岗位名称：">
                         <Input v-model="editPostName" placeholder=""/>
@@ -65,6 +66,7 @@
                         width: 150,
                         align: 'center',
                         render: (h, params) => {
+                            this.currentIndex = params.index;
                             return h('div', [
                                 h('a', {
                                     props: {
@@ -79,6 +81,7 @@
                                             this.editIfRelay = params.row.ifRelay;
                                             this.editPostName = params.row.name;
                                             this.editPostModal = true;
+                                            //this.eidtItem = params.row;
                                         }
                                     }
                                 }, '编辑'),
@@ -89,7 +92,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.brforeDeletePost(params.index)
+                                            this.brforeDeletePost()
                                         }
                                     }
                                 }, '删除')
@@ -114,7 +117,11 @@
                         name: '站区长助理',
                         ifRelay: true
                     }
-                ]
+                ],
+                eidtItem: {
+                    name: '',
+                    ifRelay: null
+                }
             }
         },
         methods: {
@@ -125,7 +132,7 @@
                 loading: true,
                 onOk: () => {
                     this.$Modal.remove();
-                    this.detelePost(index);
+                    this.detelePost(this.currentIndex);
                     }
                 });
             },
@@ -138,6 +145,10 @@
                 this.addIfRelay = false;
                 this.addPostName = '';
                 this.addPostModal = true;
+            },
+            //  编辑岗位
+            editPost: function () {
+                //  this.data.ifRelay = this.currentIndex
             }
         }
     }
