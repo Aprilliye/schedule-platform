@@ -10,7 +10,7 @@
                 <div class=" float-right">
                     <div class="search-input float-left">
                         <span class="icon-5"></span>
-                        <input type="text" placeholder="姓名" name="roleName">
+                        <input type="text" placeholder="" name="roleName">
                     </div>
                     <a class="btnDefault bgBlue queryBtn" href="javascript:;" onclick="getTableData()">查询</a>
                 </div>

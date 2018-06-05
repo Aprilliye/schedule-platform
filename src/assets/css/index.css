@@ -305,6 +305,17 @@
 .alldiv{
     margin-left: 15px;
 }
+.shiftColor{
+    width: 408px;
+    height: 32px;
+    border: 1px solid #dddee1;
+    cursor:pointer;
+}
+.shiftColorBox a{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
 /*自动排班*/
 .iconmark{
     display: inline-block;

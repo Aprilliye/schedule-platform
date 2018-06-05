@@ -127,6 +127,7 @@
                 checkAllschedultablemodel:false,
                 addroleName:'',
                 addrolecomment:'',
+                index:'',
                 managesystemItem:[
                     {
                         name: '新增人员',
@@ -262,6 +263,10 @@
                     }
                 ]
             }
+        },
+        //取得编辑行数
+        created:function(){
+            this.getIndex();
         },
         methods:{
             checkAllsystemset:function(){//系统设置全选
@@ -470,10 +475,22 @@
                     this.updateRolespan=true;
                     return false;
                 }else{
+                    this.$router.push({
+                        name:'Role',
+                        params:{
+                            roleName:this.addroleName,
+                            description:this.addrolecomment,
+                            index:this.index
+                        }
+                    });
                     this.updateRolespan=false;
                     this.addroleName='';
                     this.addrolecomment='';
                 }
+            },
+            //取得传递值index
+            getIndex:function(){
+                this.index=this.$route.params.index;
             }
         }
     }

@@ -33,6 +33,7 @@
         return {
             roleName:'',
             roleNameShow:false,
+            obj:{},
             columns1: [
                 {
                     title: '权限方案名称',
@@ -63,21 +64,7 @@
                                         this.show(params.index)
                                     }
                                 }
-                            }, '权限配置'),
-                            h('a', {
-                                props: {
-                                    type: 'error',
-                                    size: 'small'
-                                },
-                                style: {
-                                    color:"#0000FF"
-                                },
-                                on: {
-                                    click: () => {
-                                        this.remove(params.index)
-                                    }
-                                }
-                            }, this.data[params.index].type)
+                            }, '权限配置')
                         ]);
                     }
                 }
@@ -85,32 +72,32 @@
             data: [
                 {
                     roleName: '系统管理员',
-                    description: '--',
-                    type: '启用'
+                    description: '--'
                 },
                 {
                     roleName: '站区管理员',
-                    description: '--',
-                    type: '启用'
+                    description: '--'
                 },
                 {
                     roleName: '普通用户',
-                    description: '--',
-                    type: '启用'
+                    description: '--'
                 }
             ]
         }
     },
+        //获取页面传值
+        created:function(){
+            this.getParams()
+    },
         methods:{
             show:function (index) {
-                this.$router.push("/editJurisdiction")
-            },
-            remove:function (index) {
-                if(this.data[index].type==="禁用"){
-                    this.data[index].type="启用";
-                }else{
-                    this.data[index].type="禁用";
-                }
+                this.$router.push({
+                    name:'EditJurisdiction',
+                    params:{
+                        index:index
+                    }
+
+                });
             },
             roleConfigshow:function(){
                 this.$router.push("/addJurisdiction");
@@ -123,10 +110,22 @@
                     this.roleNameShow=true;
                     return false;
                 }
+            },
+            //获取页面传值
+            getParams:function(){
+                if(typeof this.$route.params.index=="number" && this.$route.params.roleName){
+                    this.data[this.$route.params.index].roleName=this.$route.params.roleName;
+                    this.data[this.$route.params.index].description=this.$route.params.description;
+                }else if(typeof this.$route.params.index!="number" && this.$route.params.roleName){
+                    this.obj.roleName=this.$route.params.roleName;
+                    this.obj.description=this.$route.params.description;
+                    this.data.push(this.obj);
+                }
+
+
             }
         }
     }
-
 </script>
 <style scoped>
     @import '../assets/css/index.css';
