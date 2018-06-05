@@ -9,6 +9,8 @@ export const monthdata = [
         planWorkHour:165,
         actualWorkHour:165,
         balance:0,
+        phoneName:"13683618528",
+        address:'北京市石景山区古城南路19号楼',
         schedule: [
             {
                 date: '6.1',
@@ -139,6 +141,8 @@ export const monthdata = [
         planWorkHour:158,
         actualWorkHour:158,
         balance:0,
+        phoneName:"13785663247",
+        address:'北京市丰台区花乡羊坊花园西院1-5-404',
         schedule: [
             {
                 date: '6.1',
@@ -269,6 +273,8 @@ export const monthdata = [
         planWorkHour:148,
         actualWorkHour:148,
         balance:0,
+        phoneName:"13051679861",
+        address:'北京市丰台区青塔蔚园10号楼101',
         schedule:[
             {
                 date: '6.1',
@@ -399,6 +405,8 @@ export const monthdata = [
         planWorkHour:164,
         actualWorkHour:164,
         balance:0,
+        phoneName:"13811914821",
+        address:'北京市西城区寿长街2号',
         schedule:[
             {
                 date: '6.1',
@@ -529,6 +537,8 @@ export const monthdata = [
         actualWorkHour:164,
         balance:0,
         userId:5,
+        phoneName:"13581550834",
+        address:'北京市门头沟区王平镇东王平村55-4',
         schedule:[
             {
                 date: '6.1',
@@ -661,6 +671,8 @@ export const weekdata = [
         planWorkHour:46,
         actualWorkHour:46,
         balance:0,
+        phoneName:"13683618528",
+        address:'北京市石景山区古城南路19号楼',
         schedule: [
             {
                 date: '6.1',
@@ -699,6 +711,8 @@ export const weekdata = [
         planWorkHour:38,
         actualWorkHour:38,
         balance:0,
+        phoneName:"13785663247",
+        address:'北京市丰台区花乡羊坊花园西院1-5-404',
         schedule: [
             {
                 date: '6.1',
@@ -737,6 +751,8 @@ export const weekdata = [
         planWorkHour:28,
         actualWorkHour:28,
         balance:0,
+        phoneName:"13051679861",
+        address:'北京市丰台区青塔蔚园10号楼101',
         schedule:[
             {
                 date: '6.1',
@@ -775,6 +791,8 @@ export const weekdata = [
         planWorkHour:36,
         actualWorkHour:36,
         balance:0,
+        phoneName:"13811914821",
+        address:'北京市西城区寿长街2号',
         schedule:[
             {
                 date: '6.1',
@@ -813,6 +831,8 @@ export const weekdata = [
         planWorkHour:37,
         actualWorkHour:37,
         balance:0,
+        phoneName:"13581550834",
+        address:'北京市门头沟区王平镇东王平村55-4',
         schedule:[
             {
                 date: '6.1',

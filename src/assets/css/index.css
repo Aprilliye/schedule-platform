@@ -255,8 +255,8 @@
     width: 100px;
     height: 260px;
     cursor:pointer;
-    display: none;
-    position: fixed;
+
+    position: absolute;
     top:0px;
     left:0px;
     background-color: white;
@@ -267,7 +267,20 @@
     line-height: 25px;
     text-align: center;
 }
-
+.peopleMessage{
+  width: 250px;
+  height: auto;
+  border: 1px solid #e5e5e5;
+  background-color: yellowgreen;
+  display: none;
+}
+.peopleMessage span{
+  float: left;
+  width: 120px;
+  height: auto;
+  display: inline-block;
+  border-top: 1px solid #e5e5e5;
+}
 .yellow{
     background-color: #fffc00;
 }

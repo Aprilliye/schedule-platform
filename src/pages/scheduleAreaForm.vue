@@ -75,7 +75,7 @@
                             <th>结余</th>
                         </tr>
                         <tr v-for="item in weekdata" :key="item.userId" :id="item.userId">
-                            <td>{{item.userName}}</td>
+                            <td class="scheduleName" @mouseenter="showNameMessage" @mouseleave="hideNameMessage">{{item.userName}}</td>
                             <td>{{item.postName}}</td>
                             <!--周表点击事件-->
                             <td v-for="(list, index) in item.schedule" :key="'aa'+index" @click="clickTd">
@@ -182,6 +182,12 @@
                     <div>其它假</div>
                     <div>零星假</div>
                     <div>撤销</div>
+                </div>
+              <!--个人信息悬浮框-->
+                <div class="peopleMessage">
+                  <span>电话</span><span>住址</span>
+                  <span>{{datatr.phoneName}}</span><span>{{datatr.address}}</span>
+                  <div class="clear"></div>
                 </div>
             </div>
             <!--假期编辑-->
@@ -382,6 +388,7 @@
                 showTable:true,
                 showTabItem: true,
                 currentTd:'',
+                datatr:{},
                 targetModal:{
                     targetVocation:'',
                     targetShiftChange:'',
@@ -448,29 +455,6 @@
                         value: "1",
                         label: "替班员"
                     }
-                ],
-
-                messageData:[
-                    {
-                        phoneName:"13683618528",
-                        address:'北京市石景山区古城南路19号楼'
-                    },
-                    {
-                        phoneName:"13785663247",
-                        address:'北京市丰台区花乡羊坊花园西院1-5-404'
-                    },
-                    {
-                        phoneName:"13051679861",
-                        address:'北京市丰台区青塔蔚园10号楼101'
-                    },
-                    {
-                        phoneName:"13811914821",
-                        address:'北京市西城区寿长街2号'
-                    },
-                    {
-                        phoneName:"13581550834",
-                        address:'北京市门头沟区王平镇东王平村55-4'
-                    },
                 ]
             };
         },
@@ -487,14 +471,12 @@
 //                    "top":y,
 //                    "left":x
 //                });
-                $(".vocationDiv").css("absolute","x y");
                 console.log(x);
                 console.log(y);
                 console.log(totalWidth);
                 $(".vocationDiv").css("display","block");
                 var target = e.target || e.srcElement;
                 this.currentTd=target;
-                console.log(this.currentTd);
 //                $(document).click(function(){
 //                    $(".vocationDiv").hide();
 //                });
@@ -505,6 +487,14 @@
 //                    console.log()
 //                    event.stopPropagation();
 //                });
+            },
+            showNameMessage:function(e){
+                $(".peopleMessage").css("display","block");
+                var target = e.target.parentNode.id;
+                this.datatr= weekdata[target-1];
+            },
+            hideNameMessage:function(){
+                $(".peopleMessage").css("display","none");
             },
             //假期编辑模态框出现去掉气泡提示框
             editVocationModal:function(){
