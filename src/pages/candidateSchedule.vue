@@ -41,7 +41,7 @@
             width="600"
             @on-ok="selectShift"
             @on-cancel="cancel">
-            <button type="button" class="btnDefault bgBlue" @click="handleCancel">取消</button>
+            <button type="button" class="btnDefault bgBlue" @click="handleCancel">重置</button>
             <div class="userList">
                 <span v-for="item in modalShifts" :key="item.shiftId" @click="clickShift(item)" :code="item.shiftId">{{item.shiftName}}</span>
             </div>
@@ -96,6 +96,10 @@ export default {
                 shiftId: null,
                 shiftName: ''
             },
+            temporary: {
+                shiftId: null,
+                shiftName: ''
+            }
         }
     },
     created: function () {
@@ -124,12 +128,14 @@ export default {
         },
         //  点击模态框班次
         clickShift: function (item) {
-            this.currentShift.shiftId =  item.shiftId;
-            this.currentShift.shiftName = item.shiftName;
+            this.temporary.shiftId = item.shiftId;
+            this.temporary.shiftName = item.shiftName;
             $('span[code="' + item.shiftId + '"]').addClass('active').siblings().removeClass('active');
         },
         //  选择班次确定
         selectShift: function () {
+            this.currentShift.shiftId =  this.temporary.shiftId;
+            this.currentShift.shiftName = this.temporary.shiftName;
             $('.currentTd').html(this.currentShift.shiftName).attr('code', this.currentShift.shiftId);    
             $('.userList').find('.active').removeClass('active');        
         },
