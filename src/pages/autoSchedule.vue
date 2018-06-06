@@ -248,6 +248,8 @@
                 //  低于或者高于平均值的百分之十显示红色
                 if(hours>this.weekMaxHours || hours<this.weekMinHours){
                     currentTd.find('span').addClass('red');
+                } else {
+                    currentTd.find('span').removeClass('red');
                 }
                 currentTd.find('span').html(hours);
                 //  如果排班为空，显示删除本行按钮
@@ -475,14 +477,7 @@
         }
     }
     $(function () {
-        //  删除一行排班
-        $(document).on("click", "[name=btnRemoveLine]", function () {
-            var weekNumber = $(this).attr("weekNumber");
-            var modelId = $("select").val();
-            var line = $(this).closest("tr");
-            $(line).remove();
-            self.calcAverage();
-        });
+        
         //  建立模版
         $(document).on("click", "#btnGenerate", function () {
             console.log(result)
