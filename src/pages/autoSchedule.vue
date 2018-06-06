@@ -42,11 +42,13 @@
                                 </tr>
                                 </thead>
                                 <tbody id="theBody">
-                                    <tr v-for="n in data" :key="n">
+                                    <tr v-for="(n, index) in data" :key="'tr'+index" :row="index">
                                         <td class="userName" :id="'user'+n" @click="clickUserTd"></td>
                                         <td v-for="m in 7" :key="'td'+ m" :id="'td'+(n-1)+'-'+(m-1)" @click="beforeChange"></td>
                                         <td class="workHours">
-                                            <button type="button" class="deleteItem" v-show="(n === currentTr) && showDelete">删除本行</button>
+                                            <span></span>
+                                            <!-- <button type="button" class="deleteItem" v-show="(index === currentTr) && showDelete">删除本行</button> -->
+                                            <button type="button" class="deleteItem" style="display:none;" @click="deleteTr(index)">删除本行</button>
                                         </td>
                                     </tr>
                                     <!-- <tr v-for="(items, index) in data" :key="index">
@@ -131,9 +133,7 @@
             <!-- 表格 end -->
             <div id="remarks"></div>
             <div id="select-user">
-                <table class="user-table">
-
-                </table>
+                <table class="user-table"></table>
             </div>
         </div>
         <div id="btnChange" v-show="showChangeBtn">
@@ -195,7 +195,8 @@
                 weekMinHours: 0,
                 weekMaxHours: 0,
                 userIds: new Set(),     //  存放已选择的站务员id
-                selectedTds: new Map()
+                selectedTds: new Map(),
+                currentRows: new Map()
             }
         },
         mounted: function () {
@@ -246,9 +247,9 @@
                 }
                 //  低于或者高于平均值的百分之十显示红色
                 if(hours>this.weekMaxHours || hours<this.weekMinHours){
-                    currentTd.addClass('red');
+                    currentTd.find('span').addClass('red');
                 }
-                currentTd.text(hours);
+                currentTd.find('span').html(hours);
                 //  如果排班为空，显示删除本行按钮
                 if (hours == 0) {
                     this.currentTr = n;
@@ -402,13 +403,17 @@
                     if(size > 1){
                         this.$Message.error("不可选中,选中节点过多");
                         return;
-                    } else if (size === 0) {
+                    } else{
+                        let row = $(target).parent().attr('row');
                         target.addClass("td-active");
-                    } else {
-                        let a = actived[0];
-                        target.addClass("td-active");
-                        $("#btnChange").css({"top":(e.pageY-20)+'px',"left":(e.pageX-200)+'px'});
-                        this.showChangeBtn = true;
+                        if (size === 1) {
+                            this.currentRows.set(1, row);
+                            let a = actived[0];
+                            $("#btnChange").css({"top":(e.pageY-20)+'px',"left":(e.pageX-200)+'px'});
+                            this.showChangeBtn = true;
+                            return;
+                        }
+                        this.currentRows.set(0, row);
                     }
                 }
             },
@@ -422,7 +427,6 @@
                 let arr = [...map.entries()];
                 let first = arr[0];
                 let second = arr[1];
-                console.log(result.data.length)
                 if(first[1] && second[1]){
                     let index1 = parseInt($('#'+first[0]).attr('code'));
                     let index2 = parseInt($('#'+second[0]).attr('code'));
@@ -450,11 +454,27 @@
                 this.loadtemplate();
                 this.showChangeBtn = false;
                 map.clear();
+                console.log(this.currentRows)
+                for(let i=0;i<2;i++){
+                    let row = this.currentRows.get(i);
+                    let span = $('tr[row="'+ row +'"]').find('.workHours').find('span');
+                    let html = span.html();
+                    if(html === '0'){
+                        console.log(111)
+                        this.currentTr = row;
+                        $('[row="'+ row +'"]').find('button').show();
+                        span.html('');
+                        break;
+                    }
+                }                
+            },
+            deleteTr: function (index) {
+                $('[row="'+ index +'"]').remove();
             }
+
         }
     }
     $(function () {
-        
         //  删除一行排班
         $(document).on("click", "[name=btnRemoveLine]", function () {
             var weekNumber = $(this).attr("weekNumber");
