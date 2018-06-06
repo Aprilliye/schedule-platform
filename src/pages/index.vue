@@ -54,7 +54,7 @@
                         <template slot="title">
                             排班管理
                         </template>
-                        <router-link to="./scheduleAreaForm" >
+                        <router-link to="./scheduleForm" >
                             <MenuItem name="2-1">
                                 <span class="icon-16"></span>
                                 排班表格

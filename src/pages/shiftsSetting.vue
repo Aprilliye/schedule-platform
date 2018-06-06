@@ -99,9 +99,34 @@
                 <FormItem label="班次名称" prop="name">
                     <Input v-model="addFormValidateClass.name" placeholder=""/>
                 </FormItem>
-                <FormItem label="起止时间" prop="timeSlot"element-id="timeSlot">
+                <FormItem label="班次代号" prop="codeName">
+                    <Input v-model="addFormValidateClass.codeName" placeholder=""/>
+                </FormItem>
+                <FormItem label="班次颜色" prop="shiftColor">
+                    <Poptip trigger="click" content="content">
+                        <div class="shiftColor"></div>
+                        <div class="shiftColorBox" slot="content">
+                            <a style="background-color:rgb(110, 121, 190) " value="rgb(110, 121, 190)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(227, 82, 140) " value="rgb(227, 82, 140)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(228, 121, 121) " value="rgb(228, 121, 121)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(198, 65, 222) " value="rgb(198, 65, 222)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(62, 152, 175) " value="rgb(62, 152, 175)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(41, 173, 125) " value="rgb(41, 173, 125)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(119, 85, 247) " value="rgb(119, 85, 247)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(59, 199, 85) " value="rgb(59, 199, 85)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(214, 129, 73) " value="rgb(214, 129, 73)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(196, 167, 68) " value="rgb(196, 167, 68)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(199, 191, 65) " value="rgb(199, 191, 65)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(103, 188, 57) " value="rgb(103, 188, 57)" @click="getBackColor"></a>
+                        </div>
+                    </Poptip>
+                </FormItem>
+                <FormItem label="起止时间" prop="timeSlot"element-id="timeSlot" @on-change="getsectionTime">
                     <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
+                </FormItem>
+                <FormItem label="总时间" prop="totalTime">
+                    <Input v-model="addFormValidateClass.totalTime" placeholder=""/>
                 </FormItem>
                 <FormItem label="本班工时" prop="shifttime">
                     <Input v-model="addFormValidateClass.shifttime" placeholder=""/>
@@ -114,6 +139,9 @@
                 </FormItem>
                 <FormItem label="值班人数" prop="shiftpeople">
                     <Input v-model="addFormValidateClass.shiftpeople" placeholder=""/>
+                </FormItem>
+                <FormItem label="注意事项" prop="notice">
+                    <textarea v-model="addFormValidateClass.notice"  class="vocationRemark"></textarea>
                 </FormItem>
             </Form>
         </Modal>
@@ -128,9 +156,34 @@
                 <FormItem label="班次名称" prop="name">
                     <Input v-model="addFormValidateClass.name" placeholder=""/>
                 </FormItem>
-                <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot">
-                    <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"></TimePicker>
+                <FormItem label="班次代号" prop="codeName">
+                    <Input v-model="addFormValidateClass.codeName" placeholder=""/>
+                </FormItem>
+                <FormItem label="班次颜色" prop="shiftColor">
+                    <Poptip trigger="click" content="content">
+                        <div class="shiftColor"></div>
+                        <div class="shiftColorBox" slot="content">
+                            <a style="background-color:rgb(110, 121, 190) " value="rgb(110, 121, 190)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(227, 82, 140) " value="rgb(227, 82, 140)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(228, 121, 121) " value="rgb(228, 121, 121)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(198, 65, 222) " value="rgb(198, 65, 222)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(62, 152, 175) " value="rgb(62, 152, 175)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(41, 173, 125) " value="rgb(41, 173, 125)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(119, 85, 247) " value="rgb(119, 85, 247)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(59, 199, 85) " value="rgb(59, 199, 85)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(214, 129, 73) " value="rgb(214, 129, 73)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(196, 167, 68) " value="rgb(196, 167, 68)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(199, 191, 65) " value="rgb(199, 191, 65)" @click="getBackColor"></a>
+                            <a style="background-color:rgb(103, 188, 57) " value="rgb(103, 188, 57)" @click="getBackColor"></a>
+                        </div>
+                    </Poptip>
+                </FormItem>
+                <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot" >
+                    <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"  @on-change="getsectionTime"></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
+                </FormItem>
+                <FormItem label="总时间" prop="totalTime">
+                    <Input v-model="addFormValidateClass.totalTime" placeholder=""/>
                 </FormItem>
                 <FormItem label="本班工时" prop="shifttime">
                     <Input v-model="addFormValidateClass.shifttime" placeholder=""/>
@@ -143,6 +196,9 @@
                 </FormItem>
                 <FormItem label="值班人数" prop="shiftpeople">
                     <Input v-model="addFormValidateClass.shiftpeople" placeholder=""/>
+                </FormItem>
+                <FormItem label="注意事项" prop="notice">
+                    <textarea v-model="addFormValidateClass.notice"  class="vocationRemark"></textarea>
                 </FormItem>
             </Form>
         </Modal>
@@ -325,6 +381,9 @@ export default {
             addFormValidateClass:{
                 timeSlot: [],
                 name:'',
+                codeName:'',
+                totalTime:'',
+                notice:'',
                 shifttime:'',
                 shiftspace:'',
                 shiftrele:'',
@@ -385,6 +444,9 @@ export default {
             ruleValidate1: {
                 name: [
                     { required: true, message: '班次名称不能为空', trigger: 'blur' }
+                ],
+                codeName:[
+                    { required: true, message: '班制代号不能为空', trigger: 'blur' }
                 ],
                 shifttime: [
                     { required: true, message: '本班工时不能为空', trigger: 'blur' }
@@ -590,6 +652,7 @@ export default {
                     this.modal.addClass=false
                     this.modal.editShifyClass=false
                     this.$refs[name].resetFields();
+                    $(".shiftColor").css("background-color","white");
 
                 } else {
                     this.$Message.error('修改失败');
@@ -640,6 +703,7 @@ export default {
             this.$refs[name].resetFields();
             this.addTimeValidate.ifTimeSlot = false;
             $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
+            $(".shiftColor").css("background-color","white");
         },
         //  图表
         initEchart: function () {
@@ -728,6 +792,23 @@ export default {
                     return false;
                 }
             })
+        },
+        //班次选择颜色
+        getBackColor:function(){
+            var e = e || window.event;
+            var target = e.target || e.srcElement;
+            var backgroundColor=target.getAttribute("value");
+            $(".shiftColor").css("background-color",backgroundColor);
+        },
+        //取得总时间
+        getsectionTime:function(){
+            if(this.addFormValidateClass.timeSlot[0]&&this.addFormValidateClass.timeSlot[1]){
+                var beginTime=parseInt(this.addFormValidateClass.timeSlot[0]);
+                var endTime=parseInt(this.addFormValidateClass.timeSlot[1]);
+                var totalTime=endTime-beginTime+'小时';
+                this.addFormValidateClass.totalTime=totalTime
+            }
+
         }
     }
 }

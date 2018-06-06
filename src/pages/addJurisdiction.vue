@@ -470,6 +470,13 @@
                         this.updateRolespan=true;
                         return false;
                     }else{
+                        this.$router.push({
+                            name:'Role',
+                            params:{
+                                roleName:this.addroleName,
+                                description:this.addrolecomment
+                            }
+                        });
                         this.updateRolespan=false;
                         this.addroleName='';
                         this.addrolecomment='';

@@ -6,7 +6,7 @@
                     {{title}}
                 </span>
                 <span class="listBlockSpan">
-                    <label>管理员：{{name}}</label>
+                    管理员：{{managerName}}
                 </span>
                 <div class="rgbutton">
                     <Dropdown>
@@ -82,18 +82,18 @@
                 </FormItem>
                 <FormItem label="站区/站点：" prop="stationArea" class="setWidth">
                     <Select v-model="setManager.stationArea" placeholder="请选择">
-                        <Option value="">西直门</Option>
+                        <Option value="xizhimen">西直门</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="岗位：" prop="post" class="setWidth">
                     <Select v-model="setManager.post" placeholder="请选择">
-                        <Option value="">站区员</Option>
+                        <Option value="zhanquyuan">站区员</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="管理员：" prop="manager" class="setWidth">
                     <Select v-model="setManager.manager" placeholder="请选择">
-                        <Option value="">是</Option>
-                        <Option value="">否</Option>
+                        <Option value="1">是</Option>
+                        <Option value="0">否</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="手机号：" prop="phoneNum" class="setWidth">
@@ -101,8 +101,8 @@
                 </FormItem>
                 <FormItem label="性别：" prop="sexuality" class="setWidth">
                     <Select v-model="setManager.sexuality" placeholder="请选择">
-                        <Option value="">男</Option>
-                        <Option value="">女</Option>
+                        <Option value="male">男</Option>
+                        <Option value="female">女</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="生日：" prop="birthday" class="setWidth">
@@ -116,31 +116,31 @@
                 </FormItem>
                 <FormItem label="婚否：" prop="maritalStatus" class="setWidth">
                     <Select v-model="setManager.maritalStatus" placeholder="请选择">
-                        <Option value="">已婚</Option>
-                        <Option value="">未婚</Option>
+                        <Option value="married">已婚</Option>
+                        <Option value="unmarried">未婚</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="生育：" prop="birthStatus" class="setWidth">
                     <Select v-model="setManager.birthStatus" placeholder="请选择">
-                        <Option value="">已育</Option>
-                        <Option value="">未育</Option>
+                        <Option value="fertile">已育</Option>
+                        <Option value="unfertile">未育</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="学历：" prop="education" class="setWidth">
                     <Select v-model="setManager.education" placeholder="请选择">
-                        <Option value="">高中以下</Option>
-                        <Option value="">专科</Option>
-                        <Option value="">本科</Option>
-                        <Option value="">硕士</Option>
-                        <Option value="">博士以上</Option>
+                        <Option value="1">高中以下</Option>
+                        <Option value="2">专科</Option>
+                        <Option value="3">本科</Option>
+                        <Option value="4">硕士</Option>
+                        <Option value="5">博士以上</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="政治面貌：" prop="politicalStatus" class="setWidth">
                     <Select v-model="setManager.politicalStatus" placeholder="请选择">
-                        <Option value="">群众</Option>
-                        <Option value="">共青团员</Option>
-                        <Option value="">共产党团</Option>
-                        <Option value="">民主党派</Option>
+                        <Option value="1">群众</Option>
+                        <Option value="2">共青团员</Option>
+                        <Option value="3">共产党团</Option>
+                        <Option value="4">民主党派</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="入党时间：" prop="enterPartyTime" class="setWidth">
@@ -167,6 +167,7 @@
                 renameStation:false,
                 addStation:false,
                 setUserManager:false,
+                managerName:'',
                 blockSpanList:["西直门"],
                 addStationName:'',
                 stationAreaName:'',
@@ -231,8 +232,9 @@
                 }
 
             }
+
         },
-        props:['title','name'],
+        props:['title'],
         methods:{
             //删除站区
             removestation:function() {
@@ -298,9 +300,12 @@
             },
             //设置管理员
             setUserManagerMethod:function(name){
+                this.managerName=this.setManager.name
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         this.$Message.success('修改成功');
+                        this.$refs[name].resetFields();
+                        this.setUserManager=false;
                     } else {
                         this.$Message.error('修改失败');
                     }

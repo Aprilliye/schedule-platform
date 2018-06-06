@@ -6,7 +6,7 @@ import Index  from '@/pages/index';
 import Usermanage from '@/pages/user-manage';
 import Grouping from '@/pages/grouping';
 import Role from '@/pages/role';
-import ScheduleAreaForm from '@/pages/scheduleAreaForm';
+import ScheduleForm from '@/pages/scheduleForm';
 import Workflow from '@/pages/workflow';
 import PostSetting from '@/pages/postSetting';
 import ShiftsSetting from '@/pages/shiftsSetting';
@@ -56,9 +56,9 @@ export default new Router({
         },
           //排班表格页面
         {
-          path: '/scheduleAreaForm',
-          name: 'ScheduleAreaForm',
-          component: ScheduleAreaForm
+          path: '/scheduleForm',
+          name: 'ScheduleForm',
+          component: ScheduleForm
         },
           //工作流程页面
         {

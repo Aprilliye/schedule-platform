@@ -250,19 +250,46 @@
     width: 400px;
     height: 80px;
 }
-.showMessage {
-    width: auto;
-    height: auto;
-    background-color: sandybrown!important;
-}
-.showMessage table td,.showMessage table th{
-    background-color: sandybrown!important;
-}
-.showAddClick .addClickTable td{
+.vocationDiv{
     border: 1px solid #e5e5e5;
-    height: 10px;
+    width: 100px;
+    height: 260px;
+    cursor:pointer;
+
+    position: absolute;
+    top:0px;
+    left:0px;
     background-color: white;
-    font-size: 14px;
+}
+.vocationDiv div{
+    border-bottom: 1px solid #e5e5e5;
+    width: 100px;
+    line-height: 25px;
+    text-align: center;
+}
+.peopleMessage{
+  width: 250px;
+  height: auto;
+  border: 1px solid #e5e5e5;
+  background-color: lightgoldenrodyellow;
+  display: none;
+}
+.peopleMessage span{
+  float: left;
+  width: 120px;
+  height: auto;
+  display: inline-block;
+  border-top: 1px solid #e5e5e5;
+}
+.tdMessage{
+    width: 250px;
+    height: auto;
+    background-color: lightgoldenrodyellow;
+    display: none;
+}
+.tdMessage div{
+    padding: 20px 10px 10px 10px;
+    border-top:1px solid #e5e5e5;
 }
 .yellow{
     background-color: #fffc00;
@@ -304,6 +331,17 @@
 }
 .alldiv{
     margin-left: 15px;
+}
+.shiftColor{
+    width: 408px;
+    height: 32px;
+    border: 1px solid #dddee1;
+    cursor:pointer;
+}
+.shiftColorBox a{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
 }
 /*自动排班*/
 .iconmark{
