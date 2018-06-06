@@ -271,7 +271,7 @@
   width: 250px;
   height: auto;
   border: 1px solid #e5e5e5;
-  background-color: yellowgreen;
+  background-color: lightgoldenrodyellow;
   display: none;
 }
 .peopleMessage span{
@@ -280,6 +280,16 @@
   height: auto;
   display: inline-block;
   border-top: 1px solid #e5e5e5;
+}
+.tdMessage{
+    width: 250px;
+    height: auto;
+    background-color: lightgoldenrodyellow;
+    display: none;
+}
+.tdMessage div{
+    padding: 20px 10px 10px 10px;
+    border-top:1px solid #e5e5e5;
 }
 .yellow{
     background-color: #fffc00;

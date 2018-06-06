@@ -54,7 +54,7 @@
                             <th rowspan="2">姓名</th>
                             <th rowspan="2">岗位</th>
                             <th>6.1</th>
-                            <th>6.1</th>
+                            <th>6.2</th>
                             <th>6.3</th>
                             <th>6.4</th>
                             <th>6.5</th>
@@ -78,7 +78,7 @@
                             <td class="scheduleName" @mouseenter="showNameMessage" @mouseleave="hideNameMessage">{{item.userName}}</td>
                             <td>{{item.postName}}</td>
                             <!--周表点击事件-->
-                            <td v-for="(list, index) in item.schedule" :key="'aa'+index" @click="clickTd">
+                            <td v-for="(list, index) in item.schedule" :key="'aa'+index" :id="list.id" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage">
                                 {{list.name}}
                             </td>
                             <td>{{item.planWorkHour}}</td>
@@ -160,10 +160,10 @@
                             <th>实际工时</th>
                             <th>结余</th>
                         </tr>
-                        <tr v-for="item in monthdata" :key="item.userId">
-                            <td>{{item.userName}}</td>
+                        <tr v-for="item in monthdata" :key="item.userId" :id="item.userId">
+                            <td class="scheduleName" @mouseenter="showNameMessageMonth" @mouseleave="hideNameMessage">{{item.userName}}</td>
                             <td>{{item.postName}}</td>
-                            <td v-for="(list, index) in item.schedule" :key="'bb'+index">{{list.name}}</td>
+                            <td v-for="(list, index) in item.schedule" :id="list.id" :key="'bb'+index" @click="clickTd"  @mouseenter="showMessageMonth" @mouseleave="hideMessage">{{list.name}}</td>
                             <td>{{item.planWorkHour}}</td>
                             <td>{{item.actualWorkHour}}</td>
                             <td>{{item.balance}}</td>
@@ -188,6 +188,16 @@
                     <span>电话</span><span>住址</span>
                     <span>{{datatr.phoneName}}</span><span>{{datatr.address}}</span>
                     <div class="clear"></div>
+                </div>
+                <!--请假信息悬浮框-->
+                <div class="tdMessage">
+                    <div v-for="item in datatd">
+                        <hr>
+                        <p>{{item.type}}</p>
+                        <p>备注：{{item.remark}}</p>
+                        <p>创建时间：{{item.setUpTime}}</p>
+                        <p>创建人：{{item.setUpPerson}}</p>
+                    </div>
                 </div>
             </div>
             <!--假期编辑-->
@@ -389,6 +399,9 @@
                 showTabItem: true,
                 currentTd:'',
                 datatr:{},
+                datatd:[],
+                clickTr:'',
+                clickTd:'',
                 targetModal:{
                     targetVocation:'',
                     targetShiftChange:'',
@@ -464,6 +477,12 @@
         },
         methods: {
             clickTd:function(e){
+                //每次点击确定点击行数列数
+                var targettd = e.target.id;
+                var targettr = e.target.parentNode.id;
+                this.clickTr=targettr;
+                this.clickTd=targettd;
+                //取鼠标点击位置
                 var totalWidth=$("#app").width()*1/8;
                 var x=e.screenX;
                 var y=e.screenY;
@@ -488,13 +507,41 @@
 //                    event.stopPropagation();
 //                });
             },
+            //周表人员信息显示
             showNameMessage:function(e){
                 $(".peopleMessage").css("display","block");
                 var target = e.target.parentNode.id;
-                this.datatr= weekdata[target-1];
+                this.datatr= this.weekdata[target-1];
+            },
+            //月表人员信息显示
+            showNameMessageMonth:function(e){
+                $(".peopleMessage").css("display","block");
+                var target = e.target.parentNode.id;
+                this.datatr= this.monthdata[target-1];
             },
             hideNameMessage:function(){
                 $(".peopleMessage").css("display","none");
+            },
+            //周表每天请假信息显示
+            showMessage:function(e){
+                var targettd = e.target.id;
+                var targettr = e.target.parentNode.id;
+                if(this.weekdata[targettr-1].schedule[targettd-1].messages){
+                    $(".tdMessage").css("display","block");
+                    this.datatd= this.weekdata[targettr-1].schedule[targettd-1].messages;
+                }
+            },
+            //月表每天请假信息显示
+            showMessageMonth:function(e){
+                var targettd = e.target.id;
+                var targettr = e.target.parentNode.id;
+                if(this.monthdata[targettr-1].schedule[targettd-1].messages){
+                    $(".tdMessage").css("display","block");
+                    this.datatd= this.monthdata[targettr-1].schedule[targettd-1].messages;
+                }
+            },
+            hideMessage:function(){
+                $(".tdMessage").css("display","none");
             },
             //假期编辑模态框出现去掉气泡提示框
             editVocationModal:function(){
@@ -504,6 +551,7 @@
             //假期编辑模态框确定提交
             editVocationMethod:function(event){
                 this.currentTd.className='yellow';
+                
             },
             //班次变更模态框出现去掉气泡提示框
             shiftChangeModal:function(){
