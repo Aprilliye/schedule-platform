@@ -20,14 +20,14 @@
                 </div>
             </div>
             <!-- 表格 start -->
-            <div class="wrapper" style="padding-top:0;">
+            <div class="wrapper" v-show="showTable">
                 <div class="tab-content">
                     <div class="tab-pane" id="tab2">
                         <p class="result">请选择各个岗位的排班方案，并点击右侧的<b>生成模板</b>按钮</p>
                     </div>
                     <div class="tab-pane in active" id="tab1">
                         <div class="schedule postformtable">
-                            <table class="scheduleForm" >
+                            <table class="scheduleForm" v-show="showTable">
                                 <thead>
                                 <tr id="theHead0">
                                     <th>站务员</th>
@@ -42,13 +42,85 @@
                                 </tr>
                                 </thead>
                                 <tbody id="theBody">
-                                    <tr v-for="n in weekNum" :key="n">
+                                    <tr v-for="n in data" :key="n">
                                         <td class="userName" :id="'user'+n" @click="clickUserTd"></td>
-                                        <td v-for="m in 7" :key="'td'+ m" :code="'td'+(n-1)+'-'+(m-1)"></td>
+                                        <td v-for="m in 7" :key="'td'+ m" :id="'td'+(n-1)+'-'+(m-1)" @click="beforeChange"></td>
                                         <td class="workHours">
                                             <button type="button" class="deleteItem" v-show="(n === currentTr) && showDelete">删除本行</button>
                                         </td>
                                     </tr>
+                                    <!-- <tr v-for="(items, index) in data" :key="index">
+                                        <td class="userName" :id="'user'+index" @click="clickUserTd"></td>
+                                        <template v-for="(item, ) in items">
+                                            <template v-if="item.weekDay === 0">
+                                                <td :id="'td'+ (index-1) +'-0'" @click="beforeChange">{{item.shiftName}}</td>
+                                                <td :id="'td'+ (index-1) +'-1'"></td>
+                                                <td :id="'td'+ (index-1) +'-2'"></td>
+                                                <td :id="'td'+ (index-1) +'-3'"></td>
+                                                <td :id="'td'+ (index-1) +'-4'"></td>
+                                                <td :id="'td'+ (index-1) +'-5'"></td>
+                                                <td :id="'td'+ (index-1) +'-6'"></td>
+                                            </template>
+                                            <template v-else-if="item.weekDay === 1">
+                                                <td :id="'td'+ (index-1) +'-0'"></td>
+                                                <td :id="'td'+ (index-1) +'-1'" @click="beforeChange">{{item.shiftName}}</td>
+                                                <td :id="'td'+ (index-1) +'-2'"></td>
+                                                <td :id="'td'+ (index-1) +'-3'"></td>
+                                                <td :id="'td'+ (index-1) +'-4'"></td>
+                                                <td :id="'td'+ (index-1) +'-5'"></td>
+                                                <td :id="'td'+ (index-1) +'-6'"></td>
+                                            </template>
+                                            <template v-else-if="item.weekDay === 2">
+                                                <td :id="'td'+ (index-1) +'-0'"></td>
+                                                <td :id="'td'+ (index-1) +'-1'"></td>
+                                                <td :id="'td'+ (index-1) +'-2'" @click="beforeChange">{{item.shiftName}}</td>
+                                                <td :id="'td'+ (index-1) +'-3'"></td>
+                                                <td :id="'td'+ (index-1) +'-4'"></td>
+                                                <td :id="'td'+ (index-1) +'-5'"></td>
+                                                <td :id="'td'+ (index-1) +'-6'"></td>
+                                            </template>
+                                            <template v-else-if="item.weekDay === 3">
+                                                <td :id="'td'+ (index-1) +'-0'"></td>
+                                                <td :id="'td'+ (index-1) +'-1'"></td>
+                                                <td :id="'td'+ (index-1) +'-2'"></td>
+                                                <td :id="'td'+ (index-1) +'-3'" @click="beforeChange">{{item.shiftName}}</td>
+                                                <td :id="'td'+ (index-1) +'-4'"></td>
+                                                <td :id="'td'+ (index-1) +'-5'"></td>
+                                                <td :id="'td'+ (index-1) +'-6'"></td>
+                                            </template>
+                                            <template v-else-if="item.weekDay === 4">
+                                                <td :id="'td'+ (index-1) +'-0'"></td>
+                                                <td :id="'td'+ (index-1) +'-1'"></td>
+                                                <td :id="'td'+ (index-1) +'-2'"></td>
+                                                <td :id="'td'+ (index-1) +'-3'"></td>
+                                                <td :id="'td'+ (index-1) +'-4'" @click="beforeChange">{{item.shiftName}}</td>
+                                                <td :id="'td'+ (index-1) +'-5'"></td>
+                                                <td :id="'td'+ (index-1) +'-6'"></td>
+                                            </template>
+                                            <template v-else-if="item.weekDay === 5">
+                                                <td :id="'td'+ (index-1) +'-0'"></td>
+                                                <td :id="'td'+ (index-1) +'-1'"></td>
+                                                <td :id="'td'+ (index-1) +'-2'"></td>
+                                                <td :id="'td'+ (index-1) +'-3'"></td>
+                                                <td :id="'td'+ (index-1) +'-4'"></td>
+                                                <td :id="'td'+ (index-1) +'-5'" @click="beforeChange">{{item.shiftName}}</td>
+                                                <td :id="'td'+ (index-1) +'-6'"></td>
+                                            </template>
+                                            <template v-else-if="item.weekDay === 6">
+                                                <td :id="'td'+ (index-1) +'-0'"></td>
+                                                <td :id="'td'+ (index-1) +'-1'"></td>
+                                                <td :id="'td'+ (index-1) +'-2'"></td>
+                                                <td :id="'td'+ (index-1) +'-3'"></td>
+                                                <td :id="'td'+ (index-1) +'-4'"></td>
+                                                <td :id="'td'+ (index-1) +'-5'"></td>
+                                                <td :id="'td'+ (index-1) +'-6'" @click="beforeChange">{{item.shiftName}}</td>
+                                            </template>
+                                        </template>
+                                        
+                                        <td class="workHours">
+                                            <button type="button" class="deleteItem" v-show="(index === currentTr) && showDelete">删除本行</button>
+                                        </td>
+                                    </tr> -->
                                 </tbody>
                             </table>
                         </div>
@@ -64,10 +136,10 @@
                 </table>
             </div>
         </div>
-        <div id="btnChange" style="display:none">
-            <a class="btnDefault bgOrange" href="javascript:;">交换</a>
+        <div id="btnChange" v-show="showChangeBtn">
+            <button type="button" class="btnDefault bgOrange" @click="changeShift">交换</button>
         </div>
-        
+        <!-- 选择站务员 -->
         <Modal v-model="showUserModal"
             id="usersModal"
             title="选择站务员" 
@@ -87,6 +159,8 @@
     export default {
         data:function () {
             return {
+                showChangeBtn: false,
+                showTable: false,
                 globalShiftCounts: {},
                 globalShiftIds: [],
                 users: [],
@@ -114,30 +188,32 @@
                     saturday: '--',
                     sunday: '--',
                 },
-                weekNum: result.weeks,
+                data: result.weeks,
                 currentTr: null,
                 showDelete: false,
                 totalHours: 0,
                 weekMinHours: 0,
                 weekMaxHours: 0,
                 userIds: new Set(),     //  存放已选择的站务员id
+                selectedTds: new Map()
             }
         },
         mounted: function () {
             self = this;
         },
         methods:{
-            loadtemplate:function(){
+            //  加载模板
+            loadtemplate: function(){
                 let data = result.data;
                 let dataLen = data.length;
-
+                this.totalHours = 0;
                 for(let i=0;i<dataLen;i++){
                     let obj = data[i];
                     let n = obj.weekNumber;
                     let m = obj.weekDay;
                     let hours = obj.shiftMinutes/60;
                     this.totalHours += hours;
-                    $('[code="td'+ n + '-'+ m +'"]').html(obj.shiftName).css('background-color', '#' + obj.shiftColor).attr('data-hours', hours);
+                    $('#td'+ n + '-'+ m).html(obj.shiftName).css('background-color', '#' + obj.shiftColor).attr({'data-hours': hours,'code': i});
                 }
                 self.calcAverage();
                 $(".workHours").each(function (n) {
@@ -155,6 +231,7 @@
                 $("th[thead]").each(function(n) {
                     self.calcDailySchedule(n);
                 });
+                this.showTable = true;
             },
             //  计算周工时
             calcWeeklyTime: function (n) {
@@ -279,86 +356,105 @@
                 this.userId = obj.attr('code');
                 obj.toggleClass('active').siblings().removeClass('active');
             },
-            
             //  确定选择站务员
             selectUser: function () {
+                $('.userName[code="'+ this.userId +'"]').html('');
+                $('.userName.td-active').attr('code', this.userId).html(this.userName).removeClass('td-active');
                 if(this.userId){
                     this.userIds.add(this.userId);
                 }
-                $('.userName[code="'+ this.userId +'"]').html('');
-                $('.userName.td-active').attr('code', this.userId).html(this.userName).removeClass('td-active');
             },
             //  取消站务员
             handleCancel: function () {
+                let userId = $('.userName.td-active').attr('code');
                 $('.userName.td-active').html('').removeClass('td-active');
                 this.showUserModal = false;
+                if(userId){
+                    this.userIds.delete(this.userId);
+                }
             },
             //  点击选择站务员模态框取消按钮
             cancel: function () {
                 $('.userName.td-active').removeClass('td-active');
+            },
+            //  点击排班单元格
+            beforeChange: function (e) {
+                let target = $(e.target);
+                let map = this.selectedTds;
+                let size = map.size;
+                let index = parseInt($(target).attr('code'));
+                let key = target.attr('id');
+                let data = result.data;
+                let value = index ? {
+                    'weekNumber': data[index].weekNumber,
+                    'weekDay': data[index].weekDay
+                } : undefined;
+                if(size<2){
+                    map.set(key, value);
+                }
+                if (target.hasClass("td-active")) {
+                    target.removeClass("td-active");
+                    map.delete(key);
+                    $("#btnChange").hide();
+                    self.showChangeBtn = false;
+                } else {
+                    let actived = $(".td-active");
+                    if(size > 1){
+                        this.$Message.error("不可选中,选中节点过多");
+                        return;
+                    } else if (size === 0) {
+                        target.addClass("td-active");
+                    } else {
+                        let a = actived[0];
+                        target.addClass("td-active");
+                        $("#btnChange").css({"top":(e.pageY-20)+'px',"left":(e.pageX-200)+'px'});
+                        this.showChangeBtn = true;
+                    }
+                }
+            },
+            //  交换排班
+            changeShift: function () {
+                let map = this.selectedTds;
+                if(map.size !== 2){
+                    this.$Message.error("操作失败，无法定位交换节点");
+                    return;
+                }
+                let arr = [...map.entries()];
+                let first = arr[0];
+                let second = arr[1];
+                console.log(result.data.length)
+                if(first[1] && second[1]){
+                    let index1 = parseInt($('#'+first[0]).attr('code'));
+                    let index2 = parseInt($('#'+second[0]).attr('code'));
+                    result.data[index1].weekNumber = second[1].weekNumber;
+                    result.data[index1].weekDay = second[1].weekDay;
+                    result.data[index2].weekNumber = first[1].weekNumber;
+                    result.data[index2].weekDay = first[1].weekDay;
+                } else if(!first[1] && second[1]){
+                    let index = parseInt($('#'+second[0]).attr('code'));
+                    let str = first[0].substring(2);
+                    let arr = str.split('-');
+                    result.data[index].weekNumber = parseInt(arr[0]);
+                    result.data[index].weekDay = parseInt(arr[1]);
+                    $('#'+second[0]).html('').removeAttr('data-hours').removeAttr('style').removeAttr('code');
+                } else if(!second[1] && first[1]){
+                    let index = parseInt($('#'+first[0]).attr('code'));
+                    let str = second[0].substring(2);
+                    let arr = str.split('-');
+                    result.data[index].weekNumber = parseInt(arr[0]);
+                    result.data[index].weekDay = parseInt(arr[1]);
+                    $('#'+first[0]).html('').removeAttr('data-hours').removeAttr('style').removeAttr('code');
+                }
+                
+                $('.td-active').removeClass('td-active');
+                this.loadtemplate();
+                this.showChangeBtn = false;
+                map.clear();
             }
-
         }
     }
     $(function () {
-        //  点击表格交换排班
-        $(document).on("click", "td[tdType]", function (e) {
-            var type = $(this).attr("tdType");
-            if(type==-1 || type>6){
-                return ;
-            }
-            if ($(this).hasClass("td-active")) {
-                $(this).removeClass("td-active");
-                $("#btnChange").hide();
-            } else {
-                var actived = $(".td-active");
-                if (actived.length > 1) {
-                    self.$Message.error("不可选中,选中节点过多");
-                    return;
-                } else if (actived.length == 0) {
-                    $(this).addClass("td-active");
-                } else {
-                    var a = actived[0];
-                    $(this).addClass("td-active");
-                    $("#btnChange").css({"top":(e.pageY-20)+'px',"left":(e.pageX-100)+'px'}).show().find('a').show();
-                }
-            }
-        });
-        //  点击站务员表格
-        $(document).on("click", ".userName", function (e) {
-            
-        });
-        //  交换排班
-        $(document).on("click", "#btnChange", function () {
-            var actived = $(".td-active");
-            if (actived.length != 2) {
-                self.$Message.error("操作失败，无法定位交换节点");
-                return;
-            }
-            var first = actived[0];
-            var last = actived[1];
-            var type = $(first).attr("tdType");
-            var id1 = first.id;
-            var id2 = last.id;
-            var modelId = $("select").val();
-            var fhtml = $(first).html();
-            var lhtml = $(last).html();
-            $(first).removeClass("td-active");
-            $(last).removeClass("td-active");
-            var fbgcolor = $(first).css("background-color");
-            var lbgcolor = $(last).css("background-color");
-            $(first).html(lhtml);
-            $(last).html(fhtml);
-            $(first).css("background-color", lbgcolor);
-            $(last).css("background-color", fbgcolor);
-            $("#btnChange").hide();
-            $("td[tLength]").each(function (n) {
-                self.calcWeeklyTime(n);
-            });
-            $("th[thead]").each(function(n) {
-                self.calcDailySchedule(n);
-            });
-        });
+        
         //  删除一行排班
         $(document).on("click", "[name=btnRemoveLine]", function () {
             var weekNumber = $(this).attr("weekNumber");

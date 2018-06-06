@@ -13,7 +13,7 @@ let baseImageURL = '';
 let routerMode = 'history';
 
 if (process.env.NODE_ENV === 'development') {
-    //baseURL = 'http://192.168.10.35:8080';
+    baseURL = 'http://192.168.10.35:8080';
     //baseURL = 'http://evtape.cn/api';
     baseImageURL = '';
 } else {
