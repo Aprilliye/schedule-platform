@@ -183,11 +183,11 @@
                     <div>零星假</div>
                     <div>撤销</div>
                 </div>
-              <!--个人信息悬浮框-->
+                <!--个人信息悬浮框-->
                 <div class="peopleMessage">
-                  <span>电话</span><span>住址</span>
-                  <span>{{datatr.phoneName}}</span><span>{{datatr.address}}</span>
-                  <div class="clear"></div>
+                    <span>电话</span><span>住址</span>
+                    <span>{{datatr.phoneName}}</span><span>{{datatr.address}}</span>
+                    <div class="clear"></div>
                 </div>
             </div>
             <!--假期编辑-->
