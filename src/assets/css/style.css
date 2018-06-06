@@ -262,14 +262,15 @@ select {
   cursor: pointer;
   border-radius: 4px;
 }
+#usersModal .userList .selected {
+  background: #3A6BCE;
+  border-color: #3A6BCE;
+  color: #fff;
+}
 #usersModal .userList .active {
   border-color: #ff6600;
   color: #ff6600;
-}
-#usersModal .userList .selected {
-  background: #ff6600;
-  border-color: #ff6600;
-  color: #fff;
+  background: #fff;
 }
 .td-active {
   background: #f6f6f6 !important;

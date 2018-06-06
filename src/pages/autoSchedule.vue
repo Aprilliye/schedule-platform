@@ -51,78 +51,6 @@
                                             <button type="button" class="deleteItem" style="display:none;" @click="deleteTr(index)">删除本行</button>
                                         </td>
                                     </tr>
-                                    <!-- <tr v-for="(items, index) in data" :key="index">
-                                        <td class="userName" :id="'user'+index" @click="clickUserTd"></td>
-                                        <template v-for="(item, ) in items">
-                                            <template v-if="item.weekDay === 0">
-                                                <td :id="'td'+ (index-1) +'-0'" @click="beforeChange">{{item.shiftName}}</td>
-                                                <td :id="'td'+ (index-1) +'-1'"></td>
-                                                <td :id="'td'+ (index-1) +'-2'"></td>
-                                                <td :id="'td'+ (index-1) +'-3'"></td>
-                                                <td :id="'td'+ (index-1) +'-4'"></td>
-                                                <td :id="'td'+ (index-1) +'-5'"></td>
-                                                <td :id="'td'+ (index-1) +'-6'"></td>
-                                            </template>
-                                            <template v-else-if="item.weekDay === 1">
-                                                <td :id="'td'+ (index-1) +'-0'"></td>
-                                                <td :id="'td'+ (index-1) +'-1'" @click="beforeChange">{{item.shiftName}}</td>
-                                                <td :id="'td'+ (index-1) +'-2'"></td>
-                                                <td :id="'td'+ (index-1) +'-3'"></td>
-                                                <td :id="'td'+ (index-1) +'-4'"></td>
-                                                <td :id="'td'+ (index-1) +'-5'"></td>
-                                                <td :id="'td'+ (index-1) +'-6'"></td>
-                                            </template>
-                                            <template v-else-if="item.weekDay === 2">
-                                                <td :id="'td'+ (index-1) +'-0'"></td>
-                                                <td :id="'td'+ (index-1) +'-1'"></td>
-                                                <td :id="'td'+ (index-1) +'-2'" @click="beforeChange">{{item.shiftName}}</td>
-                                                <td :id="'td'+ (index-1) +'-3'"></td>
-                                                <td :id="'td'+ (index-1) +'-4'"></td>
-                                                <td :id="'td'+ (index-1) +'-5'"></td>
-                                                <td :id="'td'+ (index-1) +'-6'"></td>
-                                            </template>
-                                            <template v-else-if="item.weekDay === 3">
-                                                <td :id="'td'+ (index-1) +'-0'"></td>
-                                                <td :id="'td'+ (index-1) +'-1'"></td>
-                                                <td :id="'td'+ (index-1) +'-2'"></td>
-                                                <td :id="'td'+ (index-1) +'-3'" @click="beforeChange">{{item.shiftName}}</td>
-                                                <td :id="'td'+ (index-1) +'-4'"></td>
-                                                <td :id="'td'+ (index-1) +'-5'"></td>
-                                                <td :id="'td'+ (index-1) +'-6'"></td>
-                                            </template>
-                                            <template v-else-if="item.weekDay === 4">
-                                                <td :id="'td'+ (index-1) +'-0'"></td>
-                                                <td :id="'td'+ (index-1) +'-1'"></td>
-                                                <td :id="'td'+ (index-1) +'-2'"></td>
-                                                <td :id="'td'+ (index-1) +'-3'"></td>
-                                                <td :id="'td'+ (index-1) +'-4'" @click="beforeChange">{{item.shiftName}}</td>
-                                                <td :id="'td'+ (index-1) +'-5'"></td>
-                                                <td :id="'td'+ (index-1) +'-6'"></td>
-                                            </template>
-                                            <template v-else-if="item.weekDay === 5">
-                                                <td :id="'td'+ (index-1) +'-0'"></td>
-                                                <td :id="'td'+ (index-1) +'-1'"></td>
-                                                <td :id="'td'+ (index-1) +'-2'"></td>
-                                                <td :id="'td'+ (index-1) +'-3'"></td>
-                                                <td :id="'td'+ (index-1) +'-4'"></td>
-                                                <td :id="'td'+ (index-1) +'-5'" @click="beforeChange">{{item.shiftName}}</td>
-                                                <td :id="'td'+ (index-1) +'-6'"></td>
-                                            </template>
-                                            <template v-else-if="item.weekDay === 6">
-                                                <td :id="'td'+ (index-1) +'-0'"></td>
-                                                <td :id="'td'+ (index-1) +'-1'"></td>
-                                                <td :id="'td'+ (index-1) +'-2'"></td>
-                                                <td :id="'td'+ (index-1) +'-3'"></td>
-                                                <td :id="'td'+ (index-1) +'-4'"></td>
-                                                <td :id="'td'+ (index-1) +'-5'"></td>
-                                                <td :id="'td'+ (index-1) +'-6'" @click="beforeChange">{{item.shiftName}}</td>
-                                            </template>
-                                        </template>
-                                        
-                                        <td class="workHours">
-                                            <button type="button" class="deleteItem" v-show="(index === currentTr) && showDelete">删除本行</button>
-                                        </td>
-                                    </tr> -->
                                 </tbody>
                             </table>
                         </div>
@@ -146,7 +74,7 @@
             width="600"
             @on-ok="selectUser"
             @on-cancel="cancel">
-            <button type="button" class="btnDefault bgBlue" @click="handleCancel">取消</button>
+            <button type="button" class="btnDefault bgBlue" @click="handleCancel">重置</button>
             <div class="userList">
                 <span :class="{'selected': userIds.has(item.userId)}" v-for="(item,index) in users" :key="index" @click="clickUser" :code="item.userId">{{item.userName}}</span>
             </div>
@@ -165,11 +93,17 @@
                 globalShiftIds: [],
                 users: [],
                 showUserModal: false,
-                userName: '',
-                userId: null,
+                temporary: {
+                    userName: '',
+                    userId: null
+                },
+                currentUser: {
+                    userName: '',
+                    userId: null
+                },
                 result: result,
                 shifts: ['班制一','班制二'],
-                currentShift: '',
+                currentShift: '班制一',
                 showSaveBtn: false,
                 showResult: false,
                 result: {
@@ -355,25 +289,30 @@
             //  选择站务员
             clickUser: function (e) {
                 let obj = $(e.target);
-                this.userName = obj.html();
-                this.userId = obj.attr('code');
+                this.temporary.userName = obj.html();
+                this.temporary.userId = obj.attr('code');
+                
                 obj.toggleClass('active').siblings().removeClass('active');
             },
             //  确定选择站务员
             selectUser: function () {
-                $('.userName[code="'+ this.userId +'"]').html('');
-                $('.userName.td-active').attr('code', this.userId).html(this.userName).removeClass('td-active');
-                if(this.userId){
-                    this.userIds.add(this.userId);
+                this.currentUser.userName = this.temporary.userName;
+                this.currentUser.userId = this.temporary.userId;
+                let code = this.currentUser.userId;
+                $('.userName[code="'+ code +'"]').html('');
+                $('.userName.td-active').attr('code', code).html(this.currentUser.userName).removeClass('td-active');
+                if(code){
+                    this.userIds.add(code);
                 }
             },
             //  取消站务员
             handleCancel: function () {
                 let userId = $('.userName.td-active').attr('code');
                 $('.userName.td-active').html('').removeClass('td-active');
+
                 this.showUserModal = false;
                 if(userId){
-                    this.userIds.delete(this.userId);
+                    this.userIds.delete(userId);
                 }
             },
             //  点击选择站务员模态框取消按钮
