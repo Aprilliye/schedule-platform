@@ -1,3 +1,17 @@
+.right{
+    float:right;
+    margin-right:25px;
+}
+
+.right .username{
+    color:#FFF; 
+    margin-right:10px
+}
+
+.right .logout{
+    color:#FFF; 
+}
+
 .turnRed{
     color: red;
     display: none;
