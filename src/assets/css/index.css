@@ -255,11 +255,12 @@
     width: 100px;
     height: 260px;
     cursor:pointer;
-
+    display:none;
     position: absolute;
     top:0px;
     left:0px;
     background-color: white;
+    z-index: 999;
 }
 .vocationDiv div{
     border-bottom: 1px solid #e5e5e5;
@@ -268,11 +269,14 @@
     text-align: center;
 }
 .peopleMessage{
-  width: 250px;
-  height: auto;
-  border: 1px solid #e5e5e5;
-  background-color: lightgoldenrodyellow;
-  display: none;
+    width: 250px;
+    height: auto;
+    border: 1px solid #e5e5e5;
+    background-color: lightgoldenrodyellow;
+    display: none;
+    position: absolute;
+    top:0px;
+    left:0px;
 }
 .peopleMessage span{
   float: left;
@@ -286,6 +290,9 @@
     height: auto;
     background-color: lightgoldenrodyellow;
     display: none;
+    position: absolute;
+    top:0px;
+    left:0px;
 }
 .tdMessage div{
     padding: 20px 10px 10px 10px;

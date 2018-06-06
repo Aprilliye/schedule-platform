@@ -209,22 +209,22 @@
                 <Form :model="editVocationForm" :label-width="80">
                     <FormItem label="假期类型">
                         <Select v-model="editVocationForm.select">
-                            <Option value="sickLeave">病假/病</Option>
-                            <Option value="compassionateLeave">事假/事</Option>
-                            <Option value="marryLeave">婚假/婚</Option>
-                            <Option value="bereavement">丧假/丧</Option>
-                            <Option value="homeLeave">探亲假/探</Option>
-                            <Option value="bordLeave">生育津贴假/产1</Option>
-                            <Option value="extendLeave">企业延长产假/产2</Option>
-                            <Option value="sickLeave">男方陪产假/产陪</Option>
-                            <Option value="maternityLeave">计生假/计</Option>
-                            <Option value="injureLeave">工伤假/工</Option>
-                            <Option value="AbsenteeismLeave">旷工假/旷</Option>
-                            <Option value="homeMoveLeave">搬家假/搬</Option>
-                            <Option value="businessTravelLeave">出差假/差</Option>
-                            <Option value="lateLeave">迟到/迟</Option>
-                            <Option value="earlyRetreatLeave">早退/早退</Option>
-                            <Option value="breakDownLeave">调休/调</Option>
+                            <Option value="病假/病">病假/病</Option>
+                            <Option value="事假/事">事假/事</Option>
+                            <Option value="婚假/婚">婚假/婚</Option>
+                            <Option value="丧假/丧">丧假/丧</Option>
+                            <Option value="探亲假/探">探亲假/探</Option>
+                            <Option value="生育津贴假/产1">生育津贴假/产1</Option>
+                            <Option value="企业延长产假/产2">企业延长产假/产2</Option>
+                            <Option value="男方陪产假/产陪">男方陪产假/产陪</Option>
+                            <Option value="计生假/计">计生假/计</Option>
+                            <Option value="工伤假/工">工伤假/工</Option>
+                            <Option value="旷工假/旷">旷工假/旷</Option>
+                            <Option value="搬家假/搬">搬家假/搬</Option>
+                            <Option value="出差假/差">出差假/差</Option>
+                            <Option value="迟到/迟">迟到/迟</Option>
+                            <Option value="早退/早退">早退/早退</Option>
+                            <Option value="调休/调">调休/调</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="假期时间">
@@ -245,10 +245,12 @@
                     >
                 <Form :model="shiftChangeForm" :label-width="80">
                     <FormItem label="班次">
-                        <Input v-model="shiftChangeForm.input" placeholder=""></Input>
+                        <Select v-model="shiftChangeForm.select">
+                            <Option value="西直门替班员">西直门替班员</Option>
+                        </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark"></textarea>
+                        <textarea v-model="shiftChangeForm.remark" name="remark" class="vocationRemark"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -262,11 +264,11 @@
                 <Form :model="provisionalDispositionForm" :label-width="100">
                     <FormItem label="临时安排类型">
                         <Select v-model="provisionalDispositionForm.select">
-                            <Option value="">培训</Option>
-                            <Option value="">演练</Option>
-                            <Option value="">会议</Option>
-                            <Option value="">活动</Option>
-                            <Option value="">考试</Option>
+                            <Option value="培训">培训</Option>
+                            <Option value="演练">演练</Option>
+                            <Option value="会议">会议</Option>
+                            <Option value="活动">活动</Option>
+                            <Option value="考试">考试</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="额外占用工时">
@@ -282,7 +284,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark"></textarea>
+                        <textarea v-model="provisionalDispositionForm.remark" name="remark" class="vocationRemark"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -307,7 +309,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark"></textarea>
+                        <textarea  name="remark" class="vocationRemark"  v-model="absenteeismForm.remark"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -332,7 +334,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark"></textarea>
+                        <textarea name="remark" class="vocationRemark" v-model="overtimeForm.remark"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -346,17 +348,17 @@
                 <Form :model="substituteForm" :label-width="80">
                     <FormItem label="站点">
                         <Select v-model="substituteForm.station">
-                            <Option value="xizhimen">西直门</Option>
-                            <Option value="chegongzhuang">车公庄</Option>
+                            <Option value="西直门">西直门</Option>
+                            <Option value="车公庄">车公庄</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="替班人员">
                         <Select v-model="substituteForm.substitutePeople">
-                            <Option value="1">工号：60508169 姓名：申毅</Option>
+                            <Option value="工号：60508169 姓名：申毅">工号：60508169 姓名：申毅</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark"></textarea>
+                        <textarea name="remark" class="vocationRemark" v-model="substituteForm.remark"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -400,8 +402,8 @@
                 currentTd:'',
                 datatr:{},
                 datatd:[],
-                clickTr:'',
-                clickTd:'',
+                clicktr:'',
+                clicktd:'',
                 targetModal:{
                     targetVocation:'',
                     targetShiftChange:'',
@@ -433,24 +435,32 @@
                     transfer:false
                 },
                 editVocationForm:{
-                    select:''
+                    select:'',
+                    begin:'',
+                    finish:'',
+                    textarea:''
                 },
                 shiftChangeForm:{
-                    input:''
+                    select:'',
+                    remark:''
                 },
                 provisionalDispositionForm:{
                     select:'',
-                    selectTime:''
+                    selectTime:'',
+                    remark:''
                 },
                 absenteeismForm:{
-                    selectTime:''
+                    selectTime:'',
+                    remark:''
                 },
                 overtimeForm:{
-                    selectTime:''
+                    selectTime:'',
+                    remark:''
                 },
                 substituteForm:{
                     station:'',
-                    substitutePeople:''
+                    substitutePeople:'',
+                    remark:''
                 },
 
                 transferForm:{
@@ -474,50 +484,59 @@
         created: function () {
             this.weekdata = weekdata;
             this.monthdata = monthdata;
+            this.clickHide();
         },
         methods: {
+            clickHide:function(){
+                $(document).click(function(){
+                    $(".vocationDiv").hide();
+                });
+            },
             clickTd:function(e){
                 //每次点击确定点击行数列数
                 var targettd = e.target.id;
                 var targettr = e.target.parentNode.id;
-                this.clickTr=targettr;
-                this.clickTd=targettd;
+                this.clicktr=targettr;
+                this.clicktd=targettd;
                 //取鼠标点击位置
-                var totalWidth=$("#app").width()*1/8;
-                var x=e.screenX;
-                var y=e.screenY;
-//                $(".vocationDiv").css({
-//                    "top":y,
-//                    "left":x
-//                });
-                console.log(x);
-                console.log(y);
-                console.log(totalWidth);
+               var totalWidth=$("#app").width()*1/8;
+                var x=e.screenX-272-totalWidth;
+                var y=e.screenY-185;
+                $(".vocationDiv").css({
+                    "top":y,
+                    "left":x
+                });
                 $(".vocationDiv").css("display","block");
                 var target = e.target || e.srcElement;
                 this.currentTd=target;
-//                $(document).click(function(){
-//                    $(".vocationDiv").hide();
-//                });
-//                $(".vocationDiv").click(function(event){
-//                    event.stopPropagation();
-//                });
-//                target.click(function(event){
-//                    console.log()
-//                    event.stopPropagation();
-//                });
+                //防止点击自己弹框消失
+                event.stopPropagation();
             },
             //周表人员信息显示
             showNameMessage:function(e){
                 $(".peopleMessage").css("display","block");
                 var target = e.target.parentNode.id;
                 this.datatr= this.weekdata[target-1];
+                var totalWidth=$("#app").width()*1/8;
+                var x=e.screenX-272-totalWidth;
+                var y=e.screenY-185;
+                $(".peopleMessage").css({
+                    "top":y,
+                    "left":x
+                });
             },
             //月表人员信息显示
             showNameMessageMonth:function(e){
                 $(".peopleMessage").css("display","block");
                 var target = e.target.parentNode.id;
                 this.datatr= this.monthdata[target-1];
+                var totalWidth=$("#app").width()*1/8;
+                var x=e.screenX-272-totalWidth;
+                var y=e.screenY-185;
+                $(".peopleMessage").css({
+                    "top":y,
+                    "left":x
+                });
             },
             hideNameMessage:function(){
                 $(".peopleMessage").css("display","none");
@@ -528,6 +547,13 @@
                 var targettr = e.target.parentNode.id;
                 if(this.weekdata[targettr-1].schedule[targettd-1].messages){
                     $(".tdMessage").css("display","block");
+                    var totalWidth=$("#app").width()*1/8;
+                    var x=e.screenX-272-totalWidth;
+                    var y=e.screenY-185;
+                    $(".tdMessage").css({
+                        "top":y,
+                        "left":x
+                    });
                     this.datatd= this.weekdata[targettr-1].schedule[targettd-1].messages;
                 }
             },
@@ -538,6 +564,14 @@
                 if(this.monthdata[targettr-1].schedule[targettd-1].messages){
                     $(".tdMessage").css("display","block");
                     this.datatd= this.monthdata[targettr-1].schedule[targettd-1].messages;
+                    var totalWidth=$("#app").width()*1/8;
+                    var x=e.screenX-272-totalWidth;
+                    var y=e.screenY-185;
+                    $(".tdMessage").css({
+                        "top":y,
+                        "left":x
+                    });
+                    this.datatd= this.weekdata[targettr-1].schedule[targettd-1].messages;
                 }
             },
             hideMessage:function(){
@@ -551,7 +585,25 @@
             //假期编辑模态框确定提交
             editVocationMethod:function(event){
                 this.currentTd.className='yellow';
-                
+                var beginDay=this.editVocationForm.begin.toLocaleDateString();
+                var endDay=this.editVocationForm.finish.toLocaleDateString();
+                var message={};
+                message.type='假期编辑--'+this.editVocationForm.select+'--'+beginDay+'至'+endDay ;
+                message.remark=this.editVocationForm.textarea;
+                message.setUpTime=new Date().toLocaleString();
+                message.setUpPerson='admin';
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages){
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages.push(message);
+                }else{
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
+                }
+                console.log(message.setUpperson);
+                console.log(message.type);
+                console.log(message.remark);
+                console.log(message.setUpTime);
+
+
             },
             //班次变更模态框出现去掉气泡提示框
             shiftChangeModal:function(){
@@ -561,6 +613,17 @@
             //班次变更背景
             shiftChangeMethod:function(){
                 this.currentTd.className='pink';
+                var message={};
+                message.type='班次变更为--'+this.shiftChangeForm.select ;
+                message.remark=this.shiftChangeForm.remark;
+                message.setUpTime=new Date().toLocaleString();
+                message.setUpPerson='admin';
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages){
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages.push(message);
+                }else{
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
+                }
             },
             //临时安排模态框出现去掉气泡提示框
             provisionalDispositionModal:function(){
@@ -570,6 +633,17 @@
             //临时安排背景
             provisionalDispositionMethod:function(){
                 this.currentTd.className='blue';
+                var message={};
+                message.type='临时安排--'+this.provisionalDispositionForm.select+'占用工时'+this.provisionalDispositionForm.selectTime;
+                message.remark=this.provisionalDispositionForm.remark;
+                message.setUpTime=new Date().toLocaleString();
+                message.setUpPerson='admin';
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages){
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages.push(message);
+                }else{
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
+                }
             },
             //旷工缺勤模态框出现去掉气泡提示框
             absenteeismModal:function(){
@@ -579,6 +653,17 @@
             //旷工缺勤背景
             absenteeismMethod:function(){
                 this.currentTd.className='redBackground';
+                var message={};
+                message.type='旷工缺勤--'+this.absenteeismForm.selectTime+'小时';
+                message.remark=this.absenteeismForm.remark;
+                message.setUpTime=new Date().toLocaleString();
+                message.setUpPerson='admin';
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages){
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages.push(message);
+                }else {
+                    this.weekdata[this.clicktr - 1].schedule[this.clicktd - 1].messages = [];
+                    this.weekdata[this.clicktr - 1].schedule[this.clicktd - 1].messages[0] = message;
+                }
             },
             //加班补班模态框出现去掉气泡提示框
             overtimeModal:function(){
@@ -588,6 +673,17 @@
             //补班加班背景
             overtimeMethod:function(){
                 this.currentTd.className='green';
+                var message={};
+                message.type='加班工时--'+this.overtimeForm.selectTime+'小时';
+                message.remark=this.overtimeForm.remark;
+                message.setUpTime=new Date().toLocaleString();
+                message.setUpPerson='admin';
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages){
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages.push(message);
+                }else {
+                    this.weekdata[this.clicktr - 1].schedule[this.clicktd - 1].messages = [];
+                    this.weekdata[this.clicktr - 1].schedule[this.clicktd - 1].messages[0] = message;
+                }
             },
             //替班模态框出现去掉气泡提示框
             substituteModal:function(){
@@ -597,6 +693,18 @@
             //替班背景
             substituteMethod:function(){
                 this.currentTd.className='darkGreen';
+
+                var message={};
+                message.type='站点--'+this.substituteForm.station+'替班人--'+this.substituteForm.substitutePeople;
+                message.remark=this.substituteForm.remark;
+                message.setUpTime=new Date().toLocaleString();
+                message.setUpPerson='admin';
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages){
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages.push(message);
+                }else {
+                    this.weekdata[this.clicktr - 1].schedule[this.clicktd - 1].messages = [];
+                    this.weekdata[this.clicktr - 1].schedule[this.clicktd - 1].messages[0] = message;
+                }
             },
             //调离模态框出现去掉气泡提示框
             transferModal:function(){
@@ -605,7 +713,6 @@
             }
         }
     };
-
     //获取当前时间
     var myDate = new Date();
     function get(){
