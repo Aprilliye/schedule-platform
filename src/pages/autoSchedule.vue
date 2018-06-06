@@ -31,13 +31,11 @@
                                 <thead>
                                 <tr id="theHead0">
                                     <th>站务员</th>
-                                    <th>{{week.monday}}</th>
-                                    <th>{{week.tuesday}}</th>
-                                    <th>{{week.wednesday}}</th>
-                                    <th>{{week.thursday}}</th>
-                                    <th>{{week.friday}}</th>
-                                    <th>{{week.saturday}}</th>
-                                    <th>{{week.sunday}}</th>
+                                    <th v-for="i in 7" :key="'th'+i">
+                                        <div :id="'weekDay'+(i-1)">
+                                            <p v-for="item in shiftsData" :key="item.shiftId" :code="item.shiftId"><em>{{item.shiftName}}：</em><span>0</span></p>
+                                        </div>
+                                    </th>
                                     <th>周工时</th>
                                 </tr>
                                 </thead>
@@ -130,11 +128,15 @@
                 weekMaxHours: 0,
                 userIds: new Set(),     //  存放已选择的站务员id
                 selectedTds: new Map(),
-                currentRows: new Map()
+                currentRows: new Map(),
+                shiftsData: [] 
             }
         },
         mounted: function () {
             self = this;
+            for(let key in result.shifts){
+                this.shiftsData.push(result.shifts[key]);
+            }
         },
         methods:{
             //  加载模板
@@ -149,6 +151,12 @@
                     let hours = obj.shiftMinutes/60;
                     this.totalHours += hours;
                     $('#td'+ n + '-'+ m).html(obj.shiftName).css('background-color', '#' + obj.shiftColor).attr({'data-hours': hours,'code': i});
+                    let weekDay = obj.weekDay;
+                    let shiftId = obj.shiftId;
+                    let span = $('#weekDay'+weekDay).find('[code="'+ shiftId +'"]').find('span');
+                    let num = parseInt(span.html());
+                    num++;
+                    span.html(num);
                 }
                 self.calcAverage();
                 $(".workHours").each(function (n) {
@@ -170,10 +178,7 @@
             },
             //  计算周工时
             calcWeeklyTime: function (n) {
-                if(!n){
-                    return;
-                }
-                let currentTd = $(".workHours:eq(" + n + ")");
+                let currentTd = $(".workHours").eq(n);
                 let works = currentTd.parent().find("td[data-hours]");
                 let hours = 0;
                 for (let i = 0; i < works.length; i++) {
@@ -208,6 +213,7 @@
                 self.result.minPeople = length;
                 self.showResult = true;
             },
+            //  加载站务员
             initUserTable: function (users) {
                 $(".user-table").empty();
                 var rowNum = users.length / 6;
