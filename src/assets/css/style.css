@@ -310,7 +310,7 @@ select {
   height: 30px;
 }
 .workflowTable .gray {
-  background: #aaa;
+  background: #aaa !important;
 }
 .btnGroup {
   position: absolute;
