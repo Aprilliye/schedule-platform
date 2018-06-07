@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import { routerMode } from '@/config/env.js';
 import HelloWorld from '@/components/HelloWorld';
 import Login from '@/pages/login';
 import Index  from '@/pages/index';
@@ -15,23 +16,24 @@ import AddJurisdiction from '@/pages/addJurisdiction';
 import EditJurisdiction from '@/pages/editJurisdiction';
 import mySchedule from '@/pages/mySchedule';
 import candidateSchedule from '@/pages/candidateSchedule';
+import iView from 'iview';
 
+Vue.use(iView);
 Vue.use(Router)
-let router = new Router({
-  linkActiveClass:"active"
-});
 
-export default new Router({
+const router = new Router({
+  mode: routerMode,
+  linkActiveClass:"active",
   routes: [
       //登录页面
     {
-      path: '/login',
+      path: '/',
       name: 'Login',
       component: Login
     },
       //主页面
     {
-      path: '/',
+      path: '/home',
       name: 'Index',
       component: Index,
       redirect: '/user-manage',
@@ -111,5 +113,29 @@ export default new Router({
       ]
     }
   ]
-})
+});
+router.beforeEach((to, from, next) => {
+  let IDENTIFICATION = 'schedule_identify';
+  // 若路由需要登录且token不存在, 跳到登录页
+  if (to.meta.requireAuth && !localStorage.getItem(IDENTIFICATION)) {
+    next({
+        path: '/',
+        query: { redirect: to.fullPath }
+    });
+    return;
+  }
+  // 若请求登录页但token存在, 跳转到首页
+  if(to.path.indexOf('login') > -1 && localStorage.getItem(IDENTIFICATION)){
+    next({
+      path: '/home'
+    })
+    return;
+  }
+  next();
+});
+
+router.afterEach(route => {
+});
+
+export default router;
 

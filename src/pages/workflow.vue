@@ -2,8 +2,8 @@
     <div class="container">
         <div class="content-header">
             <label style="margin-left: 10px">班制</label>
-            <Select v-model="model" style="width:200px">
-                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Select v-model="shift" style="width:200px">
+                <Option v-for="item in shiftList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             <a class="btnDefault bgBlue btnworkflow" onclick="loadWorkFlow()">加载工作流程</a>
         </div>
@@ -12,23 +12,23 @@
             <div id="shiftTemplate">
                 <table cellpadding=0 cellspacing=0 tableType="shiftTable" class="workflowTable">
                     <template v-for="(item, index) in data">
-                        <tr>
+                        <tr :key="'tr0'+index">
                             <th colspan=147 tdType='title' height=40 class='font4'>{{item.shiftName+":"+item.timeSlot}}</th>
                         </tr>
-                        <tr>
+                        <tr :key="'tr1'+index">
                             <td colspan="3">编号</td>
-                            <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n<10?'0'+n:n)+':00' }}</td>
+                            <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n < 10 ? '0'+n : n)+':00' }}</td>
                         </tr>
                         <template v-for="post in item.postArr">
-                            <tr :code="'tr'+index+'-'+post.index+'0'">
+                            <tr :code="'tr'+index+'-'+post.index+'0'" :key="'post0-'+post.index">
                                 <td rowspan="2" colspan="3">{{post.index}}</td>
                                 <template v-for="n in 24">
-                                    <td v-for="m in 6" @click="clickTd" width="30" :code="'atd'+index+'-'+post.index+'0'+'-'+n"></td>
+                                    <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" width="30" :code="'atd'+index+'-'+post.index+'0'+'-'+n"></td>
                                 </template>
                             </tr>
-                            <tr :code="'tr'+index+'-'+post.index+'1'">
+                            <tr :code="'tr'+index+'-'+post.index+'1'" :key="'post1-'+post.index">
                                 <template v-for="n in 24">
-                                    <td v-for="m in 6" @click="clickTd" :code="'btd'+index+'-'+post.index+'0'+'-'+n"></td>
+                                    <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" :code="'btd'+index+'-'+post.index+'0'+'-'+n"></td>
                                 </template>
                             </tr>
                         </template>
@@ -49,7 +49,7 @@
             <div class="colorSelector" v-show="showBtn.input">
                 <input type="text" v-model.trim="workflowText">
                 <ul>
-                    <li v-for="color in colorArr" :style="'background:#'+color" @click="pickUp"></li>
+                    <li v-for="(color, index) in colorArr" :key="'li'+index" :style="'background:#'+color" @click="pickUp"></li>
                 </ul>
             </div>           
         </div>
@@ -62,13 +62,13 @@
     export default {
         data:function () {
             return {
-                cityList: [
+                shiftList: [
                     {
                         value: '1',
                         label: '西直门替班员'
                     }
                 ],
-                model: '',
+                shift: '1',
                 data: items,
                 //  按钮显示状态
                 showBtn: {
@@ -95,6 +95,8 @@
             },
             //  新建工作流程
             handleAdd: function () {
+                this.workflowText = '';
+                $('.colorSelector').find('.active').removeClass('active');
                 this.ifEdit = false;
                 this.showBtn.add = false;
                 this.showBtn.submit = true;
@@ -120,7 +122,10 @@
                 /** 新增确定事件 */
                 if(!this.ifEdit){
                     let startTd = $('.gray').eq(0);
+                    let startTdColspan = startTd.attr('colspan') ? parseInt(startTd.attr('colspan'))-1 : 0;
+                    
                     let endTd = $('.gray').eq(1);
+                    let endTdColspan = endTd.attr('colspan') ? parseInt(endTd.attr('colspan'))-1 : 0;
                     let start = startTd.index();
                     let end = endTd.index();
                     let parent = startTd.parent();
@@ -128,7 +133,8 @@
                         parent.find('td').eq(i).addClass('remove');
                     }
                     $('.remove').remove();
-                    startTd.attr('colspan', end-start+1);
+                    let colspan = end - start + 1 + startTdColspan + endTdColspan;
+                    startTd.attr('colspan', colspan);
                 }
                 
                 $('.gray').html(this.workflowText).attr('title', this.workflowText).css('background-color', this.currentColor);
@@ -140,8 +146,6 @@
             //  取消操作
             handleCancel: function () {
                 this.currentColor = '';
-                let currentTd = this.currentTd;
-                currentTd.css('background-color', this.currentColor);
                 $('.gray').removeClass('gray');
                 for(let obj in this.showBtn){
                     this.showBtn[obj] = false;
@@ -168,9 +172,11 @@
                             str += '';
                             $('<td></td>').insertBefore(currentTd);
                         }
-                        currentTd.removeAttr('colspan').removeClass('gray');
+                        currentTd.removeAttr('colspan').removeAttr('style').removeClass('gray');
                         this.showBtn.delete = false;
                         this.showBtn.edit = false;
+                        this.workflowText = '';
+                        this.currentColor = '';
                     },
                     onCancel: () => {
                         currentTd.css('background-color', this.currentColor).removeClass('gray');
@@ -191,12 +197,12 @@
             let parent = obj.parent();
             /** 有颜色单元格 */
             if(obj.attr('style')){
-                obj.removeAttr('style');
-                obj.addClass('gray');
+                //obj.removeAttr('style');
+                //obj.addClass('gray');
                 self.workflowText = obj.html();
                 self.showBtn.edit = true;
                 self.showBtn.delete = true;
-                return;
+                //return;
             }
             /**  无颜色的单元格  */
             //  如果两个单元格不在同一行
@@ -226,6 +232,8 @@
                 top += scrollTop;
                 $('.btnGroup').css({'left': left + 'px', 'top': top + 'px'});
                 self.showBtn.add = true;
+                self.showBtn.edit = false;
+                self.showBtn.delete = false;
             } else {
                 self.showBtn.add = false;
             }

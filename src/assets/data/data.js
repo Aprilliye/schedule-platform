@@ -8,7 +8,8 @@ export let result = {
         "18" : [ "6", "6", "6", "6", "6", "6", "6", "6" ]
     },
     "weeks" : 54,
-    "data" : [ {
+    "data" : [ 
+        {
         "shiftId" : "13",
         "shiftName" : "白班",
         "serialNumber" : "1B1",
@@ -3284,7 +3285,8 @@ export let result = {
         "updatorId" : "1231",
         "shiftMinutes" : 360,
         "weekNumber" : 10
-    } ],
+    } 
+],
     "shifts" : {
         "13" : {
             "shiftId" : "13",

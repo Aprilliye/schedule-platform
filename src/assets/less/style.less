@@ -219,6 +219,14 @@ input,select{
     td{
         text-align: center;
     }
+    th{
+        p{
+            *{
+                color: #f0f0f0;
+                line-height: 24px;
+            }
+        }
+    }
 }
 .selectbutton{
     .icon-5{
@@ -261,14 +269,15 @@ input,select{
             cursor: pointer;
             border-radius: 4px;
         }
+        .selected{
+            background: #3A6BCE;
+            border-color: #3A6BCE;
+            color: #fff;
+        }
         .active{
             border-color: #ff6600;
             color: #ff6600;
-        }
-        .selected{
-            background: #ff6600;
-            border-color: #ff6600;
-            color: #fff;
+            background: #fff;
         }
     }
   }
@@ -309,7 +318,7 @@ input,select{
           height: 30px;
       }
       .gray{
-        background: #aaa;
+        background: #aaa !important;
     }
   }
   .btnGroup{

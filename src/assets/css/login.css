@@ -30,7 +30,7 @@ a {
 }
 .login {
     width: 350px;
-    height: 360px;
+    height: auto;
     text-align: center;
     padding: 30px 20px 20px;
     position: absolute;
