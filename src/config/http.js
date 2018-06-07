@@ -40,12 +40,12 @@ http.interceptors.response.use(
     error => {
         if (!store.has(IDENTIFICATION)) {
             router.push({
-                path: "/login"
+                path: "/"
             });
         }else{
             if (error.response.status === 401) {
                 router.push({
-                    path: '/login'
+                    path: '/'
                 });
             }
             if (error.response.status === 403) {
