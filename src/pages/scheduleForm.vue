@@ -179,8 +179,8 @@
                     <div @click="overtimeModal">加班补班</div>
                     <div @click="substituteModal">替班</div>
                     <div >调离</div>
-                    <div>其它假</div>
-                    <div>零星假</div>
+                    <div @click="smallVocationModal">零星假</div>
+                    <div @click="otherModal" >其它</div>
                     <div>撤销</div>
                 </div>
                 <!--个人信息悬浮框-->
@@ -362,6 +362,56 @@
                     </FormItem>
                 </Form>
             </Modal>
+            <!--其它-->
+            <Modal
+                    v-model="modal.other"
+                    title="其它"
+                    @on-ok="otherMethod"
+                    @on-cancel=""
+                    >
+                <Form :model="otherForm" :label-width="80">
+                    <FormItem label="工时">
+                        <Select v-model="otherForm.selectTime">
+                            <Option value="1">1小时</Option>
+                            <Option value="2">2小时</Option>
+                            <Option value="3">3小时</Option>
+                            <Option value="4">4小时</Option>
+                            <Option value="5">5小时</Option>
+                            <Option value="6">6小时</Option>
+                            <Option value="7">7小时</Option>
+                            <Option value="8">8小时</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="备注">
+                        <textarea name="remark" class="vocationRemark" v-model="otherForm.remark"></textarea>
+                    </FormItem>
+                </Form>
+            </Modal>
+            <!--零星假-->
+            <Modal
+                    v-model="modal.smallVocation"
+                    title="零星假"
+                    @on-ok="smallVocationMethod"
+                    @on-cancel=""
+                    >
+                <Form :model="smallVocationForm" :label-width="80">
+                    <FormItem label="工时">
+                        <Select v-model="smallVocationForm.selectTime">
+                            <Option value="1">1小时</Option>
+                            <Option value="2">2小时</Option>
+                            <Option value="3">3小时</Option>
+                            <Option value="4">4小时</Option>
+                            <Option value="5">5小时</Option>
+                            <Option value="6">6小时</Option>
+                            <Option value="7">7小时</Option>
+                            <Option value="8">8小时</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="备注">
+                        <textarea name="remark" class="vocationRemark" v-model="smallVocationForm.remark"></textarea>
+                    </FormItem>
+                </Form>
+            </Modal>
             <!--调离-->
             <Modal
                     v-model="modal.transfer"
@@ -432,7 +482,9 @@
                     absenteeism:false,
                     overtime:false,
                     substitute:false,
-                    transfer:false
+                    transfer:false,
+                    smallVocation:false,
+                    other:false
                 },
                 editVocationForm:{
                     select:'',
@@ -462,7 +514,14 @@
                     substitutePeople:'',
                     remark:''
                 },
-
+                smallVocationForm:{
+                    remark:'',
+                    selectTime:''
+                },
+                otherForm:{
+                    remark:'',
+                    selectTime:''
+                },
                 transferForm:{
                     station:'',
                     substitutePeople:''
@@ -588,7 +647,7 @@
                 var beginDay=this.editVocationForm.begin.toLocaleDateString();
                 var endDay=this.editVocationForm.finish.toLocaleDateString();
                 var message={};
-                message.type='假期编辑--'+this.editVocationForm.select+'--'+beginDay+'至'+endDay ;
+                message.type='假期编辑:'+this.editVocationForm.select +' 时间'+beginDay+'至'+endDay ;
                 message.remark=this.editVocationForm.textarea;
                 message.setUpTime=new Date().toLocaleString();
                 message.setUpPerson='admin';
@@ -614,7 +673,7 @@
             shiftChangeMethod:function(){
                 this.currentTd.className='pink';
                 var message={};
-                message.type='班次变更为--'+this.shiftChangeForm.select ;
+                message.type='班次变更为:'+this.shiftChangeForm.select ;
                 message.remark=this.shiftChangeForm.remark;
                 message.setUpTime=new Date().toLocaleString();
                 message.setUpPerson='admin';
@@ -634,7 +693,7 @@
             provisionalDispositionMethod:function(){
                 this.currentTd.className='blue';
                 var message={};
-                message.type='临时安排--'+this.provisionalDispositionForm.select+'占用工时'+this.provisionalDispositionForm.selectTime;
+                message.type='临时安排:'+this.provisionalDispositionForm.select+'占用工时'+this.provisionalDispositionForm.selectTime;
                 message.remark=this.provisionalDispositionForm.remark;
                 message.setUpTime=new Date().toLocaleString();
                 message.setUpPerson='admin';
@@ -654,7 +713,7 @@
             absenteeismMethod:function(){
                 this.currentTd.className='redBackground';
                 var message={};
-                message.type='旷工缺勤--'+this.absenteeismForm.selectTime+'小时';
+                message.type='旷工缺勤:'+this.absenteeismForm.selectTime+'小时';
                 message.remark=this.absenteeismForm.remark;
                 message.setUpTime=new Date().toLocaleString();
                 message.setUpPerson='admin';
@@ -674,7 +733,7 @@
             overtimeMethod:function(){
                 this.currentTd.className='green';
                 var message={};
-                message.type='加班工时--'+this.overtimeForm.selectTime+'小时';
+                message.type='加班工时:'+this.overtimeForm.selectTime+'小时';
                 message.remark=this.overtimeForm.remark;
                 message.setUpTime=new Date().toLocaleString();
                 message.setUpPerson='admin';
@@ -695,7 +754,7 @@
                 this.currentTd.className='darkGreen';
 
                 var message={};
-                message.type='站点--'+this.substituteForm.station+'替班人--'+this.substituteForm.substitutePeople;
+                message.type='站点:'+this.substituteForm.station+'替班人:'+this.substituteForm.substitutePeople;
                 message.remark=this.substituteForm.remark;
                 message.setUpTime=new Date().toLocaleString();
                 message.setUpPerson='admin';
@@ -710,6 +769,43 @@
             transferModal:function(){
                 $(".vocationDiv").css("display","none");
                 this.modal.transfer=true;
+            },
+            //零星假模态框
+            smallVocationModal:function(){
+                this.modal.smallVocation=true;
+            },
+            //零星假模态框提交
+            smallVocationMethod:function(){
+                this.currentTd.className='yellow';
+                var message={};
+                message.type='零星假 :'+this.smallVocationForm.selectTime+'小时' ;
+                message.remark=this.smallVocationForm.remark;
+                message.setUpTime=new Date().toLocaleString();
+                message.setUpPerson='admin';
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages){
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages.push(message);
+                }else{
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
+                }
+            },
+            //其它模态框
+            otherModal:function(){
+                this.modal.other=true;
+            },
+            otherMethod:function(){
+                this.currentTd.className='green';
+                var message={};
+                message.type='其它 :'+this.otherForm.selectTime+'小时' ;
+                message.remark=this.otherForm.remark;
+                message.setUpTime=new Date().toLocaleString();
+                message.setUpPerson='admin';
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages){
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages.push(message);
+                }else{
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
+                }
             }
         }
     };
