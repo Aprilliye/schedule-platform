@@ -9,8 +9,8 @@
               </Col>
               <Col span="21">
                 <p>运三公司新班制辅助管理系统</p>
-                <!-- <div class="dropdown"> -->
-                    <!-- <Dropdown class="btn float-right">
+                <!-- <div class="dropdown">
+                    <Dropdown class="btn float-right">
                         <a href="">
                             <span class="caret">admin</span>
                             <Icon type="arrow-down-b"></Icon>
@@ -18,8 +18,8 @@
                         <DropdownMenu slot="list">
                             <DropdownItem><a href="">退出</a></DropdownItem>
                         </DropdownMenu>
-                    </Dropdown> -->
-                <!-- </div> -->
+                    </Dropdown>
+                </div> -->
                   <div class="right">
                       <span class="username">admin</span>
                       <a class="logout" @click="doLogout">退出</a>

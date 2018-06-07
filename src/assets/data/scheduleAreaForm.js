@@ -17,20 +17,6 @@ export const monthdata = [
                 id:1,
                 date: '6.1',
                 name: '6',
-                messages:[
-                    {
-                        type:'补班加班1小时',
-                        remark:'',
-                        setUpTime:'2018-06-04 16:16:28',
-                        setUpperson:'admin'
-                    },
-                    {
-                        type:'补班加班1小时',
-                        remark:'',
-                        setUpTime:'2018-06-04 16:16:28',
-                        setUpperson:'admin'
-                    },
-                ]
             },
             {
                 id:2,
@@ -844,33 +830,11 @@ export const weekdata = [
                 id:1,
                 date: '6.1',
                 name: '6',
-                messages:[
-                    {
-                        type:'补班加班1小时',
-                        remark:'',
-                        setUpTime:'2018-06-04 16:16:28',
-                        setUpperson:'admin'
-                    },
-                    {
-                        type:'补班加班1小时',
-                        remark:'',
-                        setUpTime:'2018-06-04 16:16:28',
-                        setUpperson:'admin'
-                    },
-                ]
             },
             {
                 id:2,
                 date: '6.2',
                 name: '休',
-                messages:[
-                    {
-                        type:'补班加班2小时',
-                        remark:'',
-                        setUpTime:'2018-06-04 16:16:28',
-                        setUpperson:'admin'
-                    }
-                ]
             },
             {
                 id:3,

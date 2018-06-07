@@ -38,7 +38,6 @@
             </div>
             <div class="panel-body">
                 <div class="float-right" style="margin-top: 20px">
-                    <a class="btnDefault bgGreen " ><span>切换颜色</span></a>
                     <span><i class="colori" style="background-color: #fffc00;"></i>假期</span>
                     <span><i class="colori" style="background-color: #ff9191"></i>班次变更</span>
                     <span><i class="colori" style="background-color: #3A6BCE"></i>临时安排</span>
@@ -178,10 +177,10 @@
                     <div @click="absenteeismModal">旷工缺勤</div>
                     <div @click="overtimeModal">加班补班</div>
                     <div @click="substituteModal">替班</div>
-                    <div >调离</div>
+                    <div  @click="transferModal">调离</div>
                     <div @click="smallVocationModal">零星假</div>
                     <div @click="otherModal" >其它</div>
-                    <div>撤销</div>
+                    <div @click="revoke">撤销</div>
                 </div>
                 <!--个人信息悬浮框-->
                 <div class="peopleMessage">
@@ -191,7 +190,7 @@
                 </div>
                 <!--请假信息悬浮框-->
                 <div class="tdMessage">
-                    <div v-for="item in datatd">
+                    <div v-for="(item,index) in datatd" :key="'cc'+index">
                         <hr>
                         <p>{{item.type}}</p>
                         <p>备注：{{item.remark}}</p>
@@ -416,6 +415,8 @@
             <Modal
                     v-model="modal.transfer"
                     title="调离"
+                    @on-ok="transferMothod"
+                    @cancel=""
                     >
                 <Form :model="transferForm" :label-width="80">
                     <FormItem label="站点">
@@ -454,6 +455,7 @@
                 datatd:[],
                 clicktr:'',
                 clicktd:'',
+                target:'',
                 targetModal:{
                     targetVocation:'',
                     targetShiftChange:'',
@@ -537,7 +539,17 @@
                         value: "1",
                         label: "替班员"
                     }
-                ]
+                ],
+                substitutePerson:   {
+                    userName: '申毅',
+                    postName: '站务员',
+                    phoneName:"13873778520",
+                    address:'北京市海淀区复兴路32号院',
+                    planWorkHour:'46',
+                    balance:'0',
+                    actualWorkHour:'46'
+
+                },
             };
         },
         created: function () {
@@ -547,8 +559,10 @@
         },
         methods: {
             clickHide:function(){
-                $(document).click(function(){
+                $(document).click(function(e){
                     $(".vocationDiv").hide();
+                     var x=e.clientX;
+                var y=e.clientY;
                 });
             },
             clickTd:function(e){
@@ -558,9 +572,12 @@
                 this.clicktr=targettr;
                 this.clicktd=targettd;
                 //取鼠标点击位置
-               var totalWidth=$("#app").width()*1/8;
-                var x=e.screenX-272-totalWidth;
-                var y=e.screenY-185;
+               var totalWidth=$(".container").width();
+               var totalHeight=$(".container").height();
+               var bodyWidth=$("body").width();
+               var bodyHeight=$("body").height();
+                var x=e.clientX;
+                var y=e.clientY;
                 $(".vocationDiv").css({
                     "top":y,
                     "left":x
@@ -568,6 +585,8 @@
                 $(".vocationDiv").css("display","block");
                 var target = e.target || e.srcElement;
                 this.currentTd=target;
+                //取当前被点击的元素
+                this.target=target;
                 //防止点击自己弹框消失
                 event.stopPropagation();
             },
@@ -577,8 +596,8 @@
                 var target = e.target.parentNode.id;
                 this.datatr= this.weekdata[target-1];
                 var totalWidth=$("#app").width()*1/8;
-                var x=e.screenX-272-totalWidth;
-                var y=e.screenY-185;
+                var x=e.clientX;
+                var y=e.clientY+10;
                 $(".peopleMessage").css({
                     "top":y,
                     "left":x
@@ -590,8 +609,8 @@
                 var target = e.target.parentNode.id;
                 this.datatr= this.monthdata[target-1];
                 var totalWidth=$("#app").width()*1/8;
-                var x=e.screenX-272-totalWidth;
-                var y=e.screenY-185;
+                var x=e.clientX;
+                var y=e.clientY+10;
                 $(".peopleMessage").css({
                     "top":y,
                     "left":x
@@ -607,8 +626,8 @@
                 if(this.weekdata[targettr-1].schedule[targettd-1].messages){
                     $(".tdMessage").css("display","block");
                     var totalWidth=$("#app").width()*1/8;
-                    var x=e.screenX-272-totalWidth;
-                    var y=e.screenY-185;
+                    var x=e.clientX;
+                    var y=e.clientY+10;
                     $(".tdMessage").css({
                         "top":y,
                         "left":x
@@ -624,8 +643,8 @@
                     $(".tdMessage").css("display","block");
                     this.datatd= this.monthdata[targettr-1].schedule[targettd-1].messages;
                     var totalWidth=$("#app").width()*1/8;
-                    var x=e.screenX-272-totalWidth;
-                    var y=e.screenY-185;
+                    var x=e.clientX;
+                    var y=e.clientY+10;
                     $(".tdMessage").css({
                         "top":y,
                         "left":x
@@ -646,6 +665,13 @@
                 this.currentTd.className='yellow';
                 var beginDay=this.editVocationForm.begin.toLocaleDateString();
                 var endDay=this.editVocationForm.finish.toLocaleDateString();
+                var beginDate=this.editVocationForm.begin.getDate();
+                var endDate=this.editVocationForm.finish.getDate();
+                var differDate=endDate-beginDate;
+                var differTime=differDate*10;
+                this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour-differTime;
+                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance-differTime;
+                this.target.parentNode.lastChild.style.backgroundColor="#b10000";
                 var message={};
                 message.type='假期编辑:'+this.editVocationForm.select +' 时间'+beginDay+'至'+endDay ;
                 message.remark=this.editVocationForm.textarea;
@@ -657,12 +683,6 @@
                     this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
                     this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
                 }
-                console.log(message.setUpperson);
-                console.log(message.type);
-                console.log(message.remark);
-                console.log(message.setUpTime);
-
-
             },
             //班次变更模态框出现去掉气泡提示框
             shiftChangeModal:function(){
@@ -693,7 +713,7 @@
             provisionalDispositionMethod:function(){
                 this.currentTd.className='blue';
                 var message={};
-                message.type='临时安排:'+this.provisionalDispositionForm.select+'占用工时'+this.provisionalDispositionForm.selectTime;
+                message.type='临时安排:'+this.provisionalDispositionForm.select+'占用工时'+this.provisionalDispositionForm.selectTime+'小时';
                 message.remark=this.provisionalDispositionForm.remark;
                 message.setUpTime=new Date().toLocaleString();
                 message.setUpPerson='admin';
@@ -703,6 +723,10 @@
                     this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
                     this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
                 }
+                var differTime=parseInt(this.provisionalDispositionForm.selectTime);
+                this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour+differTime;
+                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance+differTime;
+                this.target.parentNode.lastChild.style.backgroundColor="#00d537";
             },
             //旷工缺勤模态框出现去掉气泡提示框
             absenteeismModal:function(){
@@ -723,6 +747,10 @@
                     this.weekdata[this.clicktr - 1].schedule[this.clicktd - 1].messages = [];
                     this.weekdata[this.clicktr - 1].schedule[this.clicktd - 1].messages[0] = message;
                 }
+                var differTime=parseInt(this.absenteeismForm.selectTime);
+                this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour-differTime;
+                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance-differTime;
+                this.target.parentNode.lastChild.style.backgroundColor="#b10000";
             },
             //加班补班模态框出现去掉气泡提示框
             overtimeModal:function(){
@@ -743,6 +771,10 @@
                     this.weekdata[this.clicktr - 1].schedule[this.clicktd - 1].messages = [];
                     this.weekdata[this.clicktr - 1].schedule[this.clicktd - 1].messages[0] = message;
                 }
+                var differTime=parseInt(this.overtimeForm.selectTime);
+                this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour+differTime;
+                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance+differTime;
+                this.target.parentNode.lastChild.style.backgroundColor="#00d537";
             },
             //替班模态框出现去掉气泡提示框
             substituteModal:function(){
@@ -752,7 +784,6 @@
             //替班背景
             substituteMethod:function(){
                 this.currentTd.className='darkGreen';
-
                 var message={};
                 message.type='站点:'+this.substituteForm.station+'替班人:'+this.substituteForm.substitutePeople;
                 message.remark=this.substituteForm.remark;
@@ -770,6 +801,20 @@
                 $(".vocationDiv").css("display","none");
                 this.modal.transfer=true;
             },
+            //调离模态框提交
+            transferMothod:function(){
+                this.weekdata[this.clicktr-1].userName=this.substitutePerson.userName;
+                this.weekdata[this.clicktr-1].postName=this.substitutePerson.postName;
+                this.weekdata[this.clicktr-1].phoneName=this.substitutePerson.phoneName;
+                this.weekdata[this.clicktr-1].address=this.substitutePerson.address;
+                this.weekdata[this.clicktr-1].planWorkHour=this.substitutePerson.planWorkHour;
+                this.weekdata[this.clicktr-1].actualWorkHour=this.substitutePerson.actualWorkHour;
+                this.weekdata[this.clicktr-1].balance=this.substitutePerson.balance;
+                var length=this.weekdata[this.clicktr-1].schedule.length-this.clicktd-1+1;
+                for(var currentId=this.clicktd - 1;currentId<=this.clicktd - 1+length;currentId++){
+                    this.weekdata[this.clicktr-1].schedule[currentId].name=''
+                }
+             },
             //零星假模态框
             smallVocationModal:function(){
                 this.modal.smallVocation=true;
@@ -788,11 +833,16 @@
                     this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
                     this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
                 }
+                var differTime=parseInt(this.smallVocationForm.selectTime);
+                this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour-differTime;
+                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance-differTime;
+                this.target.parentNode.lastChild.style.backgroundColor="#b10000";
             },
             //其它模态框
             otherModal:function(){
                 this.modal.other=true;
             },
+            //其它模态框提交
             otherMethod:function(){
                 this.currentTd.className='green';
                 var message={};
@@ -806,6 +856,16 @@
                     this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
                     this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
                 }
+                var differTime=parseInt(this.otherForm.selectTime);
+                this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour+differTime;
+                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance+differTime;
+                this.target.parentNode.lastChild.style.backgroundColor="#00d537";
+            },
+            //撤销操作
+            revoke:function(){
+                this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
+                var currentTd=this.weekdata[this.clicktr-1].schedule[this.clicktd-1].id;
+                this.target.style.backgroundColor="#DCDEE0";
             }
         }
     };

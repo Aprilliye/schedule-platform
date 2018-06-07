@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import { routerMode } from '@/config/env.js';
-import HelloWorld from '@/components/HelloWorld';
 import Login from '@/pages/login';
 import Index  from '@/pages/index';
 import Usermanage from '@/pages/user-manage';
@@ -128,7 +127,7 @@ router.beforeEach((to, from, next) => {
   if(to.path.indexOf('login') > -1 && localStorage.getItem(IDENTIFICATION)){
     next({
       path: '/home'
-    })
+    });
     return;
   }
   next();
