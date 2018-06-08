@@ -168,7 +168,7 @@
                 addStation:false,
                 setUserManager:false,
                 managerName:'',
-                blockSpanList:["西直门"],
+                blockSpanList:[],
                 addStationName:'',
                 stationAreaName:'',
                 setManager:{

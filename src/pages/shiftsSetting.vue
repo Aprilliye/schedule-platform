@@ -79,7 +79,7 @@
                                     <a class="btnDefault bgGreen" @click="modal.addClass=true">新增班次</a>
                                 </div>
                             </div>
-                            <Table :columns="shiftColumns" :data="shiftData"></Table>
+                            <Table :columns="shiftColumns" :data="shiftData" class="shiftTableColor"></Table>
                         </div>
                     </div>
                     
@@ -475,10 +475,24 @@ export default {
                 }
             ],
             shiftColumns: [
-                    {
+                    // {
+                    //     title: '班制名称',
+                    //     align: 'center',
+                    //     key: 'name',
+                    // },
+                         {
                         title: '班制名称',
                         align: 'center',
-                        key: 'name'
+                        key: 'name',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('p', {
+                                    style: {
+                                        color:params.row.color
+                                    },
+                                    },params.row.name ),
+                            ]);
+                        }
                     },
                     {
                         title: '起止时间',
@@ -504,11 +518,6 @@ export default {
                         title: '值班人数',
                         align: 'center',
                         key: 'shiftPeople'
-                    },
-                    {
-                        title: '每周最多休班',
-                        align: 'center',
-                        key: 'maxWeekdayOff'
                     },
                     {
                         title: '操作',
@@ -538,9 +547,9 @@ export default {
                     }
                 ],
             shiftData:[
-                {name: '早班', timeSlot: '07:00-14:00', shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 4, maxWeekdayOff: '2天'},
-                {name: '晚班', timeSlot: '14:00-21:00', shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1, maxWeekdayOff: '2天'},
-                {name: '白班', timeSlot: '07:00-17:00', shiftTime: '10小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1, maxWeekdayOff: '2天'}
+                {name: '早班', timeSlot: '07:00-14:00', shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 4,color:'rgb(110, 121, 190)'},
+                {name: '晚班', timeSlot: '14:00-21:00', shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1,color:'rgb(41, 173, 125)'},
+                {name: '白班', timeSlot: '07:00-17:00', shiftTime: '10小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1,color:'rgb(59, 199, 85)'}
             ],
             onDutyColumns: [
                 {
@@ -677,14 +686,23 @@ export default {
             }
             this.modal.editShift = true;
         },
-        editpeoplenumber:function(){
-            this.modal.addTimeSlot=true;
+        editpeoplenumber:function(index){
+            this.modal.editTimeSlot=true;
+            this.addTimeValidate.timeSlot.push(this.onDutyData[index].timeSlot);
+            this.addTimeValidate.shiftpeople=this.onDutyData[index].shiftPeople;
         },
         remove2:function (index) {
             this.onDutyData.splice(index, 1);
         },
-        edite:function(){
-            this.modal.editShifyClass=true
+        edite:function(index){
+            this.modal.editShifyClass=true;
+            this.addFormValidateClass.name=this.shiftData[index].name;
+            this.addFormValidateClass.shifttime=this.shiftData[index].shiftTime;
+            this.addFormValidateClass.shiftspace=this.shiftData[index].shiftSpace;
+            this.addFormValidateClass.shiftrele=this.shiftData[index].shiftRele;
+            this.addFormValidateClass.shiftpeople=this.shiftData[index].shiftPeople;
+            var color=this.shiftData[index].color;
+            $(".shiftColor").css("background-color",color);
         },
         remove1:function (index) {
             this.shiftData.splice(index, 1);
@@ -809,7 +827,7 @@ export default {
                 this.addFormValidateClass.totalTime=totalTime
             }
 
-        }
+        },
     }
 }
 </script>

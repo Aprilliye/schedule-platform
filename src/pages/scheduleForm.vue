@@ -20,11 +20,11 @@
                 </div>
                 <div style="margin-top: 20px">
                     <span>站点：</span>
-                    <Select v-model="station" style="width:200px">
+                    <Select v-model="station" style="width:200px" placeholder="西直门">
                         <Option v-for="item in stationList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                     </Select>
                     <span>岗位：</span>
-                    <Select v-model="post" style="width:200px">
+                    <Select v-model="post" style="width:200px" placeholder="替班员">
                         <Option v-for="item in postList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                     </Select>
                     <p class="selectbutton">
@@ -208,6 +208,7 @@
                 <Form :model="editVocationForm" :label-width="80">
                     <FormItem label="假期类型">
                         <Select v-model="editVocationForm.select">
+                            <Option value="年假">年假</Option>
                             <Option value="病假/病">病假/病</Option>
                             <Option value="事假/事">事假/事</Option>
                             <Option value="婚假/婚">婚假/婚</Option>
@@ -225,10 +226,6 @@
                             <Option value="早退/早退">早退/早退</Option>
                             <Option value="调休/调">调休/调</Option>
                         </Select>
-                    </FormItem>
-                    <FormItem label="假期时间">
-                        <DatePicker v-model="editVocationForm.begin" type="date" placeholder="" style="width: 190px"></DatePicker>至
-                        <DatePicker v-model="editVocationForm.finish" type="date" placeholder="" style="width: 190px" class="float-right"></DatePicker>
                     </FormItem>
                     <FormItem label="备注">
                         <textarea v-model="editVocationForm.textarea" name="remark" class="vocationRemark"></textarea>
@@ -490,8 +487,6 @@
                 },
                 editVocationForm:{
                     select:'',
-                    begin:'',
-                    finish:'',
                     textarea:''
                 },
                 shiftChangeForm:{
@@ -663,17 +658,16 @@
             //假期编辑模态框确定提交
             editVocationMethod:function(event){
                 this.currentTd.className='yellow';
-                var beginDay=this.editVocationForm.begin.toLocaleDateString();
-                var endDay=this.editVocationForm.finish.toLocaleDateString();
-                var beginDate=this.editVocationForm.begin.getDate();
-                var endDate=this.editVocationForm.finish.getDate();
-                var differDate=endDate-beginDate;
-                var differTime=differDate*10;
-                this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour-differTime;
-                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance-differTime;
+                if(this.editVocationForm.select==='年假'){
+                this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour-5+8;
+                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance-5+8;
+                }else{
+                    this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour-10;
+                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance-5+8;
+                }
                 this.target.parentNode.lastChild.style.backgroundColor="#b10000";
                 var message={};
-                message.type='假期编辑:'+this.editVocationForm.select +' 时间'+beginDay+'至'+endDay ;
+                message.type='假期编辑:'+this.editVocationForm.select ;
                 message.remark=this.editVocationForm.textarea;
                 message.setUpTime=new Date().toLocaleString();
                 message.setUpPerson='admin';

@@ -115,6 +115,7 @@ button {
   text-align: left;
 }
 .table table td {
+  width: 100px;
   line-height: 36px;
 }
 table,

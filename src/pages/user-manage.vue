@@ -238,15 +238,16 @@
                     <li>
                         <label>站区/站点</label>
                         <select name="station" class=" reset-input" v-model="addPerson.station">
-                            <option value="">请选择</option>
-                            <option value=""></option>
+                            <option value="西直门">西直门</option>
+                            <option value="西直门">车公庄</option>
                         </select>
                     </li>
                     <li class="require">
                         <label class="require">岗位</label>
                         <select name="postName" v-model="addPerson.post">
-                            <option value="">请选择</option>
-                            <option value=""></option>
+                            <option value="站务员">站务员</option>
+                            <option value="值班站长">值班站长</option>
+                            <option value="站区长助理">站区长助理</option>
                         </select>
                     </li>
                     <li>
@@ -264,8 +265,9 @@
                     <li>
                         <label>权限方案</label>
                         <select name="plan" v-model="addPerson.plan">
-                            <option value="">请选择</option>
-                            <option value=""></option>
+                            <option value="超级管理员">超级管理员</option>
+                            <option value="系统管理员">系统管理员</option>
+                            <option value="管理员">管理员</option>
                         </select>
                     </li>
                     <li class="require">
@@ -382,15 +384,16 @@
                 <li>
                     <label>站区/站点</label>
                     <select name="station" class=" reset-input" v-model="addPersonfake.station">
-                        <option value="" selected="selected">西直门</option>
-                        <option value=""></option>
+                        <option value="西直门">西直门</option>
+                        <option value="西直门">车公庄</option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">岗位</label>
                     <select name="postName" v-model="addPersonfake.post">
-                        <option value="" selected="selected">站区长</option>
-                        <option value=""></option>
+                        <option value="站务员">站务员</option>
+                        <option value="值班站长">值班站长</option>
+                        <option value="站区长助理">站区长助理</option>
                     </select>
                 </li>
                 <li>
@@ -408,8 +411,9 @@
                 <li>
                     <label>权限方案</label>
                     <select name="plan" v-model="addPersonfake.plan">
-                        <option value="">最高权限</option>
-                        <option value=""></option>
+                        <option value="超级管理员">超级管理员</option>
+                        <option value="系统管理员">系统管理员</option>
+                        <option value="管理员">管理员</option>
                     </select>
                 </li>
                 <li class="require">

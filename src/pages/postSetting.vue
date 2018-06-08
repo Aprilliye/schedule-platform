@@ -47,10 +47,10 @@
                         key: 'name'
                     },
                     {
-                        title: '是不是替班',
+                        title: '替班岗位',
                         key: 'ifRelay',
                         render: (h, params) => {
-                            let str = params.row.ifRelay ? '是' : '不是';
+                            let str = params.row.ifRelay ? '是' : '否';
                             return h('div', [
                                 h('span', {
                                     style: {

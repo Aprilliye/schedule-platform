@@ -72,27 +72,7 @@
     margin-left: 10px;
     float: left;
 }
-#userTable{
-    margin-top: 100px;
-}
-#userTable th{
-    width: 122px;
-    height: auto;
-    padding-right: 10px;
-    margin-right: 10px;
-    white-space: nowrap;
-}
-.usermanage-model p{
-    line-height: 30px;
-    padding-top: 10px;
-}
-.idcard,.entrytime,.marriage,.childhas,.education,.political,.partytime,.homeaddress,.certificatenumber,.certificategrade,.crewcode{
-    display: none;
-}
-#userTable{
-    margin: auto;
-    overflow: scroll;
-}
+
 
 /*站区设置*/
 .bgGreen{
