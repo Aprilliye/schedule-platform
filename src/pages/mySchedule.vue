@@ -31,14 +31,14 @@
             <tr>
                 <td>3I2</td>
                 <td>休</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>5A1</td>
+                <td>6</td>
+                <td>休</td>
+                <td>1I</td>
+                <td>4C</td>
+                <td>38</td>
+                <td>38</td>
+                <td>0</td>
             </tr>
         </table>
     </div>
@@ -83,21 +83,21 @@
             <tr>
                 <td>3I2</td>
                 <td>休</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>3I2</td>
+                <td>5A1</td>
+                <td>6</td>
                 <td>休</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>1I</td>
+                <td>4C</td>
+                <td>5I</td>
+                <td>6</td>
+                <td>休</td>
+                <td>1C</td>
+                <td>1B2</td>
+                <td>3A3</td>
+                <td>休</td>
+                <td>76</td>
+                <td>76</td>
+                <td>0</td>
             </tr>
         </table>
     </div>

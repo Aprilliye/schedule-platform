@@ -17,21 +17,25 @@ export const monthdata = [
                 id:1,
                 date: '6.1',
                 name: '6',
+                changetime:0,
             },
             {
                 id:2,
                 date: '6.2',
-                name: '休'
+                name: '休',
+                changetime:0,
             },
             {
                 id:3,
                 date: '6.3',
-                name: '1I'
+                name: '1I',
+                changetime:0,
             },
             {
                 id:4,
                 date: '6.4',
-                name: '4c'
+                name: '4c',
+                changetime:0,
             },
             {
                 id:5,
@@ -830,36 +834,44 @@ export const weekdata = [
                 id:1,
                 date: '6.1',
                 name: '6',
+                changetime:0,
+
             },
             {
                 id:2,
                 date: '6.2',
                 name: '休',
+                changetime:0,
             },
             {
                 id:3,
                 date: '6.3',
-                name: '1I'
+                name: '1I',
+                changetime:0,
             },
             {
                 id:4,
                 date: '6.4',
-                name: '4c'
+                name: '4c',
+                changetime:0,
             },
             {
                 id:5,
                 date: '6.5',
-                name: '5I'
+                name: '5I',
+                changetime:0,
             },
             {
                 id:6,
                 date: '6.6',
-                name: '6'
+                name: '6',
+                changetime:0,
             },
             {
                 id:7,
                 date: '6.7',
-                name: '休'
+                name: '休',
+                changetime:0,
             },
         ]
     },
@@ -876,37 +888,44 @@ export const weekdata = [
             {
                 id:1,
                 date: '6.1',
-                name: '1c'
+                name: '1c',
+                changetime:0,
             },
             {
                 id:2,
                 date: '6.2',
-                name: '1B2'
+                name: '1B2',
+                changetime:0,
             },
             {
                 id:3,
                 date: '6.3',
-                name: '3A3'
+                name: '3A3',
+                changetime:0,
             },
             {
                 id:4,
                 date: '6.4',
-                name: '休'
+                name: '休',
+                changetime:0,
             },
             {
                 id:5,
                 date: '6.5',
-                name: '1H1'
+                name: '1H1',
+                changetime:0,
             },
             {
                 id:6,
                 date: '6.6',
-                name: '5I'
+                name: '5I',
+                changetime:0,
             },
             {
                 id:7,
                 date: '6.7',
-                name: '6'
+                name: '6',
+                changetime:0,
             },
         ]
     },
@@ -923,37 +942,44 @@ export const weekdata = [
             {
                 id:1,
                 date: '6.1',
-                name: '休'
+                name: '休',
+                changetime:0,
             },
             {
                 id:2,
                 date: '6.2',
-                name: '5D'
+                name: '5D',
+                changetime:0,
             },
             {
                 id:3,
                 date: '6.3',
-                name: '6'
+                name: '6',
+                changetime:0,
             },
             {
                 id:4,
                 date: '6.4',
-                name: '休'
+                name: '休',
+                changetime:0,
             },
             {
                 id:5,
                 date: '6.5',
-                name: '2A1'
+                name: '2A1',
+                changetime:0,
             },
             {
                 id:6,
                 date: '6.6',
-                name: '1G'
+                name: '1G',
+                changetime:0,
             },
             {
                 id:7,
                 date: '6.7',
-                name: '休'
+                name: '休',
+                changetime:0,
             },
         ]
     },
@@ -970,37 +996,44 @@ export const weekdata = [
             {
                 id:1,
                 date: '6.1',
-                name: '3A1'
+                name: '3A1',
+                changetime:0,
             },
             {
                 id:2,
                 date: '6.2',
-                name: '3A2'
+                name: '3A2',
+                changetime:0,
             },
             {
                 id:3,
                 date: '6.3',
-                name: '休'
+                name: '休',
+                changetime:0,
             },
             {
                 id:4,
                 date: '6.4',
-                name: '5A1'
+                name: '5A1',
+                changetime:0,
             },
             {
                 id:5,
                 date: '6.5',
-                name: '6'
+                name: '6',
+                changetime:0,
             },
             {
                 id:6,
                 date: '6.6',
-                name: '休'
+                name: '休',
+                changetime:0,
             },
             {
                 id:7,
                 date: '6.7',
-                name: '2I1'
+                name: '2I1',
+                changetime:0,
             },
         ]
     },
@@ -1017,37 +1050,44 @@ export const weekdata = [
             {
                 id:1,
                 date: '6.1',
-                name: '1D'
+                name: '1D',
+                changetime:0,
             },
             {
                 id:2,
                 date: '6.2',
-                name: '4H'
+                name: '4H',
+                changetime:0,
             },
             {
                 id:3,
                 date: '6.3',
-                name: '休'
+                name: '休',
+                changetime:0,
             },
             {
                 id:4,
                 date: '6.4',
-                name: '1B1'
+                name: '1B1',
+                changetime:0,
             },
             {
                 id:5,
                 date: '6.5',
-                name: '休'
+                name: '休',
+                changetime:0,
             },
             {
                 id:6,
                 date: '6.6',
-                name: '2A1'
+                name: '2A1',
+                changetime:0,
             },
             {
                 id:7,
                 date: '6.7',
-                name: '5B'
+                name: '5B',
+                changetime:0,
             },
         ]
     }
