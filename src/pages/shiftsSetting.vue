@@ -91,7 +91,7 @@
         <!-- 新增班次表 -->
         <Modal title="新增班次"
                v-model="modal.addClass"
-                @on-ok="handleSubmit('addFormValidateClass')"
+                @on-ok="addClassMethods('addFormValidateClass')"
                @on-cancel="handleCancel('addFormValidateClass')"
                :loading="true"
             >
@@ -149,7 +149,7 @@
         <Modal title="编辑班次"
                v-model="modal.editShifyClass"
                :loading="true"
-               @on-ok="handleSubmit('addFormValidateClass')"
+               @on-ok="editShifyClassMethods('addFormValidateClass')"
                @on-cancel="handleCancel('addFormValidateClass')"
                 >
             <Form ref="addFormValidateClass" :model="addFormValidateClass" :rules="ruleValidate1" :label-width="80">
@@ -687,7 +687,8 @@ export default {
                 this.addTimeValidate.ifTimeSlot = false;
             })
         },
-        handleSubmit:function(name){
+        //新增班次
+        addClassMethods:function(name){
             let arr = this.addFormValidateClass.timeSlot;
             for(let i=0;i<arr.length;i++){
                 if(arr[i]===''){
@@ -701,6 +702,17 @@ export default {
             }
             this.$refs[name].validate((valid) => {
                 if (valid) {
+                    let obj={};
+                    obj.color=$(".shiftColor").css('background-color');
+                    obj.name= this.addFormValidateClass.name;
+                    obj.codeName=this.addFormValidateClass.codeName;
+                    obj.timeSlot=this.addFormValidateClass.timeSlot;
+                    obj.shiftTime=this.addFormValidateClass.shifttime;
+                    obj.shiftSpace=this.addFormValidateClass.shiftspace;
+                    obj.shiftRele=this.addFormValidateClass.shiftrele;
+                    obj.shiftPeople=this.addFormValidateClass.shiftpeople;
+                    obj.notice=this.addFormValidateClass.notice;
+                    this.shiftData.push(obj);
                     this.$Message.success('修改成功');
                     this.modal.addClass=false
                     this.modal.editShifyClass=false
@@ -714,13 +726,42 @@ export default {
                 this.addFormValidateClass.ifTimeSlot = false;
             })
         },
-        handleSubmit1: function (name) {
+        //编辑班次
+        editShifyClassMethods:function(name){
+             let arr = this.addFormValidateClass.timeSlot;
+            for(let i=0;i<arr.length;i++){
+                if(arr[i]===''){
+                    this.addFormValidateClass.ifTimeSlot = true;
+                    $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
+                    return;
+                }else{
+                    $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
+                    this.addTimeValidate.ifTimeSlot = false;
+                }
+            }
             this.$refs[name].validate((valid) => {
                 if (valid) {
+                    let index=this.currentIndex
+                    this.shiftData[index].color=$(".shiftColor").css('background-color');
+                    this.shiftData[index].name= this.addFormValidateClass.name;
+                   // this.shiftData[index].codeName=this.addFormValidateClass.codeName;
+                    this.shiftData[index].timeSlot=this.addFormValidateClass.timeSlot;
+                    this.shiftData[index].shiftTime=this.addFormValidateClass.shifttime;
+                    this.shiftData[index].shiftSpace=this.addFormValidateClass.shiftspace;
+                    this.shiftData[index].shiftRele=this.addFormValidateClass.shiftrele;
+                    this.shiftData[index].shiftPeople=this.addFormValidateClass.shiftpeople;
+                    //this.shiftData[index].notice=this.addFormValidateClass.notice;
                     this.$Message.success('修改成功');
+                    this.modal.addClass=false
+                    this.modal.editShifyClass=false
+                    this.$refs[name].resetFields();
+                    $(".shiftColor").css("background-color","white");
+
                 } else {
                     this.$Message.error('修改失败');
                 }
+                this.addFormValidateClass.timeSlot = [];
+                this.addFormValidateClass.ifTimeSlot = false;
             })
         },
         beforeEditShift: function () {
@@ -740,6 +781,7 @@ export default {
             this.onDutyData.splice(index, 1);
         },
         edite:function(index){
+            this.currentIndex=index;
             this.modal.editShifyClass=true;
             this.addFormValidateClass.name=this.shiftData[index].name;
             this.addFormValidateClass.shifttime=this.shiftData[index].shiftTime;
