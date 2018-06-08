@@ -287,7 +287,7 @@
         <Modal title="新增时间段"
             v-model="modal.addTimeSlot"
             :loading="true"
-            @on-ok="handleSubmit2('addTimeValidate')"
+            @on-ok="addTimeSlotMethods('addTimeValidate')"
             @on-cancel="handleCancel('addTimeValidate')">
             <Form ref="addTimeValidate" :model="addTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
                 <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
@@ -303,7 +303,7 @@
         <Modal title="编辑时间段"
                v-model="modal.editTimeSlot"
                :loading="true"
-               @on-ok="handleSubmit2('addTimeValidate')"
+               @on-ok="editTimeSlotMethods('addTimeValidate')"
                @on-cancel="handleCancel('addTimeValidate')">
             <Form ref="addTimeValidate" :model="addTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
                 <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
@@ -323,6 +323,7 @@ export default {
     data:function () {
         return {
             modal3:false,
+            currentIndex:'',
             modal: {
                 editShift:false,
                 addShift:false,
@@ -475,11 +476,6 @@ export default {
                 }
             ],
             shiftColumns: [
-                    // {
-                    //     title: '班制名称',
-                    //     align: 'center',
-                    //     key: 'name',
-                    // },
                          {
                         title: '班制名称',
                         align: 'center',
@@ -497,7 +493,16 @@ export default {
                     {
                         title: '起止时间',
                         align: 'center',
-                        key: 'timeSlot'
+                        key: 'timeSlot',
+                              render: (h, params) => {
+                        let beginTimeSlot=params.row.timeSlot[0];
+                        let endTimeSlot=params.row.timeSlot[1];
+                        return h('div', [
+                            h('span', beginTimeSlot),
+                            h('span', '-'),
+                            h('span', endTimeSlot),
+                        ]);
+                    }
                     },
                     {
                         title: '本班工时',
@@ -547,15 +552,24 @@ export default {
                     }
                 ],
             shiftData:[
-                {name: '早班', timeSlot: '07:00-14:00', shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 4,color:'rgb(110, 121, 190)'},
-                {name: '晚班', timeSlot: '14:00-21:00', shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1,color:'rgb(41, 173, 125)'},
-                {name: '白班', timeSlot: '07:00-17:00', shiftTime: '10小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1,color:'rgb(59, 199, 85)'}
+                {name: '早班', timeSlot: ['07:00','14:00'], shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 4,color:'rgb(110, 121, 190)'},
+                {name: '晚班', timeSlot: ['14:00','21:00'], shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1,color:'rgb(41, 173, 125)'},
+                {name: '白班', timeSlot: ['07:00','17:00'], shiftTime: '10小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1,color:'rgb(59, 199, 85)'}
             ],
             onDutyColumns: [
                 {
                     title: '时间段',
                     align: 'center',
-                    key: 'timeSlot'
+                    key: 'timeSlot',
+                    render: (h, params) => {
+                        let beginTimeSlot=params.row.timeSlot[0];
+                        let endTimeSlot=params.row.timeSlot[1];
+                        return h('div', [
+                            h('span', beginTimeSlot),
+                            h('span', '-'),
+                            h('span', endTimeSlot),
+                        ]);
+                    }
                 },
                 {
                     title: '值班人数',
@@ -587,17 +601,16 @@ export default {
                             }, '删除')
                         ]);
                     }
-
                 }
             ],
             onDutyData:[
-                {timeSlot:"00:00-07:00", shiftPeople: 2 },
-                {timeSlot:"07:00-09:00", shiftPeople: 8 },
-                {timeSlot:"09:00-11:00", shiftPeople: 4 },
-                {timeSlot:"11:00-13:00", shiftPeople: 4 },
-                {timeSlot:"13:00-17:00", shiftPeople: 4 },
-                {timeSlot:"17:00-19:00", shiftPeople: 4 },
-                {timeSlot:"19:00-24:00", shiftPeople: 2 },
+                {timeSlot:['00:00','07:00'], shiftPeople: 2 },
+                {timeSlot:['07:00','09:00'], shiftPeople: 8 },
+                {timeSlot:['09:00','11:00'], shiftPeople: 4 },
+                {timeSlot:['11:00','13:00'], shiftPeople: 4 },
+                {timeSlot:['13:00','17:00'], shiftPeople: 4 },
+                {timeSlot:['17:00','19:00'], shiftPeople: 4 },
+                {timeSlot:['19:00','24:00'], shiftPeople: 2 },
             ],
             showEchart: false
         }
@@ -617,7 +630,8 @@ export default {
                 }
             })
         },
-        handleSubmit2: function (name) {
+        //新增时间段
+        addTimeSlotMethods: function (name) {
             let arr = this.addTimeValidate.timeSlot;
             for(let i=0;i<arr.length;i++){
                 if(arr[i] === ''){
@@ -631,11 +645,41 @@ export default {
             }
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    this.$Message.success('修改成功');
+                    let obj={};
+                    obj.timeSlot=this.addTimeValidate.timeSlot;
+                    obj.shiftPeople=this.addTimeValidate.shiftpeople;
+                    this.onDutyData.push(obj);
+                    this.$Message.success('新增成功');
                     this.modal.addTimeSlot = false;
                     this.$refs[name].resetFields();
-
-
+                } else {
+                    this.$Message.error('新增失败');
+                }
+                this.addTimeValidate.timeSlot = [];
+                this.addTimeValidate.ifTimeSlot = false;
+            })
+        },
+        //编辑时间段
+        editTimeSlotMethods:function(name){
+                let arr = this.addTimeValidate.timeSlot;
+            for(let i=0;i<arr.length;i++){
+                if(arr[i] === ''){
+                    this.addTimeValidate.ifTimeSlot = true;
+                    $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
+                    return;
+                } else {
+                    $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
+                    this.addTimeValidate.ifTimeSlot = false;
+                }
+            }
+            this.$refs[name].validate((valid) => {
+                if (valid) {
+                    let index=this.currentIndex ;
+                    this.onDutyData[index].timeSlot=this.addTimeValidate.timeSlot;
+                    this.onDutyData[index].shiftPeople=this.addTimeValidate.shiftpeople;
+                    this.$Message.success('修改成功');
+                    this.modal.editTimeSlot = false;
+                    this.$refs[name].resetFields();
                 } else {
                     this.$Message.error('修改失败');
                 }
@@ -687,6 +731,7 @@ export default {
             this.modal.editShift = true;
         },
         editpeoplenumber:function(index){
+            this.currentIndex=index;
             this.modal.editTimeSlot=true;
             this.addTimeValidate.timeSlot.push(this.onDutyData[index].timeSlot);
             this.addTimeValidate.shiftpeople=this.onDutyData[index].shiftPeople;
@@ -778,7 +823,7 @@ export default {
                 map.set(i, 0);
             }
             for(let obj of array){
-                let arr = obj.timeSlot.split('-');
+                let arr = obj.timeSlot;
                 let n = obj.shiftPeople;
                 if(arr[1]<arr[0]){
                     for(let i = parseInt(arr[0])+1;i<=24;i++){
