@@ -121,12 +121,12 @@
                         </div>
                     </Poptip>
                 </FormItem>
-                <FormItem label="起止时间" prop="timeSlot"element-id="timeSlot" @on-change="getsectionTime">
-                    <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"></TimePicker>
+                <FormItem label="起止时间" prop="timeSlot"element-id="timeSlot">
+                    <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addShiftValue'  @on-change="getsectionTime"></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
                 <FormItem label="总时间" prop="totalTime">
-                    <Input v-model="addFormValidateClass.totalTime" placeholder=""/>
+                    <Input v-model="addFormValidateClass.totalTime" placeholder="" readonly/>
                 </FormItem>
                 <FormItem label="本班工时" prop="shifttime">
                     <Input v-model="addFormValidateClass.shifttime" placeholder=""/>
@@ -179,11 +179,11 @@
                     </Poptip>
                 </FormItem>
                 <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot" >
-                    <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"  @on-change="getsectionTime"></TimePicker>
+                    <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"  @on-change="getsectionTime" :value='editShiftValue'></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
                 <FormItem label="总时间" prop="totalTime">
-                    <Input v-model="addFormValidateClass.totalTime" placeholder=""/>
+                    <Input v-model="addFormValidateClass.totalTime" placeholder="" readonly/>
                 </FormItem>
                 <FormItem label="本班工时" prop="shifttime">
                     <Input v-model="addFormValidateClass.shifttime" placeholder=""/>
@@ -291,7 +291,7 @@
             @on-cancel="handleCancel('addTimeValidate')">
             <Form ref="addTimeValidate" :model="addTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
                 <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
-                    <TimePicker  v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"></TimePicker>
+                    <TimePicker  v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addTime'></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addTimeValidate.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
                 <FormItem label="值班人数" prop="shiftpeople">
@@ -307,7 +307,7 @@
                @on-cancel="handleCancel('addTimeValidate')">
             <Form ref="addTimeValidate" :model="addTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
                 <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
-                    <TimePicker  v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"></TimePicker>
+                    <TimePicker  v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='editTime'></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addTimeValidate.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
                 <FormItem label="值班人数" prop="shiftpeople">
@@ -327,6 +327,10 @@ export default {
             tab1:true,
             tab2:true,
             tab3:true,
+            editShiftValue:[],
+            addShiftValue:[],
+            editTime:[],
+            addTime:[],
             modal: {
                 editShift:false,
                 addShift:false,
@@ -478,6 +482,7 @@ export default {
                     yeartime:'1'
                 }
             ],
+            //班次表
             shiftColumns: [
                          {
                         title: '班制名称',
@@ -666,7 +671,7 @@ export default {
                 this.addTimeValidate.ifTimeSlot = false;
             })
         },
-        //编辑时间段
+        //编辑时间段验证提交
         editTimeSlotMethods:function(name){
                 let arr = this.addTimeValidate.timeSlot;
             for(let i=0;i<arr.length;i++){
@@ -733,7 +738,7 @@ export default {
                 this.addFormValidateClass.ifTimeSlot = false;
             })
         },
-        //编辑班次
+        //编辑班次验证提交
         editShifyClassMethods:function(name){
              let arr = this.addFormValidateClass.timeSlot;
             for(let i=0;i<arr.length;i++){
@@ -778,15 +783,18 @@ export default {
             }
             this.modal.editShift = true;
         },
+        //编辑时间段
         editpeoplenumber:function(index){
             this.currentIndex=index;
             this.modal.editTimeSlot=true;
-            this.addTimeValidate.timeSlot.push(this.onDutyData[index].timeSlot);
+            this.addTimeValidate.timeSlot=this.onDutyData[index].timeSlot;
+            this.editTime=this.onDutyData[index].timeSlot;
             this.addTimeValidate.shiftpeople=this.onDutyData[index].shiftPeople;
         },
         remove2:function (index) {
             this.onDutyData.splice(index, 1);
         },
+        //编辑班次
         edite:function(index){
             this.currentIndex=index;
             this.modal.editShifyClass=true;
@@ -796,6 +804,8 @@ export default {
             this.addFormValidateClass.shiftrele=this.shiftData[index].shiftRele;
             this.addFormValidateClass.shiftpeople=this.shiftData[index].shiftPeople;
             var color=this.shiftData[index].color;
+            this.addFormValidateClass.timeSlot=this.shiftData[index].timeSlot;
+            this.editShiftValue=this.shiftData[index].timeSlot;
             $(".shiftColor").css("background-color",color);
         },
         remove1:function (index) {
@@ -812,6 +822,7 @@ export default {
             this.addTimeValidate.timeSlot = arr;
         },
         handleCancel: function (name) {
+            console.log("aaa");
             this.$refs[name].resetFields();
             this.addTimeValidate.ifTimeSlot = false;
             $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
@@ -914,13 +925,21 @@ export default {
         },
         //取得总时间
         getsectionTime:function(){
-            if(this.addFormValidateClass.timeSlot[0]&&this.addFormValidateClass.timeSlot[1]){
-                var beginTime=parseInt(this.addFormValidateClass.timeSlot[0]);
-                var endTime=parseInt(this.addFormValidateClass.timeSlot[1]);
-                var totalTime=endTime-beginTime+'小时';
-                this.addFormValidateClass.totalTime=totalTime
+           
+            let beginTime=parseInt(this.addFormValidateClass.timeSlot[0].split(":")[0])*60+parseInt(this.addFormValidateClass.timeSlot[0].split(":")[1]);
+            let endTime=parseInt(this.addFormValidateClass.timeSlot[1].split(":")[0])*60+parseInt(this.addFormValidateClass.timeSlot[1].split(":")[1]);
+            let total=endTime-beginTime;
+            let totalTime='';
+            let totalHour;
+            let totalMinute;
+            if(total>0){
+                totalHour=parseInt(total/60);
+                totalMinute=total%60;
+                totalTime=totalHour+'小时'+totalMinute+'分钟';
+            }else{
+                totalTime=0+'小时'+0+'分钟';
             }
-
+              this.addFormValidateClass.totalTime=totalTime;
         },
     }
 }

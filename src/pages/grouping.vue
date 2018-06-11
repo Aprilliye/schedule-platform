@@ -26,6 +26,7 @@
     </div>
 </template>
 <script>
+    import * as api from "../api/commonAPI";
     import listBlock from '../components/listBlock.vue'
     export default {
         // created:function(){
@@ -39,7 +40,7 @@
             }
         },
         methods:{
-            // request:function(){
+            // request: async function(){
             //         let response = await api.stationList();
             //         console.log(response);
             //     //    if (response.meta.code !== 0) {
