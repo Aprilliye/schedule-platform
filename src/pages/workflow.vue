@@ -84,6 +84,8 @@
                 ifEdit: false,      //  确定按钮事件状态
                 currentTd: null,    //   当前操作的单元格
                 editItem: '',      //  编辑工作流程的颜色
+                temporary: ''
+
             }
         },
         created: function () {
@@ -109,6 +111,7 @@
                 obj.toggleClass('active');
                 obj.siblings().removeClass('active');
                 this.currentColor = obj.hasClass('active') ? obj.css('background-color') : '';
+                this.temporary = obj.attr('code');
             },
             //  确定操作
             handleConfirm: function () {
@@ -120,8 +123,10 @@
                     this.$Message.warning('工作流程内容不能为空！');
                     return;
                 }
+                this.editItem = this.temporary;
                 /** 新增确定事件 */
                 if(!this.ifEdit){
+                    
                     let startTd = $('.gray').eq(0);
                     let startTdColspan = startTd.attr('colspan') ? parseInt(startTd.attr('colspan'))-1 : 0;
                     
@@ -137,12 +142,13 @@
                     let colspan = end - start + 1 + startTdColspan + endTdColspan;
                     startTd.attr('colspan', colspan);
                 }
-                
-                $('.gray').html(this.workflowText).attr('title', this.workflowText).css('background-color', this.currentColor);
+                console.log(this.editItem);
+                $('.gray').html(this.workflowText).attr('title', this.workflowText).css('background-color', this.currentColor).attr('name', this.editItem);
                 $('.gray').removeClass('gray');
                 this.workflowText = '';
                 this.showBtn.submit = false;
                 this.showBtn.input = false;
+                
             },
             //  取消操作
             handleCancel: function () {
@@ -159,7 +165,7 @@
                 this.showBtn.edit = false;
                 this.showBtn.delete = false;
                 this.ifEdit = true;
-                $('[code="'+ this.editItem +'"]').addClass('active').siblings().removeClass('active');
+                $('li[code="'+ this.editItem +'"]').addClass('active').siblings().removeClass('active');
             },
             //  删除工作流程
             handleDelete: function () {
@@ -204,7 +210,7 @@
                 self.workflowText = obj.html();
                 self.showBtn.edit = true;
                 self.showBtn.delete = true;
-                self.editItem = obj.attr('code');
+                self.editItem = obj.attr('name');
                 //console.log(self.editColor);
                 //return;
             }
