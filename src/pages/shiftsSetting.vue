@@ -6,8 +6,8 @@
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true" >新增班制</a>
         </div>
-        <Tabs value="name1" :animated="false">
-            <TabPane label="西直门五班制" name="name1">
+        <Tabs type="card" value="1" :animated="false" closable @on-tab-remove="handleShiftTabRemove">
+            <TabPane label="西直门五班制" name="1" v-if='tab1'>
                 <div class="panel-body">
                     <div class="buttonblock"></div>
                     <div class="shifts-content">
@@ -85,8 +85,8 @@
                     
                 </div>
             </TabPane>
-            <TabPane label="标签二" name="name2">标签二的内容</TabPane>
-            <TabPane label="标签三" name="name3">标签三的内容</TabPane>
+            <TabPane label="标签二" name="2" v-if='tab2'>标签二的内容</TabPane>
+            <TabPane label="标签三" name="3" v-if='tab3'>标签三的内容</TabPane>
         </Tabs>
         <!-- 新增班次表 -->
         <Modal title="新增班次"
@@ -324,6 +324,9 @@ export default {
         return {
             modal3:false,
             currentIndex:'',
+            tab1:true,
+            tab2:true,
+            tab3:true,
             modal: {
                 editShift:false,
                 addShift:false,
@@ -618,6 +621,10 @@ export default {
     methods:{
         chiocepost: function(){
 
+        },
+        //删除班制
+        handleShiftTabRemove:function(name){
+            this['tab'+name]=false;
         },
         editShift: function (name) {
             this.$refs[name].validate((valid) => {

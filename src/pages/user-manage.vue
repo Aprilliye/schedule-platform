@@ -54,31 +54,31 @@
                         </tr>
                         </thead>
                         <tbody id="userDataTable">
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">删除</a><a style="color: #0000FF" @click="addPersonModalfake = true">修改</a></td>
-                            <td>60502868</td>
-                            <td>梅松</td>
-                            <td>男</td>
-                            <td>13810582556</td>
-                            <td>1990-12-12</td>
-                            <td>站区长</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td>站区</td>
-                            <td v-show="tableItem[0].ifShow">110108198212142712</td>
-                            <td v-show="tableItem[1].ifShow">1990-12-12</td>
-                            <td v-show="tableItem[2].ifShow">已婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">高中以下</td>
-                            <td v-show="tableItem[5].ifShow">群众</td>
-                            <td v-show="tableItem[6].ifShow">2008-05-01</td>
-                            <td v-show="tableItem[7].ifShow">北京市石景山区古城南路19号楼</td>
-                            <td v-show="tableItem[8].ifShow">1401061060501034</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">156598965236566</td>
-                            <td v-show="tableItem[11].ifShow">5963265595466658</td>
-                            <td v-show="tableItem[12].ifShow">1401061060501034</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
+                        <tr v-for="(item,index) in personList" :key='index'>
+                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">{{item.action[0]}}</a><a style="color: #0000FF" @click="addPersonModalfake = true">{{item.action[1]}}</a></td>
+                            <td>{{item.workNumber}}</td>
+                            <td>{{item.name}}</td>
+                            <td>{{item.sex}}</td>
+                            <td>{{item.phoneNumber}}</td>
+                            <td>{{item.birthday}}</td>
+                            <td>{{item.post}}</td>
+                            <td>{{item.station}}</td>
+                            <td>{{item.stationArea}}</td>
+                            <td>{{item.manager}}</td>
+                            <td v-show="tableItem[0].ifShow">{{item.idCard}}</td>
+                            <td v-show="tableItem[1].ifShow">{{item.entryTime}}</td>
+                            <td v-show="tableItem[2].ifShow">{{item.maritalStatus}}</td>
+                            <td v-show="tableItem[3].ifShow">{{item.childrenHave}}</td>
+                            <td v-show="tableItem[4].ifShow">{{item.education}}</td>
+                            <td v-show="tableItem[5].ifShow">{{item.political}}</td>
+                            <td v-show="tableItem[6].ifShow">{{item.partyTime}}</td>
+                            <td v-show="tableItem[7].ifShow">{{item.address}}</td>
+                            <td v-show="tableItem[8].ifShow">{{item.stationCertificateNumber}}</td>
+                            <td v-show="tableItem[9].ifShow">{{item.stationCertificateLevel}}</td>
+                            <td v-show="tableItem[10].ifShow">{{item.peopleCode}}</td>
+                            <td v-show="tableItem[11].ifShow">{{item.fireCertificateNumber}}</td>
+                            <td v-show="tableItem[12].ifShow">{{item.controllerNumber}}</td>
+                            <td v-show="tableItem[13].ifShow">{{item.controllerLevel}}</td>
                         </tr>
                         <tr>
                             <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
@@ -570,6 +570,62 @@
                     {
                         name: '综控员证书级别',
                         ifShow: false
+                    },
+                ],
+                personList:[
+                    {
+                        userId:1,
+                        action:['删除','修改'],
+                        workNumber:60502868,
+                        name:'梅松',
+                        sex:'男',
+                        phoneNumber:13810582556,
+                        birthday:'1990-12-12',
+                        post:'站区长',
+                        station:'西直门',
+                        stationArea:'西直门',
+                        manager:'站区',
+                        idCard:'110108198212142712',
+                        entryTime:'1990-12-12',
+                        maritalStatus:'已婚',
+                        childrenHave:'未育',
+                        education:'高中以下',
+                        political:'群众',
+                        partyTime:'2008-05-01',
+                        address:'北京市石景山区古城南路19号楼',
+                        stationCertificateNumber:'1401061060501034',
+                        stationCertificateLevel:'站务初级',
+                        peopleCode:'5963265595466658',
+                        fireCertificateNumber:'156598965236566',
+                        controllerNumber:'1401061060501034',
+                        controllerLevel:'站务初级'
+                    },
+                        {
+                        userId:2,
+                        action:['删除','修改'],
+                        workNumber:60506796,
+                        name:'伊坤',
+                        sex:'男',
+                        phoneNumber:13785663247,
+                        birthday:'1992-10-6',
+                        post:'站务员',
+                        station:'西直门',
+                        stationArea:'西直门',
+                        manager:'',
+                        idCard:'110106199210060344',
+                        entryTime:'1990-12-12',
+                        maritalStatus:'已婚',
+                        childrenHave:'未育',
+                        education:'本科',
+                        political:'共产党员',
+                        partyTime:'2006-10-11',
+                        address:'北京市丰台区花乡羊坊花园西院1',
+                        stationCertificateNumber:'1701061060500643',
+                        stationCertificateLevel:'站务初级',
+                        peopleCode:'7852632594125789',
+                        fireCertificateNumber:'1458962574123658',
+                        controllerNumber:'1752695213699541',
+                        controllerLevel:'站务初级'
                     },
                 ],
                 selectedItmes: [],

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <div class="content-header">
             <button class=" btnDefault bgGreen" type="button" @click="addStationArea = true"><span>新增站区</span></button>
             <!--新增站区弹框-->
@@ -28,6 +28,9 @@
 <script>
     import listBlock from '../components/listBlock.vue'
     export default {
+        // created:function(){
+        //     this.request();
+        // },
         data:function () {
             return {
                 addStationArea: false,
@@ -36,6 +39,17 @@
             }
         },
         methods:{
+            // request:function(){
+            //         let response = await api.stationList();
+            //         console.log(response);
+            //     //    if (response.meta.code !== 0) {
+            //     //        this.$Loading.error();
+            //     //        this.$Message.error(response.meta.message);
+            //     //    }else{
+            //     //        this.$Loading.finish();
+            //     //        this.arr=response;
+            //     //    }
+            // },
             addStationAreaMethod:function(){
                 if(this.stationName){
                     this.arr.push(this.stationName);
