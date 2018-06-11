@@ -144,6 +144,7 @@
                 let data = result.data;
                 let dataLen = data.length;
                 this.totalHours = 0;
+                $('#theHead0').find('p span').html('0');
                 for(let i=0;i<dataLen;i++){
                     let obj = data[i];
                     let n = obj.weekNumber;
@@ -415,6 +416,7 @@
                     }
                 }                
             },
+            //  删除一行
             deleteTr: function (index) {
                 $('[row="'+ index +'"]').remove();
             }
