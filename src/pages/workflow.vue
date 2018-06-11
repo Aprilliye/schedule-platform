@@ -20,13 +20,13 @@
                             <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n < 10 ? '0'+n : n)+':00' }}</td>
                         </tr>
                         <template v-for="post in item.postArr">
-                            <tr :code="'tr'+index+'-'+post.index+'0'" :key="'post0-'+post.index">
+                            <tr :code="'tr'+index+'-'+post.index+'0'">
                                 <td rowspan="2" colspan="3">{{post.index}}</td>
                                 <template v-for="n in 24">
                                     <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" width="30" :code="'atd'+index+'-'+post.index+'0'+'-'+n"></td>
                                 </template>
                             </tr>
-                            <tr :code="'tr'+index+'-'+post.index+'1'" :key="'post1-'+post.index">
+                            <tr :code="'tr'+index+'-'+post.index+'1'">
                                 <template v-for="n in 24">
                                     <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" :code="'btd'+index+'-'+post.index+'0'+'-'+n"></td>
                                 </template>
@@ -49,7 +49,7 @@
             <div class="colorSelector" v-show="showBtn.input">
                 <input type="text" v-model.trim="workflowText">
                 <ul>
-                    <li v-for="(color, index) in colorArr" :key="'li'+index" :style="'background:#'+color" @click="pickUp"></li>
+                    <li v-for="(color, index) in colorArr" :key="'li'+index" :style="'background:#'+color" :code="'color'+index" @click="pickUp"></li>
                 </ul>
             </div>           
         </div>
@@ -81,8 +81,11 @@
                 workflowText: '',
                 colorArr: ['FF0000', 'FFFFFF', '00FF00', '5588FF', '00FFFF', 'FFFF00', 'cccccc', '70DB93', 'D9D919', '7093DB', 'C0C0C0', '527F76', '93DB70', 'FF7F00', 'CFB53B', 'EBC79E' , 'FF6EC7', '7D7DFF', '9370DB', 'EAEAAE', 'C0D9D9'],
                 currentColor: '',
-                ifEdit: false,  //  确定按钮事件状态
-                currentTd: null   //   当前操作的单元格
+                ifEdit: false,      //  确定按钮事件状态
+                currentTd: null,    //   当前操作的单元格
+                editItem: '',      //  编辑工作流程的颜色
+                temporary: ''
+
             }
         },
         created: function () {
@@ -108,6 +111,7 @@
                 obj.toggleClass('active');
                 obj.siblings().removeClass('active');
                 this.currentColor = obj.hasClass('active') ? obj.css('background-color') : '';
+                this.temporary = obj.attr('code');
             },
             //  确定操作
             handleConfirm: function () {
@@ -119,8 +123,10 @@
                     this.$Message.warning('工作流程内容不能为空！');
                     return;
                 }
+                this.editItem = this.temporary;
                 /** 新增确定事件 */
                 if(!this.ifEdit){
+                    
                     let startTd = $('.gray').eq(0);
                     let startTdColspan = startTd.attr('colspan') ? parseInt(startTd.attr('colspan'))-1 : 0;
                     
@@ -136,12 +142,13 @@
                     let colspan = end - start + 1 + startTdColspan + endTdColspan;
                     startTd.attr('colspan', colspan);
                 }
-                
-                $('.gray').html(this.workflowText).attr('title', this.workflowText).css('background-color', this.currentColor);
+                console.log(this.editItem);
+                $('.gray').html(this.workflowText).attr('title', this.workflowText).css('background-color', this.currentColor).attr('name', this.editItem);
                 $('.gray').removeClass('gray');
                 this.workflowText = '';
                 this.showBtn.submit = false;
                 this.showBtn.input = false;
+                
             },
             //  取消操作
             handleCancel: function () {
@@ -158,6 +165,7 @@
                 this.showBtn.edit = false;
                 this.showBtn.delete = false;
                 this.ifEdit = true;
+                $('li[code="'+ this.editItem +'"]').addClass('active').siblings().removeClass('active');
             },
             //  删除工作流程
             handleDelete: function () {
@@ -202,6 +210,8 @@
                 self.workflowText = obj.html();
                 self.showBtn.edit = true;
                 self.showBtn.delete = true;
+                self.editItem = obj.attr('name');
+                //console.log(self.editColor);
                 //return;
             }
             /**  无颜色的单元格  */

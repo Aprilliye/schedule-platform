@@ -46,7 +46,7 @@ a {
     margin: 30px auto 50px;
 }
 .login .inputBox {
-    height: 36px;
+    height: 40px;
     border: 1px solid #E5E5E5;
     background: #fff;
     border-radius: 5px;
@@ -62,23 +62,25 @@ a {
     width: 40px;
     text-align: center;
     color: #bbb;
-    line-height: 32px;
+    line-height: 30px;
 }
 .login .inputBox input {
     width: 250px;
     line-height: 26px;
     border: 0;
     outline: none;
-    padding: 5px;
 }
 .login .btn-login {
     display: block;
     width: 100%;
-    height: 46px;
+    height: 40px;
     border-radius: 5px;
-    line-height: 46px;
+    line-height: 40px;
     color: #fff;
     background-color: #3A6BCE;
     font-size: 14px;
     border: 0;
+}
+#errorMsg{
+    line-height: 40px;
 }
