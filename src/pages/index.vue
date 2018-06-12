@@ -29,7 +29,7 @@
       </div>
       <div class="left-div">
           <Row>
-              <Col span="3">
+              <Col span="3" style="position:fixed;left:0;top:60px;">
                 <Menu class="main-menu">
                     <Submenu name="1">
                         <template slot="title">
@@ -123,7 +123,7 @@
                     </Submenu>
                 </Menu>
               </Col>
-              <Col span="21">
+              <Col span="21" style="margin-left:12.5%;">
                 <div class="right-div">
                     <router-view></router-view>
                 </div>

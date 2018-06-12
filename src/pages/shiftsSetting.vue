@@ -121,7 +121,7 @@
                         </div>
                     </Poptip>
                 </FormItem>
-                <FormItem label="起止时间" prop="timeSlot"element-id="timeSlot">
+                <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot">
                     <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addShiftValue'  @on-change="getsectionTime"></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
@@ -799,6 +799,7 @@ export default {
             this.currentIndex=index;
             this.modal.editShifyClass=true;
             this.addFormValidateClass.name=this.shiftData[index].name;
+            this.addFormValidateClass.codeName= 12;
             this.addFormValidateClass.shifttime=this.shiftData[index].shiftTime;
             this.addFormValidateClass.shiftspace=this.shiftData[index].shiftSpace;
             this.addFormValidateClass.shiftrele=this.shiftData[index].shiftRele;
