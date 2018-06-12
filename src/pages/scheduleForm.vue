@@ -77,7 +77,7 @@
                             <td class="scheduleName" @mouseenter="showNameMessage" @mouseleave="hideNameMessage">{{item.userName}}</td>
                             <td>{{item.postName}}</td>
                             <!--周表点击事件-->
-                            <td v-for="(list, index) in item.schedule" :key="'aa'+index" :id="list.id" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage">
+                            <td v-for="(list, index) in item.schedule" :code="index" :key="'aa'+index" :id="list.id" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage">
                                 {{list.name}}
                             </td>
                             <td>{{item.planWorkHour}}</td>
@@ -162,7 +162,7 @@
                         <tr v-for="item in monthdata" :key="item.userId" :id="item.userId">
                             <td class="scheduleName" @mouseenter="showNameMessageMonth" @mouseleave="hideNameMessage">{{item.userName}}</td>
                             <td>{{item.postName}}</td>
-                            <td v-for="(list, index) in item.schedule" :id="list.id" :key="'bb'+index" @click="clickTd"  @mouseenter="showMessageMonth" @mouseleave="hideMessage">{{list.name}}</td>
+                            <td v-for="(list, index) in item.schedule" :code="index" :id="list.id" :key="'bb'+index" @click="clickTd"  @mouseenter="showMessageMonth" @mouseleave="hideMessage">{{list.name}}</td>
                             <td>{{item.planWorkHour}}</td>
                             <td>{{item.actualWorkHour}}</td>
                             <td>{{item.balance}}</td>
@@ -177,7 +177,7 @@
                     <div @click="absenteeismModal">旷工缺勤</div>
                     <div @click="overtimeModal">加班补班</div>
                     <div @click="substituteModal">替班</div>
-                    <div  @click="transferModal">调离</div>
+                    <div @click="transferModal">调离</div>
                     <div @click="smallVocationModal">零星假</div>
                     <div @click="otherModal" >其它</div>
                     <div @click="revoke">撤销</div>
@@ -203,8 +203,7 @@
             <Modal
                     v-model="modal.editVocation"
                     title="假期编辑"
-                    @on-ok="editVocationMethod"
-                    @on-cancel="">
+                    @on-ok="editVocationMethod">
                 <Form :model="editVocationForm" :label-width="80">
                     <FormItem label="假期类型">
                         <Select v-model="editVocationForm.select">
@@ -234,11 +233,9 @@
             </Modal>
             <!--班次变更-->
             <Modal
-                    v-model="modal.shiftChange"
-                    title="班次变更"
-                    @on-ok="shiftChangeMethod"
-                    @on-cancel=""
-                    >
+                v-model="modal.shiftChange"
+                title="班次变更"
+                @on-ok="shiftChangeMethod">
                 <Form :model="shiftChangeForm" :label-width="80">
                     <FormItem label="班次">
                         <Select v-model="shiftChangeForm.select">
@@ -254,9 +251,7 @@
             <Modal
                     v-model="modal.provisionalDisposition"
                     title="临时安排"
-                    @on-ok="provisionalDispositionMethod"
-                    @cancel=""
-                    >
+                    @on-ok="provisionalDispositionMethod">
                 <Form :model="provisionalDispositionForm" :label-width="100">
                     <FormItem label="临时安排类型">
                         <Select v-model="provisionalDispositionForm.select">
@@ -288,9 +283,7 @@
             <Modal
                     v-model="modal.absenteeism"
                     title="旷工缺勤"
-                    @on-ok="absenteeismMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="absenteeismMethod">
                 <Form :model="absenteeismForm" :label-width="80">
                     <FormItem label="缺勤工时">
                         <Select v-model="absenteeismForm.selectTime">
@@ -313,9 +306,7 @@
             <Modal
                     v-model="modal.overtime"
                     title="补班加班"
-                    @on-ok="overtimeMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="overtimeMethod">
                 <Form :model="overtimeForm" :label-width="80">
                     <FormItem label="加班工时">
                         <Select v-model="overtimeForm.selectTime">
@@ -338,9 +329,7 @@
             <Modal
                     v-model="modal.substitute"
                     title="替班"
-                    @on-ok="substituteMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="substituteMethod">
                 <Form :model="substituteForm" :label-width="80">
                     <FormItem label="站点">
                         <Select v-model="substituteForm.station">
@@ -362,9 +351,7 @@
             <Modal
                     v-model="modal.other"
                     title="其它"
-                    @on-ok="otherMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="otherMethod">
                 <Form :model="otherForm" :label-width="80">
                     <FormItem label="工时">
                         <Select v-model="otherForm.selectTime">
@@ -387,9 +374,7 @@
             <Modal
                     v-model="modal.smallVocation"
                     title="零星假"
-                    @on-ok="smallVocationMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="smallVocationMethod">
                 <Form :model="smallVocationForm" :label-width="80">
                     <FormItem label="工时">
                         <Select v-model="smallVocationForm.selectTime">
@@ -410,11 +395,9 @@
             </Modal>
             <!--调离-->
             <Modal
-                    v-model="modal.transfer"
-                    title="调离"
-                    @on-ok="transferMothod"
-                    @cancel=""
-                    >
+                v-model="modal.transfer"
+                title="调离"
+                @on-ok="transferMothod">
                 <Form :model="transferForm" :label-width="80">
                     <FormItem label="站点">
                         <Select v-model="transferForm.station">
@@ -545,6 +528,7 @@
                     actualWorkHour:'46'
 
                 },
+                clickCurrent: null
             };
         },
         created: function () {
@@ -560,6 +544,8 @@
                 });
             },
             clickTd:function(e){
+                let obj = $(e.target);
+                this.clickCurrent = obj;
                 //每次点击确定点击行数列数
                 var targettd = e.target.id;
                 var targettr = e.target.parentNode.id;
@@ -835,6 +821,7 @@
                 for(var currentId=this.clicktd - 1;currentId<=this.clicktd - 1+length;currentId++){
                     this.weekdata[this.clicktr-1].schedule[currentId].name=''
                 }
+                //console.log(this.clickCurrent)
              },
             //零星假模态框
             smallVocationModal:function(){
