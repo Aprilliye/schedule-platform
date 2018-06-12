@@ -246,8 +246,9 @@
 }
 .vocationDiv{
     border: 1px solid #e5e5e5;
+    border-bottom: 0;
     width: 100px;
-    height: 260px;
+    height: 310px;
     cursor:pointer;
     display:none;
     position: fixed;
@@ -258,8 +259,8 @@
 }
 .vocationDiv div{
     border-bottom: 1px solid #e5e5e5;
-    width: 100px;
-    line-height: 25px;
+    width: 100%;
+    line-height: 30px;
     text-align: center;
 }
 .peopleMessage{
