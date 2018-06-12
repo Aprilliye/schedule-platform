@@ -142,7 +142,6 @@
                     let colspan = end - start + 1 + startTdColspan + endTdColspan;
                     startTd.attr('colspan', colspan);
                 }
-                console.log(this.editItem);
                 $('.gray').html(this.workflowText).attr('title', this.workflowText).css('background-color', this.currentColor).attr('name', this.editItem);
                 $('.gray').removeClass('gray');
                 this.workflowText = '';

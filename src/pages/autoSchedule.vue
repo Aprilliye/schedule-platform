@@ -7,9 +7,9 @@
                     <Select v-model="currentShift" style="width:200px">
                         <Option v-for="(item, index) in shifts" :value="item" :key="index">{{ item }}</Option>
                     </Select>
-                    <button class="btnDefault bgOrange" @click="loadtemplate">加载模板</button>
-                    <button class="btnDefault bgBlue">生成模板</button>
-                    <button class="btnDefault bgGreen" v-show="showSaveBtn">保存排班</button>
+                    <button class="btnDefault bgGreen" @click="loadTemplate">保存排班</button>
+                    <button class="btnDefault bgBlue" @click="generateTemplate">生成模板</button>
+                    <!-- <button class="btnDefault bgGreen" v-show="showSaveBtn">保存排班</button> -->
                     <p class="result" v-show="showResult">
                         <span>日平均<b>{{result.dayAverage}}</b>小时，</span>
                         <span>周平均<b>{{result.weekAverage}}</b>小时，</span>
@@ -53,7 +53,6 @@
                             </table>
                         </div>
                     </div>
-                    
                 </div>
             </div>
             <!-- 表格 end -->
@@ -99,10 +98,10 @@
                     userName: '',
                     userId: null
                 },
-                result: result,
+                currentResult: {},
                 shifts: ['班制一','班制二'],
                 currentShift: '班制一',
-                showSaveBtn: false,
+                //showSaveBtn: false,
                 showResult: false,
                 result: {
                     dayAverage: 0,
@@ -129,7 +128,11 @@
                 userIds: new Set(),     //  存放已选择的站务员id
                 selectedTds: new Map(),
                 currentRows: new Map(),
-                shiftsData: [] 
+                shiftsData: [],
+                lastUserId: null,       //  存放原来选择的userId
+                generateData: {},       //  生成模版数据
+                autoData: {}            //  自动排班数据
+                
             }
         },
         mounted: function () {
@@ -137,45 +140,16 @@
             for(let key in result.shifts){
                 this.shiftsData.push(result.shifts[key]);
             }
+            setTimeout(function () {
+                self.loadTemplate();
+            },10)
         },
         methods:{
             //  加载模板
-            loadtemplate: function(){
-                let data = result.data;
-                let dataLen = data.length;
-                this.totalHours = 0;
-                $('#theHead0').find('p span').html('0');
-                for(let i=0;i<dataLen;i++){
-                    let obj = data[i];
-                    let n = obj.weekNumber;
-                    let m = obj.weekDay;
-                    let hours = obj.shiftMinutes/60;
-                    this.totalHours += hours;
-                    $('#td'+ n + '-'+ m).html(obj.shiftName).css('background-color', '#' + obj.shiftColor).attr({'data-hours': hours,'code': i});
-                    let weekDay = obj.weekDay;
-                    let shiftId = obj.shiftId;
-                    let span = $('#weekDay'+weekDay).find('[code="'+ shiftId +'"]').find('span');
-                    let num = parseInt(span.html());
-                    num++;
-                    span.html(num);
-                }
-                self.calcAverage();
-                $(".workHours").each(function (n) {
-                    self.calcWeeklyTime(n);
-                });
-                self.globalShiftCounts = result.shifts;
-                self.globalShiftIds = result.shiftIds;
-                $("#btnLoad").hide();
-                //codes = result.codes;
-                //setCodes();
-                
-                //self.initUserTable(result.users);
-                self.users = result.users;
-                result.owners && self.drawOwners(result.owners);
-                $("th[thead]").each(function(n) {
-                    self.calcDailySchedule(n);
-                });
-                this.showTable = true;
+            loadTemplate: function(){
+                this.autoData = this.deepCopy(result);
+                this.currentResult = this.autoData;
+                this.template(this.autoData);
             },
             //  计算周工时
             calcWeeklyTime: function (n) {
@@ -292,6 +266,10 @@
                         $(".user-table td[userId=" + userId + "]").css("color", "orange");
                     }
                 });
+                let code = obj.attr('code');
+                if(code){
+                    this.lastUserId = code;
+                }
             },
             //  选择站务员
             clickUser: function (e) {
@@ -311,8 +289,12 @@
                 if(code){
                     this.userIds.add(code);
                 }
+                if(this.lastUserId){
+                    this.userIds.delete(this.lastUserId);
+                }
+                this.markUsers();
             },
-            //  取消站务员
+            //  重置站务员
             handleCancel: function () {
                 let userId = $('.userName.td-active').attr('code');
                 $('.userName.td-active').html('').removeClass('td-active');
@@ -321,6 +303,7 @@
                 if(userId){
                     this.userIds.delete(userId);
                 }
+                this.markUsers();
             },
             //  点击选择站务员模态框取消按钮
             cancel: function () {
@@ -378,37 +361,35 @@
                 if(first[1] && second[1]){
                     let index1 = parseInt($('#'+first[0]).attr('code'));
                     let index2 = parseInt($('#'+second[0]).attr('code'));
-                    result.data[index1].weekNumber = second[1].weekNumber;
-                    result.data[index1].weekDay = second[1].weekDay;
-                    result.data[index2].weekNumber = first[1].weekNumber;
-                    result.data[index2].weekDay = first[1].weekDay;
+                    this.autoData.data[index1].weekNumber = second[1].weekNumber;
+                    this.autoData.data[index1].weekDay = second[1].weekDay;
+                    this.autoData.data[index2].weekNumber = first[1].weekNumber;
+                    this.autoData.data[index2].weekDay = first[1].weekDay;
                 } else if(!first[1] && second[1]){
                     let index = parseInt($('#'+second[0]).attr('code'));
                     let str = first[0].substring(2);
                     let arr = str.split('-');
-                    result.data[index].weekNumber = parseInt(arr[0]);
-                    result.data[index].weekDay = parseInt(arr[1]);
+                    this.autoData.data[index].weekNumber = parseInt(arr[0]);
+                    this.autoData.data[index].weekDay = parseInt(arr[1]);
                     $('#'+second[0]).html('').removeAttr('data-hours').removeAttr('style').removeAttr('code');
                 } else if(!second[1] && first[1]){
                     let index = parseInt($('#'+first[0]).attr('code'));
                     let str = second[0].substring(2);
                     let arr = str.split('-');
-                    result.data[index].weekNumber = parseInt(arr[0]);
-                    result.data[index].weekDay = parseInt(arr[1]);
+                    this.autoData.data[index].weekNumber = parseInt(arr[0]);
+                    this.autoData.data[index].weekDay = parseInt(arr[1]);
                     $('#'+first[0]).html('').removeAttr('data-hours').removeAttr('style').removeAttr('code');
                 }
                 
                 $('.td-active').removeClass('td-active');
-                this.loadtemplate();
+                this.loadTemplate();
                 this.showChangeBtn = false;
                 map.clear();
-                console.log(this.currentRows)
                 for(let i=0;i<2;i++){
                     let row = this.currentRows.get(i);
                     let span = $('tr[row="'+ row +'"]').find('.workHours').find('span');
                     let html = span.html();
                     if(html === '0'){
-                        console.log(111)
                         this.currentTr = row;
                         $('[row="'+ row +'"]').find('button').show();
                         span.html('');
@@ -419,61 +400,82 @@
             //  删除一行
             deleteTr: function (index) {
                 $('[row="'+ index +'"]').remove();
+            },
+            //  标注已选择的站务员
+            markUsers: function () {
+                $('.userList').find('span').removeClass('selected');
+                for(let code of this.userIds){
+                    $('.userList').find('span[code="'+ code +'"]').addClass('selected');
+                }
+                this.lastUserId = null;
+            },
+            //  生成模版
+            generateTemplate: function () {
+                this.generateData = this.deepCopy(result);
+                this.currentResult = this.generateData;
+                this.template(this.generateData);
+            },
+            //  深拷贝对象
+            deepCopy: function (obj) {
+                if(!obj){
+                    return {};
+                }
+                if(typeof obj === "object") {
+                    if(obj.constructor === Array) {
+                        var newArr = []
+                        for(var i = 0; i < obj.length; i++) newArr.push(obj[i])
+                        return newArr
+                    } else {
+                        var newObj = {}
+                        for(var key in obj) {
+                            newObj[key] = this.deepCopy(obj[key])
+                        }
+                        return newObj
+                    }
+                } else {
+                    return obj
+                }
+            },
+            //  加载模版
+            template: function (allData) {
+                let data = allData.data;
+                let dataLen = data.length;
+                this.totalHours = 0;
+                $('#theHead0').find('p span').html('0');
+                for(let i=0;i<dataLen;i++){
+                    let obj = data[i];
+                    let n = obj.weekNumber;
+                    let m = obj.weekDay;
+                    let hours = obj.shiftMinutes/60;
+                    this.totalHours += hours;
+                    $('#td'+ n + '-'+ m).html(obj.shiftName).css('background-color', '#' + obj.shiftColor).attr({'data-hours': hours,'code': i});
+                    let weekDay = obj.weekDay;
+                    let shiftId = obj.shiftId;
+                    let span = $('#weekDay'+weekDay).find('[code="'+ shiftId +'"]').find('span');
+                    let num = parseInt(span.html());
+                    num++;
+                    span.html(num);
+                }
+                this.calcAverage();
+                $(".workHours").each(function (n) {
+                    self.calcWeeklyTime(n);
+                });
+                self.globalShiftCounts = allData.shifts;
+                self.globalShiftIds = allData.shiftIds;
+                //$("#btnLoad").hide();
+                //codes = result.codes;
+                //setCodes();
+                
+                //self.initUserTable(result.users);
+                self.users = allData.users;
+                allData.owners && self.drawOwners(allData.owners);
+                $("th[thead]").each(function(n) {
+                    self.calcDailySchedule(n);
+                });
+                this.showTable = true;
             }
-
         }
     }
-    $(function () {
-        
-        //  建立模版
-        $(document).on("click", "#btnGenerate", function () {
-            console.log(result)
-            self.$Message.success("正在排班中,请稍后!");
-            var stationId = $(".menu .active a").attr("data-groupId");
-            var zwyId = $("select").val();
-            var startAt = $("#startAt").val();
-            let week = null;
-            $("#tab1").addClass("active");
-            $("#timepick").show();
-            $("#btnSave").show();
-            var data = result.data;
-            $("#theHead0").empty();
-            var w = parseInt($('.scheduleForm').width()/9)-4;
-            $("#theHead0").append("<th width='"+w+"'>站务员</th>");
-            for (var i = 0; i < 7; i++) {
-                $("#theHead0").append("<th width='"+w+"' thead=" + i + ">" + i + "</th>");
-            }
-            $("#theHead0").append("<th width='"+w+"'>周工时</th>");
-            $("#theBody").empty();
-            for (var i = 0; i <= result.weeks; i++) {
-                var node = "<tr  ><td class='userName' tdType='-1' userId='' weekNumber='" + i + "'></td>";
-                for (var j = 0; j < 7; j++) {
-                    node += "<td tdType='" + j + "' id='row" + i + "col" + j + "' ></td>";
-                }
-                node += "<td tdType='8' id='time" + i + "' tLength='" + i + "'>0</td>";
-                node += "</tr>";
-                $("#theBody").append(node);
-            }
-            for (var i = 0; i < data.length; i++) {
-                var template = data[i];
-                var tdId = "row" + template.weekNumber + "col" + template.weekDay;
-                var html = "<div style='width:100%;height:100%;' duration=" + template.shiftMinutes + " templateId='"+template.id+"' shiftId='" + template.shiftId + "' >" + template.serialNumber + "</div>";
-                $("#" + tdId).html(html);
-                $("#" + tdId).css("background-color", "#" + template.shiftColor);
-            }
-            self.globalShiftCounts = result.shifts;
-            self.globalShiftIds = result.shiftIds;
-            $("td[tLength]").each(function (n) {
-                self.calcWeeklyTime(n);
-            });
-            $("#btnLoad").hide();
-            self.calcAverage();
-            self.initUserTable(result.users);
-            $("th[thead]").each(function(n) {
-                self.calcDailySchedule(n);
-            });
-        });
-    })
     
 </script>
 <style scoped>
