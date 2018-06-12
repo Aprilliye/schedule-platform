@@ -106,6 +106,8 @@ button {
 }
 .table table td,
 .table table th {
+  white-space: nowrap;
+  padding: 5px 8px;
   border-bottom: 1px solid #e5e5e5;
 }
 .table table th {
@@ -115,7 +117,6 @@ button {
   text-align: left;
 }
 .table table td {
-  width: 100px;
   line-height: 36px;
 }
 table,
@@ -276,6 +277,9 @@ select {
   border-color: #ff6600;
   color: #ff6600;
   background: #fff;
+}
+#usersModal .shiftsList span {
+  border: 0;
 }
 .td-active {
   background: #f6f6f6 !important;

@@ -7,9 +7,9 @@
                     <Select v-model="currentShift" style="width:200px">
                         <Option v-for="(item, index) in shifts" :value="item" :key="index">{{ item }}</Option>
                     </Select>
-                    <button class="btnDefault bgOrange" @click="loadtemplate">加载模板</button>
+                    <button class="btnDefault bgGreen" @click="loadtemplate">保存排班</button>
                     <button class="btnDefault bgBlue">生成模板</button>
-                    <button class="btnDefault bgGreen" v-show="showSaveBtn">保存排班</button>
+                    <!-- <button class="btnDefault bgGreen" v-show="showSaveBtn">保存排班</button> -->
                     <p class="result" v-show="showResult">
                         <span>日平均<b>{{result.dayAverage}}</b>小时，</span>
                         <span>周平均<b>{{result.weekAverage}}</b>小时，</span>
@@ -102,7 +102,7 @@
                 result: result,
                 shifts: ['班制一','班制二'],
                 currentShift: '班制一',
-                showSaveBtn: false,
+                //showSaveBtn: false,
                 showResult: false,
                 result: {
                     dayAverage: 0,
@@ -137,6 +137,10 @@
             for(let key in result.shifts){
                 this.shiftsData.push(result.shifts[key]);
             }
+            this.loadtemplate();
+        },
+        created: function () {
+            
         },
         methods:{
             //  加载模板
@@ -145,6 +149,7 @@
                 let dataLen = data.length;
                 this.totalHours = 0;
                 $('#theHead0').find('p span').html('0');
+                console.log($('#theHead0').find('p span').length)
                 for(let i=0;i<dataLen;i++){
                     let obj = data[i];
                     let n = obj.weekNumber;
