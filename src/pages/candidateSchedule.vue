@@ -21,10 +21,10 @@
                     <th>星期日</th>
                     <th>总工时</th>
                 </tr>
-                <tr v-for="item in users" :key="item.userId" :id="'item'+item.userId" code="item.userId">
-                    <td code="item.userId">{{item.userName}}</td>
+                <tr v-for="item in users" :key="item.userId" :id="'item'+item.userId" :code="item.userId">
+                    <td>{{item.userName}}</td>
                     <td v-for="i in 7" @click="beforeSelectShift" :key="'item.userId-'+i"></td>
-                    <td>{{item.totalHours === 0 ? '' : item.totalHours}}</td>
+                    <td class="totalHours"></td>
                 </tr>
             </table>
         </div>
@@ -53,42 +53,37 @@ export default {
                     shiftName: '班制一',
                     shiftId: 1,
                     users: [
-                        {userName: '封伟', userId: 0, totalHours: 0},
-                        {userName: '王惠云', userId: 1, totalHours: 0},
-                        {userName: '祁爱军', userId: 2, totalHours: 0},
-                        {userName: '鞠淑云', userId: 3, totalHours: 0},
-                        {userName: '孟凡君', userId: 4, totalHours: 0}
+                        {userName: '封伟', userId: 0, shifts: new Map(), totalHours: 0},
+                        {userName: '王惠云', userId: 1, shifts: new Map(), totalHours: 0},
+                        {userName: '祁爱军', userId: 2, shifts: new Map(), totalHours: 0},
+                        {userName: '鞠淑云', userId: 3, shifts: new Map(), totalHours: 0},
+                        {userName: '孟凡君', userId: 4, shifts: new Map(), totalHours: 0}
                     ],
                 },
                 {
                     shiftName: '班制二',
                     shiftId: 2,
                     users: [
-                        {userName: '张海军', userId: 7, totalHours: 0 },
-                        {userName: '王素梅', userId: 8, totalHours: 0},
-                        {userName: '王磊', userId: 9, totalHours: 0}
+                        {userName: '张海军', userId: 7, shifts: new Map(), totalHours: 0},
+                        {userName: '王素梅', userId: 8, shifts: new Map(), totalHours: 0},
+                        {userName: '王磊', userId: 9, shifts: new Map(), totalHours: 0}
                     ],
                 },
             ],
             users: [
-                {userName: '封伟', userId: 0 },
-                {userName: '王惠云', userId: 1},
-                {userName: '祁爱军', userId: 2},
-                {userName: '鞠淑云', userId: 3},
-                {userName: '孟凡君', userId: 4}
+                {userName: '封伟', userId: 0, shifts: new Map(), totalHours: 0},
+                {userName: '王惠云', userId: 1, shifts: new Map(), totalHours: 0},
+                {userName: '祁爱军', userId: 2, shifts: new Map(), totalHours: 0},
+                {userName: '鞠淑云', userId: 3, shifts: new Map(), totalHours: 0},
+                {userName: '孟凡君', userId: 4, shifts: new Map(), totalHours: 0}
             ],
             shift: 1,
             shiftsMap: new Map(),
             modalShifts: [],
             modalShiftsMap: new Map(),
             currentShift: null,
-            temporary: null
-        }
-    },
-    computed: {
-        totalHours: function (item) {
-            let total = 0;
-            return total;
+            temporary: null,
+            currentUser: null
         }
     },
     created: function () {
@@ -110,14 +105,25 @@ export default {
         },
         //  取消已选班次
         handleCancel: function () {
-            $('.currentTd').html('').removeAttr('code').removeAttr('style'); 
+            $('.currentTd').html('').removeAttr('code').removeAttr('style').removeAttr('hours'); 
             this.shiftsModal = false;
+            this.countHours();
         },
         // 点击单元格选择班次
         beforeSelectShift: function (e) {
             $('.currentTd').removeClass('currentTd');
-            $(e.target).addClass('currentTd');
+            let obj = $(e.target);
+            obj.addClass('currentTd');
             this.shiftsModal = true;
+            this.currentUser = {};
+            let code = obj.parent().attr('code');
+            
+            for(let obj of this.users){
+                if(obj.userId === code){
+                    this.currentUser = obj;
+                    break;
+                }
+            }
         },
         //  点击模态框班次
         clickShift: function (item) {
@@ -127,9 +133,27 @@ export default {
         //  选择班次确定
         selectShift: function () {
             this.currentShift =  this.temporary;
-            $('.currentTd').html(this.currentShift.shiftName).attr('code', this.currentShift.shiftId).css('background-color', '#'+this.currentShift.shiftColor);    
-            $('.userList').find('.active').removeClass('active');        
+            let hours = this.currentShift.totalAt/60;
+            $('.currentTd').html(this.currentShift.shiftName).attr('hours', hours)
+            .attr('code', this.currentShift.shiftId).css('background-color', '#'+this.currentShift.shiftColor);    
+            $('.userList').find('.active').removeClass('active'); 
+            this.countHours();       
         },
+        //  统计工时
+        countHours: function () {
+            $('.totalHours').each(function () {
+                let total = 0;
+                let tds = $(this).prevAll();
+                tds.each(function () {
+                    let hours = $(this).attr('hours');
+                    if(hours){
+                        total += parseInt(hours);
+                    }
+                })
+                total = total === 0 ? '' : total;
+                $(this).html(total);
+            })
+        }
     }
 }
 </script>
