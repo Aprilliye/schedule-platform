@@ -15,6 +15,7 @@ import AddJurisdiction from '@/pages/addJurisdiction';
 import EditJurisdiction from '@/pages/editJurisdiction';
 import mySchedule from '@/pages/mySchedule';
 import candidateSchedule from '@/pages/candidateSchedule';
+import operations from '@/pages/operations';
 import iView from 'iview';
 
 Vue.use(iView);
@@ -109,6 +110,12 @@ const router = new Router({
             name: 'candidateSchedule',
             component: candidateSchedule
         },
+        //  操作记录
+        {
+            path: '/operations',
+            name: 'operations',
+            component: operations
+        }
       ]
     }
   ]

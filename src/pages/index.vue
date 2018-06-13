@@ -121,6 +121,9 @@
                             临时报表
                         </MenuItem>
                     </Submenu>
+                    <MenuItem name="1-1">
+                        <router-link to="./operations">操作记录</router-link>
+                    </MenuItem>
                 </Menu>
               </Col>
               <Col span="21" style="margin-left:12.5%;">
