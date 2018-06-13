@@ -798,7 +798,7 @@
                 this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime=this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime+differTime;
             },
             //替班模态框出现去掉气泡提示框
-            substituteModal:function(){
+            substituteModal: function () {
                 $(".vocationDiv").css("display","none");
                 this.modal.substitute=true;
             },
