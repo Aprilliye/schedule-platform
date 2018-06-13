@@ -8,7 +8,15 @@ export const login = data => fetch('/login', data, 'POST');
 export const signout = () => fetch('/sessions', {}, 'DELETE');
 
 /************************* 排班管理 *************************/
-
-
+/*************************站区设置**************************/
+/***站区列表***/
+export const stationAreaList = () => fetch('/district', {},'GET');
+/***新增站区***/
+export const addstationArea = data => fetch('/district', data, 'POST');
+/***删除站区***/
+export const deleteStationArea = id => fetch('/district/' + id, {}, 'DELETE');
+/***修改站区***/
+export const updatestationArea = data => fetch('/district/id', data, 'PUT');
+/***站点列表***/
 
 

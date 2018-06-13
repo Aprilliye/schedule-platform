@@ -42,7 +42,6 @@
         methods:{
             request: async function(){
                     let response = await api.stationAreaList();
-                    console.log(response.data);
                    if (response.meta.code !== 0) {
                        this.$Loading.error();
                        this.$Message.error(response.meta.message);
@@ -51,27 +50,27 @@
                         this.arr=response.data;
                    }
             },
-            addStationAreaMethod:function(){},
-            // addStationAreaMethod: async function(){
-            //     let params={
-            //         id:1,
-            //         districtName:this.stationName,
-            //     };
-            //     let response = await api.addstationArea(params);
-            //     console.log(response);
-            //     if (response.meta.code !==0){
-            //         this.$Message.error(response.meta.mesage);
-            //     }else{
-            //          if(this.stationName){
-            //         this.arr.push(this.stationName);
-            //         this.stationName='';
-            //         $(".stationNamerequire").css("display","none");
-            //         this.addStationArea=false;
-            //     }else{
-            //         $(".stationNamerequire").css("display","inline-block");
-            //         }
-            //     }
-            // },
+            //新增站区
+            addStationAreaMethod: async function(){
+                let params={
+                    districtName:this.stationName,
+                };
+                let response = await api.addstationArea(params);
+                if (response.meta.code !==0){
+                    this.$Message.error(response.meta.mesage);
+                }else{
+                     if(this.stationName){
+                    this.arr.push({districtName:this.stationName});
+                    this.stationName='';
+                    $(".stationNamerequire").css("display","none");
+                    this.addStationArea=false;
+                }else{
+                    $(".stationNamerequire").css("display","inline-block");
+                    }
+                }
+                    console.log(this.arr);
+
+            },
             cancelStationAreaMethod:function(){
                 this.stationName='';
                 $(".stationNamerequire").css("display","none");

@@ -54,8 +54,8 @@
                         </tr>
                         </thead>
                         <tbody id="userDataTable">
-                        <tr v-for="(item,index) in personList" :key='index'>
-                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">{{item.action[0]}}</a><a style="color: #0000FF" @click="addPersonModalfake = true">{{item.action[1]}}</a></td>
+                        <tr v-for="(item,index) in personList" :key='index' :id="item.userId">
+                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">{{item.action[0]}}</a><a style="color: #0000FF" @click="editPersonMethod">{{item.action[1]}}</a></td>
                             <td>{{item.workNumber}}</td>
                             <td>{{item.name}}</td>
                             <td>{{item.sex}}</td>
@@ -79,136 +79,6 @@
                             <td v-show="tableItem[11].ifShow">{{item.fireCertificateNumber}}</td>
                             <td v-show="tableItem[12].ifShow">{{item.controllerNumber}}</td>
                             <td v-show="tableItem[13].ifShow">{{item.controllerLevel}}</td>
-                        </tr>
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
-                            <td>60506796</td>
-                            <td>伊坤</td>
-                            <td>男</td>
-                            <td>13785663247</td>
-                            <td>1992-10-6</td>
-                            <td>站务员</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td></td>
-                            <td v-show="tableItem[0].ifShow">110106199210060344</td>
-                            <td v-show="tableItem[1].ifShow">2017-7-28</td>
-                            <td v-show="tableItem[2].ifShow">已婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">本科</td>
-                            <td v-show="tableItem[5].ifShow">共产党员</td>
-                            <td v-show="tableItem[6].ifShow">2006-10-11</td>
-                            <td v-show="tableItem[7].ifShow">北京市丰台区花乡羊坊花园西院1-5-404</td>
-                            <td v-show="tableItem[8].ifShow">1701061060500643</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">7852632594125789</td>
-                            <td v-show="tableItem[11].ifShow">1458962574123658</td>
-                            <td v-show="tableItem[12].ifShow">1752695213699541</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
-                        </tr>
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
-                            <td>60508808</td>
-                            <td>李璇</td>
-                            <td>女</td>
-                            <td>13051679861</td>
-                            <td>1994-02-12</td>
-                            <td>站务员</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td></td>
-                            <td v-show="tableItem[0].ifShow">110108199402123410</td>
-                            <td v-show="tableItem[1].ifShow">2015-2-12</td>
-                            <td v-show="tableItem[2].ifShow">未婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">大专</td>
-                            <td v-show="tableItem[5].ifShow">共青团员</td>
-                            <td v-show="tableItem[6].ifShow">2010-01-1</td>
-                            <td v-show="tableItem[7].ifShow">北京市丰台区青塔蔚园10号楼101</td>
-                            <td v-show="tableItem[8].ifShow">5269541236985423</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">4152956325841256</td>
-                            <td v-show="tableItem[11].ifShow">5962354852695412</td>
-                            <td v-show="tableItem[12].ifShow">5963258412596584</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
-                        </tr>
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
-                            <td>60507613</td>
-                            <td>黄旭</td>
-                            <td>男</td>
-                            <td>13811914821</td>
-                            <td>1994-01-28</td>
-                            <td>站区长</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td></td>
-                            <td v-show="tableItem[0].ifShow">131002199401282015</td>
-                            <td v-show="tableItem[1].ifShow">2015-07-03</td>
-                            <td v-show="tableItem[2].ifShow">未婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">大专</td>
-                            <td v-show="tableItem[5].ifShow">共青团员</td>
-                            <td v-show="tableItem[6].ifShow">2015-12-11</td>
-                            <td v-show="tableItem[7].ifShow">北京市西城区寿长街2号</td>
-                            <td v-show="tableItem[8].ifShow">5952362515895255</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">985625412695459</td>
-                            <td v-show="tableItem[11].ifShow">595213695845258</td>
-                            <td v-show="tableItem[12].ifShow">596235158745953</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
-                        </tr>
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
-                            <td>60502986</td>
-                            <td>薛婷婷</td>
-                            <td>女</td>
-                            <td>13811580959</td>
-                            <td>1990-05-07</td>
-                            <td>站务员</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td></td>
-                            <td v-show="tableItem[0].ifShow">110224199005073822</td>
-                            <td v-show="tableItem[1].ifShow">1997-01-07</td>
-                            <td v-show="tableItem[2].ifShow">未婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">大专</td>
-                            <td v-show="tableItem[5].ifShow">共青团员</td>
-                            <td v-show="tableItem[6].ifShow">2012-08-23</td>
-                            <td v-show="tableItem[7].ifShow">北京市大兴区安定镇杜庄屯十一条</td>
-                            <td v-show="tableItem[8].ifShow">5956321478952695</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">5236598451259635</td>
-                            <td v-show="tableItem[11].ifShow">5963251489562359</td>
-                            <td v-show="tableItem[12].ifShow">5956321584596325</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
-                        </tr>
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
-                            <td>60502979</td>
-                            <td>王宇</td>
-                            <td>男</td>
-                            <td>13581550834</td>
-                            <td>1988-07-13</td>
-                            <td>站务员</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td></td>
-                            <td v-show="tableItem[0].ifShow">110109198807132528</td>
-                            <td v-show="tableItem[1].ifShow">2008-06-09</td>
-                            <td v-show="tableItem[2].ifShow">未婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">大专</td>
-                            <td v-show="tableItem[5].ifShow">共青团员</td>
-                            <td v-show="tableItem[6].ifShow">2002-08-23</td>
-                            <td v-show="tableItem[7].ifShow">北京市门头沟区王平镇东王平村55-4</td>
-                            <td v-show="tableItem[8].ifShow">5956325415896523</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">5126985459654159</td>
-                            <td v-show="tableItem[11].ifShow">5236985412563596</td>
-                            <td v-show="tableItem[12].ifShow">5963214874523695</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
                         </tr>
                         </tbody>
                     </table>
@@ -365,52 +235,55 @@
         <!--编辑人员-->
         <Modal class="usermanage-model"
                title="编辑人员"
-               v-model="addPersonModalfake"
+               v-model="editPersonModal"
                width="800"
+               @on-ok="editPersonModalMethod"
+               :loading="true"
                :mask-closable="false">
             <ul class="form">
                 <li>
                     <label>员工卡号</label>
-                    <input name="cardNum" type="text" v-model="addPersonfake.cardNum">
+                    <input name="cardNum" type="text" v-model="editPersonfake.workNumber">
                 </li>
                 <li>
                     <label>人员编码</label>
-                    <input name="code" type="text" v-model="addPersonfake.code">
+                    <input name="code" type="text" v-model="editPersonfake.peopleCode">
                 </li>
                 <li class="require">
                     <label class="require">姓名</label>
-                    <input name="name" type="text" v-model="addPersonfake.name">
+                    <input name="name" type="text" v-model="editPersonfake.name">
                 </li>
                 <li>
                     <label>站区/站点</label>
-                    <select name="station" class=" reset-input" v-model="addPersonfake.station">
+                    <select name="station" class=" reset-input" v-model="editPersonfake.stationArea">
                         <option value="西直门">西直门</option>
                         <option value="西直门">车公庄</option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">岗位</label>
-                    <select name="postName" v-model="addPersonfake.post">
+                    <select name="postName" v-model="editPersonfake.post">
                         <option value="站务员">站务员</option>
                         <option value="值班站长">值班站长</option>
                         <option value="站区长助理">站区长助理</option>
+                        <option value="站区长">站区长</option>
                     </select>
                 </li>
                 <li>
                     <label>管理员</label>
-                    <select name="manager" v-model="addPersonfake.manager">
-                        <option value="0">否</option>
-                        <option value="1" selected="selected">是</option>
+                    <select name="manager" v-model="editPersonfake.manager">
+                        <option value="否">否</option>
+                        <option value="是">是</option>
                     </select>
                 </li>
                 <li>
                     <label class="red">密码</label>
-                    <input type="text" name="password" v-model="addPersonfake.psw">
+                    <input type="text" name="password" v-model="editPersonfake.psw">
                     <span class="orange">请记录此密码作为下次登录用</span>
                 </li>
                 <li>
                     <label>权限方案</label>
-                    <select name="plan" v-model="addPersonfake.plan">
+                    <select name="plan" v-model="editPersonfake.plan">
                         <option value="超级管理员">超级管理员</option>
                         <option value="系统管理员">系统管理员</option>
                         <option value="管理员">管理员</option>
@@ -418,30 +291,30 @@
                 </li>
                 <li class="require">
                     <label class="require">性别</label>
-                    <select name="sex" v-model="addPersonfake.sex">
+                    <select name="sex" v-model="editPersonfake.sex">
                         <option value="男">男</option>
                         <option value="女">女</option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">手机号</label>
-                    <input name="phoneNumber" type="text" v-model="addPersonfake.phoneNumber">
+                    <input name="phoneNumber" type="text" v-model="editPersonfake.phoneNumber">
                 </li>
                 <li class="require">
                     <label class="require" id="heightpDay">生日</label>
-                    <input name="birthday" type="text" v-model="addPersonfake.birthday">
+                    <input name="birthday" type="text" v-model="editPersonfake.birthday">
                 </li>
                 <li class="require">
                     <label class="require">身份证</label>
-                    <input name="idCode" type="text" v-model="addPersonfake.idCode">
+                    <input name="idCode" type="text" v-model="editPersonfake.idCard">
                 </li>
                 <li class="require">
                     <label class="require" id="heightppTime">入职时间</label>
-                    <input name="onBoardDate" type="text" placeholder="例2015-03-06" v-model="addPersonfake.onBoardDate">
+                    <input name="onBoardDate" type="text" placeholder="例2015-03-06" v-model="editPersonfake.entryTime">
                 </li>
                 <li class="require">
                     <label class="require">婚否</label>
-                    <select name="isMarried" v-model="addPersonfake.isMarried">
+                    <select name="isMarried" v-model="editPersonfake.maritalStatus">
                         <option value="">请选择</option>
                         <option value="已婚" selected = "selected">已婚</option>
                         <option value="未婚">未婚</option>
@@ -449,14 +322,14 @@
                 </li>
                 <li class="require">
                     <label class="require">生育</label>
-                    <select name="hasChild" v-model="addPersonfake.hasChild">
+                    <select name="hasChild" v-model="editPersonfake.childrenHave">
                         <option value="已育">已育</option>
                         <option value="未育">未育</option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">学历</label>
-                    <select name="eduBackGround" v-model="addPersonfake.eduBackGround">
+                    <select name="eduBackGround" v-model="editPersonfake.education">
                         <option value="">高中以下</option>
                         <option value="高中以下">高中以下</option>
                         <option value="大专">大专</option>
@@ -467,7 +340,7 @@
                 </li>
                 <li class="require">
                     <label class="require">政治面貌</label>
-                    <select name="isPartyMember" v-model="addPersonfake.isPartyMember">
+                    <select name="isPartyMember" v-model="editPersonfake.political">
                         <option value="">共青团员</option>
                         <option value="群众">群众</option>
                         <option value="共青团员">共青团员</option>
@@ -477,31 +350,31 @@
                 </li>
                 <li>
                     <label>入党时间</label>
-                    <input name="joinDate" type="text" v-model="addPersonfake.joinDate">
+                    <input name="joinDate" type="text" v-model="editPersonfake.partyTime">
                 </li>
                 <li>
                     <label class="require">站务员证书编号</label>
-                    <input name="stationCertificateNum" type="text" v-model="addPersonfake.stationCertificateNum">
+                    <input name="stationCertificateNum" type="text" v-model="editPersonfake.stationCertificateNumber">
                 </li>
                 <li>
                     <label class="require">站务员证等级</label>
-                    <input name="stationCertificateGrade" type="text" v-model="addPersonfake.stationCertificateGrade">
+                    <input name="stationCertificateGrade" type="text" v-model="editPersonfake.stationCertificateLevel">
                 </li>
                 <li class="lang require">
                     <label class="require">住址</label>
-                    <input name="address" type="text" v-model="addPersonfake.address">
+                    <input name="address" type="text" v-model="editPersonfake.address">
                 </li>
                 <li>
                     <label class="require">消防证书编号</label>
-                    <input name="fireControlCertificateNum" type="text" v-model="addPersonfake.fireControlCertificateNum">
+                    <input name="fireControlCertificateNum" type="text" v-model="editPersonfake.fireCertificateNumber">
                 </li>
                 <li>
                     <label class="require">综控员证书编号</label>
-                    <input name="controllerCertificateNum" type="text" v-model="addPersonfake.controllerCertificateNum">
+                    <input name="controllerCertificateNum" type="text" v-model="editPersonfake.controllerNumber">
                 </li>
                 <li>
                     <label class="require">综控员证书级别</label>
-                    <input name="controllerCertificateGrade" type="text" v-model="addPersonfake.controllerCertificateGrade">
+                    <input name="controllerCertificateGrade" type="text" v-model="editPersonfake.controllerLevel">
                 </li>
                 <li class="clear"></li>
             </ul>
@@ -513,7 +386,8 @@
         data: function () {
             return {
                 addPersonModal: false,
-                addPersonModalfake: false,
+                editPersonModal: false,
+                targetId:'',
                 tableItem: [
                     {
                         name: '身份证',
@@ -584,7 +458,7 @@
                         post:'站区长',
                         station:'西直门',
                         stationArea:'西直门',
-                        manager:'站区',
+                        manager:'是',
                         idCard:'110108198212142712',
                         entryTime:'1990-12-12',
                         maritalStatus:'已婚',
@@ -600,7 +474,7 @@
                         controllerNumber:'1401061060501034',
                         controllerLevel:'站务初级'
                     },
-                        {
+                    {
                         userId:2,
                         action:['删除','修改'],
                         workNumber:60506796,
@@ -611,7 +485,7 @@
                         post:'站务员',
                         station:'西直门',
                         stationArea:'西直门',
-                        manager:'',
+                        manager:'否',
                         idCard:'110106199210060344',
                         entryTime:'1990-12-12',
                         maritalStatus:'已婚',
@@ -625,6 +499,87 @@
                         peopleCode:'7852632594125789',
                         fireCertificateNumber:'1458962574123658',
                         controllerNumber:'1752695213699541',
+                        controllerLevel:'站务初级'
+                    },
+                     {
+                        userId:3,
+                        action:['删除','修改'],
+                        workNumber:60508808,
+                        name:'李璇',
+                        sex:'女',
+                        phoneNumber:13051679861,
+                        birthday:'1994-02-12',
+                        post:'站务员',
+                        station:'西直门',
+                        stationArea:'西直门',
+                        manager:'否',
+                        idCard:'110108199402123410',
+                        entryTime:'2015-2-12',
+                        maritalStatus:'未婚',
+                        childrenHave:'未育',
+                        education:'大专',
+                        political:'共青团员',
+                        partyTime:'2010-01-1',
+                        address:'北京市丰台区青塔蔚园10号楼101',
+                        stationCertificateNumber:'5269541236985423',
+                        stationCertificateLevel:'站务初级',
+                        peopleCode:'4152956325841256',
+                        fireCertificateNumber:'5962354852695412',
+                        controllerNumber:'5963258412596584',
+                        controllerLevel:'站务初级'
+                    },
+                    {
+                        userId:4,
+                        action:['删除','修改'],
+                        workNumber:60507613,
+                        name:'黄旭',
+                        sex:'男',
+                        phoneNumber:13051679861,
+                        birthday:'1994-02-12',
+                        post:'站务员',
+                        station:'西直门',
+                        stationArea:'西直门',
+                        manager:'否',
+                        idCard:'131002199401282015',
+                        entryTime:'2015-07-03',
+                        maritalStatus:'未婚',
+                        childrenHave:'未育',
+                        education:'大专',
+                        political:'共青团员',
+                        partyTime:'2015-12-11',
+                        address:'北京市西城区寿长街2号',
+                        stationCertificateNumber:'5952362515895255',
+                        stationCertificateLevel:'站务初级',
+                        peopleCode:'985625412695459',
+                        fireCertificateNumber:'595213695845258',
+                        controllerNumber:'596235158745953',
+                        controllerLevel:'站务初级'
+                    },
+                       {
+                        userId:5,
+                        action:['删除','修改'],
+                        workNumber:60502986,
+                        name:'薛婷婷',
+                        sex:'女',
+                        phoneNumber:13811580959,
+                        birthday:'1990-05-07',
+                        post:'站务员',
+                        station:'西直门',
+                        stationArea:'西直门',
+                        manager:'否',
+                        idCard:'110224199005073822',
+                        entryTime:'1997-01-07',
+                        maritalStatus:'未婚',
+                        childrenHave:'未育',
+                        education:'大专',
+                        political:'共青团员',
+                        partyTime:'2012-08-23',
+                        address:'北京市大兴区安定镇杜庄屯十一条',
+                        stationCertificateNumber:'5956321478952695',
+                        stationCertificateLevel:'站务初级',
+                        peopleCode:'5236598451259635',
+                        fireCertificateNumber:'5963251489562359',
+                        controllerNumber:'5956321584596325',
                         controllerLevel:'站务初级'
                     },
                 ],
@@ -655,31 +610,30 @@
                     controllerCertificateNum: '',
                     controllerCertificateGrade: ''
                 },
-                addPersonfake: {
-                    cardNum: '60502868',
-                    code: '1401061060501034',
-                    name: '梅松',
-                    station: '西直门',
-                    postName: '站区长',
-                    manager: '站区',
-                    password: '123456',
-                    plan: '',
-                    sex: '男',
-                    phoneNumber: '13810582556',
-                    birthday: '1990-12-12',
-                    idCode: '110108198212142712',
-                    onBoardDate: '1990-12-12',
-                    isMarried: '已婚',
-                    hasChild: '未育',
-                    eduBackGround: '高中以下',
-                    isPartyMember: '群众',
-                    joinDate: '2008-05-01',
-                    stationCertificateNum: '401061060501034',
-                    stationCertificateGrade: '站务初级',
-                    address: '北京市石景山区古城南路19号楼',
-                    fireControlCertificateNum: '156598965236566',
-                    controllerCertificateNum: '5963265595466658',
-                    controllerCertificateGrade: '站务初级'
+                editPersonfake: {
+                        workNumber:'',
+                        name:'',
+                        sex:'',
+                        phoneNumber:'',
+                        birthday:'',
+                        post:'',
+                        station:'',
+                        stationArea:'',
+                        manager:'',
+                        idCard:'',
+                        entryTime:'',
+                        maritalStatus:'',
+                        childrenHave:'',
+                        education:'',
+                        political:'',
+                        partyTime:'',
+                        address:'',
+                        stationCertificateNumber:'',
+                        stationCertificateLevel:'',
+                        peopleCode:'',
+                        fireCertificateNumber:'',
+                        controllerNumber:'',
+                        controllerLevel:''
                 }
 
             }
@@ -691,8 +645,47 @@
                 var target = e.target || e.srcElement;
                 target.parentNode.parentNode.remove();
                 console.log(target);
+            },
+            editPersonMethod:function(){
+            this. editPersonModal=true;    
+            var e = e || window.event;
+            var target = e.target || e.srcElement;
+            var id=target.parentNode.parentNode.id;
+            this.targetId=id;
+            var obj=this.personList[id-1];
+            for(let key in obj){
+                this.editPersonfake[key] = obj[key];
+                }
+            },
+            editPersonModalMethod:function(){
+            var id=this.targetId-1;
+                this.personList[id].workNumber=this.editPersonfake.workNumber,
+                this.personList[id].name=this.editPersonfake.name,
+                this.personList[id].sex=this.editPersonfake.sex,
+                this.personList[id].birthday=this.editPersonfake.birthday,
+                this.personList[id].post=this.editPersonfake.post,
+                this.personList[id].station=this.editPersonfake.station,
+                this.personList[id].stationArea=this.editPersonfake.stationArea,
+                this.personList[id].manager=this.editPersonfake.manager,
+                this.personList[id].idCard=this.editPersonfake.idCard,
+                this.personList[id].entryTime=this.editPersonfake.entryTime,
+                this.personList[id].maritalStatus=this.editPersonfake.maritalStatus,
+                this.personList[id].childrenHave=this.editPersonfake.childrenHave,
+                this.personList[id].education=this.editPersonfake.education,
+                this.personList[id].political=this.editPersonfake.political,
+                this.personList[id].partyTime=this.editPersonfake.partyTime,
+                this.personList[id].address=this.editPersonfake.address,
+                this.personList[id].stationCertificateNumber=this.editPersonfake.stationCertificateNumber,
+                this.personList[id].stationCertificateLevel=this.editPersonfake.workstationCertificateLevelNumber,
+                this.personList[id].peopleCode=this.editPersonfake.peopleCode,
+                this.personList[id].fireCertificateNumber=this.editPersonfake.fireCertificateNumber,
+                this.personList[id].controllerNumber=this.editPersonfake.controllerNumber,
+                this.personList[id].controllerLevel=this.editPersonfake.controllerLevel,
+            // this.personList.splice(id,1,object)
+            this.editPersonModal=false;
             }
         }
+       
     }
 </script>
 <style scoped>

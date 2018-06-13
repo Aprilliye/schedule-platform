@@ -10,6 +10,7 @@ let baseURL = '';
 let routerMode = 'history';
 
 if (process.env.NODE_ENV === 'development') {
+    //baseURL = 'http://evtape.cn:8765';
     baseURL = 'http://192.168.2.233:8765';
     //baseURL = 'http://evtape.cn/api';
 } else {

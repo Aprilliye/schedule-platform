@@ -161,6 +161,7 @@
     </div>
 </template>
 <script>
+    import * as api from "../api/commonAPI";
     export default {
         data:function(){
             return{
@@ -237,10 +238,18 @@
         props:['title'],
         methods:{
             //删除站区
-            removestation:function() {
-                var e = e || window.event;
-                var targetBlock = e.target || e.srcElement;
-                targetBlock.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+            removestation: async function() {
+                let e = e || window.event;
+                let targetBlock = e.target || e.srcElement;
+                let id=targetBlock.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id;
+                // let params={districtId:id};
+                let response = await api.deleteStationArea(id);
+                if(response.meta.code !==0){
+                     this.$Message.error(response.meta.message);
+                }else{
+                     this.$Message.success('删除站区成功');
+                     targetBlock.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
+                }
             },
             //添加站点
             addStationMethod:function(){
@@ -263,16 +272,31 @@
                 this.stationAreaName='';
             },
             //修改站区名称
-            renameStationMethod:function(){
-                if(this.stationAreaName){
-                    $(".changeStationName").text(this.stationAreaName);
-                    this.stationAreaName='';
-                    $(".stationAreaNameRed").css("display","none");
-                    this.renameStation=false;
-                }else{
-                    $(".stationAreaNameRed").css("display","inline-block");
-                    return false;
-                }
+            renameStationMethod: function(){
+                // let e = e || window.event;
+                // let targetBlock = e.target || e.srcElement;
+                // let id=targetBlock.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id;
+                // console.log(id);
+                // let params={
+                //     id:id,
+                //     districtName:this.stationAreaName,
+                // };
+                // let response = await api.updatestationArea(params);
+                // console.log(response)
+                // if(response.meta.code !==0){
+                //      this.$Message.error(response.meta.message);
+                // }else{
+                //      this.$Message.success('修改站区名称成功');
+                //      if(this.stationAreaName){
+                //     $(".changeStationName").text(this.stationAreaName);
+                //     this.stationAreaName='';
+                //     $(".stationAreaNameRed").css("display","none");
+                //     this.renameStation=false;
+                // }else{
+                //     $(".stationAreaNameRed").css("display","inline-block");
+                //     return false;
+                //     }
+                // }
             },
             //删除站点
             removeLine:function(){

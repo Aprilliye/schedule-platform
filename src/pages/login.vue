@@ -49,25 +49,25 @@
                     return;
                 }
                 // 若用户名为admin密码为123456则允许登录
-                 if(this.userName === 'admin' && this.userPasswd === '123456'){
-                     this.$router.push({ path: "/home" });
-//                    let params = {
-//                        userName: this.userName,
-//                        password: this.userPasswd
-//                    };
-//                    this.$Loading.start();
-//                    let response = await api.login(params);
-//                    if (response.meta.code !== 0) {
-//                        this.$Loading.error();
-//                        this.$Message.error(response.meta.message);
-//                    }else{
-//                        this.$Loading.finish();
-//                        this.$router.push({ path: "/home" });
-//                    }
-                 }else{
-                     this.errorMsg = '账号或密码错误';
-                     $('#errorMsg').css('display','block');
-                 }
+                //  if(this.userName === 'admin' && this.userPasswd === '123456'){
+                //      this.$router.push({ path: "/home" });
+                   let params = {
+                       userName: this.userName,
+                       password: this.userPasswd
+                   };
+                   this.$Loading.start();
+                   let response = await api.login(params);
+                   if (response.meta.code !== 0) {
+                       this.$Loading.error();
+                       this.$Message.error(response.meta.message);
+                   }else{
+                       this.$Loading.finish();
+                       this.$router.push({ path: "/home" });
+                   }
+                //  }else{
+                //      this.errorMsg = '账号或密码错误';
+                //      $('#errorMsg').css('display','block');
+                //  }
             }
         }
     }

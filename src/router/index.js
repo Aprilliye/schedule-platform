@@ -4,7 +4,7 @@ import { routerMode } from '@/config/env.js';
 import Login from '@/pages/login';
 import Index  from '@/pages/index';
 import Usermanage from '@/pages/user-manage';
-import Grouping from '@/pages/grouping';
+import SetStationArea from '@/pages/setStationArea';
 import Role from '@/pages/role';
 import ScheduleForm from '@/pages/scheduleForm';
 import Workflow from '@/pages/workflow';
@@ -45,9 +45,9 @@ const router = new Router({
         },
           //站区设置页面
         {
-          path: '/grouping',
-          name: 'Grouping',
-          component: Grouping
+          path: '/setStationArea',
+          name: 'SetStationArea',
+          component: SetStationArea
         },
           //权限管理页面
         {
