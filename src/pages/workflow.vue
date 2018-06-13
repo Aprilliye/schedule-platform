@@ -17,7 +17,7 @@
                         </tr>
                         <tr :key="'tr1'+index">
                             <td colspan="3">编号</td>
-                            <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n < 10 ? '0'+n : n)+':00' }}</td>
+                            <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n > 10 ? n : '0' + n )+':00' }}</td>
                         </tr>
                         <template v-for="post in item.postArr">
                             <tr :code="'tr'+index+'-'+post.index+'0'" :key="'tr'+index+'-'+post.index+'0'">
