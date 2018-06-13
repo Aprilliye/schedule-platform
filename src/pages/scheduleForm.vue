@@ -77,7 +77,7 @@
                             <td class="scheduleName" @mouseenter="showNameMessage" @mouseleave="hideNameMessage">{{item.userName}}</td>
                             <td>{{item.postName}}</td>
                             <!--周表点击事件-->
-                            <td v-for="(list, index) in item.schedule" :code="index" :key="'aa'+index" :id="list.id" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage">
+                            <td v-for="(list, index) in item.schedule" :key="'aa'+index" :id="list.id" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage">
                                 {{list.name}}
                             </td>
                             <td>{{item.planWorkHour}}</td>
@@ -162,7 +162,7 @@
                         <tr v-for="item in monthdata" :key="item.userId" :id="item.userId">
                             <td class="scheduleName" @mouseenter="showNameMessageMonth" @mouseleave="hideNameMessage">{{item.userName}}</td>
                             <td>{{item.postName}}</td>
-                            <td v-for="(list, index) in item.schedule" :code="index" :id="list.id" :key="'bb'+index" @click="clickTd"  @mouseenter="showMessageMonth" @mouseleave="hideMessage">{{list.name}}</td>
+                            <td v-for="(list, index) in item.schedule" :id="list.id" :key="'bb'+index" @click="clickTd"  @mouseenter="showMessageMonth" @mouseleave="hideMessage">{{list.name}}</td>
                             <td>{{item.planWorkHour}}</td>
                             <td>{{item.actualWorkHour}}</td>
                             <td>{{item.balance}}</td>
@@ -171,6 +171,7 @@
                 </div>
                 <!--假期悬浮框-->
                 <div class="vocationDiv">
+                    <div @click="annualLeaveModal">年假</div>
                     <div @click="editVocationModal">假期编辑</div>
                     <div @click="shiftChangeModal">班次变更</div>
                     <div @click="provisionalDispositionModal">临时安排</div>
@@ -199,15 +200,32 @@
                     </div>
                 </div>
             </div>
+            <!-- 年假模态框 -->
+               <Modal
+                    v-model="modal.annualLeave"
+                    title="年假"
+                    @on-ok="annualLeaveMethod"
+                    @on-cancel=""
+                    >
+                <Form :model="annualLeaveForm" :label-width="80">
+                    <FormItem label="时间">
+                        <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="beginTime"></DatePicker><span>至</span>
+                        <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="endTime"></DatePicker>
+                    </FormItem>
+                    <FormItem label="备注">
+                        <textarea  name="remark" class="vocationRemark"  v-model="annualLeaveForm.remark"></textarea>
+                    </FormItem>
+                </Form>
+            </Modal>
             <!--假期编辑-->
             <Modal
                     v-model="modal.editVocation"
                     title="假期编辑"
-                    @on-ok="editVocationMethod">
+                    @on-ok="editVocationMethod"
+                    @on-cancel="">
                 <Form :model="editVocationForm" :label-width="80">
                     <FormItem label="假期类型">
                         <Select v-model="editVocationForm.select">
-                            <Option value="年假">年假</Option>
                             <Option value="病假/病">病假/病</Option>
                             <Option value="事假/事">事假/事</Option>
                             <Option value="婚假/婚">婚假/婚</Option>
@@ -221,8 +239,6 @@
                             <Option value="旷工假/旷">旷工假/旷</Option>
                             <Option value="搬家假/搬">搬家假/搬</Option>
                             <Option value="出差假/差">出差假/差</Option>
-                            <Option value="迟到/迟">迟到/迟</Option>
-                            <Option value="早退/早退">早退/早退</Option>
                             <Option value="调休/调">调休/调</Option>
                         </Select>
                     </FormItem>
@@ -233,9 +249,11 @@
             </Modal>
             <!--班次变更-->
             <Modal
-                v-model="modal.shiftChange"
-                title="班次变更"
-                @on-ok="shiftChangeMethod">
+                    v-model="modal.shiftChange"
+                    title="班次变更"
+                    @on-ok="shiftChangeMethod"
+                    @on-cancel=""
+                    >
                 <Form :model="shiftChangeForm" :label-width="80">
                     <FormItem label="班次">
                         <Select v-model="shiftChangeForm.select">
@@ -251,7 +269,9 @@
             <Modal
                     v-model="modal.provisionalDisposition"
                     title="临时安排"
-                    @on-ok="provisionalDispositionMethod">
+                    @on-ok="provisionalDispositionMethod"
+                    @cancel=""
+                    >
                 <Form :model="provisionalDispositionForm" :label-width="100">
                     <FormItem label="临时安排类型">
                         <Select v-model="provisionalDispositionForm.select">
@@ -283,7 +303,9 @@
             <Modal
                     v-model="modal.absenteeism"
                     title="旷工缺勤"
-                    @on-ok="absenteeismMethod">
+                    @on-ok="absenteeismMethod"
+                    @on-cancel=""
+                    >
                 <Form :model="absenteeismForm" :label-width="80">
                     <FormItem label="缺勤工时">
                         <Select v-model="absenteeismForm.selectTime">
@@ -306,7 +328,9 @@
             <Modal
                     v-model="modal.overtime"
                     title="补班加班"
-                    @on-ok="overtimeMethod">
+                    @on-ok="overtimeMethod"
+                    @on-cancel=""
+                    >
                 <Form :model="overtimeForm" :label-width="80">
                     <FormItem label="加班工时">
                         <Select v-model="overtimeForm.selectTime">
@@ -329,7 +353,9 @@
             <Modal
                     v-model="modal.substitute"
                     title="替班"
-                    @on-ok="substituteMethod">
+                    @on-ok="substituteMethod"
+                    @on-cancel=""
+                    >
                 <Form :model="substituteForm" :label-width="80">
                     <FormItem label="站点">
                         <Select v-model="substituteForm.station">
@@ -351,7 +377,9 @@
             <Modal
                     v-model="modal.other"
                     title="其它"
-                    @on-ok="otherMethod">
+                    @on-ok="otherMethod"
+                    @on-cancel=""
+                    >
                 <Form :model="otherForm" :label-width="80">
                     <FormItem label="工时">
                         <Select v-model="otherForm.selectTime">
@@ -374,7 +402,9 @@
             <Modal
                     v-model="modal.smallVocation"
                     title="零星假"
-                    @on-ok="smallVocationMethod">
+                    @on-ok="smallVocationMethod"
+                    @on-cancel=""
+                    >
                 <Form :model="smallVocationForm" :label-width="80">
                     <FormItem label="工时">
                         <Select v-model="smallVocationForm.selectTime">
@@ -395,9 +425,11 @@
             </Modal>
             <!--调离-->
             <Modal
-                v-model="modal.transfer"
-                title="调离"
-                @on-ok="transferMothod">
+                    v-model="modal.transfer"
+                    title="调离"
+                    @on-ok="transferMothod"
+                    @cancel=""
+                    >
                 <Form :model="transferForm" :label-width="80">
                     <FormItem label="站点">
                         <Select v-model="transferForm.station">
@@ -427,6 +459,8 @@
                 weekdata: [],
                 monthdate: [],
                 beginValue:BeforeDate,
+                beginTime:'',
+                endTime:'',
                 endValue:afterWeekDate,
                 showTable:true,
                 showTabItem: true,
@@ -466,7 +500,12 @@
                     substitute:false,
                     transfer:false,
                     smallVocation:false,
-                    other:false
+                    other:false,
+                    annualLeave:false,
+                },
+                annualLeaveForm:{
+                    select:'',
+                    textarea:''
                 },
                 editVocationForm:{
                     select:'',
@@ -528,7 +567,6 @@
                     actualWorkHour:'46'
 
                 },
-                clickCurrent: null
             };
         },
         created: function () {
@@ -544,8 +582,6 @@
                 });
             },
             clickTd:function(e){
-                let obj = $(e.target);
-                this.clickCurrent = obj;
                 //每次点击确定点击行数列数
                 var targettd = e.target.id;
                 var targettr = e.target.parentNode.id;
@@ -643,6 +679,37 @@
             },
             hideMessage:function(){
                 $(".tdMessage").css("display","none");
+            },
+            //年假编辑模态框出现
+            annualLeaveModal:function(){
+                this.modal.annualLeave=true;
+            },
+            //年假模态框确定提交
+            annualLeaveMethod:function(){
+                var beginTime=this.beginTime;
+                var endTime=this.endTime;
+                var beginDay=beginTime.getDate();
+                var endDay=endTime.getDate();
+                var differDay=endDay-beginDay;
+                this.currentTd.style.backgroundColor='#fffc00';
+                var targetHtml =this.target.parentNode.lastChild;
+                var targetInner;
+                this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour-10*differDay;
+                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance-10*differDay;
+                this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime=this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime-10*differDay;
+                this.$options.methods.changeLastOneColor(targetHtml,targetInner);;
+                targetInner=this.weekdata[this.clicktr-1].balance;
+                var message={};
+                message.type='年假:'+differDay+"天" ;
+                message.remark=this.editVocationForm.textarea;
+                message.setUpTime=new Date().toLocaleString();
+                message.setUpPerson='admin';
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages){
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages.push(message);
+                }else{
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
+                }
             },
             //假期编辑模态框出现去掉气泡提示框
             editVocationModal:function(){
@@ -810,19 +877,52 @@
             },
             //调离模态框提交
             transferMothod:function(){
-                this.weekdata[this.clicktr-1].userName=this.substitutePerson.userName;
-                this.weekdata[this.clicktr-1].postName=this.substitutePerson.postName;
-                this.weekdata[this.clicktr-1].phoneName=this.substitutePerson.phoneName;
-                this.weekdata[this.clicktr-1].address=this.substitutePerson.address;
-                this.weekdata[this.clicktr-1].planWorkHour=this.substitutePerson.planWorkHour;
-                this.weekdata[this.clicktr-1].actualWorkHour=this.substitutePerson.actualWorkHour;
-                this.weekdata[this.clicktr-1].balance=this.substitutePerson.balance;
-                var length=this.weekdata[this.clicktr-1].schedule.length-this.clicktd-1+1;
-                for(var currentId=this.clicktd - 1;currentId<=this.clicktd - 1+length;currentId++){
-                    this.weekdata[this.clicktr-1].schedule[currentId].name=''
+                //被调离位置清空
+                var length=this.weekdata[this.clicktr-1].schedule.length-this.clicktd;
+                this.weekdata[this.clicktr-1].planWorkHour=(this.clicktd-1)*5;
+                this.weekdata[this.clicktr-1].actualWorkHour=(this.clicktd-1)*5;
+                var arr=this.weekdata[this.clicktr-1].schedule.slice(0);
+                var objDeepCopy = function (source) {
+                var sourceCopy = source instanceof Array ? [] : {};
+                for (var item in source) {
+                    sourceCopy[item] = typeof source[item] === 'object' ? objDeepCopy(source[item]) : source[item];
                 }
-                //console.log(this.clickCurrent)
-             },
+                return sourceCopy;
+                }
+                var objCopy = objDeepCopy(arr)
+                for(var currentId=this.clicktd - 1;currentId<=this.clicktd - 1+length;currentId++){
+                    objCopy[currentId].name=''
+                }
+                //上岗人员取值
+                var str = objDeepCopy(this.weekdata[this.clicktr-1].schedule);
+                var trLength=this.weekdata.length;
+                var crrentTr=this.clicktr;
+                for(var i=crrentTr;i<trLength;i++){
+                     this.weekdata[i].userId=this.weekdata[i].userId+1;
+                }
+                var tdLength=this.weekdata[this.clicktr-1].schedule.length;
+                var newary=str;
+                if(this.clicktd-1!==0){
+                    for(var i=0;i<this.clicktd-1;i++){
+                      newary[i].name=''
+                    }
+                }
+                var newUserId=parseInt(this.clicktr);
+                var obj={
+                userName:this.substitutePerson.userName,
+                postName:this.substitutePerson.postName,
+                userId:newUserId+1,
+                phoneName:this.substitutePerson.phoneName,
+                address:this.substitutePerson.address,
+                planWorkHour:(tdLength-this.clicktd+1)*5,
+                actualWorkHour:(tdLength-this.clicktd+1)*5,
+                balance:0,
+                schedule:[],
+                };
+                obj.schedule=newary;
+                this.weekdata.splice(this.clicktr,0,obj);
+                this.weekdata[this.clicktr-1].schedule=objCopy;
+               },
             //零星假模态框
             smallVocationModal:function(){
                 this.modal.smallVocation=true;

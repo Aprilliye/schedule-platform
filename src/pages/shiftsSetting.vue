@@ -214,13 +214,13 @@
                 </FormItem>
                 <FormItem label="站区：" prop="stationArea">
                     <Select v-model="formValidate.stationArea" placeholder="请选择">
-                        <Option value="xizhimen">西直门</Option>
-                        <Option value="chegongzhuang">车公庄</Option>
+                        <Option :value="xizhimen">西直门</Option>
+                        <Option :value="chegongzhuang">车公庄</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="站点：" prop="station">
                     <Select v-model="formValidate.station" placeholder="请选择">
-                        <Option value="xizhimenstation">西直门</Option>
+                        <Option :value="xizhimenstation">西直门</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="周工时下限：" prop="minWeekHours">
@@ -255,12 +255,12 @@
                 </FormItem>
                 <FormItem label="站区：" prop="stationArea" :rules="{required:true,message:'站区不能为空'}">
                     <Select v-model="addFormValidate.stationArea" placeholder="请选择">
-                        <Option value="xizhimenstation">西直门</Option>
+                        <Option :value="xizhimenstation">西直门</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="站点：" prop="station" :rules="{required:true,message:'站点不能为空'}">
                     <Select v-model="addFormValidate.station" placeholder="请选择">
-                        <Option value="xizhimen">西直门</Option>
+                        <Option :value="xizhimen">西直门</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="周工时下限：" prop="minWeekHours" :rules="{required:true,message:'周工时下限不能为空不能为空'}">
@@ -288,7 +288,7 @@
             v-model="modal.addTimeSlot"
             :loading="true"
             @on-ok="addTimeSlotMethods('addTimeValidate')"
-            @on-cancel="handleCancel('addTimeValidate')">
+            @on-cancel="handleCancelTime('addTimeValidate')">
             <Form ref="addTimeValidate" :model="addTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
                 <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
                     <TimePicker  v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addTime'></TimePicker>
@@ -327,6 +327,9 @@ export default {
             tab1:true,
             tab2:true,
             tab3:true,
+            xizhimen:'西直门',
+            chegongzhuang:'车公庄',
+            xizhimenstation:'西直门',
             editShiftValue:[],
             addShiftValue:[],
             editTime:[],
@@ -367,7 +370,6 @@ export default {
                 maxWeekOffDuty: 1, 
                 maxMonthOffDuty: 180,
                 maxYearOffDuty: 2000                 
-
             },
             modelpost:"",
             formValidate: {
@@ -409,7 +411,7 @@ export default {
                 maxMonthOffDuty:'',
                 maxYearOffDuty:''
             },
-            //  新增班制弹框
+            //  新增班制弹框验证
             ruleValidate: {
                 name: [
                     { required: true, message: '班制名称不能为空', trigger: 'blur' }
@@ -631,6 +633,7 @@ export default {
         handleShiftTabRemove:function(name){
             this['tab'+name]=false;
         },
+        //编辑班制验证
         editShift: function (name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
@@ -642,7 +645,7 @@ export default {
                 }
             })
         },
-        //新增时间段
+        //新增时间段验证
         addTimeSlotMethods: function (name) {
             let arr = this.addTimeValidate.timeSlot;
             for(let i=0;i<arr.length;i++){
@@ -671,7 +674,7 @@ export default {
                 this.addTimeValidate.ifTimeSlot = false;
             })
         },
-        //编辑时间段验证提交
+        //编辑时间段验证
         editTimeSlotMethods:function(name){
                 let arr = this.addTimeValidate.timeSlot;
             for(let i=0;i<arr.length;i++){
@@ -699,7 +702,7 @@ export default {
                 this.addTimeValidate.ifTimeSlot = false;
             })
         },
-        //新增班次
+        //新增班次验证
         addClassMethods:function(name){
             let arr = this.addFormValidateClass.timeSlot;
             for(let i=0;i<arr.length;i++){
@@ -738,7 +741,7 @@ export default {
                 this.addFormValidateClass.ifTimeSlot = false;
             })
         },
-        //编辑班次验证提交
+        //编辑班次验证
         editShifyClassMethods:function(name){
              let arr = this.addFormValidateClass.timeSlot;
             for(let i=0;i<arr.length;i++){
@@ -823,7 +826,13 @@ export default {
             this.addTimeValidate.timeSlot = arr;
         },
         handleCancel: function (name) {
-            console.log("aaa");
+            this.$refs[name].resetFields();
+            this.addTimeValidate.ifTimeSlot = false;
+            $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
+            $(".shiftColor").css("background-color","white");
+        },
+        handleCancelTime:function(name){
+            console.log(this.$refs[name].resetFields());
             this.$refs[name].resetFields();
             this.addTimeValidate.ifTimeSlot = false;
             $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
@@ -905,6 +914,7 @@ export default {
             }
             return arr;
         },
+        //新增班制
         addShift:function(name){
             this.$refs[name].validate((valid) => {
                 if (valid) {
@@ -926,7 +936,6 @@ export default {
         },
         //取得总时间
         getsectionTime:function(){
-           
             let beginTime=parseInt(this.addFormValidateClass.timeSlot[0].split(":")[0])*60+parseInt(this.addFormValidateClass.timeSlot[0].split(":")[1]);
             let endTime=parseInt(this.addFormValidateClass.timeSlot[1].split(":")[0])*60+parseInt(this.addFormValidateClass.timeSlot[1].split(":")[1]);
             let total=endTime-beginTime;

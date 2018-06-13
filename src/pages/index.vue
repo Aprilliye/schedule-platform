@@ -41,7 +41,7 @@
                                 人员管理
                             </MenuItem>
                         </router-link>
-                        <router-link to="./grouping" >
+                        <router-link to="./setStationArea" >
                             <MenuItem name="1-2">
                                 <span class="icon-18"></span>
                                 站区设置
