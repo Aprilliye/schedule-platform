@@ -54,6 +54,23 @@
                             </MenuItem>
                         </router-link>
                     </Submenu>
+                    <Submenu name="3">
+                        <template slot="title">
+                            排班设置
+                        </template>
+                        <router-link to="./shiftsSetting" >
+                            <MenuItem name="3-1">
+                                <span class="icon-7"></span>
+                                班次设置
+                            </MenuItem>
+                        </router-link>
+                        <router-link to="./postSetting" >
+                            <MenuItem name="3-2">
+                                <span class="icon-8"></span>
+                                岗位设置
+                            </MenuItem>
+                        </router-link>
+                    </Submenu>
                     <Submenu name="2">
                         <template slot="title">
                             排班管理
@@ -86,27 +103,10 @@
                         <router-link to="/mySchedule" >
                             <MenuItem name="2-5">
                                 <Icon  type="ios-paper" class="iconsize"></Icon>
-                                我的排班
+                                排班计划
                             </MenuItem>
                         </router-link>
                         
-                    </Submenu>
-                    <Submenu name="3">
-                        <template slot="title">
-                            排班设置
-                        </template>
-                        <router-link to="./shiftsSetting" >
-                            <MenuItem name="3-1">
-                                <span class="icon-7"></span>
-                                班次设置
-                            </MenuItem>
-                        </router-link>
-                        <router-link to="./postSetting" >
-                            <MenuItem name="3-2">
-                                <span class="icon-8"></span>
-                                岗位设置
-                            </MenuItem>
-                        </router-link>
                     </Submenu>
                     <Submenu name="4">
                         <template slot="title">

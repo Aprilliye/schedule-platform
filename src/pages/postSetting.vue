@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="content-header">
-            <button class=" btnDefault bgGreen" type="button" @click="beforeAddPost"><span>新增岗位</span></button>
+            <button class=" btnDefault bgGreen" type="button" @click="beforeAddPost">新增岗位</button>
             <Modal title="新增岗位"
                 v-model="addPostModal"
                 @on-ok="addPost"
@@ -10,7 +10,7 @@
                     <FormItem label="岗位名称：" required>
                         <Input v-model.trim="addPostName" placeholder=""/>
                     </FormItem>
-                    <FormItem label="替班岗：">
+                    <FormItem label="备班岗：">
                         <Checkbox v-model="addIfRelay"></Checkbox>
                     </FormItem>
                 </Form>
@@ -23,7 +23,7 @@
                     <FormItem label="岗位名称：" required>
                         <Input v-model.trim="editPostName" placeholder=""/>
                     </FormItem>
-                    <FormItem label="替班岗：">
+                    <FormItem label="备班岗：">
                         <Checkbox v-model="editIfRelay"></Checkbox>
                     </FormItem>
                 </Form>
@@ -50,7 +50,7 @@
                         key: 'name'
                     },
                     {
-                        title: '替班岗位',
+                        title: '备班岗位',
                         key: 'ifRelay',
                         render: (h, params) => {
                             let str = params.row.ifRelay ? '是' : '否';

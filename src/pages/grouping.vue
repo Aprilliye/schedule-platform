@@ -1,21 +1,8 @@
 <template>
     <div class="container">
         <div class="content-header">
-            <button class=" btnDefault bgGreen" type="button" @click="addStationArea = true"><span>新增站区</span></button>
-            <!--新增站区弹框-->
-            <Modal
-                    title="新增站区"
-                    v-model="addStationArea"
-                    @on-ok="addStationAreaMethod"
-                    @on-cancel="cancelStationAreaMethod"
-                    :loading="true"
-                   >
-                <p>
-                    <label class="addStationLabel"> 站区名称：</label>
-                    <input id="editUserCode" name="userCode" type="text" v-model="stationName">
-                    <span class="turnRed stationNamerequire">站区名称不能为空</span>
-                </p>
-            </Modal>
+            <button class="btnDefault bgGreen" type="button" @click="addStationArea = true">新增站区</button>
+            <button class="btnDefault">导入</button>
         </div>
         <div class="content-title">
             北京地铁运三分公司
@@ -23,6 +10,20 @@
         <div class="list">
             <listBlock v-for="(item,index) in arr" :key="index" :title="item"></listBlock>
         </div>
+        <!--新增站区弹框-->
+        <Modal
+                title="新增站区"
+                v-model="addStationArea"
+                @on-ok="addStationAreaMethod"
+                @on-cancel="cancelStationAreaMethod"
+                :loading="true"
+                >
+            <p>
+                <label class="addStationLabel"> 站区名称：</label>
+                <input id="editUserCode" name="userCode" type="text" v-model="stationName">
+                <span class="turnRed stationNamerequire">站区名称不能为空</span>
+            </p>
+        </Modal>
     </div>
 </template>
 <script>
