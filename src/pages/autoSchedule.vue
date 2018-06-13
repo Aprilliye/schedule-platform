@@ -33,7 +33,7 @@
                                     <th>站务员</th>
                                     <th v-for="i in 7" :key="'th'+i">
                                         <div :id="'weekDay'+(i-1)">
-                                            <p v-for="item in shiftsData" :key="item.shiftId" :code="item.shiftId"><em>{{item.shiftName}}：</em><span>0</span></p>
+                                            <p v-for="item in shiftsData" :key="item.shiftId" :code="item.shiftId" :shiftNum="item.shiftNum"><em>{{item.shiftName}}：</em><span>0</span></p>
                                         </div>
                                     </th>
                                     <th>周工时</th>
@@ -174,7 +174,7 @@
             },
             //  计算工时平均值
             calcAverage: function () {
-                let length = result.weeks;
+                let length = $('.userName').length;
                 let daily = this.totalHours / length / 7;
                 let weekly = daily * 7;
                 let monthly = daily * 30;
@@ -455,6 +455,14 @@
                     let num = parseInt(span.html());
                     num++;
                     span.html(num);
+                }
+                let ps = $('#theHead0').find('p');
+                for(let i=0;i<ps.length;i++){
+                    let obj = ps.eq(i);
+                    if(obj.attr('shiftnum') !== obj.find('span').html()){
+                        obj.addClass('red');
+                    }
+                    
                 }
                 this.calcAverage();
                 $(".workHours").each(function (n) {

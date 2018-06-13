@@ -235,13 +235,6 @@
                         <label class="require">姓名</label>
                         <input name="name" type="text" v-model="addPerson.name">
                     </li>
-                    <li>
-                        <label>站区/站点</label>
-                        <select name="station" class=" reset-input" v-model="addPerson.station">
-                            <option value="西直门">西直门</option>
-                            <option value="西直门">车公庄</option>
-                        </select>
-                    </li>
                     <li class="require">
                         <label class="require">岗位</label>
                         <select name="postName" v-model="addPerson.post">
@@ -380,13 +373,6 @@
                 <li class="require">
                     <label class="require">姓名</label>
                     <input name="name" type="text" v-model="addPersonfake.name">
-                </li>
-                <li>
-                    <label>站区/站点</label>
-                    <select name="station" class=" reset-input" v-model="addPersonfake.station">
-                        <option value="西直门">西直门</option>
-                        <option value="西直门">车公庄</option>
-                    </select>
                 </li>
                 <li class="require">
                     <label class="require">岗位</label>
@@ -633,7 +619,6 @@
                     cardNum: '',
                     code: '',
                     name: '',
-                    station: '',
                     postName: '',
                     manager: '',
                     password: '',
@@ -659,7 +644,6 @@
                     cardNum: '60502868',
                     code: '1401061060501034',
                     name: '梅松',
-                    station: '西直门',
                     postName: '站区长',
                     manager: '站区',
                     password: '123456',

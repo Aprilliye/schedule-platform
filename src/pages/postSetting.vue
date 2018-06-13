@@ -1,26 +1,29 @@
 <template>
     <div class="container">
         <div class="content-header">
-            <button class=" btnDefault bgGreen" type="button" @click="beforeAddPost"><span>新增岗位</span></button>
+            <button class=" btnDefault bgGreen" type="button" @click="beforeAddPost">新增岗位</button>
             <Modal title="新增岗位"
-                v-model="addPostModal">
-                <Form :label-width="80">
-                    <FormItem label="岗位名称：">
-                        <Input v-model="addPostName" placeholder=""/>
+                v-model="addPostModal"
+                @on-ok="addPost"
+                :loading="true">
+                <Form :label-width="90">
+                    <FormItem label="岗位名称：" required>
+                        <Input v-model.trim="addPostName" placeholder=""/>
                     </FormItem>
-                    <FormItem label="替班岗：">
+                    <FormItem label="备班岗：">
                         <Checkbox v-model="addIfRelay"></Checkbox>
                     </FormItem>
                 </Form>
             </Modal>
             <Modal title="编辑岗位"
                 v-model="editPostModal"
-                on-ok="editPost">
-                <Form :label-width="80">
-                    <FormItem label="岗位名称：">
-                        <Input v-model="editPostName" placeholder=""/>
+                @on-ok="editPost"
+                :loading="false">
+                <Form :label-width="90">
+                    <FormItem label="岗位名称：" required>
+                        <Input v-model.trim="editPostName" placeholder=""/>
                     </FormItem>
-                    <FormItem label="替班岗：">
+                    <FormItem label="备班岗：">
                         <Checkbox v-model="editIfRelay"></Checkbox>
                     </FormItem>
                 </Form>
@@ -47,7 +50,7 @@
                         key: 'name'
                     },
                     {
-                        title: '替班岗位',
+                        title: '备班岗位',
                         key: 'ifRelay',
                         render: (h, params) => {
                             let str = params.row.ifRelay ? '是' : '否';
@@ -81,7 +84,6 @@
                                             this.editIfRelay = params.row.ifRelay;
                                             this.editPostName = params.row.name;
                                             this.editPostModal = true;
-                                            //this.eidtItem = params.row;
                                         }
                                     }
                                 }, '编辑'),
@@ -146,9 +148,31 @@
                 this.addPostName = '';
                 this.addPostModal = true;
             },
+            //  确认新增岗位
+            addPost: function () {
+                let name = this.addPostName;
+                if(!name){
+                    this.$Message.warning('岗位名称不能为空！');
+                    return;
+                }
+                let obj = {
+                    name: name,
+                    ifRelay: this.addIfRelay
+                }
+                this.data.unshift(obj);
+                this.addPostModal = false;
+            },
             //  编辑岗位
             editPost: function () {
-                //  this.data.ifRelay = this.currentIndex
+                let obj = this.data[this.currentIndex];
+                let name = this.editIfRelay;
+                if(!name){
+                    this.$Message.warning('岗位名称不能为空！');
+                    return;
+                }
+                obj.ifRelay = name;
+                obj.name = this.editPostName;
+                this.editPostModal = false;
             }
         }
     }

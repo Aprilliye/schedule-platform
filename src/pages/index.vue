@@ -29,7 +29,7 @@
       </div>
       <div class="left-div">
           <Row>
-              <Col span="3">
+              <Col span="3" style="position:fixed;left:0;top:60px;">
                 <Menu class="main-menu">
                     <Submenu name="1">
                         <template slot="title">
@@ -41,7 +41,7 @@
                                 人员管理
                             </MenuItem>
                         </router-link>
-                        <router-link to="./grouping" >
+                        <router-link to="./setStationArea" >
                             <MenuItem name="1-2">
                                 <span class="icon-18"></span>
                                 站区设置
@@ -51,6 +51,23 @@
                             <MenuItem name="1-3">
                                 <span class="icon-17"></span>
                                 权限管理
+                            </MenuItem>
+                        </router-link>
+                    </Submenu>
+                    <Submenu name="3">
+                        <template slot="title">
+                            排班设置
+                        </template>
+                        <router-link to="./shiftsSetting" >
+                            <MenuItem name="3-1">
+                                <span class="icon-7"></span>
+                                班次设置
+                            </MenuItem>
+                        </router-link>
+                        <router-link to="./postSetting" >
+                            <MenuItem name="3-2">
+                                <span class="icon-8"></span>
+                                岗位设置
                             </MenuItem>
                         </router-link>
                     </Submenu>
@@ -86,27 +103,10 @@
                         <router-link to="/mySchedule" >
                             <MenuItem name="2-5">
                                 <Icon  type="ios-paper" class="iconsize"></Icon>
-                                我的排班
+                                排班计划
                             </MenuItem>
                         </router-link>
                         
-                    </Submenu>
-                    <Submenu name="3">
-                        <template slot="title">
-                            排班设置
-                        </template>
-                        <router-link to="./shiftsSetting" >
-                            <MenuItem name="3-1">
-                                <span class="icon-7"></span>
-                                班次设置
-                            </MenuItem>
-                        </router-link>
-                        <router-link to="./postSetting" >
-                            <MenuItem name="3-2">
-                                <span class="icon-8"></span>
-                                岗位设置
-                            </MenuItem>
-                        </router-link>
                     </Submenu>
                     <Submenu name="4">
                         <template slot="title">
@@ -121,9 +121,12 @@
                             临时报表
                         </MenuItem>
                     </Submenu>
+                    <MenuItem name="1-1">
+                        <router-link to="./operations">操作记录</router-link>
+                    </MenuItem>
                 </Menu>
               </Col>
-              <Col span="21">
+              <Col span="21" style="margin-left:12.5%;">
                 <div class="right-div">
                     <router-view></router-view>
                 </div>

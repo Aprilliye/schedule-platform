@@ -171,13 +171,14 @@
                 </div>
                 <!--假期悬浮框-->
                 <div class="vocationDiv">
+                    <div @click="annualLeaveModal">年假</div>
                     <div @click="editVocationModal">假期编辑</div>
                     <div @click="shiftChangeModal">班次变更</div>
                     <div @click="provisionalDispositionModal">临时安排</div>
                     <div @click="absenteeismModal">旷工缺勤</div>
                     <div @click="overtimeModal">加班补班</div>
                     <div @click="substituteModal">替班</div>
-                    <div  @click="transferModal">调离</div>
+                    <div @click="transferModal">调离</div>
                     <div @click="smallVocationModal">零星假</div>
                     <div @click="otherModal" >其它</div>
                     <div @click="revoke">撤销</div>
@@ -199,6 +200,23 @@
                     </div>
                 </div>
             </div>
+            <!-- 年假模态框 -->
+               <Modal
+                    v-model="modal.annualLeave"
+                    title="年假"
+                    @on-ok="annualLeaveMethod"
+                    @on-cancel=""
+                    >
+                <Form :model="annualLeaveForm" :label-width="80">
+                    <FormItem label="时间">
+                        <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="beginTime"></DatePicker><span>至</span>
+                        <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="endTime"></DatePicker>
+                    </FormItem>
+                    <FormItem label="备注">
+                        <textarea  name="remark" class="vocationRemark"  v-model="annualLeaveForm.remark"></textarea>
+                    </FormItem>
+                </Form>
+            </Modal>
             <!--假期编辑-->
             <Modal
                     v-model="modal.editVocation"
@@ -208,7 +226,6 @@
                 <Form :model="editVocationForm" :label-width="80">
                     <FormItem label="假期类型">
                         <Select v-model="editVocationForm.select">
-                            <Option value="年假">年假</Option>
                             <Option value="病假/病">病假/病</Option>
                             <Option value="事假/事">事假/事</Option>
                             <Option value="婚假/婚">婚假/婚</Option>
@@ -222,8 +239,6 @@
                             <Option value="旷工假/旷">旷工假/旷</Option>
                             <Option value="搬家假/搬">搬家假/搬</Option>
                             <Option value="出差假/差">出差假/差</Option>
-                            <Option value="迟到/迟">迟到/迟</Option>
-                            <Option value="早退/早退">早退/早退</Option>
                             <Option value="调休/调">调休/调</Option>
                         </Select>
                     </FormItem>
@@ -444,6 +459,8 @@
                 weekdata: [],
                 monthdate: [],
                 beginValue:BeforeDate,
+                beginTime:'',
+                endTime:'',
                 endValue:afterWeekDate,
                 showTable:true,
                 showTabItem: true,
@@ -483,7 +500,12 @@
                     substitute:false,
                     transfer:false,
                     smallVocation:false,
-                    other:false
+                    other:false,
+                    annualLeave:false,
+                },
+                annualLeaveForm:{
+                    select:'',
+                    textarea:''
                 },
                 editVocationForm:{
                     select:'',
@@ -658,6 +680,37 @@
             hideMessage:function(){
                 $(".tdMessage").css("display","none");
             },
+            //年假编辑模态框出现
+            annualLeaveModal:function(){
+                this.modal.annualLeave=true;
+            },
+            //年假模态框确定提交
+            annualLeaveMethod:function(){
+                var beginTime=this.beginTime;
+                var endTime=this.endTime;
+                var beginDay=beginTime.getDate();
+                var endDay=endTime.getDate();
+                var differDay=endDay-beginDay;
+                this.currentTd.style.backgroundColor='#fffc00';
+                var targetHtml =this.target.parentNode.lastChild;
+                var targetInner;
+                this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour-10*differDay;
+                this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance-10*differDay;
+                this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime=this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime-10*differDay;
+                this.$options.methods.changeLastOneColor(targetHtml,targetInner);;
+                targetInner=this.weekdata[this.clicktr-1].balance;
+                var message={};
+                message.type='年假:'+differDay+"天" ;
+                message.remark=this.editVocationForm.textarea;
+                message.setUpTime=new Date().toLocaleString();
+                message.setUpPerson='admin';
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages){
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages.push(message);
+                }else{
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages=[];
+                    this.weekdata[this.clicktr-1].schedule[this.clicktd-1].messages[0]=message;
+                }
+            },
             //假期编辑模态框出现去掉气泡提示框
             editVocationModal:function(){
                 $(".vocationDiv").css("display","none");
@@ -824,18 +877,52 @@
             },
             //调离模态框提交
             transferMothod:function(){
-                this.weekdata[this.clicktr-1].userName=this.substitutePerson.userName;
-                this.weekdata[this.clicktr-1].postName=this.substitutePerson.postName;
-                this.weekdata[this.clicktr-1].phoneName=this.substitutePerson.phoneName;
-                this.weekdata[this.clicktr-1].address=this.substitutePerson.address;
-                this.weekdata[this.clicktr-1].planWorkHour=this.substitutePerson.planWorkHour;
-                this.weekdata[this.clicktr-1].actualWorkHour=this.substitutePerson.actualWorkHour;
-                this.weekdata[this.clicktr-1].balance=this.substitutePerson.balance;
-                var length=this.weekdata[this.clicktr-1].schedule.length-this.clicktd-1+1;
-                for(var currentId=this.clicktd - 1;currentId<=this.clicktd - 1+length;currentId++){
-                    this.weekdata[this.clicktr-1].schedule[currentId].name=''
+                //被调离位置清空
+                var length=this.weekdata[this.clicktr-1].schedule.length-this.clicktd;
+                this.weekdata[this.clicktr-1].planWorkHour=(this.clicktd-1)*5;
+                this.weekdata[this.clicktr-1].actualWorkHour=(this.clicktd-1)*5;
+                var arr=this.weekdata[this.clicktr-1].schedule.slice(0);
+                var objDeepCopy = function (source) {
+                var sourceCopy = source instanceof Array ? [] : {};
+                for (var item in source) {
+                    sourceCopy[item] = typeof source[item] === 'object' ? objDeepCopy(source[item]) : source[item];
                 }
-             },
+                return sourceCopy;
+                }
+                var objCopy = objDeepCopy(arr)
+                for(var currentId=this.clicktd - 1;currentId<=this.clicktd - 1+length;currentId++){
+                    objCopy[currentId].name=''
+                }
+                //上岗人员取值
+                var str = objDeepCopy(this.weekdata[this.clicktr-1].schedule);
+                var trLength=this.weekdata.length;
+                var crrentTr=this.clicktr;
+                for(var i=crrentTr;i<trLength;i++){
+                     this.weekdata[i].userId=this.weekdata[i].userId+1;
+                }
+                var tdLength=this.weekdata[this.clicktr-1].schedule.length;
+                var newary=str;
+                if(this.clicktd-1!==0){
+                    for(var i=0;i<this.clicktd-1;i++){
+                      newary[i].name=''
+                    }
+                }
+                var newUserId=parseInt(this.clicktr);
+                var obj={
+                userName:this.substitutePerson.userName,
+                postName:this.substitutePerson.postName,
+                userId:newUserId+1,
+                phoneName:this.substitutePerson.phoneName,
+                address:this.substitutePerson.address,
+                planWorkHour:(tdLength-this.clicktd+1)*5,
+                actualWorkHour:(tdLength-this.clicktd+1)*5,
+                balance:0,
+                schedule:[],
+                };
+                obj.schedule=newary;
+                this.weekdata.splice(this.clicktr,0,obj);
+                this.weekdata[this.clicktr-1].schedule=objCopy;
+               },
             //零星假模态框
             smallVocationModal:function(){
                 this.modal.smallVocation=true;
