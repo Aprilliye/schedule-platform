@@ -4,7 +4,7 @@ import { routerMode } from '@/config/env.js';
 import Login from '@/pages/login';
 import Index  from '@/pages/index';
 import Usermanage from '@/pages/user-manage';
-import Grouping from '@/pages/grouping';
+import setStationArea from '@/pages/setStationArea';
 import Role from '@/pages/role';
 import ScheduleForm from '@/pages/scheduleForm';
 import Workflow from '@/pages/workflow';
@@ -13,7 +13,7 @@ import ShiftsSetting from '@/pages/shiftsSetting';
 import AutoSchedule from '@/pages/autoSchedule';
 import AddJurisdiction from '@/pages/addJurisdiction';
 import EditJurisdiction from '@/pages/editJurisdiction';
-import mySchedule from '@/pages/mySchedule';
+import schedulePlan from '@/pages/schedulePlan';
 import candidateSchedule from '@/pages/candidateSchedule';
 import operations from '@/pages/operations';
 import iView from 'iview';
@@ -46,9 +46,9 @@ const router = new Router({
         },
           //站区设置页面
         {
-          path: '/grouping',
-          name: 'Grouping',
-          component: Grouping
+          path: '/setStationArea',
+          name: 'setStationArea',
+          component: setStationArea
         },
           //权限管理页面
         {
@@ -100,9 +100,9 @@ const router = new Router({
         },
         //  我的排班
         {
-            path:'/mySchedule',
-            name: 'mySchedule',
-            component: mySchedule
+            path:'/schedulePlan',
+            name: 'schedulePlan',
+            component: schedulePlan
         },
         //  备班排班
         {

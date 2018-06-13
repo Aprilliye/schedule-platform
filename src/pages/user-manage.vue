@@ -80,136 +80,6 @@
                             <td v-show="tableItem[12].ifShow">{{item.controllerNumber}}</td>
                             <td v-show="tableItem[13].ifShow">{{item.controllerLevel}}</td>
                         </tr>
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
-                            <td>60506796</td>
-                            <td>伊坤</td>
-                            <td>男</td>
-                            <td>13785663247</td>
-                            <td>1992-10-6</td>
-                            <td>站务员</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td></td>
-                            <td v-show="tableItem[0].ifShow">110106199210060344</td>
-                            <td v-show="tableItem[1].ifShow">2017-7-28</td>
-                            <td v-show="tableItem[2].ifShow">已婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">本科</td>
-                            <td v-show="tableItem[5].ifShow">共产党员</td>
-                            <td v-show="tableItem[6].ifShow">2006-10-11</td>
-                            <td v-show="tableItem[7].ifShow">北京市丰台区花乡羊坊花园西院1-5-404</td>
-                            <td v-show="tableItem[8].ifShow">1701061060500643</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">7852632594125789</td>
-                            <td v-show="tableItem[11].ifShow">1458962574123658</td>
-                            <td v-show="tableItem[12].ifShow">1752695213699541</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
-                        </tr>
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
-                            <td>60508808</td>
-                            <td>李璇</td>
-                            <td>女</td>
-                            <td>13051679861</td>
-                            <td>1994-02-12</td>
-                            <td>站务员</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td></td>
-                            <td v-show="tableItem[0].ifShow">110108199402123410</td>
-                            <td v-show="tableItem[1].ifShow">2015-2-12</td>
-                            <td v-show="tableItem[2].ifShow">未婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">大专</td>
-                            <td v-show="tableItem[5].ifShow">共青团员</td>
-                            <td v-show="tableItem[6].ifShow">2010-01-1</td>
-                            <td v-show="tableItem[7].ifShow">北京市丰台区青塔蔚园10号楼101</td>
-                            <td v-show="tableItem[8].ifShow">5269541236985423</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">4152956325841256</td>
-                            <td v-show="tableItem[11].ifShow">5962354852695412</td>
-                            <td v-show="tableItem[12].ifShow">5963258412596584</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
-                        </tr>
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
-                            <td>60507613</td>
-                            <td>黄旭</td>
-                            <td>男</td>
-                            <td>13811914821</td>
-                            <td>1994-01-28</td>
-                            <td>站区长</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td></td>
-                            <td v-show="tableItem[0].ifShow">131002199401282015</td>
-                            <td v-show="tableItem[1].ifShow">2015-07-03</td>
-                            <td v-show="tableItem[2].ifShow">未婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">大专</td>
-                            <td v-show="tableItem[5].ifShow">共青团员</td>
-                            <td v-show="tableItem[6].ifShow">2015-12-11</td>
-                            <td v-show="tableItem[7].ifShow">北京市西城区寿长街2号</td>
-                            <td v-show="tableItem[8].ifShow">5952362515895255</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">985625412695459</td>
-                            <td v-show="tableItem[11].ifShow">595213695845258</td>
-                            <td v-show="tableItem[12].ifShow">596235158745953</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
-                        </tr>
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
-                            <td>60502986</td>
-                            <td>薛婷婷</td>
-                            <td>女</td>
-                            <td>13811580959</td>
-                            <td>1990-05-07</td>
-                            <td>站务员</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td></td>
-                            <td v-show="tableItem[0].ifShow">110224199005073822</td>
-                            <td v-show="tableItem[1].ifShow">1997-01-07</td>
-                            <td v-show="tableItem[2].ifShow">未婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">大专</td>
-                            <td v-show="tableItem[5].ifShow">共青团员</td>
-                            <td v-show="tableItem[6].ifShow">2012-08-23</td>
-                            <td v-show="tableItem[7].ifShow">北京市大兴区安定镇杜庄屯十一条</td>
-                            <td v-show="tableItem[8].ifShow">5956321478952695</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">5236598451259635</td>
-                            <td v-show="tableItem[11].ifShow">5963251489562359</td>
-                            <td v-show="tableItem[12].ifShow">5956321584596325</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
-                        </tr>
-                        <tr>
-                            <td><a style="margin-right: 5px; color: #0000FF"  @click="removeLine">删除</a><a style="color: #0000FF">修改</a></td>
-                            <td>60502979</td>
-                            <td>王宇</td>
-                            <td>男</td>
-                            <td>13581550834</td>
-                            <td>1988-07-13</td>
-                            <td>站务员</td>
-                            <td>西直门</td>
-                            <td>西直门</td>
-                            <td></td>
-                            <td v-show="tableItem[0].ifShow">110109198807132528</td>
-                            <td v-show="tableItem[1].ifShow">2008-06-09</td>
-                            <td v-show="tableItem[2].ifShow">未婚</td>
-                            <td v-show="tableItem[3].ifShow">未育</td>
-                            <td v-show="tableItem[4].ifShow">大专</td>
-                            <td v-show="tableItem[5].ifShow">共青团员</td>
-                            <td v-show="tableItem[6].ifShow">2002-08-23</td>
-                            <td v-show="tableItem[7].ifShow">北京市门头沟区王平镇东王平村55-4</td>
-                            <td v-show="tableItem[8].ifShow">5956325415896523</td>
-                            <td v-show="tableItem[9].ifShow">站务初级</td>
-                            <td v-show="tableItem[10].ifShow">5126985459654159</td>
-                            <td v-show="tableItem[11].ifShow">5236985412563596</td>
-                            <td v-show="tableItem[12].ifShow">5963214874523695</td>
-                            <td v-show="tableItem[13].ifShow">站务初级</td>
-                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -234,6 +104,13 @@
                     <li class="require">
                         <label class="require">姓名</label>
                         <input name="name" type="text" v-model="addPerson.name">
+                    </li>
+                    <li>
+                        <label>站点</label>
+                        <select name="station" class=" reset-input" v-model="addPerson.station">
+                            <option value="西直门">西直门</option>
+                            <option value="西直门">车公庄</option>
+                        </select>
                     </li>
                     <li class="require">
                         <label class="require">岗位</label>
@@ -373,6 +250,13 @@
                 <li class="require">
                     <label class="require">姓名</label>
                     <input name="name" type="text" v-model="addPersonfake.name">
+                </li>
+                <li>
+                    <label>站点</label>
+                    <select name="station" class=" reset-input" v-model="addPersonfake.station">
+                        <option value="西直门">西直门</option>
+                        <option value="西直门">车公庄</option>
+                    </select>
                 </li>
                 <li class="require">
                     <label class="require">岗位</label>
@@ -586,7 +470,7 @@
                         controllerNumber:'1401061060501034',
                         controllerLevel:'站务初级'
                     },
-                        {
+                    {
                         userId:2,
                         action:['删除','修改'],
                         workNumber:60506796,
@@ -613,12 +497,94 @@
                         controllerNumber:'1752695213699541',
                         controllerLevel:'站务初级'
                     },
+                     {
+                        userId:3,
+                        action:['删除','修改'],
+                        workNumber:60508808,
+                        name:'李璇',
+                        sex:'女',
+                        phoneNumber:13051679861,
+                        birthday:'1994-02-12',
+                        post:'站务员',
+                        station:'西直门',
+                        stationArea:'西直门',
+                        manager:'',
+                        idCard:'110108199402123410',
+                        entryTime:'2015-2-12',
+                        maritalStatus:'未婚',
+                        childrenHave:'未育',
+                        education:'大专',
+                        political:'共青团员',
+                        partyTime:'2010-01-1',
+                        address:'北京市丰台区青塔蔚园10号楼101',
+                        stationCertificateNumber:'5269541236985423',
+                        stationCertificateLevel:'站务初级',
+                        peopleCode:'4152956325841256',
+                        fireCertificateNumber:'5962354852695412',
+                        controllerNumber:'5963258412596584',
+                        controllerLevel:'站务初级'
+                    },
+                    {
+                        userId:4,
+                        action:['删除','修改'],
+                        workNumber:60507613,
+                        name:'黄旭',
+                        sex:'男',
+                        phoneNumber:13051679861,
+                        birthday:'1994-02-12',
+                        post:'站务员',
+                        station:'西直门',
+                        stationArea:'西直门',
+                        manager:'',
+                        idCard:'131002199401282015',
+                        entryTime:'2015-07-03',
+                        maritalStatus:'未婚',
+                        childrenHave:'未育',
+                        education:'大专',
+                        political:'共青团员',
+                        partyTime:'2015-12-11',
+                        address:'北京市西城区寿长街2号',
+                        stationCertificateNumber:'5952362515895255',
+                        stationCertificateLevel:'站务初级',
+                        peopleCode:'985625412695459',
+                        fireCertificateNumber:'595213695845258',
+                        controllerNumber:'596235158745953',
+                        controllerLevel:'站务初级'
+                    },
+                       {
+                        userId:5,
+                        action:['删除','修改'],
+                        workNumber:60502986,
+                        name:'薛婷婷',
+                        sex:'女',
+                        phoneNumber:13811580959,
+                        birthday:'1990-05-07',
+                        post:'站务员',
+                        station:'西直门',
+                        stationArea:'西直门',
+                        manager:'',
+                        idCard:'110224199005073822',
+                        entryTime:'1997-01-07',
+                        maritalStatus:'未婚',
+                        childrenHave:'未育',
+                        education:'大专',
+                        political:'共青团员',
+                        partyTime:'2012-08-23',
+                        address:'北京市大兴区安定镇杜庄屯十一条',
+                        stationCertificateNumber:'5956321478952695',
+                        stationCertificateLevel:'站务初级',
+                        peopleCode:'5236598451259635',
+                        fireCertificateNumber:'5963251489562359',
+                        controllerNumber:'5956321584596325',
+                        controllerLevel:'站务初级'
+                    },
                 ],
                 selectedItmes: [],
                 addPerson: {
                     cardNum: '',
                     code: '',
                     name: '',
+                    station: '',
                     postName: '',
                     manager: '',
                     password: '',
@@ -644,6 +610,7 @@
                     cardNum: '60502868',
                     code: '1401061060501034',
                     name: '梅松',
+                    station: '西直门',
                     postName: '站区长',
                     manager: '站区',
                     password: '123456',

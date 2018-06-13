@@ -691,6 +691,8 @@
                 var beginDay=beginTime.getDate();
                 var endDay=endTime.getDate();
                 var differDay=endDay-beginDay;
+                console.log(beginDay);
+                console.log(endDay);
                 this.currentTd.style.backgroundColor='#fffc00';
                 var targetHtml =this.target.parentNode.lastChild;
                 var targetInner;
@@ -851,7 +853,7 @@
                 this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime=this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime+differTime;
             },
             //替班模态框出现去掉气泡提示框
-            substituteModal: function () {
+            substituteModal:function(){
                 $(".vocationDiv").css("display","none");
                 this.modal.substitute=true;
             },

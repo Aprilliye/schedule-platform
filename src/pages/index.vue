@@ -100,7 +100,7 @@
                                 工作流程
                             </MenuItem>
                         </router-link>
-                        <router-link to="/mySchedule" >
+                        <router-link to="/schedulePlan" >
                             <MenuItem name="2-5">
                                 <Icon  type="ios-paper" class="iconsize"></Icon>
                                 排班计划
