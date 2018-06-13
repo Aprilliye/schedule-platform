@@ -691,8 +691,6 @@
                 var beginDay=beginTime.getDate();
                 var endDay=endTime.getDate();
                 var differDay=endDay-beginDay;
-                console.log(beginDay);
-                console.log(endDay);
                 this.currentTd.style.backgroundColor='#fffc00';
                 var targetHtml =this.target.parentNode.lastChild;
                 var targetInner;
