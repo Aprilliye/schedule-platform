@@ -77,7 +77,7 @@
                             <td class="scheduleName" @mouseenter="showNameMessage" @mouseleave="hideNameMessage">{{item.userName}}</td>
                             <td>{{item.postName}}</td>
                             <!--周表点击事件-->
-                            <td v-for="(list, index) in item.schedule" :key="'aa'+index" :id="list.id" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage">
+                            <td v-for="(list, index) in item.schedule" :key="'aa'+index" :id="list.id" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage":style="{'background-color':list.color}">
                                 {{list.name}}
                             </td>
                             <td>{{item.planWorkHour}}</td>
@@ -209,6 +209,11 @@
                     <FormItem label="时间">
                         <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="beginTime"></DatePicker><span> 至 </span>
                         <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="endTime"></DatePicker>
+                    </FormItem>
+                    <FormItem label="替班人">
+                        <Select v-model="annualLeaveForm.substitutePeople">
+                            <Option value="lishanshan">李珊珊</Option>
+                        </Select>
                     </FormItem>
                     <FormItem label="备注">
                         <textarea  name="remark" class="vocationRemark"  v-model="annualLeaveForm.remark"></textarea>
@@ -486,7 +491,8 @@
                 },
                 annualLeaveForm:{
                     select:'',
-                    textarea:''
+                    textarea:'',
+                    substitutePeople:''
                 },
                 editVocationForm:{
                     select:'',
@@ -546,6 +552,16 @@
                     planWorkHour:'46',
                     balance:'0',
                     actualWorkHour:'46'
+
+                },
+                substitutePeople:   {
+                    userName: '李珊珊',
+                    postName: '替班员',
+                    phoneName:"13873778520",
+                    address:'北京市门头沟区龙门新区B4-1号楼',
+                    planWorkHour:'5',
+                    balance:'0',
+                    actualWorkHour:'5'
 
                 },
             };
@@ -671,19 +687,56 @@
                 var endTime=this.endTime;
                 var beginDay=beginTime.getDate();
                 var endDay=endTime.getDate();
-                var differDay=endDay-beginDay;
-                console.log(beginDay);
-                console.log(endDay);
-                this.currentTd.style.backgroundColor='#fffc00';
+                var differDay=endDay-beginDay+1;
+                var totalDay=this.weekdata[this.clicktr-1].schedule.length;
+                var leaveDay=differDay+parseInt(this.clicktd);
+                var tdCurenet=parseInt(this.clicktd)-1;
+                //数组拷贝
+                var arr=this.weekdata[this.clicktr-1].schedule.slice(0);
+                var objDeepCopy = function (source) {
+                var sourceCopy = source instanceof Array ? [] : {};
+                for (var item in source) {
+                    sourceCopy[item] = typeof source[item] === 'object' ? objDeepCopy(source[item]) : source[item];
+                }
+                return sourceCopy;
+                }
+                var objCopy = objDeepCopy(arr);
+                if(totalDay>=leaveDay){
+                    for(var i=tdCurenet;i<tdCurenet+differDay;i++){
+                        this.weekdata[this.clicktr-1].schedule[i].color="#fffc00";
+                        this.weekdata[this.clicktr-1].schedule[i].annualLeaveCode=1;
+                    }
+                    if(tdCurenet!==0){
+                        for(var d = 0;d < tdCurenet;d++){
+                        objCopy[d].name='';
+                        }
+                    }
+                    for(var t = differDay+tdCurenet;t <= totalDay-1;t++){
+                        objCopy[t].name='';
+                    }
+                }else{
+                    for(var i=tdCurenet;i<totalDay-tdCurenet;i++){
+                        this.weekdata[this.clicktr-1].schedule[i].color="#fffc00";
+                        this.weekdata[this.clicktr-1].schedule[i].annualLeaveCode=1;
+                    }
+                }
+               
+                //添加替班员
+                this.substitutePeople.schedule=objCopy;
+                this.weekdata[this.clicktr-1].substitutePeopleId=this.weekdata.length+1;
+                this.substitutePeople.userId=this.weekdata.length+1;
+                this.substitutePeople.planWorkHour=differDay*5;
+                this.substitutePeople.actualWorkHour=differDay*5;
+                this.weekdata.push(this.substitutePeople);
                 var targetHtml =this.target.parentNode.lastChild;
                 var targetInner;
                 this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour-10*differDay;
                 this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance-10*differDay;
                 this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime=this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime-10*differDay;
-                this.$options.methods.changeLastOneColor(targetHtml,targetInner);;
+                this.$options.methods.changeLastOneColor(targetHtml,targetInner);
                 targetInner=this.weekdata[this.clicktr-1].balance;
                 var message={};
-                message.type='年假:'+differDay+"天" ;
+                message.type='年假:'+differDay+"天  替班员：李珊珊" ;
                 message.remark=this.editVocationForm.textarea;
                 message.setUpTime=new Date().toLocaleString();
                 message.setUpPerson='admin';
@@ -973,6 +1026,14 @@
                 this.target.parentNode.lastChild.style.backgroundColor="#DCDEE0";
                 targetInner=this.weekdata[this.clicktr-1].balance;
                 this.$options.methods.changeLastOneColor(targetHtml,targetInner);
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].annualLeaveCode===1){
+                    var id=this.weekdata[this.clicktr-1].substitutePeopleId;
+                    this.weekdata.splice(id-1);
+                    for (var i=0;i<this.weekdata[this.clicktr-1].schedule.length;i++){
+                        this.weekdata[this.clicktr-1].schedule[this.clicktd-1].annualLeaveCode=0;
+                        this.weekdata[this.clicktr-1].schedule[i].color='';
+                    }
+                }
             }
         }
     };
