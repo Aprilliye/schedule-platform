@@ -8,7 +8,7 @@
             北京地铁运三分公司
         </div>
         <div class="list">
-            <listBlock v-for="(item,index) in arr" :key="index" :title="item"></listBlock>
+            <listBlock v-for="(item, index) in stations" :key="index" :title="item.districtName"></listBlock>
         </div>
         <!--新增站区弹框-->
         <Modal
@@ -16,8 +16,7 @@
                 v-model="addStationArea"
                 @on-ok="addStationAreaMethod"
                 @on-cancel="cancelStationAreaMethod"
-                :loading="true"
-                >
+                :loading="true">
             <p>
                 <label class="addStationLabel"> 站区名称：</label>
                 <input id="editUserCode" name="userCode" type="text" v-model="stationName">
@@ -28,31 +27,36 @@
 </template>
 <script>
     import listBlock from '../components/listBlock.vue'
+    import {stationAreaList, addstationArea} from '@/api/commonAPI'
     export default {
         data:function () {
             return {
                 addStationArea: false,
-                arr: ['西直门'],
+                stations: [],
                 stationName: ''
             }
         },
+        mounted: function () {
+            this.request();
+        },
         methods:{
+            //  获取站区列表
             request: async function(){
-                    let response = await api.stationAreaList();
-                   if (response.meta.code !== 0) {
-                       this.$Loading.error();
-                       this.$Message.error(response.meta.message);
-                   }else{
+                    let response = await stationAreaList();
+                    if (response.meta.code !== 0) {
+                        this.$Loading.error();
+                        this.$Message.error(response.meta.message);
+                    }else{
                         this.$Loading.finish();
-                        this.arr=response.data;
-                   }
+                        this.stations = response.data;
+                    }
             },
             //新增站区
             addStationAreaMethod: async function(){
                 let params={
                     districtName:this.stationName,
                 };
-                let response = await api.addstationArea(params);
+                let response = await addstationArea(params);
                 if (response.meta.code !==0){
                     this.$Message.error(response.meta.mesage);
                 }else{
@@ -65,8 +69,6 @@
                     $(".stationNamerequire").css("display","inline-block");
                     }
                 }
-                    console.log(this.arr);
-
             },
             cancelStationAreaMethod:function(){
                 this.stationName='';

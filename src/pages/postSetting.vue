@@ -35,6 +35,7 @@
     </div>
 </template>
 <script>
+import {getAllPost} from '@/api/api'
     export default {
         data:function () {
             return {
@@ -126,7 +127,15 @@
                 }
             }
         },
+        mounted: function () {
+            this.getAllPost();
+        },
         methods: {
+            //  获取所有岗位
+            getAllPost: async function () {
+                let response = await getAllPost(10);
+                console.log(response);
+            },
             //  点击删除岗位
             brforeDeletePost: function (index) {
                 this.$Modal.confirm({
