@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="stationArea">
         <div class="content-block">
             <div class="blockheader">
                 <span class="listBlockSpan changeStationName">
@@ -238,17 +238,14 @@
         props:['title'],
         methods:{
             //删除站区
-            removestation: async function() {
-                let e = e || window.event;
-                let targetBlock = e.target || e.srcElement;
-                let id=targetBlock.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id;
-                // let params={districtId:id};
+            removestation: async function(e) {
+                let obj = $(e.target);
+                let id = obj.closest('.stationArea').attr('id');
                 let response = await api.deleteStationArea(id);
                 if(response.meta.code !==0){
                      this.$Message.error(response.meta.message);
                 }else{
                      this.$Message.success('删除站区成功');
-                     targetBlock.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.remove();
                 }
             },
             //添加站点

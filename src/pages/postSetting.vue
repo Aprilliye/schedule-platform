@@ -107,18 +107,6 @@ import {getAllPost} from '@/api/api'
                     {
                         name: '管理员',
                         ifRelay: false
-                    },
-                    {
-                        name: '站务员',
-                        ifRelay: true
-                    },
-                    {
-                        name: '值班站长',
-                        ifRelay: false
-                    },
-                    {
-                        name: '站区长助理',
-                        ifRelay: true
                     }
                 ],
                 eidtItem: {
@@ -134,7 +122,10 @@ import {getAllPost} from '@/api/api'
             //  获取所有岗位
             getAllPost: async function () {
                 let response = await getAllPost(10);
-                console.log(response);
+                let message = response.meta.message;
+                if(response.meta !== 0){
+                    this.$Message.error(message);
+                }
             },
             //  点击删除岗位
             brforeDeletePost: function (index) {

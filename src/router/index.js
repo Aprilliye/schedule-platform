@@ -123,13 +123,13 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   let IDENTIFICATION = 'schedule_identify';
   // 若路由需要登录且token不存在, 跳到登录页
-  if (to.meta.requireAuth && !localStorage.getItem(IDENTIFICATION)) {
-    next({
-        path: '/',
-        query: { redirect: to.fullPath }
-    });
-    return;
-  }
+//   if (to.meta.requireAuth && !localStorage.getItem(IDENTIFICATION)) {
+//     next({
+//         path: '/',
+//         query: { redirect: to.fullPath }
+//     });
+//     return;
+//   }
   // 若请求登录页但token存在, 跳转到首页
   if(to.path.indexOf('login') > -1 && localStorage.getItem(IDENTIFICATION)){
     next({
