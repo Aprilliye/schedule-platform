@@ -4,11 +4,7 @@ import { routerMode } from '@/config/env.js';
 import Login from '@/pages/login';
 import Index  from '@/pages/index';
 import Usermanage from '@/pages/user-manage';
-<<<<<<< HEAD
-import SetStationArea from '@/pages/setStationArea';
-=======
 import setStationArea from '@/pages/setStationArea';
->>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
 import Role from '@/pages/role';
 import ScheduleForm from '@/pages/scheduleForm';
 import Workflow from '@/pages/workflow';
@@ -51,13 +47,8 @@ const router = new Router({
           //站区设置页面
         {
           path: '/setStationArea',
-<<<<<<< HEAD
-          name: 'SetStationArea',
-          component: SetStationArea
-=======
           name: 'setStationArea',
           component: setStationArea
->>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
         },
           //权限管理页面
         {

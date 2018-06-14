@@ -37,7 +37,6 @@
             }
         },
         methods:{
-<<<<<<< HEAD
             request: async function(){
                     let response = await api.stationAreaList();
                    if (response.meta.code !== 0) {
@@ -69,19 +68,6 @@
                     console.log(this.arr);
 
             },
-=======
-            addStationAreaMethod:function(){
-                if(this.stationName){
-                    this.arr.push(this.stationName);
-                    this.stationName='';
-                    $(".stationNamerequire").css("display","none");
-                    this.addStationArea=false;
-                }else{
-                    $(".stationNamerequire").css("display","inline-block");
-                }
-
-            },
->>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
             cancelStationAreaMethod:function(){
                 this.stationName='';
                 $(".stationNamerequire").css("display","none");
