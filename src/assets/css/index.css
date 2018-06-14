@@ -75,6 +75,11 @@
 
 
 /*站区设置*/
+.activeSpan {
+    border:1px solid #ff6600!important;
+    color: #ff6600;
+    background: #fff;
+}
 .bgGreen span{
     color: white;
 }
