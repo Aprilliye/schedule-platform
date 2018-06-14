@@ -15,10 +15,10 @@
                             <Icon type="arrow-down-b"></Icon>
                         </a>
                         <DropdownMenu slot="list">
-                            <DropdownItem><a @click="renameStation = true">修改站区名称</a></DropdownItem>
-                            <DropdownItem><a @click="setUserManager = true">设置管理员</a></DropdownItem>
-                            <DropdownItem><a @click="addStation = true">添加站点</a></DropdownItem>
-                            <DropdownItem><a class="red" @click="removestation">删除站区</a></DropdownItem>
+                            <DropdownItem><a @click="beforeUpdateDistrice">修改站区名称</a></DropdownItem>
+                            <DropdownItem><a @click="modal.setUserManager = true">设置管理员</a></DropdownItem>
+                            <DropdownItem><a @click="modal.addStation = true">添加站点</a></DropdownItem>
+                            <DropdownItem><a class="red" @click="beforeDeleteDistrict">删除站区</a></DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
                 </div>
@@ -26,45 +26,44 @@
             <div class="blockcontent">
                 <ul class="blockul">
                     <li v-for="(item, index) in stations" :key="index">
-                        <span class="blockspan" >{{item.stationName}}</span>
-                        <a class="icon-1 delete" @click="removeLine"></a>
-                        <a class="icon-4 edit" @click="editLine"></a>
+                        <span class="blockspan" v-show="!editStation">{{item.stationName}}</span>
+                        <input type="text" v-model.trim="editStationName" v-show="editStation" @blur="updateStation(item.id)" style="margin-left:5px;"/>
+                        <a class="icon-1 delete" @click="beforeDeleteStation(item.id)"></a>
+                        <a class="icon-4 edit" @click="beforeUpdateStation(item.stationName)"></a>
                     </li>
                 </ul>
             </div>
         </div>
         <!--修改站区弹框-->
         <Modal
-            @on-ok="renameStationMethod"
+            @on-ok="updateDistrict"
             :loading="true"
             title="修改站区名称"
-            v-model="renameStation">
+            v-model="modal.updateDistrict">
             <p>
-                站区名称
-                <input  name="userCode" type="text" v-model="stationAreaName" >
-                <span class="turnRed stationAreaNameRed">站区名称不能为空</span>
+                站区名称：
+                <input  name="userCode" type="text" v-model.trim="districtName" >
             </p>
         </Modal>
         <!--添加站点弹框-->
         <Modal
-            @on-ok="handleAddStation"
+            @on-ok="addStation"
             :loading="true"
             title="添加站点"
-            v-model="addStation">
+            v-model="modal.addStation">
             <p>
-                站点名称
+                站点名称：
                 <input  name="userCode" type="text" v-model.trim="addStationName">
             </p>
         </Modal>
         <!--设置管理员-->
         <Modal
                title="设置管理员"
-               v-model="setUserManager"
+               v-model="modal.setUserManager"
                width="800px"
                :loading="true"
                @on-ok="setUserManagerMethod('setManager')"
-               @on-cancel="cancelSet('setManager')"
-                >
+               @on-cancel="cancelSet('setManager')">
             <Form ref="setManager" :model="setManager" :rules="ruleValidate" :label-width="100">
                 <FormItem label="员工卡号：" prop="cardNum" class="setWidth">
                     <Input v-model="setManager.cardNum" placeholder=""/>
@@ -156,23 +155,27 @@
     </div>
 </template>
 <script>
-    import {deleteStationArea, getStations, addStation} from "../api/commonAPI";
+    import {deleteDistrict, getStations, addStation, updateDistrict, deleteStation, updateStation} from "../api/commonAPI";
     export default {
         data:function(){
-            return{    
+            return{ 
+                //  模态框显示状态
+                modal: {
+                    addStation: false,
+                    updateDistrict: false,
+                    setUserManager: false,
+                },   
+                editStation: false,
                 stations: [],               //  站点
-                currentId: null,          //  存放站区id
                 stationObj: {
                     districtId: null,
                     stationName: ''
                 },
-                renameStation:false,
-                addStation:false,
-                setUserManager:false,
                 managerName:'',
                 blockSpanList:[],
                 addStationName:'',
-                stationAreaName:'',
+                editStationName: '',
+                districtName:'',
                 setManager:{
                     cardNum:'',
                     peopleNum:'',
@@ -234,21 +237,55 @@
                 }
             }
         },
-        props:['title', 'id'],
+        props:['title', 'districtId'],
         created: function () {
-            this.getStations(this.id);
+            this.getStations(this.districtId);
         },
         methods:{
-            //删除站区
-            removestation: async function(e) {
-                let obj = $(e.target);
-                let id = this.id;
-                let response = await deleteStationArea(id);
-                if(response.meta.code !==0){
-                     this.$Message.error(response.meta.message);
-                }else{
-                     this.$Message.success('删除站区成功');
+            //  修改站区名称
+            beforeUpdateDistrice: function () {
+                this.districtName = this.title;
+                this.modal.updateDistrict = true;
+            },
+            updateDistrict: async function(){
+                let name = this.districtName;
+                if(name === ''){
+                    this.$Message.warning('站区名称不能为空');
+                    return;
                 }
+                let id = this.districtId;
+                let data = {
+                    districtName: name,
+                    content: ''
+                }
+                let response = await updateDistrict(id, data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.modal.updateDistrict = false;
+                    this.$Message.success(message);
+                    this.title = this.districtName;
+                    return;
+                }
+                this.$Message.error(message);
+            },
+            //  删除站区
+            beforeDeleteDistrict: function () {
+                this.$Modal.confirm({
+                    content: '<p>确定删除该站区吗？</p>',
+                    onOk: () => {
+                        this.deleteDistrict(this.districtId);
+                    }
+                });
+            },
+            deleteDistrict: async function(id) {
+                let response = await deleteDistrict(id);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.$emit('deleteDistrict', response.data);
+                    return;
+                }
+                this.$Message.error(message);
             },
             //  获取站点
             getStations: async function (id) {
@@ -261,78 +298,72 @@
                 this.$Message.error(message);
             },
             //  添加站点
-            handleAddStation: async function () {
-                let addStationName = this.addStationName;
-                if(addStationName === ''){
+            addStation: async function () {
+                let name = this.addStationName;
+                if(name === ''){
                     this.$Message.warning('站点名称不能为空');
                     return;
                 }
                 let data = {
-                    districtId: this.id,
-                    stationName: addStationName
+                    districtId: this.districtId,
+                    stationName: name
                 }
                 let response = await addStation(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
                     this.stations = response.data;
+                    this.modal.addStation = false;
                     return;
                 }
                 this.$Message.error(message);                
             },
-            //修改站区名称
-            renameStationMethod: function(){
-                // let e = e || window.event;
-                // let targetBlock = e.target || e.srcElement;
-                // let id=targetBlock.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id;
-                // console.log(id);
-                // let params={
-                //     id:id,
-                //     districtName:this.stationAreaName,
-                // };
-                // let response = await api.updatestationArea(params);
-                // console.log(response)
-                // if(response.meta.code !==0){
-                //      this.$Message.error(response.meta.message);
-                // }else{
-                //      this.$Message.success('修改站区名称成功');
-                //      if(this.stationAreaName){
-                //     $(".changeStationName").text(this.stationAreaName);
-                //     this.stationAreaName='';
-                //     $(".stationAreaNameRed").css("display","none");
-                //     this.renameStation=false;
-                // }else{
-                //     $(".stationAreaNameRed").css("display","inline-block");
-                //     return false;
-                //     }
-                // }
+            //  删除站点
+            beforeDeleteStation: function(id){
+                this.$Modal.confirm({
+                    content: '<p>确定删除该站点吗？</p>',
+                    onOk: () => {
+                        this.deleteStation(id);
+                    }
+                });
             },
-            //删除站点
-            removeLine:function(){
-                var e = e || window.event;
-                var target = e.target || e.srcElement;
-                if (target.parentNode.tagName.toLowerCase() == "li") {
-                     target.parentNode.remove();
+            deleteStation: async function (id) {
+                let response = await deleteStation(id);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.stations = response.data;
+                    return;
                 }
+                this.$Message.error(message);
             },
-//            编辑站点
-            editLine:function(){
-                var e = e || window.event;
-                var targetBlock = e.target || e.srcElement;
-                var innerText=targetBlock.parentNode.firstChild.innerHTML;
-                var check=$("#n").length;
-                if(check<=0){
-                    targetBlock.parentNode.firstChild.innerHTML ='<input type="text" id="n" value='+innerText+' />';
-                    $("#n").blur(function(){
-                        var value=$("#n").val();
-                        targetBlock.parentNode.firstChild.innerHTML=value;
-                    });
-                }else{
-                    return false
+            //  编辑站点
+            beforeUpdateStation: function(name){
+                this.editStationName = name;
+                this.editStation = true;
+            },
+            updateStation: async function (id) {
+                let name = this.editStationName;
+                if(name === ''){
+                    this.$Message.warning('站点名称不能为空');
+                    return;
                 }
+                let data = {
+                    districtId: this.districtId,
+                    stationName: name
+                }
+                let response = await updateStation(id, data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.stations = response.data;
+                } else {
+                    this.$Message.error(message);
+                }
+                this.editStation = false;
             },
-            //设置管理员
-            setUserManagerMethod:function(name){
+            //  设置管理员
+            setUserManagerMethod: function(name){
                 this.managerName=this.setManager.name
                 this.$refs[name].validate((valid) => {
                     if (valid) {
@@ -344,7 +375,7 @@
                     }
                 })
             },
-            //取消设置
+            //  取消设置
             cancelSet:function(name){
                 this.$refs[name].resetFields();
             }

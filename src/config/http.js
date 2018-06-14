@@ -39,9 +39,9 @@ http.interceptors.response.use(
     },
     error => {
         if (!store.has(IDENTIFICATION)) {
-            router.push({
-                path: "/"
-            });
+            // router.push({
+            //     path: "/"
+            // });
         }else{
             if (error.response.status === 401) {
                 router.push({

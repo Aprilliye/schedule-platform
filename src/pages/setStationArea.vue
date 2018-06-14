@@ -8,7 +8,7 @@
             北京地铁运三分公司
         </div>
         <div class="list">
-            <listBlock v-for="(item, index) in stationAreas" :key="index" :title="item.districtName" :id="item.id"></listBlock>
+            <listBlock v-for="(item, index) in districts" :key="index" :title="item.districtName" :districtId="item.id" @deleteDistrict="dataChange"></listBlock>
         </div>
         <!--新增站区弹框-->
         <Modal
@@ -31,16 +31,18 @@
         data: function () {
             return {
                 addStationArea: false,
-                stationAreas: [],
+                districts: [],
                 stationName: '',
-                stations: [],
             }
         },
         mounted: function () {
             this.request();
         },
         methods:{
-            
+            //  删除战区成功
+            dataChange (res) {
+                this.districts = res;
+            },
             //  获取站区列表
             request: async function(){
                 let response = await stationAreaList();
@@ -49,7 +51,7 @@
                     this.$Message.error(response.meta.message);
                 }else{
                     this.$Loading.finish();
-                    this.stationAreas = response.data;
+                    this.districts = response.data;
                 }
             },
             //  新增站区
@@ -66,7 +68,7 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    this.stationAreas = response.data;
+                    this.districts = response.data;
                     this.addStationArea = false;
                     return;
                 }
