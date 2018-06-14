@@ -55,7 +55,11 @@
                         </thead>
                         <tbody id="userDataTable">
                         <tr v-for="(item,index) in personList" :key='index' :id="item.userId">
+<<<<<<< HEAD
                             <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">{{item.action[0]}}</a><a style="color: #0000FF" @click="editPersonMethod">{{item.action[1]}}</a></td>
+=======
+                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">{{item.action[0]}}</a><a style="color: #0000FF" @click="editPersonModalMethod">{{item.action[1]}}</a></td>
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                             <td>{{item.workNumber}}</td>
                             <td>{{item.name}}</td>
                             <td>{{item.sex}}</td>
@@ -243,6 +247,7 @@
             <ul class="form">
                 <li>
                     <label>员工卡号</label>
+<<<<<<< HEAD
                     <input name="cardNum" type="text" v-model="editPersonfake.workNumber">
                 </li>
                 <li>
@@ -256,34 +261,67 @@
                 <li>
                     <label>站区/站点</label>
                     <select name="station" class=" reset-input" v-model="editPersonfake.stationArea">
+=======
+                    <input name="workNumber" type="text" v-model="editPerson.workNumber">
+                </li>
+                <li>
+                    <label>人员编码</label>
+                    <input name="peopleCode" type="text" v-model="editPerson.peopleCode">
+                </li>
+                <li class="require">
+                    <label class="require">姓名</label>
+                    <input name="name" type="text" v-model="editPerson.name">
+                </li>
+                <li>
+                    <label>站点</label>
+                    <select name="station" class=" reset-input" v-model="editPerson.station">
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                         <option value="西直门">西直门</option>
                         <option value="西直门">车公庄</option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">岗位</label>
+<<<<<<< HEAD
                     <select name="postName" v-model="editPersonfake.post">
                         <option value="站务员">站务员</option>
                         <option value="值班站长">值班站长</option>
                         <option value="站区长助理">站区长助理</option>
+=======
+                    <select name="post" v-model="editPerson.post">
+                        <option value="站务员">站务员</option>
+                        <option value="值班站长">值班站长</option>
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                         <option value="站区长">站区长</option>
                     </select>
                 </li>
                 <li>
                     <label>管理员</label>
+<<<<<<< HEAD
                     <select name="manager" v-model="editPersonfake.manager">
+=======
+                    <select name="manager" v-model="editPerson.manager">
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                         <option value="否">否</option>
                         <option value="是">是</option>
                     </select>
                 </li>
                 <li>
                     <label class="red">密码</label>
+<<<<<<< HEAD
                     <input type="text" name="password" v-model="editPersonfake.psw">
+=======
+                    <input type="text" name="password" v-model="editPerson.psw">
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                     <span class="orange">请记录此密码作为下次登录用</span>
                 </li>
                 <li>
                     <label>权限方案</label>
+<<<<<<< HEAD
                     <select name="plan" v-model="editPersonfake.plan">
+=======
+                    <select name="plan" v-model="editPerson.plan">
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                         <option value="超级管理员">超级管理员</option>
                         <option value="系统管理员">系统管理员</option>
                         <option value="管理员">管理员</option>
@@ -291,13 +329,18 @@
                 </li>
                 <li class="require">
                     <label class="require">性别</label>
+<<<<<<< HEAD
                     <select name="sex" v-model="editPersonfake.sex">
+=======
+                    <select name="sex" v-model="editPerson.sex">
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                         <option value="男">男</option>
                         <option value="女">女</option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">手机号</label>
+<<<<<<< HEAD
                     <input name="phoneNumber" type="text" v-model="editPersonfake.phoneNumber">
                 </li>
                 <li class="require">
@@ -315,6 +358,25 @@
                 <li class="require">
                     <label class="require">婚否</label>
                     <select name="isMarried" v-model="editPersonfake.maritalStatus">
+=======
+                    <input name="phoneNumber" type="text" v-model="editPerson.phoneNumber">
+                </li>
+                <li class="require">
+                    <label class="require" id="heightpDay">生日</label>
+                    <input name="birthday" type="text" v-model="editPerson.birthday">
+                </li>
+                <li class="require">
+                    <label class="require">身份证</label>
+                    <input name="idCard" type="text" v-model="editPerson.idCard">
+                </li>
+                <li class="require">
+                    <label class="require" id="heightppTime">入职时间</label>
+                    <input name="entryTime" type="text" placeholder="例2015-03-06" v-model="editPerson.entryTime">
+                </li>
+                <li class="require">
+                    <label class="require">婚否</label>
+                    <select name="maritalStatus" v-model="editPerson.maritalStatus">
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                         <option value="">请选择</option>
                         <option value="已婚" selected = "selected">已婚</option>
                         <option value="未婚">未婚</option>
@@ -322,15 +384,23 @@
                 </li>
                 <li class="require">
                     <label class="require">生育</label>
+<<<<<<< HEAD
                     <select name="hasChild" v-model="editPersonfake.childrenHave">
+=======
+                    <select name="childrenHave" v-model="editPerson.childrenHave">
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                         <option value="已育">已育</option>
                         <option value="未育">未育</option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">学历</label>
+<<<<<<< HEAD
                     <select name="eduBackGround" v-model="editPersonfake.education">
                         <option value="">高中以下</option>
+=======
+                    <select name="education" v-model="editPerson.education">
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                         <option value="高中以下">高中以下</option>
                         <option value="大专">大专</option>
                         <option value="本科">本科</option>
@@ -340,8 +410,12 @@
                 </li>
                 <li class="require">
                     <label class="require">政治面貌</label>
+<<<<<<< HEAD
                     <select name="isPartyMember" v-model="editPersonfake.political">
                         <option value="">共青团员</option>
+=======
+                    <select name="political" v-model="editPerson.political">
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                         <option value="群众">群众</option>
                         <option value="共青团员">共青团员</option>
                         <option value="共产党员">共产党员</option>
@@ -350,6 +424,7 @@
                 </li>
                 <li>
                     <label>入党时间</label>
+<<<<<<< HEAD
                     <input name="joinDate" type="text" v-model="editPersonfake.partyTime">
                 </li>
                 <li>
@@ -375,6 +450,33 @@
                 <li>
                     <label class="require">综控员证书级别</label>
                     <input name="controllerCertificateGrade" type="text" v-model="editPersonfake.controllerLevel">
+=======
+                    <input name="partyTime" type="text" v-model="editPerson.partyTime">
+                </li>
+                <li>
+                    <label class="require">站务员证书编号</label>
+                    <input name="stationCertificateNumber" type="text" v-model="editPerson.stationCertificateNumber">
+                </li>
+                <li>
+                    <label class="require">站务员证等级</label>
+                    <input name="stationCertificateLevel" type="text" v-model="editPerson.stationCertificateLevel">
+                </li>
+                <li class="lang require">
+                    <label class="require">住址</label>
+                    <input name="address" type="text" v-model="editPerson.address">
+                </li>
+                <li>
+                    <label class="require">消防证书编号</label>
+                    <input name="fireCertificateNumber" type="text" v-model="editPerson.fireCertificateNumber">
+                </li>
+                <li>
+                    <label class="require">综控员证书编号</label>
+                    <input name="controllerNumber" type="text" v-model="editPerson.controllerNumber">
+                </li>
+                <li>
+                    <label class="require">综控员证书级别</label>
+                    <input name="controllerLevel" type="text" v-model="editPerson.controllerLevel">
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                 </li>
                 <li class="clear"></li>
             </ul>
@@ -387,7 +489,10 @@
             return {
                 addPersonModal: false,
                 editPersonModal: false,
+<<<<<<< HEAD
                 targetId:'',
+=======
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                 tableItem: [
                     {
                         name: '身份证',
@@ -610,6 +715,7 @@
                     controllerCertificateNum: '',
                     controllerCertificateGrade: ''
                 },
+<<<<<<< HEAD
                 editPersonfake: {
                         workNumber:'',
                         name:'',
@@ -634,6 +740,32 @@
                         fireCertificateNumber:'',
                         controllerNumber:'',
                         controllerLevel:''
+=======
+                editPerson: {
+                    workNumber:'',
+                    name:'',
+                    sex:'',
+                    phoneNumber:'',
+                    birthday:'',
+                    post:'',
+                    station:'',
+                    stationArea:'',
+                    manager:'',
+                    idCard:'',
+                    entryTime:'',
+                    maritalStatus:'',
+                    childrenHave:'',
+                    education:'',
+                    political:'',
+                    partyTime:'',
+                    address:'',
+                    stationCertificateNumber:'',
+                    stationCertificateLevel:'',
+                    peopleCode:'',
+                    fireCertificateNumber:'',
+                    controllerNumber:'',
+                    controllerLevel:''
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
                 }
 
             }
@@ -644,6 +776,7 @@
                 var e = e || window.event;
                 var target = e.target || e.srcElement;
                 target.parentNode.parentNode.remove();
+<<<<<<< HEAD
                 console.log(target);
             },
             editPersonMethod:function(){
@@ -683,6 +816,16 @@
                 this.personList[id].controllerLevel=this.editPersonfake.controllerLevel,
             // this.personList.splice(id,1,object)
             this.editPersonModal=false;
+=======
+            },
+            editPersonModalMethod:function(e){
+                this.editPersonModal=true;
+                var id=e.target.parentNode.parentNode.id-1;
+                let obj = this.personList[id]; 
+                for(let key in obj){
+                    this.editPerson[key] = obj[key];
+                }
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
             }
         }
        

@@ -51,7 +51,7 @@
     color: white;
 }
 .main-menu{
-    width: 100%!important;
+    width: 100% !important;
     height: 100vh;
 }
 .header .logo img {
@@ -75,9 +75,6 @@
 
 
 /*站区设置*/
-.bgGreen{
-    margin-left: 10px;
-}
 .bgGreen span{
     color: white;
 }
@@ -347,4 +344,10 @@
 }
 .showtable{
     display: none;
+}
+.ivu-menu-item a{
+    display: block;
+}
+.ivu-menu-item .active{
+    color: #3A6BCE;
 }

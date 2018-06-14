@@ -4,7 +4,11 @@ import { routerMode } from '@/config/env.js';
 import Login from '@/pages/login';
 import Index  from '@/pages/index';
 import Usermanage from '@/pages/user-manage';
+<<<<<<< HEAD
 import SetStationArea from '@/pages/setStationArea';
+=======
+import setStationArea from '@/pages/setStationArea';
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
 import Role from '@/pages/role';
 import ScheduleForm from '@/pages/scheduleForm';
 import Workflow from '@/pages/workflow';
@@ -13,8 +17,9 @@ import ShiftsSetting from '@/pages/shiftsSetting';
 import AutoSchedule from '@/pages/autoSchedule';
 import AddJurisdiction from '@/pages/addJurisdiction';
 import EditJurisdiction from '@/pages/editJurisdiction';
-import mySchedule from '@/pages/mySchedule';
+import schedulePlan from '@/pages/schedulePlan';
 import candidateSchedule from '@/pages/candidateSchedule';
+import operations from '@/pages/operations';
 import iView from 'iview';
 
 Vue.use(iView);
@@ -46,8 +51,13 @@ const router = new Router({
           //站区设置页面
         {
           path: '/setStationArea',
+<<<<<<< HEAD
           name: 'SetStationArea',
           component: SetStationArea
+=======
+          name: 'setStationArea',
+          component: setStationArea
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
         },
           //权限管理页面
         {
@@ -99,9 +109,9 @@ const router = new Router({
         },
         //  我的排班
         {
-            path:'/mySchedule',
-            name: 'mySchedule',
-            component: mySchedule
+            path:'/schedulePlan',
+            name: 'schedulePlan',
+            component: schedulePlan
         },
         //  备班排班
         {
@@ -109,6 +119,12 @@ const router = new Router({
             name: 'candidateSchedule',
             component: candidateSchedule
         },
+        //  操作记录
+        {
+            path: '/operations',
+            name: 'operations',
+            component: operations
+        }
       ]
     }
   ]

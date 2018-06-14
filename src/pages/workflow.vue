@@ -17,16 +17,16 @@
                         </tr>
                         <tr :key="'tr1'+index">
                             <td colspan="3">编号</td>
-                            <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n < 10 ? '0'+n : n)+':00' }}</td>
+                            <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n > 10 ? n : '0' + n )+':00' }}</td>
                         </tr>
                         <template v-for="post in item.postArr">
-                            <tr :code="'tr'+index+'-'+post.index+'0'">
+                            <tr :code="'tr'+index+'-'+post.index+'0'" :key="'tr'+index+'-'+post.index+'0'">
                                 <td rowspan="2" colspan="3">{{post.index}}</td>
                                 <template v-for="n in 24">
                                     <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" width="30" :code="'atd'+index+'-'+post.index+'0'+'-'+n"></td>
                                 </template>
                             </tr>
-                            <tr :code="'tr'+index+'-'+post.index+'1'">
+                            <tr :code="'tr'+index+'-'+post.index+'1'" :key="'tr'+index+'-'+post.index+'1'">
                                 <template v-for="n in 24">
                                     <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" :code="'btd'+index+'-'+post.index+'0'+'-'+n"></td>
                                 </template>

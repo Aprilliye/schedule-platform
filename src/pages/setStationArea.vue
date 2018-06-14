@@ -1,45 +1,43 @@
 <template>
     <div class="container">
         <div class="content-header">
-            <button class=" btnDefault bgGreen" type="button" @click="addStationArea = true"><span>新增站区</span></button>
-            <!--新增站区弹框-->
-            <Modal
-                    title="新增站区"
-                    v-model="addStationArea"
-                    @on-ok="addStationAreaMethod"
-                    @on-cancel="cancelStationAreaMethod"
-                    :loading="true"
-                   >
-                <p>
-                    <label class="addStationLabel"> 站区名称：</label>
-                    <input id="editUserCode" name="userCode" type="text" v-model="stationName">
-                    <span class="turnRed stationNamerequire">站区名称不能为空</span>
-                </p>
-            </Modal>
+            <button class="btnDefault bgGreen" type="button" @click="addStationArea = true">新增站区</button>
+            <button class="btnDefault">导入</button>
         </div>
         <div class="content-title">
             北京地铁运三分公司
         </div>
         <div class="list">
-            <listBlock v-for="(item,index) in arr" :key="index" :title="item.districtName" :id="item.id"></listBlock>
+            <listBlock v-for="(item,index) in arr" :key="index" :title="item"></listBlock>
         </div>
+        <!--新增站区弹框-->
+        <Modal
+                title="新增站区"
+                v-model="addStationArea"
+                @on-ok="addStationAreaMethod"
+                @on-cancel="cancelStationAreaMethod"
+                :loading="true"
+                >
+            <p>
+                <label class="addStationLabel"> 站区名称：</label>
+                <input id="editUserCode" name="userCode" type="text" v-model="stationName">
+                <span class="turnRed stationNamerequire">站区名称不能为空</span>
+            </p>
+        </Modal>
     </div>
 </template>
 <script>
-    import * as api from "../api/commonAPI";
     import listBlock from '../components/listBlock.vue'
     export default {
-        created:function(){
-            this.request();
-        },
         data:function () {
             return {
                 addStationArea: false,
-                arr: [],
-                stationName: '',
+                arr: ['西直门'],
+                stationName: ''
             }
         },
         methods:{
+<<<<<<< HEAD
             request: async function(){
                     let response = await api.stationAreaList();
                    if (response.meta.code !== 0) {
@@ -71,6 +69,19 @@
                     console.log(this.arr);
 
             },
+=======
+            addStationAreaMethod:function(){
+                if(this.stationName){
+                    this.arr.push(this.stationName);
+                    this.stationName='';
+                    $(".stationNamerequire").css("display","none");
+                    this.addStationArea=false;
+                }else{
+                    $(".stationNamerequire").css("display","inline-block");
+                }
+
+            },
+>>>>>>> 7a7737b7b13b65d0eb8c54d199416a6ee2a9b53b
             cancelStationAreaMethod:function(){
                 this.stationName='';
                 $(".stationNamerequire").css("display","none");
