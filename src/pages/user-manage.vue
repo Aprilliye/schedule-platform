@@ -245,7 +245,7 @@
                 </li>
                 <li>
                     <label>人员编码</label>
-                    <input name="code" type="text" v-model="editPerson.code">
+                    <input name="peopleCode" type="text" v-model="editPerson.peopleCode">
                 </li>
                 <li class="require">
                     <label class="require">姓名</label>
@@ -263,14 +263,14 @@
                     <select name="post" v-model="editPerson.post">
                         <option value="站务员">站务员</option>
                         <option value="值班站长">值班站长</option>
-                        <option value="站区长助理">站区长助理</option>
+                        <option value="站区长">站区长</option>
                     </select>
                 </li>
                 <li>
                     <label>管理员</label>
                     <select name="manager" v-model="editPerson.manager">
-                        <option value="0">否</option>
-                        <option value="1" selected="selected">是</option>
+                        <option value="否">否</option>
+                        <option value="是">是</option>
                     </select>
                 </li>
                 <li>
@@ -303,15 +303,15 @@
                 </li>
                 <li class="require">
                     <label class="require">身份证</label>
-                    <input name="idCode" type="text" v-model="editPerson.idCode">
+                    <input name="idCard" type="text" v-model="editPerson.idCard">
                 </li>
                 <li class="require">
                     <label class="require" id="heightppTime">入职时间</label>
-                    <input name="onBoardDate" type="text" placeholder="例2015-03-06" v-model="editPerson.onBoardDate">
+                    <input name="entryTime" type="text" placeholder="例2015-03-06" v-model="editPerson.entryTime">
                 </li>
                 <li class="require">
                     <label class="require">婚否</label>
-                    <select name="isMarried" v-model="editPerson.isMarried">
+                    <select name="maritalStatus" v-model="editPerson.maritalStatus">
                         <option value="">请选择</option>
                         <option value="已婚" selected = "selected">已婚</option>
                         <option value="未婚">未婚</option>
@@ -319,15 +319,14 @@
                 </li>
                 <li class="require">
                     <label class="require">生育</label>
-                    <select name="hasChild" v-model="editPerson.hasChild">
+                    <select name="childrenHave" v-model="editPerson.childrenHave">
                         <option value="已育">已育</option>
                         <option value="未育">未育</option>
                     </select>
                 </li>
                 <li class="require">
                     <label class="require">学历</label>
-                    <select name="eduBackGround" v-model="editPerson.eduBackGround">
-                        <option value="">高中以下</option>
+                    <select name="education" v-model="editPerson.education">
                         <option value="高中以下">高中以下</option>
                         <option value="大专">大专</option>
                         <option value="本科">本科</option>
@@ -337,8 +336,7 @@
                 </li>
                 <li class="require">
                     <label class="require">政治面貌</label>
-                    <select name="isPartyMember" v-model="editPerson.isPartyMember">
-                        <option value="">共青团员</option>
+                    <select name="political" v-model="editPerson.political">
                         <option value="群众">群众</option>
                         <option value="共青团员">共青团员</option>
                         <option value="共产党员">共产党员</option>
@@ -347,15 +345,15 @@
                 </li>
                 <li>
                     <label>入党时间</label>
-                    <input name="joinDate" type="text" v-model="editPerson.joinDate">
+                    <input name="partyTime" type="text" v-model="editPerson.partyTime">
                 </li>
                 <li>
                     <label class="require">站务员证书编号</label>
-                    <input name="stationCertificateNum" type="text" v-model="editPerson.stationCertificateNum">
+                    <input name="stationCertificateNumber" type="text" v-model="editPerson.stationCertificateNumber">
                 </li>
                 <li>
                     <label class="require">站务员证等级</label>
-                    <input name="stationCertificateGrade" type="text" v-model="editPerson.stationCertificateGrade">
+                    <input name="stationCertificateLevel" type="text" v-model="editPerson.stationCertificateLevel">
                 </li>
                 <li class="lang require">
                     <label class="require">住址</label>
@@ -363,15 +361,15 @@
                 </li>
                 <li>
                     <label class="require">消防证书编号</label>
-                    <input name="fireControlCertificateNum" type="text" v-model="editPerson.fireControlCertificateNum">
+                    <input name="fireCertificateNumber" type="text" v-model="editPerson.fireCertificateNumber">
                 </li>
                 <li>
                     <label class="require">综控员证书编号</label>
-                    <input name="controllerCertificateNum" type="text" v-model="editPerson.controllerCertificateNum">
+                    <input name="controllerNumber" type="text" v-model="editPerson.controllerNumber">
                 </li>
                 <li>
                     <label class="require">综控员证书级别</label>
-                    <input name="controllerCertificateGrade" type="text" v-model="editPerson.controllerCertificateGrade">
+                    <input name="controllerLevel" type="text" v-model="editPerson.controllerLevel">
                 </li>
                 <li class="clear"></li>
             </ul>
@@ -454,7 +452,7 @@
                         post:'站区长',
                         station:'西直门',
                         stationArea:'西直门',
-                        manager:'站区',
+                        manager:'是',
                         idCard:'110108198212142712',
                         entryTime:'1990-12-12',
                         maritalStatus:'已婚',
@@ -481,7 +479,7 @@
                         post:'站务员',
                         station:'西直门',
                         stationArea:'西直门',
-                        manager:'',
+                        manager:'否',
                         idCard:'110106199210060344',
                         entryTime:'1990-12-12',
                         maritalStatus:'已婚',
@@ -508,7 +506,7 @@
                         post:'站务员',
                         station:'西直门',
                         stationArea:'西直门',
-                        manager:'',
+                        manager:'否',
                         idCard:'110108199402123410',
                         entryTime:'2015-2-12',
                         maritalStatus:'未婚',
@@ -535,7 +533,7 @@
                         post:'站务员',
                         station:'西直门',
                         stationArea:'西直门',
-                        manager:'',
+                        manager:'否',
                         idCard:'131002199401282015',
                         entryTime:'2015-07-03',
                         maritalStatus:'未婚',
@@ -562,7 +560,7 @@
                         post:'站务员',
                         station:'西直门',
                         stationArea:'西直门',
-                        manager:'',
+                        manager:'否',
                         idCard:'110224199005073822',
                         entryTime:'1997-01-07',
                         maritalStatus:'未婚',
