@@ -22,7 +22,7 @@ export const deleteStationArea = id => fetch('/district/' + id, {}, 'DELETE');
 export const updatestationArea = data => fetch('/district/id', data, 'PUT');
 
 /** 站点列表 */
-export const getStations = districtId => fetch('/station/' + id, {}, 'GET');
+export const getStations = id => fetch('/station?districtId=' + id, {}, 'GET');
 
 /** 新增站点 */
 export const addStation = data => fetch('/station', data, 'POST');

@@ -26,29 +26,31 @@
 </template>
 <script>
     import listBlock from '../components/listBlock.vue'
-    import {stationAreaList, addstationArea} from '@/api/commonAPI'
+    import {stationAreaList, addstationArea, getStations} from '@/api/commonAPI'
     export default {
-        data:function () {
+        data: function () {
             return {
                 addStationArea: false,
                 stationAreas: [],
-                stationName: ''
+                stationName: '',
+                stations: [],
             }
         },
         mounted: function () {
             this.request();
         },
         methods:{
+            
             //  获取站区列表
             request: async function(){
-                    let response = await stationAreaList();
-                    if (response.meta.code !== 0) {
-                        this.$Loading.error();
-                        this.$Message.error(response.meta.message);
-                    }else{
-                        this.$Loading.finish();
-                        this.stationAreas = response.data;
-                    }
+                let response = await stationAreaList();
+                if (response.meta.code !== 0) {
+                    this.$Loading.error();
+                    this.$Message.error(response.meta.message);
+                }else{
+                    this.$Loading.finish();
+                    this.stationAreas = response.data;
+                }
             },
             //  新增站区
             addStationAreaMethod: async function(){
@@ -72,7 +74,7 @@
             }
         },
         components:{
-            listBlock:listBlock
+            listBlock: listBlock
         }
     }
 </script>

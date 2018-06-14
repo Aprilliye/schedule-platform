@@ -25,8 +25,8 @@
             </div>
             <div class="blockcontent">
                 <ul class="blockul">
-                    <li v-for="(item,index) in blockSpanList" :key="index">
-                        <span class="blockspan" >{{item}}</span>
+                    <li v-for="(item, index) in stations" :key="index">
+                        <span class="blockspan" >{{item.stationName}}</span>
                         <a class="icon-1 delete" @click="removeLine"></a>
                         <a class="icon-4 edit" @click="editLine"></a>
                     </li>
@@ -35,12 +35,10 @@
         </div>
         <!--修改站区弹框-->
         <Modal
-                @on-ok="renameStationMethod"
-                @on-cancel="canselAdd"
-                :loading="true"
-                title="修改站区名称"
-                v-model="renameStation"
-                >
+            @on-ok="renameStationMethod"
+            :loading="true"
+            title="修改站区名称"
+            v-model="renameStation">
             <p>
                 站区名称
                 <input  name="userCode" type="text" v-model="stationAreaName" >
@@ -49,16 +47,13 @@
         </Modal>
         <!--添加站点弹框-->
         <Modal
-               @on-ok="addStationMethod"
-               @on-cancel="canselAdd"
-               :loading="true"
-               title="添加站点"
-               v-model="addStation"
-                >
+            @on-ok="handleAddStation"
+            :loading="true"
+            title="添加站点"
+            v-model="addStation">
             <p>
                 站点名称
-                <input  name="userCode" type="text" v-model="addStationName" >
-                <span class="turnRed stationNameRed">站点名称不能为空</span>
+                <input  name="userCode" type="text" v-model.trim="addStationName">
             </p>
         </Modal>
         <!--设置管理员-->
@@ -161,10 +156,16 @@
     </div>
 </template>
 <script>
-    import * as api from "../api/commonAPI";
+    import {deleteStationArea, getStations, addStation} from "../api/commonAPI";
     export default {
         data:function(){
-            return{
+            return{    
+                stations: [],               //  站点
+                currentId: null,          //  存放站区id
+                stationObj: {
+                    districtId: null,
+                    stationName: ''
+                },
                 renameStation:false,
                 addStation:false,
                 setUserManager:false,
@@ -231,42 +232,53 @@
                         required:true,message:'住址不能为空'
                     }]
                 }
-
             }
-
         },
-        props:['title'],
+        props:['title', 'id'],
+        created: function () {
+            this.getStations(this.id);
+        },
         methods:{
             //删除站区
             removestation: async function(e) {
                 let obj = $(e.target);
-                let id = obj.closest('.stationArea').attr('id');
-                let response = await api.deleteStationArea(id);
+                let id = this.id;
+                let response = await deleteStationArea(id);
                 if(response.meta.code !==0){
                      this.$Message.error(response.meta.message);
                 }else{
                      this.$Message.success('删除站区成功');
                 }
             },
-            //添加站点
-            addStationMethod:function(){
-                if(this.addStationName){
-                    this.blockSpanList.push(this.addStationName);
-                    this.addStationName='';
-                    $(".stationNameRed").css("display","none");
-                    this.addStation=false;
-                }else{
-                    $(".stationNameRed").css("display","inline-block");
-                    return false;
+            //  获取站点
+            getStations: async function (id) {
+                let response = await getStations(id);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.stations = response.data;
+                    return;
                 }
-
+                this.$Message.error(message);
             },
-            //取消添加
-            canselAdd:function(){
-                $(".stationNameRed").css("display","none");
-                this.addStationName='';
-                $(".stationAreaNameRed").css("display","none");
-                this.stationAreaName='';
+            //  添加站点
+            handleAddStation: async function () {
+                let addStationName = this.addStationName;
+                if(addStationName === ''){
+                    this.$Message.warning('站点名称不能为空');
+                    return;
+                }
+                let data = {
+                    districtId: this.id,
+                    stationName: addStationName
+                }
+                let response = await addStation(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.stations = response.data;
+                    return;
+                }
+                this.$Message.error(message);                
             },
             //修改站区名称
             renameStationMethod: function(){
