@@ -69,7 +69,6 @@
                         width: 150,
                         align: 'center',
                         render: (h, params) => {
-                            this.currentIndex = params.index;
                             return h('div', [
                                 h('a', {
                                     props: {
@@ -81,6 +80,7 @@
                                     },
                                     on: {
                                         click: () => {
+                                            this.currentIndex = params.index;
                                             this.editIfRelay = params.row.ifRelay;
                                             this.editPostName = params.row.name;
                                             this.editPostModal = true;
@@ -165,13 +165,13 @@
             //  编辑岗位
             editPost: function () {
                 let obj = this.data[this.currentIndex];
-                let name = this.editIfRelay;
+                let name = this.editPostName;
                 if(!name){
                     this.$Message.warning('岗位名称不能为空！');
                     return;
                 }
-                obj.ifRelay = name;
-                obj.name = this.editPostName;
+                obj.ifRelay = this.editIfRelay;
+                obj.name = name;
                 this.editPostModal = false;
             }
         }
