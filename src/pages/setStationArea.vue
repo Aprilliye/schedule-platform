@@ -8,7 +8,7 @@
             北京地铁运三分公司
         </div>
         <div class="list">
-            <listBlock v-for="(item, index) in districts" :key="index" :title="item.districtName" :districtId="item.id" @deleteDistrict="dataChange"></listBlock>
+            <my-district v-for="(item, index) in districts" :key="index" :title="item.districtName" :districtId="item.id" @deleteDistrict="dataChange"></my-district>
         </div>
         <!--新增站区弹框-->
         <Modal
@@ -19,13 +19,12 @@
             <p>
                 <label class="addStationLabel"> 站区名称：</label>
                 <input id="editUserCode" name="userCode" type="text" v-model.trim="stationName">
-                <!-- <span class="turnRed stationNamerequire">站区名称不能为空</span> -->
             </p>
         </Modal>
     </div>
 </template>
 <script>
-    import listBlock from '../components/listBlock.vue'
+    import district from '../components/district.vue'
     import {stationAreaList, addstationArea, getStations} from '@/api/commonAPI'
     export default {
         data: function () {
@@ -76,7 +75,7 @@
             }
         },
         components:{
-            listBlock: listBlock
+            myDistrict: district
         }
     }
 </script>
