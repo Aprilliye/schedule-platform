@@ -204,12 +204,10 @@
                <Modal
                     v-model="modal.annualLeave"
                     title="年假"
-                    @on-ok="annualLeaveMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="annualLeaveMethod">
                 <Form :model="annualLeaveForm" :label-width="80">
                     <FormItem label="时间">
-                        <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="beginTime"></DatePicker><span>至</span>
+                        <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="beginTime"></DatePicker><span> 至 </span>
                         <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="endTime"></DatePicker>
                     </FormItem>
                     <FormItem label="备注">
@@ -221,8 +219,7 @@
             <Modal
                     v-model="modal.editVocation"
                     title="假期编辑"
-                    @on-ok="editVocationMethod"
-                    @on-cancel="">
+                    @on-ok="editVocationMethod">
                 <Form :model="editVocationForm" :label-width="80">
                     <FormItem label="假期类型">
                         <Select v-model="editVocationForm.select">
@@ -251,9 +248,7 @@
             <Modal
                     v-model="modal.shiftChange"
                     title="班次变更"
-                    @on-ok="shiftChangeMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="shiftChangeMethod">
                 <Form :model="shiftChangeForm" :label-width="80">
                     <FormItem label="班次">
                         <Select v-model="shiftChangeForm.select">
@@ -269,9 +264,7 @@
             <Modal
                     v-model="modal.provisionalDisposition"
                     title="临时安排"
-                    @on-ok="provisionalDispositionMethod"
-                    @cancel=""
-                    >
+                    @on-ok="provisionalDispositionMethod">
                 <Form :model="provisionalDispositionForm" :label-width="100">
                     <FormItem label="临时安排类型">
                         <Select v-model="provisionalDispositionForm.select">
@@ -303,9 +296,7 @@
             <Modal
                     v-model="modal.absenteeism"
                     title="旷工缺勤"
-                    @on-ok="absenteeismMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="absenteeismMethod">
                 <Form :model="absenteeismForm" :label-width="80">
                     <FormItem label="缺勤工时">
                         <Select v-model="absenteeismForm.selectTime">
@@ -328,9 +319,7 @@
             <Modal
                     v-model="modal.overtime"
                     title="补班加班"
-                    @on-ok="overtimeMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="overtimeMethod">
                 <Form :model="overtimeForm" :label-width="80">
                     <FormItem label="加班工时">
                         <Select v-model="overtimeForm.selectTime">
@@ -353,9 +342,7 @@
             <Modal
                     v-model="modal.substitute"
                     title="替班"
-                    @on-ok="substituteMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="substituteMethod">
                 <Form :model="substituteForm" :label-width="80">
                     <FormItem label="站点">
                         <Select v-model="substituteForm.station">
@@ -377,9 +364,7 @@
             <Modal
                     v-model="modal.other"
                     title="其它"
-                    @on-ok="otherMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="otherMethod">
                 <Form :model="otherForm" :label-width="80">
                     <FormItem label="工时">
                         <Select v-model="otherForm.selectTime">
@@ -402,9 +387,7 @@
             <Modal
                     v-model="modal.smallVocation"
                     title="零星假"
-                    @on-ok="smallVocationMethod"
-                    @on-cancel=""
-                    >
+                    @on-ok="smallVocationMethod">
                 <Form :model="smallVocationForm" :label-width="80">
                     <FormItem label="工时">
                         <Select v-model="smallVocationForm.selectTime">
@@ -427,9 +410,7 @@
             <Modal
                     v-model="modal.transfer"
                     title="调离"
-                    @on-ok="transferMothod"
-                    @cancel=""
-                    >
+                    @on-ok="transferMothod">
                 <Form :model="transferForm" :label-width="80">
                     <FormItem label="站点">
                         <Select v-model="transferForm.station">
