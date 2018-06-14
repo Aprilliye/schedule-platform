@@ -672,8 +672,12 @@
                 var beginDay=beginTime.getDate();
                 var endDay=endTime.getDate();
                 var differDay=endDay-beginDay;
-                console.log(beginDay);
-                console.log(endDay);
+                var totalDay=this.weekdata[this.clicktr-1].schedule.length;
+                // if(totalDay>=differDay){
+
+                // }
+                console.log(this.currentTd.parentNode.getElementsByTagName("td"));
+                console.log(typeof totalDay);
                 this.currentTd.style.backgroundColor='#fffc00';
                 var targetHtml =this.target.parentNode.lastChild;
                 var targetInner;

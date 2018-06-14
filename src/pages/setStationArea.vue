@@ -44,10 +44,8 @@
             request: async function(){
                     let response = await stationAreaList();
                     if (response.meta.code !== 0) {
-                        this.$Loading.error();
                         this.$Message.error(response.meta.message);
                     }else{
-                        this.$Loading.finish();
                         this.stations = response.data;
                     }
             },
