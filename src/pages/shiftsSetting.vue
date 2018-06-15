@@ -2,7 +2,7 @@
     <div class="container">
         <div class="content-header">
             <Select v-model="modelpost" placeholder="请选择岗位" style="width:200px;margin: 0px 0px 4px 20px " :on-change="chiocepost">
-                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                <Option v-for="item in positions" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true" >新增班制</a>
         </div>
@@ -342,7 +342,7 @@ export default {
                 editShifyClass:false,
                 addClass:false
             },
-            cityList: [
+            positions: [
                 {
                     value: '1',
                     label: '站务员'

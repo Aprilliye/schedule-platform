@@ -65,6 +65,7 @@
                        this.$store.set('districtId', user.districtId);
                        this.$store.set('stationId', user.stationId);
                        this.$store.set('userName', user.userName);
+                       this.$store.set('positionId', user.positionId);
                        this.$router.push({ path: "/home" });
                    }
                 //  }else{
