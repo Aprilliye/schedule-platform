@@ -1,13 +1,13 @@
 <template>
     <div class="container">
         <div class="content-header">
-            <Select v-model="modelpost" placeholder="请选择岗位" style="width:200px;margin: 0px 0px 4px 20px " :on-change="chiocepost">
-                <Option v-for="item in positions" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Select v-model="position.current" placeholder="请选择岗位" style="width:200px;margin: 0px 0px 4px 20px ">
+                <Option v-for="item in position.data" :value="item.id+'-'+item.backupPosition" :key="item.id">{{ item.positionName }}</Option>
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true" >新增班制</a>
         </div>
         <Tabs type="card" value="1" :animated="false" closable @on-tab-remove="handleShiftTabRemove">
-            <TabPane label="西直门五班制" name="1" v-if='tab1'>
+            <TabPane label="西直门五班制" name="1" v-if='tab1' v-for="(item,index) in suites" :key="index">
                 <div class="panel-body">
                     <div class="buttonblock"></div>
                     <div class="shifts-content">
@@ -85,8 +85,6 @@
                     
                 </div>
             </TabPane>
-            <TabPane label="标签二" name="2" v-if='tab2'>标签二的内容</TabPane>
-            <TabPane label="标签三" name="3" v-if='tab3'>标签三的内容</TabPane>
         </Tabs>
         <!-- 新增班次表 -->
         <Modal title="新增班次"
@@ -253,14 +251,20 @@
                 <FormItem label="班制名称：" prop="name" :rules="{required:true,message:'班制名称不能为空'}">
                     <Input v-model="addFormValidate.name" placeholder=""/>
                 </FormItem>
+                <FormItem label="是否启用：" prop="active" :rules="{required:true,message:'是否启用不能为空'}">
+                    <Select v-model="addFormValidate.active" placeholder="请选择">
+                        <Option :value="1">是</Option>
+                        <Option :value="0">否</Option>
+                    </Select>
+                </FormItem>
                 <FormItem label="站区：" prop="stationArea" :rules="{required:true,message:'站区不能为空'}">
-                    <Select v-model="addFormValidate.stationArea" placeholder="请选择">
-                        <Option :value="xizhimenstation">西直门</Option>
+                    <Select v-model="addFormValidate.stationArea" placeholder="请选择" @on-change="getStations">
+                        <Option v-for="(item,index) in districts" :value="item.id" :key="index">{{item.districtName}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="站点：" prop="station" :rules="{required:true,message:'站点不能为空'}">
                     <Select v-model="addFormValidate.station" placeholder="请选择">
-                        <Option :value="xizhimen">西直门</Option>
+                        <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="周工时下限：" prop="minWeekHours" :rules="{required:true,message:'周工时下限不能为空不能为空'}">
@@ -318,10 +322,26 @@
     </div>
 </template>
 <script >
+import {getAllPost, getSuites,} from '@/api/api';
+import {stationAreaList, getStations} from '@/api/commonAPI';
 let echarts = require('echarts');
 export default {
     data:function () {
         return {
+            //  岗位
+            position: {
+                data: [],
+                id: null,
+                current: '2-1'
+            },
+            districtId: this.$store.get('districtId'),
+            stationId: this.$store.get('stationId'),
+            //  班制
+            suites: [],
+            //  站区
+            districts: [],
+            //  站点
+            stations: [],
             modal3:false,
             currentIndex:'',
             tab1:true,
@@ -342,24 +362,7 @@ export default {
                 editShifyClass:false,
                 addClass:false
             },
-            positions: [
-                {
-                    value: '1',
-                    label: '站务员'
-                },
-                {
-                    value: '2',
-                    label: '管理员'
-                },
-                {
-                    value: '3',
-                    label: '站务员'
-                },
-                {
-                    value: '4',
-                    label: '值班站长'
-                }
-            ],
+            positions: [],
             info: {
                 name: '西直门替班员',
                 stationArea: '西直门',
@@ -371,7 +374,6 @@ export default {
                 maxMonthOffDuty: 180,
                 maxYearOffDuty: 2000                 
             },
-            modelpost:"",
             formValidate: {
                 name: '',
                 stationArea: '',
@@ -402,6 +404,7 @@ export default {
             },
             addFormValidate:{
                 name: '',
+                active: '',
                 stationArea: '',
                 station:'',
                 minWeekHours:'',
@@ -625,9 +628,61 @@ export default {
             showEchart: false
         }
     },
+    mounted: function () {
+        //  获取岗位
+        this.getAllPost();
+        this.getSuites();
+        this.request();
+    },
     methods:{
-        chiocepost: function(){
-
+        //  获取所有岗位
+        getAllPost: async function () {
+            let response = await getAllPost(this.stationId);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                this.position.data = response.data;
+                return;
+            }
+            this.$Message.error(message);
+        },
+        //  获取班制
+        getSuites: async function () {
+            let currentPosition = this.position.current.split('-');
+            let data = {
+                districtId: this.districtId,
+                stationId: this.stationId,
+                positionId: parseInt(currentPosition[0]),
+                backup: parseInt(currentPosition[1])
+            }
+            let response = await getSuites(data);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                this.suites = response.data;
+                return;
+            }
+            this.$Message.error(message);
+        },
+        //  获取站区
+        request: async function(){
+            let response = await stationAreaList();
+            if (response.meta.code !== 0) {
+                this.$Loading.error();
+                this.$Message.error(response.meta.message);
+            }else{
+                this.$Loading.finish();
+                this.districts = response.data;
+            }
+        },
+        //  获取站点
+        getStations: async function () {
+            let id = this.addFormValidate.stationArea;
+            let response = await getStations(id);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                 this.stations = response.data;
+                return;
+            }
+            this.$Message.error(message);
         },
         //删除班制
         handleShiftTabRemove:function(name){
@@ -915,12 +970,33 @@ export default {
             return arr;
         },
         //新增班制
-        addShift:function(name){
+        addShift: async function(name){
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    this.$Message.success('修改成功');
-                    this.$refs[name].resetFields();
-                    this.modal.addShift=false;
+                    let currentPosition = this.position.current.split('-');
+                    let data = {
+                        dutySuite: this.addFormValidate.stationArea,
+                        dutyName: this.addFormValidate.name,
+                        active: addFormValidate.active,
+                        districtId: this.districtId,
+                        stationId: this.stationId,
+                        positionId: parseInt(currentPosition[0]), 
+                        maxWorkingHour: this.addFormValidate.maxWeekHours,
+                        minWorkingHour: this.addFormValidate.minWeekHours,
+                        maxWeeklyRestDays: this.addFormValidate.maxWeekOffDuty,
+                        minWeeklyRestDays: this.addFormValidate.minWeekOffDuty,
+                        monthlyWorkingHourLimit: this.addFormValidate.maxMonthOffDuty,
+                        yearlyWorkingHourLimit: this.addFormValidate.maxYearOffDuty,
+                        backup: parseInt(currentPosition[1])
+                    }
+                // let response = await getStations(data);   
+                // let message = response.meta.message;
+                // if(response.meta.code === 0){
+                //     this.$Message.success('修改成功');
+                //     this.$refs[name].resetFields();
+                //     this.modal.addShift=false;
+                // }
+                    this.$Message.error(message);
                 } else {
                     this.$Message.error('修改失败');
                     return false;

@@ -18,4 +18,4 @@ export const detelePost = id => fetch('/position/' + id, {}, 'DELETE');
 /*************************** 班次设置 *******************************/
 
 /** 获取班制 */
-//export const getAllPost = id => fetch('/position?stationId='+ id, {}, 'GET');
+export const getSuites = data => fetch('/duty', data, 'GET');
