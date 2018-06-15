@@ -139,12 +139,8 @@
     export default {
         data: function () {
             return {
-                userName: '',
+                userName: this.$store.get('userName'),
             }
-        },
-        mounted: function () {
-            let userName = this.$store.get('userName');
-            this.userName = userName;
         },
         methods: {
             doLogout: async function () {
