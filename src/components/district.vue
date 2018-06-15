@@ -57,7 +57,7 @@
             </p>
         </Modal>
         <!--设置管理员-->
-        <Modal v-model="showUserModal"
+        <Modal v-model="modal.setUserManager"
             id="usersModal"
             title="选择管理员" 
             width="600"
@@ -92,27 +92,6 @@
                 addStationName:'',
                 editStationName: '',
                 districtName:'',
-                setManager:{
-                    cardNum:'',
-                    peopleNum:'',
-                    name:'',
-                    stationArea:'',
-                    post:'',
-                    manager:'',
-                    phoneNum:'',
-                    sexuality:'',
-                    birthday:'',
-                    idCard:'',
-                    entryTime:'',
-                    maritalStatus:'',
-                    birthStatus:'',
-                    education:'',
-                    politicalStatus:'',
-                    enterPartyTime:'',
-                    address:'',
-                    certificatesNum:'',
-                    certificatesType:''
-                },
                 users:[
                     {
                         id:1,
