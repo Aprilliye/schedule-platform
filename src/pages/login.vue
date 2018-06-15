@@ -22,7 +22,7 @@
     </div>
 </template>
 <script>
-    import * as api from "../api/commonAPI";
+    import {login} from "../api/commonAPI";
     export default{
         data: function () {
             return {
@@ -56,12 +56,14 @@
                        password: this.userPasswd
                    };
                    this.$Loading.start();
-                   let response = await api.login(params);
+                   let response = await login(params);
                    if (response.meta.code !== 0) {
-                       this.$Loading.error();
                        this.$Message.error(response.meta.message);
                    }else{
-                       this.$Loading.finish();
+                       let user = response.data.user;
+                       this.$store.set('districtId', user.districtId);
+                       this.$store.set('stationId', user.stationId);
+                       this.$store.set('userName', user.userName);
                        this.$router.push({ path: "/home" });
                    }
                 //  }else{

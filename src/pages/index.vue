@@ -21,7 +21,7 @@
                     </Dropdown>
                 </div> -->
                   <div class="right">
-                      <span class="username">admin</span>
+                      <span class="username">{{userName}}</span>
                       <a class="logout" @click="doLogout">退出</a>
                   </div>
               </i-col>
@@ -137,6 +137,15 @@
 </template>
 <script>
     export default {
+        data: function () {
+            return {
+                userName: '',
+            }
+        },
+        mounted: function () {
+            let userName = this.$store.get('userName');
+            this.userName = userName;
+        },
         methods: {
             doLogout: async function () {
                 // TODO

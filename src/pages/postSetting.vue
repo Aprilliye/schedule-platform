@@ -121,7 +121,7 @@ import {getAllPost} from '@/api/api'
         methods: {
             //  获取所有岗位
             getAllPost: async function () {
-                let response = await getAllPost(10);
+                let response = await getAllPost(9);
                 let message = response.meta.message;
                 if(response.meta !== 0){
                     this.$Message.error(message);
@@ -149,7 +149,7 @@ import {getAllPost} from '@/api/api'
                 this.addPostModal = true;
             },
             //  确认新增岗位
-            addPost: function () {
+            addPost: async function () {
                 let name = this.addPostName;
                 if(!name){
                     this.$Message.warning('岗位名称不能为空！');
@@ -159,6 +159,7 @@ import {getAllPost} from '@/api/api'
                     name: name,
                     ifRelay: this.addIfRelay
                 }
+                let response = await addPost();
                 this.data.unshift(obj);
                 this.addPostModal = false;
             },
