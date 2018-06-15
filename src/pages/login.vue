@@ -6,7 +6,7 @@
                 <img src="../assets/img/loginText.png">
                 <form action="login" method="post" id="loginForm">
                     <!-- <p class="error" id="result" style="color:red;"></p> -->
-                    <Alert id="errorMsg" type="error" style="display:none">{{ errorMsg }}</Alert>
+                    <Alert id="errorMsg" type="error" style="display:none" v-show="showMsg">{{ errorMsg }}</Alert>
                     <div class="inputBox">
                         <span class="icon-3"></span>
                         <input type="text" v-model.trim="userName" name="userCode" placeholder="用户名" id="userCode">
@@ -28,24 +28,25 @@
             return {
                 userName: '',
                 userPasswd: '',
-                errorMsg: ''
+                errorMsg: '',
+                showMsg:false
             };
         },
         methods: {
             doLogin: async function (){
                 if(this.userName=='' && this.userPasswd==''){
                     this.errorMsg = '账号和密码不能为空';
-                    $('#errorMsg').css('display','block');
+                    this.showMsg=true;
                     return;
                 }
                 if(this.userName=='' && !this.userPasswd==''){
                     this.errorMsg = '账号不能为空';
-                    $('#errorMsg').css('display','block');
+                    this.showMsg=true;
                     return;
                 }
                 if(!this.userName=='' && this.userPasswd==''){
                     this.errorMsg = '密码不能为空';
-                    $('#errorMsg').css('display','block');
+                    this.showMsg=true;
                     return;
                 }
                 // 若用户名为admin密码为123456则允许登录
