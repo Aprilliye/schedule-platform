@@ -34,6 +34,7 @@
                     <button type="button" class="btnDefault bgBlue">查询</button>
                     <button type="button" class="btnDefault">导出</button>
                     <button type="button" class="btnDefault">导出个人</button>
+                    <button type="button" class="btnDefault" @click="modal.importAnnualLeave = true">导入年假</button>
                 </div>
             </div>
             <div class="panel-body">
@@ -202,13 +203,18 @@
             </div>
             <!-- 年假模态框 -->
                <Modal
-                    v-model="modal.annualLeave"
-                    title="年假"
-                    @on-ok="annualLeaveMethod">
+                v-model="modal.annualLeave"
+                title="年假"
+                @on-ok="annualLeaveMethod">
                 <Form :model="annualLeaveForm" :label-width="80">
-                    <FormItem label="时间">
-                        <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="beginTime"></DatePicker><span> 至 </span>
-                        <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="endTime"></DatePicker>
+                    <FormItem label="选择日期">
+                        <DatePicker type="date" placeholder="请选择日期" style="width: 190px"  v-model="beginTime"></DatePicker><span> 至 </span>
+                        <DatePicker type="date" placeholder="请选择日期" style="width: 190px"  v-model="endTime"></DatePicker>
+                    </FormItem>
+                    <FormItem label="替班人员">
+                        <Select v-model="substituteForm.substitutePeople" style="width: 400px;">
+                            <Option value="工号：60508169 姓名：申毅">工号：60508169 姓名：申毅</Option>
+                        </Select>
                     </FormItem>
                     <FormItem label="备注">
                         <textarea  name="remark" class="vocationRemark"  v-model="annualLeaveForm.remark"></textarea>
@@ -222,7 +228,7 @@
                     @on-ok="editVocationMethod">
                 <Form :model="editVocationForm" :label-width="80">
                     <FormItem label="假期类型">
-                        <Select v-model="editVocationForm.select">
+                        <Select v-model="editVocationForm.select"  style="width: 400px;">
                             <Option value="病假/病">病假/病</Option>
                             <Option value="事假/事">事假/事</Option>
                             <Option value="婚假/婚">婚假/婚</Option>
@@ -237,6 +243,12 @@
                             <Option value="搬家假/搬">搬家假/搬</Option>
                             <Option value="出差假/差">出差假/差</Option>
                             <Option value="调休/调">调休/调</Option>
+                        </Select>
+                        <p class="balance red" v-show="editVocationForm.select === '病假/病'">你的病假剩余可用 {{editVocationForm.balanceNum}} 天</p>
+                    </FormItem>
+                    <FormItem label="替班人员">
+                        <Select v-model="substituteForm.substitutePeople" style="width: 400px;">
+                            <Option value="工号：60508169 姓名：申毅">工号：60508169 姓名：申毅</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
@@ -340,9 +352,9 @@
             </Modal>
             <!--替班-->
             <Modal
-                    v-model="modal.substitute"
-                    title="替班"
-                    @on-ok="substituteMethod">
+                v-model="modal.substitute"
+                title="替班"
+                @on-ok="substituteMethod">
                 <Form :model="substituteForm" :label-width="80">
                     <FormItem label="站点">
                         <Select v-model="substituteForm.station">
@@ -428,6 +440,22 @@
                     </FormItem>
                 </Form>
             </Modal>
+            <!-- 导入年假 -->
+            <Modal
+                    v-model="modal.importAnnualLeave"
+                    title="导入年假"
+                    @on-ok="overtimeMethod">
+                <Form :model="overtimeForm" :label-width="80">
+                    <FormItem label="选择年份">
+                        <DatePicker type="year" placeholder="选择年份"></DatePicker>
+                    </FormItem>
+                    <FormItem label="选择文件">
+                        <Upload action="xxx">
+                            <Button type="ghost" icon="ios-cloud-upload-outline" class="btnDefault">选择文件</Button>
+                        </Upload>
+                    </FormItem>
+                </Form>
+            </Modal>
         </div>
 
     </div>
@@ -483,6 +511,7 @@
                     smallVocation:false,
                     other:false,
                     annualLeave:false,
+                    importAnnualLeave: false
                 },
                 annualLeaveForm:{
                     select:'',
@@ -490,7 +519,8 @@
                 },
                 editVocationForm:{
                     select:'',
-                    textarea:''
+                    textarea:'',
+                    balanceNum: 3
                 },
                 shiftChangeForm:{
                     select:'',
@@ -556,7 +586,6 @@
             this.clickHide();
         },
         methods: {
-         
             clickHide:function(){
                 $(document).click(function(e){
                     $(".vocationDiv").hide();
@@ -672,8 +701,6 @@
                 var beginDay=beginTime.getDate();
                 var endDay=endTime.getDate();
                 var differDay=endDay-beginDay;
-                console.log(beginDay);
-                console.log(endDay);
                 this.currentTd.style.backgroundColor='#fffc00';
                 var targetHtml =this.target.parentNode.lastChild;
                 var targetInner;

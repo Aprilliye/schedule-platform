@@ -26,6 +26,11 @@ ul {
 .title .btn-group a {
   float: left;
 }
+textarea {
+  border-radius: 4px;
+  border: 1px solid #e5e5e5;
+  padding: 0 5px;
+}
 .info {
   width: 100%;
   overflow: hidden;
@@ -391,4 +396,10 @@ select {
 .title {
   border-bottom: 1px solid #ddd;
   line-height: 40px;
+}
+.balance.red {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  font-size: 12px;
 }
