@@ -10,8 +10,8 @@
                         <Select v-model="timeQuantum" style="width:200px">
                             <Option v-for="item in timeQuantumList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
-                        <DatePicker :value="beginValue" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker> 至
-                        <DatePicker :value="endValue" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker>
+                        <DatePicker :value="beginValue" type="date" placeholder="请选择时间" style="width: 200px;"></DatePicker> 至
+                        <DatePicker :value="endValue" type="date" placeholder="请选择时间" style="width: 200px;"></DatePicker>
                     </div>
                     <div class="tabItem" v-show="!showTabItem">
                         <span>时间段：</span>
@@ -40,11 +40,11 @@
             <div class="panel-body">
                 <div class="float-right" style="margin-top: 20px">
                     <span><i class="colori" style="background-color: #fffc00;"></i>假期</span>
-                    <span><i class="colori" style="background-color: #ff9191"></i>班次变更</span>
-                    <span><i class="colori" style="background-color: #3A6BCE"></i>临时安排</span>
-                    <span><i class="colori" style="background-color: #b10000"></i>旷工缺勤</span>
-                    <span><i class="colori" style="background-color: #00d537"></i>补班加班</span>
-                    <span><i class="colori" style="background-color: #008121"></i>替班</span>
+                    <span><i class="colori" style="background-color: #ff9191;"></i>班次变更</span>
+                    <span><i class="colori" style="background-color: #3A6BCE;"></i>临时安排</span>
+                    <span><i class="colori" style="background-color: #b10000;"></i>旷工缺勤</span>
+                    <span><i class="colori" style="background-color: #00d537;"></i>补班加班</span>
+                    <span><i class="colori" style="background-color: #008121;"></i>替班</span>
                 </div>
                 <div class="clear"></div>
                 <div class="postformtable" v-show="showTable">
@@ -78,7 +78,7 @@
                             <td class="scheduleName" @mouseenter="showNameMessage" @mouseleave="hideNameMessage">{{item.userName}}</td>
                             <td>{{item.postName}}</td>
                             <!--周表点击事件-->
-                            <td v-for="(list, index) in item.schedule" :key="'aa'+index" :id="list.id" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage">
+                            <td v-for="(list, index) in item.schedule" :key="'aa'+index" :id="list.id" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage":style="{'background-color':list.color}">
                                 {{list.name}}
                             </td>
                             <td>{{item.planWorkHour}}</td>
@@ -214,6 +214,11 @@
                     <FormItem label="替班人员">
                         <Select v-model="substituteForm.substitutePeople" style="width: 400px;">
                             <Option value="工号：60508169 姓名：申毅">工号：60508169 姓名：申毅</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="替班人">
+                        <Select v-model="annualLeaveForm.substitutePeople">
+                            <Option value="lishanshan">李珊珊</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
@@ -515,7 +520,8 @@
                 },
                 annualLeaveForm:{
                     select:'',
-                    textarea:''
+                    textarea:'',
+                    substitutePeople:''
                 },
                 editVocationForm:{
                     select:'',
@@ -576,6 +582,16 @@
                     planWorkHour:'46',
                     balance:'0',
                     actualWorkHour:'46'
+
+                },
+                substitutePeople:   {
+                    userName: '李珊珊',
+                    postName: '替班员',
+                    phoneName:"13873778520",
+                    address:'北京市门头沟区龙门新区B4-1号楼',
+                    planWorkHour:'5',
+                    balance:'0',
+                    actualWorkHour:'5'
 
                 },
             };
@@ -700,17 +716,56 @@
                 var endTime=this.endTime;
                 var beginDay=beginTime.getDate();
                 var endDay=endTime.getDate();
-                var differDay=endDay-beginDay;
-                this.currentTd.style.backgroundColor='#fffc00';
+                var differDay=endDay-beginDay+1;
+                var totalDay=this.weekdata[this.clicktr-1].schedule.length;
+                var leaveDay=differDay+parseInt(this.clicktd);
+                var tdCurenet=parseInt(this.clicktd)-1;
+                //数组拷贝
+                var arr=this.weekdata[this.clicktr-1].schedule.slice(0);
+                var objDeepCopy = function (source) {
+                var sourceCopy = source instanceof Array ? [] : {};
+                for (var item in source) {
+                    sourceCopy[item] = typeof source[item] === 'object' ? objDeepCopy(source[item]) : source[item];
+                }
+                return sourceCopy;
+                }
+                var objCopy = objDeepCopy(arr);
+                if(totalDay>=leaveDay){
+                    for(var i=tdCurenet;i<tdCurenet+differDay;i++){
+                        this.weekdata[this.clicktr-1].schedule[i].color="#fffc00";
+                        this.weekdata[this.clicktr-1].schedule[i].annualLeaveCode=1;
+                    }
+                    if(tdCurenet!==0){
+                        for(var d = 0;d < tdCurenet;d++){
+                        objCopy[d].name='';
+                        }
+                    }
+                    for(var t = differDay+tdCurenet;t <= totalDay-1;t++){
+                        objCopy[t].name='';
+                    }
+                }else{
+                    for(var i=tdCurenet;i<totalDay-tdCurenet;i++){
+                        this.weekdata[this.clicktr-1].schedule[i].color="#fffc00";
+                        this.weekdata[this.clicktr-1].schedule[i].annualLeaveCode=1;
+                    }
+                }
+               
+                //添加替班员
+                this.substitutePeople.schedule=objCopy;
+                this.weekdata[this.clicktr-1].substitutePeopleId=this.weekdata.length+1;
+                this.substitutePeople.userId=this.weekdata.length+1;
+                this.substitutePeople.planWorkHour=differDay*5;
+                this.substitutePeople.actualWorkHour=differDay*5;
+                this.weekdata.push(this.substitutePeople);
                 var targetHtml =this.target.parentNode.lastChild;
                 var targetInner;
                 this.weekdata[this.clicktr-1].actualWorkHour=this.weekdata[this.clicktr-1].actualWorkHour-10*differDay;
                 this.weekdata[this.clicktr-1].balance=this.weekdata[this.clicktr-1].balance-10*differDay;
                 this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime=this.weekdata[this.clicktr-1].schedule[this.clicktd-1].changetime-10*differDay;
-                this.$options.methods.changeLastOneColor(targetHtml,targetInner);;
+                this.$options.methods.changeLastOneColor(targetHtml,targetInner);
                 targetInner=this.weekdata[this.clicktr-1].balance;
                 var message={};
-                message.type='年假:'+differDay+"天" ;
+                message.type='年假:'+differDay+"天  替班员：李珊珊" ;
                 message.remark=this.editVocationForm.textarea;
                 message.setUpTime=new Date().toLocaleString();
                 message.setUpPerson='admin';
@@ -1000,6 +1055,14 @@
                 this.target.parentNode.lastChild.style.backgroundColor="#DCDEE0";
                 targetInner=this.weekdata[this.clicktr-1].balance;
                 this.$options.methods.changeLastOneColor(targetHtml,targetInner);
+                if(this.weekdata[this.clicktr-1].schedule[this.clicktd-1].annualLeaveCode===1){
+                    var id=this.weekdata[this.clicktr-1].substitutePeopleId;
+                    this.weekdata.splice(id-1);
+                    for (var i=0;i<this.weekdata[this.clicktr-1].schedule.length;i++){
+                        this.weekdata[this.clicktr-1].schedule[this.clicktd-1].annualLeaveCode=0;
+                        this.weekdata[this.clicktr-1].schedule[i].color='';
+                    }
+                }
             }
         }
     };
