@@ -19,3 +19,6 @@ export const detelePost = id => fetch('/position/' + id, {}, 'DELETE');
 
 /** 获取班制 */
 export const getSuites = data => fetch('/duty', data, 'GET');
+
+/** 新增班制 */
+export const addSuites = data => fetch('/duty/suite', data, 'POST');

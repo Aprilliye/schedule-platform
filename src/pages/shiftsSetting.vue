@@ -1,3 +1,22 @@
+Skip to content
+ 
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ @Aprilliye
+Sign out
+2
+0 0 Aprilliye/schedule-platform
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Insights  Settings
+schedule-platform/src/pages/shiftsSetting.vue
+d7ed9a3  an hour ago
+@jsychen jsychen 11
+@Aprilliye @jsychen
+     
+1035 lines (1031 sloc)  48.5 KB
 <template>
     <div class="container">
         <div class="content-header">
@@ -322,7 +341,7 @@
     </div>
 </template>
 <script >
-import {getAllPost, getSuites,} from '@/api/api';
+import {getAllPost, getSuites,addSuites} from '@/api/api';
 import {stationAreaList, getStations} from '@/api/commonAPI';
 let echarts = require('echarts');
 export default {
@@ -404,8 +423,8 @@ export default {
             },
             addFormValidate:{
                 name: '',
-                active: '',
-                stationArea: '',
+                active: null,
+                stationArea: null,
                 station:'',
                 minWeekHours:'',
                 maxWeekHours:'',
@@ -731,7 +750,7 @@ export default {
         },
         //编辑时间段验证
         editTimeSlotMethods:function(name){
-                let arr = this.addTimeValidate.timeSlot;
+            let arr = this.addTimeValidate.timeSlot;
             for(let i=0;i<arr.length;i++){
                 if(arr[i] === ''){
                     this.addTimeValidate.ifTimeSlot = true;
@@ -788,7 +807,6 @@ export default {
                     this.modal.editShifyClass=false
                     this.$refs[name].resetFields();
                     $(".shiftColor").css("background-color","white");
-
                 } else {
                     this.$Message.error('修改失败');
                 }
@@ -826,7 +844,6 @@ export default {
                     this.modal.editShifyClass=false
                     this.$refs[name].resetFields();
                     $(".shiftColor").css("background-color","white");
-
                 } else {
                     this.$Message.error('修改失败');
                 }
@@ -887,7 +904,6 @@ export default {
             $(".shiftColor").css("background-color","white");
         },
         handleCancelTime:function(name){
-            console.log(this.$refs[name].resetFields());
             this.$refs[name].resetFields();
             this.addTimeValidate.ifTimeSlot = false;
             $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
@@ -970,38 +986,41 @@ export default {
             return arr;
         },
         //新增班制
-        addShift: async function(name){
+        addShift:  function(name){
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    let currentPosition = this.position.current.split('-');
-                    let data = {
-                        dutySuite: this.addFormValidate.stationArea,
-                        dutyName: this.addFormValidate.name,
-                        active: addFormValidate.active,
-                        districtId: this.districtId,
-                        stationId: this.stationId,
-                        positionId: parseInt(currentPosition[0]), 
-                        maxWorkingHour: this.addFormValidate.maxWeekHours,
-                        minWorkingHour: this.addFormValidate.minWeekHours,
-                        maxWeeklyRestDays: this.addFormValidate.maxWeekOffDuty,
-                        minWeeklyRestDays: this.addFormValidate.minWeekOffDuty,
-                        monthlyWorkingHourLimit: this.addFormValidate.maxMonthOffDuty,
-                        yearlyWorkingHourLimit: this.addFormValidate.maxYearOffDuty,
-                        backup: parseInt(currentPosition[1])
-                    }
-                // let response = await getStations(data);   
-                // let message = response.meta.message;
-                // if(response.meta.code === 0){
-                //     this.$Message.success('修改成功');
-                //     this.$refs[name].resetFields();
-                //     this.modal.addShift=false;
-                // }
-                    this.$Message.error(message);
+                    // this.$refs[name].resetFields();
+                    let that=this;
+                    this.$options.methods.beforeAddShift(that);
+                    this.modal.addShift=false;
                 } else {
-                    this.$Message.error('修改失败');
+                    this.$Message.error('新增班制失败');
                     return false;
                 }
             })
+        },
+        beforeAddShift:async function(that){
+            let currentPosition = that.position.current.split('-');
+            let data = {
+                dutySuite: that.addFormValidate.stationArea,
+                dutyName: that.addFormValidate.name,
+                active: that.addFormValidate.active,
+                districtId: that.districtId,
+                stationId: that.stationId,
+                positionId: parseInt(currentPosition[0]), 
+                maxWorkingHour: that.addFormValidate.maxWeekHours,
+                minWorkingHour: that.addFormValidate.minWeekHours,
+                maxWeeklyRestDays: that.addFormValidate.maxWeekOffDuty,
+                minWeeklyRestDays: that.addFormValidate.minWeekOffDuty,
+                monthlyWorkingHourLimit: that.addFormValidate.maxMonthOffDuty,
+                yearlyWorkingHourLimit: that.addFormValidate.maxYearOffDuty,
+                backup: parseInt(currentPosition[1])
+            }
+            let response = await addSuites(data);   
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                }
+                that.$Message.error(message);
         },
         //班次选择颜色
         getBackColor:function(){
