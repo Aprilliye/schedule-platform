@@ -222,9 +222,9 @@
             </Modal>
             <!--假期编辑-->
             <Modal
-                    v-model="modal.editVocation"
-                    title="假期编辑"
-                    @on-ok="editVocationMethod">
+                v-model="modal.editVocation"
+                title="假期编辑"
+                @on-ok="editVocationMethod">
                 <Form :model="editVocationForm" :label-width="80">
                     <FormItem label="假期类型">
                         <Select v-model="editVocationForm.select">
@@ -251,9 +251,9 @@
             </Modal>
             <!--班次变更-->
             <Modal
-                    v-model="modal.shiftChange"
-                    title="班次变更"
-                    @on-ok="shiftChangeMethod">
+                v-model="modal.shiftChange"
+                title="班次变更"
+                @on-ok="shiftChangeMethod">
                 <Form :model="shiftChangeForm" :label-width="80">
                     <FormItem label="班次">
                         <Select v-model="shiftChangeForm.select">
@@ -267,9 +267,9 @@
             </Modal>
             <!--临时安排-->
             <Modal
-                    v-model="modal.provisionalDisposition"
-                    title="临时安排"
-                    @on-ok="provisionalDispositionMethod">
+                v-model="modal.provisionalDisposition"
+                title="临时安排"
+                @on-ok="provisionalDispositionMethod">
                 <Form :model="provisionalDispositionForm" :label-width="100">
                     <FormItem label="临时安排类型">
                         <Select v-model="provisionalDispositionForm.select">
@@ -299,9 +299,9 @@
             </Modal>
             <!--旷工缺勤-->
             <Modal
-                    v-model="modal.absenteeism"
-                    title="旷工缺勤"
-                    @on-ok="absenteeismMethod">
+                v-model="modal.absenteeism"
+                title="旷工缺勤"
+                @on-ok="absenteeismMethod">
                 <Form :model="absenteeismForm" :label-width="80">
                     <FormItem label="缺勤工时">
                         <Select v-model="absenteeismForm.selectTime">
@@ -322,9 +322,9 @@
             </Modal>
             <!--补班加班-->
             <Modal
-                    v-model="modal.overtime"
-                    title="补班加班"
-                    @on-ok="overtimeMethod">
+                v-model="modal.overtime"
+                title="补班加班"
+                @on-ok="overtimeMethod">
                 <Form :model="overtimeForm" :label-width="80">
                     <FormItem label="加班工时">
                         <Select v-model="overtimeForm.selectTime">
@@ -345,9 +345,9 @@
             </Modal>
             <!--替班-->
             <Modal
-                    v-model="modal.substitute"
-                    title="替班"
-                    @on-ok="substituteMethod">
+                v-model="modal.substitute"
+                title="替班"
+                @on-ok="substituteMethod">
                 <Form :model="substituteForm" :label-width="80">
                     <FormItem label="站点">
                         <Select v-model="substituteForm.station">
@@ -367,9 +367,9 @@
             </Modal>
             <!--其它-->
             <Modal
-                    v-model="modal.other"
-                    title="其它"
-                    @on-ok="otherMethod">
+                v-model="modal.other"
+                title="其它"
+                @on-ok="otherMethod">
                 <Form :model="otherForm" :label-width="80">
                     <FormItem label="工时">
                         <Select v-model="otherForm.selectTime">
@@ -390,9 +390,9 @@
             </Modal>
             <!--零星假-->
             <Modal
-                    v-model="modal.smallVocation"
-                    title="零星假"
-                    @on-ok="smallVocationMethod">
+                v-model="modal.smallVocation"
+                title="零星假"
+                @on-ok="smallVocationMethod">
                 <Form :model="smallVocationForm" :label-width="80">
                     <FormItem label="工时">
                         <Select v-model="smallVocationForm.selectTime">
@@ -413,9 +413,9 @@
             </Modal>
             <!--调离-->
             <Modal
-                    v-model="modal.transfer"
-                    title="调离"
-                    @on-ok="transferMothod">
+                v-model="modal.transfer"
+                title="调离"
+                @on-ok="transferMothod">
                 <Form :model="transferForm" :label-width="80">
                     <FormItem label="站点">
                         <Select v-model="transferForm.station">
@@ -572,7 +572,6 @@
             this.clickHide();
         },
         methods: {
-         
             clickHide:function(){
                 $(document).click(function(e){
                     $(".vocationDiv").hide();
