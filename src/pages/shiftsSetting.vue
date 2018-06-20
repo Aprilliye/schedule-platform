@@ -731,7 +731,7 @@ export default {
         },
         //编辑时间段验证
         editTimeSlotMethods:function(name){
-                let arr = this.addTimeValidate.timeSlot;
+            let arr = this.addTimeValidate.timeSlot;
             for(let i=0;i<arr.length;i++){
                 if(arr[i] === ''){
                     this.addTimeValidate.ifTimeSlot = true;
