@@ -1,22 +1,3 @@
-Skip to content
- 
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- @Aprilliye
-Sign out
-2
-0 0 Aprilliye/schedule-platform
- Code  Issues 0  Pull requests 0  Projects 0  Wiki  Insights  Settings
-schedule-platform/src/pages/shiftsSetting.vue
-d7ed9a3  an hour ago
-@jsychen jsychen 11
-@Aprilliye @jsychen
-     
-1035 lines (1031 sloc)  48.5 KB
 <template>
     <div class="container">
         <div class="content-header">
@@ -25,8 +6,8 @@ d7ed9a3  an hour ago
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true" >新增班制</a>
         </div>
-        <Tabs type="card" value="1" :animated="false" closable @on-tab-remove="handleShiftTabRemove">
-            <TabPane label="西直门五班制" name="1" v-if='tab1' v-for="(item,index) in suites" :key="index">
+        <Tabs type="card"  :animated="false" closable @on-tab-remove="handleShiftTabRemove" v-model="tabModel" >
+            <TabPane label="西直门五班制" v-for="(item,index) in suites" :key="index" :id="item.id" :value="item.id">
                 <div class="panel-body">
                     <div class="buttonblock"></div>
                     <div class="shifts-content">
@@ -77,7 +58,6 @@ d7ed9a3  an hour ago
                                 </li>
                             </ul>
                         </div>
-                        
                         <!--24小时值班人数表-->
                         <div class="twentyfourform">
                             <div id="echart" v-show="showEchart"></div>
@@ -101,7 +81,6 @@ d7ed9a3  an hour ago
                             <Table :columns="shiftColumns" :data="shiftData" class="shiftTableColor"></Table>
                         </div>
                     </div>
-                    
                 </div>
             </TabPane>
         </Tabs>
@@ -341,12 +320,14 @@ d7ed9a3  an hour ago
     </div>
 </template>
 <script >
-import {getAllPost, getSuites,addSuites} from '@/api/api';
+import {getAllPost, getSuites, addSuites, getClass, addClass} from '@/api/api';
 import {stationAreaList, getStations} from '@/api/commonAPI';
 let echarts = require('echarts');
 export default {
     data:function () {
         return {
+            tabModel:null,
+            suiteId:null,
             //  岗位
             position: {
                 data: [],
@@ -363,9 +344,6 @@ export default {
             stations: [],
             modal3:false,
             currentIndex:'',
-            tab1:true,
-            tab2:true,
-            tab3:true,
             xizhimen:'西直门',
             chegongzhuang:'车公庄',
             xizhimenstation:'西直门',
@@ -383,15 +361,15 @@ export default {
             },
             positions: [],
             info: {
-                name: '西直门替班员',
-                stationArea: '西直门',
-                station: '西直门',
-                minWeekHours: 30,
-                maxWeekHours: 40,
-                minWeekOffDuty: 1, 
-                maxWeekOffDuty: 1, 
-                maxMonthOffDuty: 180,
-                maxYearOffDuty: 2000                 
+                // name: '西直门替班员',
+                // stationArea: '西直门',
+                // station: '西直门',
+                // minWeekHours: 30,
+                // maxWeekHours: 40,
+                // minWeekOffDuty: 1, 
+                // maxWeekOffDuty: 1, 
+                // maxMonthOffDuty: 180,
+                // maxYearOffDuty: 2000                 
             },
             formValidate: {
                 name: '',
@@ -584,9 +562,9 @@ export default {
                     }
                 ],
             shiftData:[
-                {name: '早班', timeSlot: ['07:00','14:00'], shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 4,color:'rgb(110, 121, 190)'},
-                {name: '晚班', timeSlot: ['14:00','21:00'], shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1,color:'rgb(41, 173, 125)'},
-                {name: '白班', timeSlot: ['07:00','17:00'], shiftTime: '10小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1,color:'rgb(59, 199, 85)'}
+                // {name: '早班', timeSlot: ['07:00','14:00'], shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 4,color:'rgb(110, 121, 190)'},
+                // {name: '晚班', timeSlot: ['14:00','21:00'], shiftTime: '7小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1,color:'rgb(41, 173, 125)'},
+                // {name: '白班', timeSlot: ['07:00','17:00'], shiftTime: '10小时', shiftSpace: '12小时', shiftRele: '--', shiftPeople: 1,color:'rgb(59, 199, 85)'}
             ],
             onDutyColumns: [
                 {
@@ -636,13 +614,13 @@ export default {
                 }
             ],
             onDutyData:[
-                {timeSlot:['00:00','07:00'], shiftPeople: 2 },
-                {timeSlot:['07:00','09:00'], shiftPeople: 8 },
-                {timeSlot:['09:00','11:00'], shiftPeople: 4 },
-                {timeSlot:['11:00','13:00'], shiftPeople: 4 },
-                {timeSlot:['13:00','17:00'], shiftPeople: 4 },
-                {timeSlot:['17:00','19:00'], shiftPeople: 4 },
-                {timeSlot:['19:00','24:00'], shiftPeople: 2 },
+                // {timeSlot:['00:00','07:00'], shiftPeople: 2 },
+                // {timeSlot:['07:00','09:00'], shiftPeople: 8 },
+                // {timeSlot:['09:00','11:00'], shiftPeople: 4 },
+                // {timeSlot:['11:00','13:00'], shiftPeople: 4 },
+                // {timeSlot:['13:00','17:00'], shiftPeople: 4 },
+                // {timeSlot:['17:00','19:00'], shiftPeople: 4 },
+                // {timeSlot:['19:00','24:00'], shiftPeople: 2 },
             ],
             showEchart: false
         }
@@ -666,6 +644,7 @@ export default {
         },
         //  获取班制
         getSuites: async function () {
+            let that = this;
             let currentPosition = this.position.current.split('-');
             let data = {
                 districtId: this.districtId,
@@ -677,6 +656,10 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.suites = response.data;
+                this.suiteId = response.data[0].id;
+                console.log(this.suites[0].id);
+                //this.info=response.data[0];
+                 this.$options.methods.getClass(that);
                 return;
             }
             this.$Message.error(message);
@@ -703,9 +686,22 @@ export default {
             }
             this.$Message.error(message);
         },
+        // 获取班次
+        getClass: async function (that) {
+            let suiteId = that.suiteId;
+            let response = await getClass(suiteId);
+            if (response.meta.code !== 0) {
+                that.$Loading.error();
+                that.$Message.error(response.meta.message);
+            }else{
+                that.$Loading.finish();
+                 console.log(response.data);
+            }
+        },
         //删除班制
-        handleShiftTabRemove:function(name){
-            this['tab'+name]=false;
+        handleShiftTabRemove:function(){
+            console.log(this.tabModel);
+            //this['tab'+id]=false;
         },
         //编辑班制验证
         editShift: function (name) {
@@ -814,6 +810,18 @@ export default {
                 this.addFormValidateClass.ifTimeSlot = false;
             })
         },
+        // beforeAddClassMethods:function async (addClass) {
+        //     let data={
+        //         dutyName: this.addFormValidateClass.name,
+        //         dutyCode: this.addFormValidateClass.codeName,
+        //         //districtId:
+        //         //positionId:
+        //         suiteId: this.suiteId,
+        //         userCount: this.addFormValidateClass.shiftpeople,
+        //         classColor: $(".shiftColor").css('background-color'),
+
+        //     }
+        // },
         //编辑班次验证
         editShifyClassMethods:function(name){
              let arr = this.addFormValidateClass.timeSlot;
@@ -1002,11 +1010,10 @@ export default {
         beforeAddShift:async function(that){
             let currentPosition = that.position.current.split('-');
             let data = {
-                dutySuite: that.addFormValidate.stationArea,
                 dutyName: that.addFormValidate.name,
                 active: that.addFormValidate.active,
-                districtId: that.districtId,
-                stationId: that.stationId,
+                districtId: that.addFormValidate.stationArea,
+                stationId: that.addFormValidate.station,
                 positionId: parseInt(currentPosition[0]), 
                 maxWorkingHour: that.addFormValidate.maxWeekHours,
                 minWorkingHour: that.addFormValidate.minWeekHours,

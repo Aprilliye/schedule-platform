@@ -22,3 +22,9 @@ export const getSuites = data => fetch('/duty', data, 'GET');
 
 /** 新增班制 */
 export const addSuites = data => fetch('/duty/suite', data, 'POST');
+
+/** 获取班次 */
+export const getClass = id => fetch('/duty/suite?suiteId='+id, {}, 'GET');
+
+/**新增班次 */
+export const addClass = data => fetch('/duty/class', data, 'POST');
