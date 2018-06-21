@@ -6,8 +6,8 @@
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true" >新增班制</a>
         </div>
-        <Tabs type="card"  :animated="false" closable @on-tab-remove="handleShiftTabRemove" v-model="tabModel" >
-            <TabPane label="西直门五班制" v-for="(item,index) in suites" :key="index" :id="item.id" :value="item.id">
+        <Tabs type="card"  :animated="false" v-model="tabModel" closable @on-tab-remove="handleClose"  @on-click="choseTab">
+            <TabPane :label="item.dutyName"  v-for="(item,index) in suites" :key="index" :id="item.id">
                 <div class="panel-body">
                     <div class="buttonblock"></div>
                     <div class="shifts-content">
@@ -22,7 +22,7 @@
                             <ul class="info">
                                 <li>
                                     <label>班制名称：</label>
-                                    <span>{{info.name}}</span>
+                                    <span>{{info.dutyName}}</span>
                                 </li>
                                 <li>
                                     <label>站区：</label>
@@ -34,27 +34,27 @@
                                 </li>
                                 <li>
                                     <label>周工时下限：</label>
-                                    <span>{{info.minWeekHours}}</span>
+                                    <span>{{info.minWorkingHour}}</span>
                                 </li>
                                 <li>
                                     <label>周工时上限：</label>
-                                    <span>{{info.maxWeekHours}}</span>
+                                    <span>{{info.maxWorkingHour}}</span>
                                 </li>
                                 <li>
                                     <label>每周最少休班：</label>
-                                    <span>{{info.minWeekOffDuty}}</span>
+                                    <span>{{info.minWeeklyRestDays}}</span>
                                 </li>
                                 <li>
                                     <label>每周最多休班：</label>
-                                    <span>{{info.maxWeekOffDuty}}</span>
+                                    <span>{{info.maxWeeklyRestDays}}</span>
                                 </li>
                                 <li>
                                     <label>月工时上限：</label>
-                                    <span>{{info.maxMonthOffDuty}}</span>
+                                    <span>{{info.monthlyWorkingHourLimit}}</span>
                                 </li>
                                 <li>
                                     <label>年工时上限：</label>
-                                    <span>{{info.maxYearOffDuty}}</span>
+                                    <span>{{info.yearlyWorkingHourLimit}}</span>
                                 </li>
                             </ul>
                         </div>
@@ -205,8 +205,8 @@
                 @on-ok="editShift('formValidate')"
                 @on-cancel="handleCancel('formValidate')">
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="110">
-                <FormItem label="班制名称：" prop="name">
-                    <Input v-model="formValidate.name" placeholder=""/>
+                <FormItem label="班制名称：" prop="dutyName">
+                    <Input v-model="formValidate.dutyName" placeholder=""/>
                 </FormItem>
                 <FormItem label="站区：" prop="stationArea">
                     <Select v-model="formValidate.stationArea" placeholder="请选择">
@@ -219,23 +219,23 @@
                         <Option :value="xizhimenstation">西直门</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="周工时下限：" prop="minWeekHours">
-                    <Input v-model="formValidate.minWeekHours" placeholder=""/>
+                <FormItem label="周工时下限：" prop="minWorkingHour">
+                    <Input v-model="formValidate.minWorkingHour" placeholder=""/>
                 </FormItem>
-                <FormItem label="周工时上限：" prop="maxWeekHours">
-                    <Input v-model="formValidate.maxWeekHours" placeholder=""/>
+                <FormItem label="周工时上限：" prop="maxWorkingHour">
+                    <Input v-model="formValidate.maxWorkingHour" placeholder=""/>
                 </FormItem>
-                <FormItem label="每周最少休班：" prop="minWeekOffDuty">
-                    <Input v-model="formValidate.minWeekOffDuty" placeholder=""/>
+                <FormItem label="每周最少休班：" prop="minWeeklyRestDays">
+                    <Input v-model="formValidate.minWeeklyRestDays" placeholder=""/>
                 </FormItem>
-                <FormItem label="每周最多休班：" prop="maxWeekOffDuty">
-                    <Input v-model="formValidate.maxWeekOffDuty" placeholder=""/>
+                <FormItem label="每周最多休班：" prop="maxWeeklyRestDays">
+                    <Input v-model="formValidate.maxWeeklyRestDays" placeholder=""/>
                 </FormItem>
-                <FormItem label="月工时上限：" prop="maxMonthOffDuty">
-                    <Input v-model="formValidate.maxMonthOffDuty" placeholder=""/>
+                <FormItem label="月工时上限：" prop="monthlyWorkingHourLimit">
+                    <Input v-model="formValidate.monthlyWorkingHourLimit" placeholder=""/>
                 </FormItem>
-                <FormItem label="年工时上限：" prop="maxYearOffDuty">
-                    <Input v-model="formValidate.maxYearOffDuty" placeholder=""/>
+                <FormItem label="年工时上限：" prop="yearlyWorkingHourLimit">
+                    <Input v-model="formValidate.yearlyWorkingHourLimit" placeholder=""/>
                 </FormItem>
             </Form>
         </Modal>
@@ -246,8 +246,8 @@
                @on-ok="addShift('addFormValidate')"
                @on-cancel="handleCancel('addFormValidate')">
             <Form ref="addFormValidate" :model="addFormValidate" :label-width="110">
-                <FormItem label="班制名称：" prop="name" :rules="{required:true,message:'班制名称不能为空'}">
-                    <Input v-model="addFormValidate.name" placeholder=""/>
+                <FormItem label="班制名称：" prop="dutyName" :rules="{required:true,message:'班制名称不能为空'}">
+                    <Input v-model="addFormValidate.dutyName" placeholder=""/>
                 </FormItem>
                 <FormItem label="是否启用：" prop="active" :rules="{required:true,message:'是否启用不能为空'}">
                     <Select v-model="addFormValidate.active" placeholder="请选择">
@@ -265,23 +265,23 @@
                         <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="周工时下限：" prop="minWeekHours" :rules="{required:true,message:'周工时下限不能为空不能为空'}">
-                    <Input v-model="addFormValidate.minWeekHours" placeholder=""/>
+                <FormItem label="周工时下限：" prop="minWorkingHour" :rules="{required:true,message:'周工时下限不能为空不能为空'}">
+                    <Input v-model="addFormValidate.minWorkingHour" placeholder=""/>
                 </FormItem>
-                <FormItem label="周工时上限：" prop="maxWeekHours" :rules="{required:true,message:'周工时上限不能为空'}">
-                    <Input v-model="addFormValidate.maxWeekHours" placeholder=""/>
+                <FormItem label="周工时上限：" prop="maxWorkingHour" :rules="{required:true,message:'周工时上限不能为空'}">
+                    <Input v-model="addFormValidate.maxWorkingHour" placeholder=""/>
                 </FormItem>
-                <FormItem label="每周最少休班：" prop="minWeekOffDuty" :rules="{required:true,message:'每周最少休班不能为空'}">
-                    <Input v-model="addFormValidate.minWeekOffDuty" placeholder=""/>
+                <FormItem label="每周最少休班：" prop="minWeeklyRestDays" :rules="{required:true,message:'每周最少休班不能为空'}">
+                    <Input v-model="addFormValidate.minWeeklyRestDays" placeholder=""/>
                 </FormItem>
-                <FormItem label="每周最多休班：" prop="maxWeekOffDuty" :rules="{required:true,message:'每周最多休班不能为空'}">
-                    <Input v-model="addFormValidate.maxWeekOffDuty" placeholder=""/>
+                <FormItem label="每周最多休班：" prop="maxWeeklyRestDays" :rules="{required:true,message:'每周最多休班不能为空'}">
+                    <Input v-model="addFormValidate.maxWeeklyRestDays" placeholder=""/>
                 </FormItem>
-                <FormItem label="月工时上限：" prop="maxMonthOffDuty" :rules="{required:true,message:'月工时上限不能为空'}">
-                    <Input v-model="addFormValidate.maxMonthOffDuty" placeholder=""/>
+                <FormItem label="月工时上限：" prop="monthlyWorkingHourLimit" :rules="{required:true,message:'月工时上限不能为空'}">
+                    <Input v-model="addFormValidate.monthlyWorkingHourLimit" placeholder=""/>
                 </FormItem>
-                <FormItem label="年工时上限：" prop="maxYearOffDuty" :rules="{required:true,message:'年工时上限不能为空'}">
-                    <Input v-model="addFormValidate.maxYearOffDuty" placeholder=""/>
+                <FormItem label="年工时上限：" prop="yearlyWorkingHourLimit" :rules="{required:true,message:'年工时上限不能为空'}">
+                    <Input v-model="addFormValidate.yearlyWorkingHourLimit" placeholder=""/>
                 </FormItem>
             </Form>
         </Modal>
@@ -320,7 +320,7 @@
     </div>
 </template>
 <script >
-import {getAllPost, getSuites, addSuites, getClass, addClass} from '@/api/api';
+import {getAllPost, getSuites, addSuites, getClass, addClass, deteleSuites} from '@/api/api';
 import {stationAreaList, getStations} from '@/api/commonAPI';
 let echarts = require('echarts');
 export default {
@@ -361,26 +361,26 @@ export default {
             },
             positions: [],
             info: {
-                // name: '西直门替班员',
-                // stationArea: '西直门',
-                // station: '西直门',
-                // minWeekHours: 30,
-                // maxWeekHours: 40,
-                // minWeekOffDuty: 1, 
-                // maxWeekOffDuty: 1, 
-                // maxMonthOffDuty: 180,
-                // maxYearOffDuty: 2000                 
+                dutyName: '',
+                stationArea: '',
+                station: '',
+                minWorkingHour: '',
+                maxWorkingHour: '',
+                minWeeklyRestDays: '', 
+                maxWeeklyRestDays: '', 
+                monthlyWorkingHourLimit: '',
+                yearlyWorkingHourLimit: ''                 
             },
             formValidate: {
-                name: '',
+                dutyName: '',
                 stationArea: '',
-                station:'',
-                minWeekHours:'',
-                maxWeekHours:'',
-                minWeekOffDuty:'',
-                maxWeekOffDuty:'',
-                maxMonthOffDuty:'',
-                maxYearOffDuty:''
+                station: '',
+                minWorkingHour: '',
+                maxWorkingHour: '',
+                minWeeklyRestDays: '', 
+                maxWeeklyRestDays: '', 
+                monthlyWorkingHourLimit: '',
+                yearlyWorkingHourLimit: ''   
             },
             addTimeValidate:{
                 timeSlot: [],
@@ -413,7 +413,7 @@ export default {
             },
             //  新增班制弹框验证
             ruleValidate: {
-                name: [
+                dutyName: [
                     { required: true, message: '班制名称不能为空', trigger: 'blur' }
                 ],
                 stationArea: [
@@ -422,22 +422,22 @@ export default {
                 station: [
                     { required: true, message: '站点不能为空', trigger: 'change' }
                 ],
-                minWeekHours: [
+                minWorkingHour: [
                     { required: true, message: '周工时下限不能为空', trigger: 'blur' }
                 ],
-                maxWeekHours: [
+                maxWorkingHour: [
                     { required: true, message: '周工时上限不能为空', trigger: 'blur' }
                 ],
-                minWeekOffDuty: [
+                minWeeklyRestDays: [
                     { required: true, message: '每周最少修班不能为空', trigger: 'blur' }
                 ],
-                maxWeekOffDuty: [
+                maxWeeklyRestDays: [
                     { required: true, message: '每周最多休班不能为空', trigger: 'blur' }
                 ],
-                maxMonthOffDuty: [
+                monthlyWorkingHourLimit: [
                     { required: true, message: '月工时上限不能为空', trigger: 'blur' }
                 ],
-                maxYearOffDuty: [
+                yearlyWorkingHourLimit: [
                     { required: true, message: '年工时上限不能为空', trigger: 'blur' }
                 ]
             },
@@ -656,13 +656,34 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.suites = response.data;
+            console.log(this.suites);
                 this.suiteId = response.data[0].id;
-                console.log(this.suites[0].id);
-                //this.info=response.data[0];
-                 this.$options.methods.getClass(that);
+                let obj = this.suites[0]; 
+                for(let key in obj){
+                this.info[key] = obj[key];
+                }
+                this.$options.methods.getClass(that);
                 return;
             }
             this.$Message.error(message);
+        },
+        choseTab: async function (name) {
+            console.log(name);
+            if (this.suites.length>0){
+                let obj = this.suites[name]; 
+                for(let key in obj){
+                this.info[key] = obj[key];
+                }
+                let suiteId = this.suites[name].id;
+                let response = await getClass(suiteId);
+                if (response.meta.code !== 0) {
+                    this.$Loading.error();
+                    this.$Message.error(response.meta.message);
+                }else{
+                    this.$Loading.finish();
+                }
+            }
+
         },
         //  获取站区
         request: async function(){
@@ -695,13 +716,22 @@ export default {
                 that.$Message.error(response.meta.message);
             }else{
                 that.$Loading.finish();
-                 console.log(response.data);
             }
         },
         //删除班制
-        handleShiftTabRemove:function(){
-            console.log(this.tabModel);
-            //this['tab'+id]=false;
+        handleClose: async function (name) {
+            console.log("111111");
+            let id = this.suites[name].id;
+            console.log(id);
+            let response = await deteleSuites(id);
+            if (response.meta.code !== 0) {
+                this.$Loading.error();
+                this.$Message.error(response.meta.message);
+            }else{
+                this.$Loading.finish();
+                this.$Message.success("删除班制成功");
+            }
+            console.log(response);
         },
         //编辑班制验证
         editShift: function (name) {
@@ -859,6 +889,7 @@ export default {
                 this.addFormValidateClass.ifTimeSlot = false;
             })
         },
+        //编辑班制
         beforeEditShift: function () {
             let obj = this.info; 
             for(let key in obj){
@@ -1010,24 +1041,27 @@ export default {
         beforeAddShift:async function(that){
             let currentPosition = that.position.current.split('-');
             let data = {
-                dutyName: that.addFormValidate.name,
+                dutyName: that.addFormValidate.dutyName,
                 active: that.addFormValidate.active,
                 districtId: that.addFormValidate.stationArea,
                 stationId: that.addFormValidate.station,
                 positionId: parseInt(currentPosition[0]), 
-                maxWorkingHour: that.addFormValidate.maxWeekHours,
-                minWorkingHour: that.addFormValidate.minWeekHours,
-                maxWeeklyRestDays: that.addFormValidate.maxWeekOffDuty,
-                minWeeklyRestDays: that.addFormValidate.minWeekOffDuty,
-                monthlyWorkingHourLimit: that.addFormValidate.maxMonthOffDuty,
-                yearlyWorkingHourLimit: that.addFormValidate.maxYearOffDuty,
+                maxWorkingHour: that.addFormValidate.maxWorkingHour,
+                minWorkingHour: that.addFormValidate.minWorkingHour,
+                maxWeeklyRestDays: that.addFormValidate.maxWeeklyRestDays,
+                minWeeklyRestDays: that.addFormValidate.minWeeklyRestDays,
+                monthlyWorkingHourLimit: that.addFormValidate.monthlyWorkingHourLimit,
+                yearlyWorkingHourLimit: that.addFormValidate.yearlyWorkingHourLimit,
                 backup: parseInt(currentPosition[1])
             }
             let response = await addSuites(data);   
                 let message = response.meta.message;
                 if(response.meta.code === 0){
+                    that.suites.push(response.data.dutysuite);
+                    that.$Message.success("新增班制成功");
+                }else{
+                    that.$Message.error(message);
                 }
-                that.$Message.error(message);
         },
         //班次选择颜色
         getBackColor:function(){
