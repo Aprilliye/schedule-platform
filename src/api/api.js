@@ -29,5 +29,8 @@ export const deteleSuites = id => fetch('/duty/suitedelete/' + id, {}, 'DELETE')
 /** 获取班次 */
 export const getClass = id => fetch('/duty/suite?suiteId='+id, {}, 'GET');
 
-/**新增班次 */
+/** 新增班次 */
 export const addClass = data => fetch('/duty/class', data, 'POST');
+
+/** 删除班次 */
+export const deteleClass = (id, suiteId) => fetch('/duty/classdelete?id=' + id +'&suiteId='+ suiteId, {},'DELETE');

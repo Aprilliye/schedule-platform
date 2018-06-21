@@ -320,7 +320,7 @@
     </div>
 </template>
 <script >
-import {getAllPost, getSuites, addSuites, getClass, addClass, deteleSuites} from '@/api/api';
+import {getAllPost, getSuites, addSuites, getClass, addClass, deteleSuites, deteleClass} from '@/api/api';
 import {stationAreaList, getStations} from '@/api/commonAPI';
 let echarts = require('echarts');
 export default {
@@ -937,7 +937,19 @@ export default {
             this.editShiftValue=this.shiftData[index].timeSlot;
             $(".shiftColor").css("background-color",color);
         },
-        remove1:function (index) {
+        remove1:async function (index) {
+            console.log("0001");
+            let id = this.shiftData[index].id;
+            let suiteId = this.suiteId;
+            let response = await deteleClass(id,suiteId);
+            console.log("0002");
+            if(response.meta.code === 0){
+                this.$Message.success("删除班次成功");
+                console.log(response);
+            return;
+            }else{
+                this.$Message.error(message);
+            }
             this.shiftData.splice(index, 1);
         },
         del:function(){
