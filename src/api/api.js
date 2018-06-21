@@ -33,4 +33,4 @@ export const getClass = id => fetch('/duty/suite?suiteId='+id, {}, 'GET');
 export const addClass = data => fetch('/duty/class', data, 'POST');
 
 /** 删除班次 */
-export const deteleClass = (id, suiteId) => fetch('/duty/classdelete?id=' + id +'&suiteId='+ suiteId, {},'DELETE');
+export const deteleClass = (id, suiteId) => fetch('/duty/classdelete/' + id +'?suiteId='+ suiteId, {} ,'DELETE');
