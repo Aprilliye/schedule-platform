@@ -651,7 +651,7 @@
                 for(let key in obj){
                     this.editPerson[key] = obj[key];
                 }
-            }
+            },
         }
        
     }
