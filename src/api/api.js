@@ -34,3 +34,11 @@ export const addClass = data => fetch('/duty/class', data, 'POST');
 
 /** 删除班次 */
 export const deteleClass = (id, suiteId) => fetch('/duty/classdelete/' + id +'?suiteId='+ suiteId, {} ,'DELETE');
+
+/********************************  工作流程  ********************************/
+
+/** 获取工作流程 */
+export const getWorkFlow = id => fetch('/workflow/getallworkflowcontent/'+ id, {}, 'GET');
+
+/** 新增工作流程 */
+export const addWorkFlow = id => fetch();
