@@ -325,7 +325,7 @@
     </div>
 </template>
 <script >
-import {getAllPost, getSuites, addSuites, getClass, addClass, deteleSuites, deteleClass, updateClass, updateSuites, addPeriod} from '@/api/api';
+import {getAllPost, getSuites, addSuites, getClass, addClass, deteleSuites, deteleClass, updateClass, updateSuites, addPeriod, updatePeriod, detelePeriod} from '@/api/api';
 import {stationAreaList, getStations} from '@/api/commonAPI';
 let echarts = require('echarts');
 export default {
@@ -340,14 +340,20 @@ export default {
                 id: null,
                 current: '2-1'
             },
+            // 当前站区id
             dutyDistrictId:null,
+            // 当前站区名
             dutyDistrictName:'',
+           // 当前站点id
             dutyStationId:null,
+            // 当前站点名
             dutyStationName:'',
             districtId: this.$store.get('districtId'),
             stationId: this.$store.get('stationId'),
             // 当前班次id
             classId:null,
+            // 当前时间段id
+            currentPeriod: null,
             //  班制
             suites: [],
             //  站区
@@ -356,9 +362,6 @@ export default {
             stations: [],
             modal3:false,
             currentIndex:'',
-            xizhimen:'西直门',
-            chegongzhuang:'车公庄',
-            xizhimenstation:'西直门',
             editShiftValue:[],
             addShiftValue:[],
             editTime:[],
@@ -613,7 +616,7 @@ export default {
                 {
                     title: '值班人数',
                     align: 'center',
-                    key: 'shiftPeople'
+                    key: 'userCount'
                 },
                 {
                     title: '操作',
@@ -657,7 +660,9 @@ export default {
     mounted: function () {
         //  获取岗位
         this.getAllPost();
+        // 获取班制
         this.getSuites();
+        // 获取站区
         this.request();
     },
     methods:{
@@ -667,6 +672,7 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.position.data = response.data;
+                console.log(response);
                 return;
             }
             this.$Message.error(message);
@@ -702,19 +708,18 @@ export default {
             this.$Message.error(message);
         },
         choseTab: async function (name) {
+            let that = this;
             if (this.suites.length>0){
                 let obj = this.suites[name]; 
                 for(let key in obj){
                 this.info[key] = obj[key];
                 }
-                let suiteId = this.suites[name].id;
-                let response = await getClass(suiteId);
-                if (response.meta.code !== 0) {
-                    this.$Loading.error();
-                    this.$Message.error(response.meta.message);
-                }else{
-                    this.$Loading.finish();
-                }
+                this.suiteId = this.suites[name].id;
+                this.dutyDistrictId = this.suites[name].districtId;
+                this.dutyDistrictName = this.suites[name].districtName;
+                this.dutyStationId = this.suites[name].stationId;
+                this.dutyStationName = this.suites[name].stationName;
+                this.$options.methods.getClass(that);
             }
         },
         //  获取站区
@@ -838,10 +843,6 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     let that = this;
-                    // let obj={};
-                    // obj.timeSlot=this.addTimeValidate.timeSlot;
-                    // obj.shiftPeople=this.addTimeValidate.shiftpeople;
-                    // this.onDutyData.push(obj);
                    this.$options.methods.beforeAddTimeSlotMethods(that);
                     this.modal.addTimeSlot = false;
                     this.$refs[name].resetFields();
@@ -865,54 +866,86 @@ export default {
             }
             let response = await addPeriod(data);
             let message = response.meta.message;
-            console.log(data);
-                console.log(response);
             if(response.meta.code === 0){
                 that.$Message.success("新增时间段成功");
-                //that.shiftData = response.data.dutyclass;
+                that.onDutyData = response.data.dutyperiodchecking;
                 return;
             }else{
                 that.$Message.error(message);
-             }
+            }
         },
         //编辑时间段验证
         editTimeSlotMethods:function(name){
-            let arr = this.addTimeValidate.timeSlot;
+            let arr = this.editTimeValidate.timeSlot;
             for(let i=0;i<arr.length;i++){
                 if(arr[i] === ''){
-                    this.addTimeValidate.ifTimeSlot = true;
+                    this.editTimeValidate.ifTimeSlot = true;
                     $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
                     return;
                 } else {
                     $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
-                    this.addTimeValidate.ifTimeSlot = false;
+                    this.editTimeValidate.ifTimeSlot = false;
                 }
             }
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    let index=this.currentIndex ;
-                    this.onDutyData[index].timeSlot=this.addTimeValidate.timeSlot;
-                    this.onDutyData[index].shiftPeople=this.addTimeValidate.shiftpeople;
-                    this.$Message.success('修改成功');
+                    let that = this;
+                    this.$options.methods.beforeEditTimeSlotMethods(that);
                     this.modal.editTimeSlot = false;
                     this.$refs[name].resetFields();
                 } else {
                     this.$Message.error('修改失败');
                 }
-                this.addTimeValidate.timeSlot = [];
-                this.addTimeValidate.ifTimeSlot = false;
+                this.editTimeValidate.timeSlot = [];
+                this.editTimeValidate.ifTimeSlot = false;
             })
+        },
+        beforeEditTimeSlotMethods: async function (that) {
+            let currentPosition = that.position.current.split('-');
+            let data={
+                id: that.currentPeriod,
+                districtId: that.dutyDistrictId,
+                stationId: that.dutyStationId,
+                positionId: parseInt(currentPosition[0]),
+                suiteId: that.suiteId,
+                startTimeStr: that.editTimeValidate.timeSlot[0],
+                endTimeStr: that.editTimeValidate.timeSlot[1],
+                userCount: that.editTimeValidate.userCount,
+            }
+            let response = await updatePeriod(data);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                that.$Message.success("编辑时间段成功");
+                that.onDutyData = response.data.dutyperiodchecking;
+                return;
+            }else{
+                that.$Message.error(message);
+             }
         },
         //编辑时间段
         editpeoplenumber:function(index){
+            let arry = [];
+            this.currentPeriod = this.onDutyData[index].id;
+            arry.push(this.onDutyData[index].startTimeStr);
+            arry.push(this.onDutyData[index].endTimeStr);
             this.currentIndex=index;
             this.modal.editTimeSlot=true;
-            this.addTimeValidate.timeSlot=this.onDutyData[index].timeSlot;
+            this.editTimeValidate.timeSlot=arry;
             this.editTime=this.onDutyData[index].timeSlot;
-            this.addTimeValidate.shiftpeople=this.onDutyData[index].shiftPeople;
+            this.editTimeValidate.userCount=this.onDutyData[index].userCount;
         },
-        remove2:function (index) {
-            this.onDutyData.splice(index, 1);
+        // 删除时间段
+        remove2: async function (index) {
+            let id = this.onDutyData[index].id;
+            let response = await detelePeriod(id);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                this.$Message.success("删除时间段成功");
+                this.onDutyData.splice(index, 1);
+                return;
+            }else{
+                this.$Message.error(message);
+            }
         },
         //新增班次验证
         addClassMethods:function(name){

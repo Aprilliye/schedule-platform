@@ -42,4 +42,10 @@ export const deteleClass = (id, suiteId) => fetch('/duty/classdelete/' + id +'?s
 export const updateClass = data => fetch('/duty/classupdate' , data, 'PUT');
 
 /** 新增时间段 */
-export const addPeriod = data => fetch('duty/periodadd', data, 'POST');
+export const addPeriod = data => fetch('/duty/periodadd', data, 'POST');
+
+/** 编辑时间段 */
+export const updatePeriod = data => fetch('/duty/periodupdate' , data, 'PUT');
+
+/** 删除时间段 */
+export const detelePeriod = id => fetch('/duty/perioddelete/' + id, {}, 'DELETE');
