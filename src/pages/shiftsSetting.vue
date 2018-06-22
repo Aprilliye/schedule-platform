@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="content-header">
-            <Select v-model="position.current" placeholder="请选择岗位" style="width:200px;margin: 0px 0px 4px 20px ">
+            <Select v-model="position.current" placeholder="请选择岗位" style="width:200px;margin: 0px 0px 4px 20px " @on-change="getChangeSuite">
                 <Option v-for="item in position.data" :value="item.id+'-'+item.backupPosition" :key="item.id">{{ item.positionName }}</Option>
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true" >新增班制</a>
@@ -677,6 +677,41 @@ export default {
             }
             this.$Message.error(message);
         },
+        // 切换岗位获取班制
+        getChangeSuite: async function () {
+            console.log(this.position.current);
+            this.suiteName = 0;
+            let that = this;
+            let currentPosition = this.position.current.split('-');
+            let data = {
+                districtId: this.districtId,
+                stationId: this.stationId,
+                positionId: parseInt(currentPosition[0]),
+                backup: parseInt(currentPosition[1])
+            }
+            console.log(data);
+            let response = await getSuites(data);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                if(response.data.length>0){
+                    this.suites = response.data;
+                    this.suiteId = response.data[0].id;
+                    this.dutyDistrictId = response.data[0].districtId;
+                    this.dutyDistrictName = response.data[0].districtName;
+                    this.dutyStationId = response.data[0].stationId;
+                    this.dutyStationName = response.data[0].stationName;
+                }
+                console.log(response);
+                // 显示班制内容
+                let obj = this.suites[0]; 
+                for(let key in obj){
+                this.info[key] = obj[key];
+                }
+                this.$options.methods.getClass(that);
+                return;
+            }
+            this.$Message.error(message);
+        },
         //  获取班制
         getSuites: async function () {
             this.suiteName = 0;
@@ -692,11 +727,13 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.suites = response.data;
-                this.suiteId = response.data[0].id;
-                this.dutyDistrictId = response.data[0].districtId;
-                this.dutyDistrictName = response.data[0].districtName;
-                this.dutyStationId = response.data[0].stationId;
-                this.dutyStationName = response.data[0].stationName;
+                if (response.data.length>0){
+                    this.suiteId = response.data[0].id;
+                    this.dutyDistrictId = response.data[0].districtId;
+                    this.dutyDistrictName = response.data[0].districtName;
+                    this.dutyStationId = response.data[0].stationId;
+                    this.dutyStationName = response.data[0].stationName;
+                }
                 // 显示班制内容
                 let obj = this.suites[0]; 
                 for(let key in obj){
@@ -758,16 +795,18 @@ export default {
         },
         // 获取班次
         getClass: async function (that) {
-            let suiteId = that.suiteId;
-            let response = await getClass(suiteId);
-            if (response.meta.code !== 0) {
-                that.$Loading.error();
-                that.$Message.error(response.meta.message);
-            }else{
-                that.shiftData = response.data.dutyclass;
-                //获取时间段
-                that.onDutyData=response.data.dutyperiodchecking
-                that.$Loading.finish();
+            if ( that.suiteId){
+                let suiteId = that.suiteId;
+                let response = await getClass(suiteId);
+                if (response.meta.code !== 0) {
+                    that.$Loading.error();
+                    that.$Message.error(response.meta.message);
+                }else{
+                    that.shiftData = response.data.dutyclass;
+                    //获取时间段
+                    that.onDutyData=response.data.dutyperiodchecking
+                    that.$Loading.finish();
+                }
             }
         },
         //删除班制
@@ -1187,8 +1226,10 @@ export default {
                 map.set(i, 0);
             }
             for(let obj of array){
-                let arr = obj.timeSlot;
-                let n = obj.shiftPeople;
+                let arr = [];
+                arr.push(obj.startTimeStr);
+                arr.push(obj.endTimeStr);
+                let n = obj.userCount;
                 if(arr[1]<arr[0]){
                     for(let i = parseInt(arr[0])+1;i<=24;i++){
                         map.set(i, map.get(i)+n);
@@ -1243,6 +1284,7 @@ export default {
                 yearlyWorkingHourLimit: that.addFormValidate.yearlyWorkingHourLimit,
                 backup: parseInt(currentPosition[1])
             }
+            console.log(data);
             let response = await addSuites(data);   
                 let message = response.meta.message;
                 if(response.meta.code === 0){
