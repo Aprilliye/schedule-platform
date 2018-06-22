@@ -26,6 +26,9 @@ export const addSuites = data => fetch('/duty/suite', data, 'POST');
 /**删除班制 */
 export const deteleSuites = id => fetch('/duty/suitedelete/' + id, {}, 'DELETE');
 
+/** 编辑班制 */
+export const updateSuites = data => fetch('/duty/suitupdate' , data, 'PUT');
+
 /** 获取班次 */
 export const getClass = id => fetch('/duty/suite?suiteId='+id, {}, 'GET');
 
@@ -35,7 +38,11 @@ export const addClass = data => fetch('/duty/class', data, 'POST');
 /** 删除班次 */
 export const deteleClass = (id, suiteId) => fetch('/duty/classdelete/' + id +'?suiteId='+ suiteId, {} ,'DELETE');
 
-/********************************  工作流程  ********************************/
+/** 编辑班次 */
+export const updateClass = data => fetch('/duty/classupdate' , data, 'PUT');
+
+/** 新增时间段 */
+export const addPeriod = data => fetch('duty/periodadd', data, 'POST');
 
 /** 获取工作流程 */
 export const getWorkFlow = id => fetch('/workflow/getallworkflowcontent/'+ id, {}, 'GET');
