@@ -26,6 +26,9 @@ export const addSuites = data => fetch('/duty/suite', data, 'POST');
 /**删除班制 */
 export const deteleSuites = id => fetch('/duty/suitedelete/' + id, {}, 'DELETE');
 
+/** 编辑班制 */
+export const updateSuites = data => fetch('/duty/suitupdate' , data, 'PUT');
+
 /** 获取班次 */
 export const getClass = id => fetch('/duty/suite?suiteId='+id, {}, 'GET');
 
@@ -37,3 +40,6 @@ export const deteleClass = (id, suiteId) => fetch('/duty/classdelete/' + id +'?s
 
 /** 编辑班次 */
 export const updateClass = data => fetch('/duty/classupdate' , data, 'PUT');
+
+/** 新增时间段 */
+export const addPeriod = data => fetch('duty/periodadd', data, 'POST');

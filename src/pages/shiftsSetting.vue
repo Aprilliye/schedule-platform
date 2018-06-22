@@ -208,15 +208,20 @@
                 <FormItem label="班制名称：" prop="dutyName">
                     <Input v-model="formValidate.dutyName" placeholder=""/>
                 </FormItem>
-                <FormItem label="站区：" prop="stationArea">
-                    <Select v-model="formValidate.stationArea" placeholder="请选择">
-                        <Option :value="xizhimen">西直门</Option>
-                        <Option :value="chegongzhuang">车公庄</Option>
+                <FormItem label="是否启用：" prop="active" :rules="{required:true,message:'是否启用不能为空'}">
+                    <Select v-model="formValidate.active" placeholder="请选择">
+                        <Option :value="1">是</Option>
+                        <Option :value="0">否</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="站点：" prop="station">
+                <FormItem label="站区：" prop="stationArea" :rules="{required:true,message:'站区不能为空'}">
+                    <Select v-model="formValidate.stationArea" placeholder="请选择" @on-change="getEditStation">
+                        <Option v-for="(item,index) in districts" :value="item.id+'-'+item.districtName" :key="index">{{item.districtName}}</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="站点：" prop="station" :rules="{required:true,message:'站点不能为空'}">
                     <Select v-model="formValidate.station" placeholder="请选择">
-                        <Option :value="xizhimenstation">西直门</Option>
+                        <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="周工时下限：" prop="minWorkingHour">
@@ -296,8 +301,8 @@
                     <TimePicker  v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addTime'></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addTimeValidate.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
-                <FormItem label="值班人数" prop="shiftpeople">
-                    <Input v-model="addTimeValidate.shiftpeople" placeholder=""/>
+                <FormItem label="值班人数" prop="userCount">
+                    <Input v-model="addTimeValidate.userCount" placeholder=""/>
                 </FormItem>
             </Form>
         </Modal>
@@ -305,27 +310,28 @@
         <Modal title="编辑时间段"
                v-model="modal.editTimeSlot"
                :loading="true"
-               @on-ok="editTimeSlotMethods('addTimeValidate')"
-               @on-cancel="handleCancel('addTimeValidate')">
-            <Form ref="addTimeValidate" :model="addTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
+               @on-ok="editTimeSlotMethods('editTimeValidate')"
+               @on-cancel="handleCancel('editTimeValidate')">
+            <Form ref="editTimeValidate" :model="editTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
                 <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
-                    <TimePicker  v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='editTime'></TimePicker>
-                    <div class="ivu-form-item-error-tip" v-if="addTimeValidate.ifTimeSlot">时间段不能为空</div>
+                    <TimePicker  v-model="editTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='editTime'></TimePicker>
+                    <div class="ivu-form-item-error-tip" v-if="editTimeValidate.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
-                <FormItem label="值班人数" prop="shiftpeople">
-                    <Input v-model="addTimeValidate.shiftpeople" placeholder=""/>
+                <FormItem label="值班人数" prop="userCount">
+                    <Input v-model="editTimeValidate.userCount" placeholder=""/>
                 </FormItem>
             </Form>
         </Modal>
     </div>
 </template>
 <script >
-import {getAllPost, getSuites, addSuites, getClass, addClass, deteleSuites, deteleClass, updateClass} from '@/api/api';
+import {getAllPost, getSuites, addSuites, getClass, addClass, deteleSuites, deteleClass, updateClass, updateSuites, addPeriod} from '@/api/api';
 import {stationAreaList, getStations} from '@/api/commonAPI';
 let echarts = require('echarts');
 export default {
     data:function () {
         return {
+            suiteName:null,
             tabModel:null,
             suiteId:null,
             //  岗位
@@ -390,7 +396,12 @@ export default {
             },
             addTimeValidate:{
                 timeSlot: [],
-                shiftpeople: '',
+                userCount: null,
+                ifTimeSlot: false
+            },
+            editTimeValidate: {
+                timeSlot: [],
+                userCount: null,
                 ifTimeSlot: false
             },
             addFormValidateClass:{
@@ -590,8 +601,8 @@ export default {
                     align: 'center',
                     key: 'timeSlot',
                     render: (h, params) => {
-                        let beginTimeSlot=params.row.timeSlot[0];
-                        let endTimeSlot=params.row.timeSlot[1];
+                        let beginTimeSlot=params.row.startTimeStr;
+                        let endTimeSlot=params.row.endTimeStr;
                         return h('div', [
                             h('span', beginTimeSlot),
                             h('span', '-'),
@@ -662,6 +673,7 @@ export default {
         },
         //  获取班制
         getSuites: async function () {
+            this.suiteName = 0;
             let that = this;
             let currentPosition = this.position.current.split('-');
             let data = {
@@ -679,6 +691,7 @@ export default {
                 this.dutyDistrictName = response.data[0].districtName;
                 this.dutyStationId = response.data[0].stationId;
                 this.dutyStationName = response.data[0].stationName;
+                // 显示班制内容
                 let obj = this.suites[0]; 
                 for(let key in obj){
                 this.info[key] = obj[key];
@@ -703,7 +716,6 @@ export default {
                     this.$Loading.finish();
                 }
             }
-
         },
         //  获取站区
         request: async function(){
@@ -728,6 +740,17 @@ export default {
             }
             this.$Message.error(message);
         },
+        getEditStation: async function () {
+            let currentDistrict = this.formValidate.stationArea.split('-');
+            let id = parseInt(currentDistrict[0]);
+            let response = await getStations(id);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                 this.stations = response.data;
+                return;
+            }
+            this.$Message.error(message);
+        },
         // 获取班次
         getClass: async function (that) {
             let suiteId = that.suiteId;
@@ -737,6 +760,8 @@ export default {
                 that.$Message.error(response.meta.message);
             }else{
                 that.shiftData = response.data.dutyclass;
+                //获取时间段
+                that.onDutyData=response.data.dutyperiodchecking
                 that.$Loading.finish();
             }
         },
@@ -755,14 +780,47 @@ export default {
         //编辑班制验证
         editShift: function (name) {
             this.$refs[name].validate((valid) => {
+                let that = this;
                 if (valid) {
-                    this.$Message.success('修改成功');
+                    this.$options.methods.beforeEditShiftMethod(that);
                     this.$refs[name].resetFields();
                     this.modal.editShift=false;
                 } else {
                     this.$Message.error('修改失败');
                 }
             })
+        },
+        beforeEditShiftMethod: async function (that) {
+            let currentPosition = that.position.current.split('-');
+            let currentDistrict = that.formValidate.stationArea.split('-');
+            let currentStation = that.formValidate.station.split('-');
+            let data = {
+                id: that.suiteId,
+                dutyName: that.formValidate.dutyName,
+                active: that.formValidate.active,
+                districtId: parseInt(currentDistrict[0]),
+                districtName:currentDistrict[1],
+                stationId: parseInt(currentStation[0]),
+                stationName: currentStation[1],
+                positionId: parseInt(currentPosition[0]), 
+                positionName:'站务员',
+                maxWorkingHour: that.formValidate.maxWorkingHour,
+                minWorkingHour: that.formValidate.minWorkingHour,
+                maxWeeklyRestDays: that.formValidate.maxWeeklyRestDays,
+                minWeeklyRestDays: that.formValidate.minWeeklyRestDays,
+                monthlyWorkingHourLimit: that.formValidate.monthlyWorkingHourLimit,
+                yearlyWorkingHourLimit: that.formValidate.yearlyWorkingHourLimit,
+                backup: parseInt(currentPosition[1])
+            }
+            let response = await updateSuites(data);   
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    that.info = response.data.dutysuite;
+                    that.suites[that.suiteName] =  response.data.dutysuite; 
+                    that.$Message.success("编辑班制成功");
+                }else{
+                    that.$Message.error(message);
+                }
         },
         //新增时间段验证
         addTimeSlotMethods: function (name) {
@@ -779,11 +837,12 @@ export default {
             }
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    let obj={};
-                    obj.timeSlot=this.addTimeValidate.timeSlot;
-                    obj.shiftPeople=this.addTimeValidate.shiftpeople;
-                    this.onDutyData.push(obj);
-                    this.$Message.success('新增成功');
+                    let that = this;
+                    // let obj={};
+                    // obj.timeSlot=this.addTimeValidate.timeSlot;
+                    // obj.shiftPeople=this.addTimeValidate.shiftpeople;
+                    // this.onDutyData.push(obj);
+                   this.$options.methods.beforeAddTimeSlotMethods(that);
                     this.modal.addTimeSlot = false;
                     this.$refs[name].resetFields();
                 } else {
@@ -792,6 +851,29 @@ export default {
                 this.addTimeValidate.timeSlot = [];
                 this.addTimeValidate.ifTimeSlot = false;
             })
+        },
+        beforeAddTimeSlotMethods: async function (that) {
+            let currentPosition = that.position.current.split('-');
+            let data={
+                districtId: that.dutyDistrictId,
+                stationId: that.dutyStationId,
+                positionId: parseInt(currentPosition[0]),
+                suiteId: that.suiteId,
+                startTimeStr: that.addTimeValidate.timeSlot[0],
+                endTimeStr: that.addTimeValidate.timeSlot[1],
+                userCount: that.addTimeValidate.userCount,
+            }
+            let response = await addPeriod(data);
+            let message = response.meta.message;
+            console.log(data);
+                console.log(response);
+            if(response.meta.code === 0){
+                that.$Message.success("新增时间段成功");
+                //that.shiftData = response.data.dutyclass;
+                return;
+            }else{
+                that.$Message.error(message);
+             }
         },
         //编辑时间段验证
         editTimeSlotMethods:function(name){
@@ -820,6 +902,17 @@ export default {
                 this.addTimeValidate.timeSlot = [];
                 this.addTimeValidate.ifTimeSlot = false;
             })
+        },
+        //编辑时间段
+        editpeoplenumber:function(index){
+            this.currentIndex=index;
+            this.modal.editTimeSlot=true;
+            this.addTimeValidate.timeSlot=this.onDutyData[index].timeSlot;
+            this.editTime=this.onDutyData[index].timeSlot;
+            this.addTimeValidate.shiftpeople=this.onDutyData[index].shiftPeople;
+        },
+        remove2:function (index) {
+            this.onDutyData.splice(index, 1);
         },
         //新增班次验证
         addClassMethods:function(name){
@@ -872,10 +965,10 @@ export default {
                 restMinutes: that.addFormValidateClass.restMinutes,
             }
             let response = await addClass(data);
+            let message = response.meta.message;
              if(response.meta.code === 0){
                  that.$Message.success("新增班次成功");
                  that.shiftData = response.data.dutyclass;
-                 console.log( that.shiftData);
                 return;
             }else{
                 that.$Message.error(message);
@@ -883,9 +976,8 @@ export default {
         },
         //编辑班次验证提交
         editShifyClassMethods:function(name){
-            console.log("001");
              let arr = this.editFormValidateClass.timeSlot;
-            for(let i=0;i<arr.length;i++){
+             for(let i=0;i<arr.length;i++){
                 if(arr[i]===''){
                     this.editFormValidateClass.ifTimeSlot = true;
                     $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
@@ -896,21 +988,8 @@ export default {
                 }
             }
             this.$refs[name].validate((valid) => {
-                console.log("002");
                 if (valid) {
-                    console.log("003");
                     let that = this;
-                //     let index=this.currentIndex
-                //     this.shiftData[index].color=$(".shiftColor").css('background-color');
-                //     this.shiftData[index].name= this.editFormValidateClass.name;
-                //    // this.shiftData[index].codeName=this.editFormValidateClass.codeName;
-                //     this.shiftData[index].timeSlot=this.editFormValidateClass.timeSlot;
-                //     this.shiftData[index].shiftTime=this.editFormValidateClass.shifttime;
-                //     this.shiftData[index].shiftSpace=this.editFormValidateClass.shiftspace;
-                //     this.shiftData[index].shiftRele=this.editFormValidateClass.shiftrele;
-                //     this.shiftData[index].shiftPeople=this.editFormValidateClass.shiftpeople;
-                //     //this.shiftData[index].notice=this.editFormValidateClass.notice;
-                //     this.$Message.success('修改成功');
                     this.$options.methods.beforeEditShifyClassMethods(that);
                     this.modal.addClass=false
                     this.modal.editShifyClass=false
@@ -927,7 +1006,7 @@ export default {
             this.currentIndex
                 let currentPosition = that.position.current.split('-');
                 let data={
-                    id: this.classId,
+                    id: that.classId,
                     dutyName: that.editFormValidateClass.dutyName,
                     dutyCode: that.editFormValidateClass.dutyCode,
                     districtId: that.dutyDistrictId,
@@ -948,10 +1027,10 @@ export default {
                     restMinutes: that.editFormValidateClass.restMinutes,
                 }
                 let response = await updateClass(data);
+                let message = response.meta.message;
                 if(response.meta.code === 0){
                 that.$Message.success("编辑班次成功");
                 that.shiftData = response.data.dutyclass;
-                console.log( response);
                 return;
                 }else{
                     that.$Message.error(message);
@@ -964,17 +1043,6 @@ export default {
                 this.formValidate[key] = obj[key];
             }
             this.modal.editShift = true;
-        },
-        //编辑时间段
-        editpeoplenumber:function(index){
-            this.currentIndex=index;
-            this.modal.editTimeSlot=true;
-            this.addTimeValidate.timeSlot=this.onDutyData[index].timeSlot;
-            this.editTime=this.onDutyData[index].timeSlot;
-            this.addTimeValidate.shiftpeople=this.onDutyData[index].shiftPeople;
-        },
-        remove2:function (index) {
-            this.onDutyData.splice(index, 1);
         },
         //编辑班次
         edite: function(index){
@@ -1000,6 +1068,7 @@ export default {
             let id = this.shiftData[index].id;
             let suiteId = this.suiteId;
             let response = await deteleClass(id,suiteId);
+            let message = response.meta.message;
             if(response.meta.code === 0){
                 this.$Message.success("删除班次成功");
                 this.shiftData = response.data.dutyclass;
