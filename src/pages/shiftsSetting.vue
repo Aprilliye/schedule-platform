@@ -145,17 +145,17 @@
         <Modal title="编辑班次"
                v-model="modal.editShifyClass"
                :loading="true"
-               @on-ok="editShifyClassMethods('addFormValidateClass')"
-               @on-cancel="handleCancel('addFormValidateClass')"
+               @on-ok="editShifyClassMethods('editFormValidateClass')"
+               @on-cancel="handleCancel('editFormValidateClass')"
                 >
-            <Form ref="addFormValidateClass" :model="addFormValidateClass" :rules="ruleValidate1" :label-width="80">
-                <FormItem label="班次名称" prop="name">
-                    <Input v-model="addFormValidateClass.name" placeholder=""/>
+            <Form ref="editFormValidateClass" :model="editFormValidateClass" :rules="ruleValidate1" :label-width="80">
+                <FormItem label="班次名称" prop="dutyName">
+                    <Input v-model="editFormValidateClass.dutyName" placeholder=""/>
                 </FormItem>
-                <FormItem label="班次代号" prop="codeName">
-                    <Input v-model="addFormValidateClass.codeName" placeholder=""/>
+                <FormItem label="班次代号" prop="dutyCode">
+                    <Input v-model="editFormValidateClass.dutyCode" placeholder=""/>
                 </FormItem>
-                <FormItem label="班次颜色" prop="shiftColor">
+                <FormItem label="班次颜色" prop="classColor">
                     <Poptip trigger="click" content="content">
                         <div class="shiftColor"></div>
                         <div class="shiftColorBox" slot="content">
@@ -175,26 +175,26 @@
                     </Poptip>
                 </FormItem>
                 <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot" >
-                    <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"  @on-change="getsectionTime" :value='editShiftValue'></TimePicker>
-                    <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
+                    <TimePicker  v-model="editFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"  @on-change="getsectionTime" :value='editShiftValue'></TimePicker>
+                    <div class="ivu-form-item-error-tip" v-if="editFormValidateClass.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
                 <FormItem label="总时间" prop="totalTime">
-                    <Input v-model="addFormValidateClass.totalTime" placeholder="" readonly/>
+                    <Input v-model="editFormValidateClass.totalTime" placeholder="" readonly/>
                 </FormItem>
-                <FormItem label="本班工时" prop="shifttime">
-                    <Input v-model="addFormValidateClass.shifttime" placeholder=""/>
+                <FormItem label="本班工时" prop="workingLength">
+                    <Input v-model="editFormValidateClass.workingLength" placeholder=""/>
                 </FormItem>
-                <FormItem label="班次间隔" prop="shiftspace">
-                    <Input v-model="addFormValidateClass.shiftspace" placeholder=""/>
+                <FormItem label="班次间隔" prop="restMinutes">
+                    <Input v-model="editFormValidateClass.restMinutes" placeholder=""/>
                 </FormItem>
-                <FormItem label="班次关联" prop="shiftrele">
-                    <Input v-model="addFormValidateClass.shiftrele" placeholder=""/>
+                <FormItem label="班次关联" prop="relevantClassId">
+                    <Input v-model="editFormValidateClass.relevantClassId" placeholder=""/>
                 </FormItem>
-                <FormItem label="值班人数" prop="shiftpeople">
-                    <Input v-model="addFormValidateClass.shiftpeople" placeholder=""/>
+                <FormItem label="值班人数" prop="userCount">
+                    <Input v-model="editFormValidateClass.userCount" placeholder=""/>
                 </FormItem>
                 <FormItem label="注意事项" prop="notice">
-                    <textarea v-model="addFormValidateClass.notice"  class="vocationRemark"></textarea>
+                    <textarea v-model="editFormValidateClass.notice"  class="vocationRemark"></textarea>
                 </FormItem>
             </Form>
         </Modal>
@@ -320,7 +320,7 @@
     </div>
 </template>
 <script >
-import {getAllPost, getSuites, addSuites, getClass, addClass, deteleSuites, deteleClass} from '@/api/api';
+import {getAllPost, getSuites, addSuites, getClass, addClass, deteleSuites, deteleClass, updateClass} from '@/api/api';
 import {stationAreaList, getStations} from '@/api/commonAPI';
 let echarts = require('echarts');
 export default {
@@ -340,6 +340,8 @@ export default {
             dutyStationName:'',
             districtId: this.$store.get('districtId'),
             stationId: this.$store.get('stationId'),
+            // 当前班次id
+            classId:null,
             //  班制
             suites: [],
             //  站区
@@ -402,6 +404,18 @@ export default {
                 relevantClassId:null,
                 userCount:null,
                 ifTimeSlot:false
+            },
+            editFormValidateClass:{
+            timeSlot: [],
+            dutyName:'',
+            dutyCode:'',
+            totalTime:'',
+            notice:'',
+            workingLength:null,
+            restMinutes:null,
+            relevantClassId:null,
+            userCount:null,
+            ifTimeSlot:false
             },
             addFormValidate:{
                 name: '',
@@ -861,17 +875,19 @@ export default {
              if(response.meta.code === 0){
                  that.$Message.success("新增班次成功");
                  that.shiftData = response.data.dutyclass;
+                 console.log( that.shiftData);
                 return;
             }else{
                 that.$Message.error(message);
             }
         },
-        //编辑班次验证
+        //编辑班次验证提交
         editShifyClassMethods:function(name){
-             let arr = this.addFormValidateClass.timeSlot;
+            console.log("001");
+             let arr = this.editFormValidateClass.timeSlot;
             for(let i=0;i<arr.length;i++){
                 if(arr[i]===''){
-                    this.addFormValidateClass.ifTimeSlot = true;
+                    this.editFormValidateClass.ifTimeSlot = true;
                     $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
                     return;
                 }else{
@@ -880,18 +896,22 @@ export default {
                 }
             }
             this.$refs[name].validate((valid) => {
+                console.log("002");
                 if (valid) {
-                    let index=this.currentIndex
-                    this.shiftData[index].color=$(".shiftColor").css('background-color');
-                    this.shiftData[index].name= this.addFormValidateClass.name;
-                   // this.shiftData[index].codeName=this.addFormValidateClass.codeName;
-                    this.shiftData[index].timeSlot=this.addFormValidateClass.timeSlot;
-                    this.shiftData[index].shiftTime=this.addFormValidateClass.shifttime;
-                    this.shiftData[index].shiftSpace=this.addFormValidateClass.shiftspace;
-                    this.shiftData[index].shiftRele=this.addFormValidateClass.shiftrele;
-                    this.shiftData[index].shiftPeople=this.addFormValidateClass.shiftpeople;
-                    //this.shiftData[index].notice=this.addFormValidateClass.notice;
-                    this.$Message.success('修改成功');
+                    console.log("003");
+                    let that = this;
+                //     let index=this.currentIndex
+                //     this.shiftData[index].color=$(".shiftColor").css('background-color');
+                //     this.shiftData[index].name= this.editFormValidateClass.name;
+                //    // this.shiftData[index].codeName=this.editFormValidateClass.codeName;
+                //     this.shiftData[index].timeSlot=this.editFormValidateClass.timeSlot;
+                //     this.shiftData[index].shiftTime=this.editFormValidateClass.shifttime;
+                //     this.shiftData[index].shiftSpace=this.editFormValidateClass.shiftspace;
+                //     this.shiftData[index].shiftRele=this.editFormValidateClass.shiftrele;
+                //     this.shiftData[index].shiftPeople=this.editFormValidateClass.shiftpeople;
+                //     //this.shiftData[index].notice=this.editFormValidateClass.notice;
+                //     this.$Message.success('修改成功');
+                    this.$options.methods.beforeEditShifyClassMethods(that);
                     this.modal.addClass=false
                     this.modal.editShifyClass=false
                     this.$refs[name].resetFields();
@@ -899,9 +919,43 @@ export default {
                 } else {
                     this.$Message.error('修改失败');
                 }
-                this.addFormValidateClass.timeSlot = [];
-                this.addFormValidateClass.ifTimeSlot = false;
+                this.editFormValidateClass.timeSlot = [];
+                this.editFormValidateClass.ifTimeSlot = false;
             })
+        },
+        beforeEditShifyClassMethods: async function (that) {
+            this.currentIndex
+                let currentPosition = that.position.current.split('-');
+                let data={
+                    id: this.classId,
+                    dutyName: that.editFormValidateClass.dutyName,
+                    dutyCode: that.editFormValidateClass.dutyCode,
+                    districtId: that.dutyDistrictId,
+                    districtName: that.dutyDistrictName,
+                    stationId: that.dutyStationId,
+                    stationName: that.dutyStationName,
+                    restMinutes: that.editFormValidateClass.restMinutes,
+                    relevantClassId: that.editFormValidateClass.relevantClassId,
+                    positionId: parseInt(currentPosition[0]),
+                    backup: parseInt(currentPosition[1]),
+                    positionName:'站务员',
+                    suiteId: that.suiteId,
+                    userCount: that.editFormValidateClass.userCount,
+                    classColor: $(".shiftColor").css('background-color'),
+                    startTimeStr: that.editFormValidateClass.timeSlot[0],
+                    endTimeStr: that.editFormValidateClass.timeSlot[1],
+                    workingLength: that.editFormValidateClass.workingLength,
+                    restMinutes: that.editFormValidateClass.restMinutes,
+                }
+                let response = await updateClass(data);
+                if(response.meta.code === 0){
+                that.$Message.success("编辑班次成功");
+                that.shiftData = response.data.dutyclass;
+                console.log( response);
+                return;
+                }else{
+                    that.$Message.error(message);
+                }
         },
         //编辑班制
         beforeEditShift: function () {
@@ -923,34 +977,36 @@ export default {
             this.onDutyData.splice(index, 1);
         },
         //编辑班次
-        edite:function(index){
+        edite: function(index){
             this.currentIndex=index;
+            this.classId= this.shiftData[index].id;
             this.modal.editShifyClass=true;
-            this.addFormValidateClass.name=this.shiftData[index].name;
-            this.addFormValidateClass.codeName= 12;
-            this.addFormValidateClass.shifttime=this.shiftData[index].shiftTime;
-            this.addFormValidateClass.shiftspace=this.shiftData[index].shiftSpace;
-            this.addFormValidateClass.shiftrele=this.shiftData[index].shiftRele;
-            this.addFormValidateClass.shiftpeople=this.shiftData[index].shiftPeople;
-            var color=this.shiftData[index].color;
-            this.addFormValidateClass.timeSlot=this.shiftData[index].timeSlot;
-            this.editShiftValue=this.shiftData[index].timeSlot;
+            this.editFormValidateClass.dutyName = this.shiftData[index].dutyName;
+            this.editFormValidateClass.dutyCode = this.shiftData[index].dutyCode;
+            this.editFormValidateClass.workingLength = this.shiftData[index].workingLength;
+            this.editFormValidateClass.restMinutes = this.shiftData[index].restMinutes;
+            this.editFormValidateClass.relevantClassId = this.shiftData[index].relevantClassId;
+            this.editFormValidateClass.userCount = this.shiftData[index].userCount;
+            var color=this.shiftData[index].classColor;
+            let arry = [];
+            arry.push(this.shiftData[index].startTimeStr);
+            arry.push(this.shiftData[index].endTimeStr);
+            this.editFormValidateClass.timeSlot = arry;
+            this.editShiftValue = arry;
             $(".shiftColor").css("background-color",color);
         },
+        // 删除班次
         remove1:async function (index) {
-            console.log("0001");
             let id = this.shiftData[index].id;
             let suiteId = this.suiteId;
             let response = await deteleClass(id,suiteId);
-            console.log("0002");
             if(response.meta.code === 0){
                 this.$Message.success("删除班次成功");
-                console.log(response);
+                this.shiftData = response.data.dutyclass;
             return;
             }else{
                 this.$Message.error(message);
             }
-            this.shiftData.splice(index, 1);
         },
         del:function(){
             this.modal3=false;
