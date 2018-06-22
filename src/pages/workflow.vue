@@ -58,10 +58,12 @@
 <script>
     import {showColorPanel} from '../assets/js/workflow.js';
     import {items} from '../assets/data/workflow.js';
+    import {getSuites, getWorkFlow, addWorkFlow, getClass} from '@/api/api';
     let self = null;
     export default {
         data:function () {
             return {
+                districtId: this.$store.get('districtId'),
                 shiftList: [
                     {
                         value: '1',
@@ -90,8 +92,26 @@
         },
         created: function () {
             self = this;
+            this.getWorkFlow();
+            this.getClass();
         },
         methods:{
+            //  获取班制
+            getSuites: async function () {
+                let data = {
+                    districtId: this.districtId
+                };
+                let response = await getSuites(data);
+            },
+            //  获取班次
+            getClass: async function () {
+                let response = await getClass(4);
+                console.log(response)
+            },
+            //  获取工作流程
+            getWorkFlow: async function () {
+                let response = await getWorkFlow(4);
+            },
             //  点击单元格
             clickTd: function (e) {
                 
