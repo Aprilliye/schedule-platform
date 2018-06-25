@@ -2,13 +2,13 @@
     <div class="container">
         <div class="content-header">
             <Select v-model="position.current" placeholder="请选择岗位" style="width:200px;margin: 0px 0px 4px 20px " @on-change="getChangeSuite">
-                <Option v-for="item in position.data" :value="item.id+'-'+item.backupPosition" :key="item.id">{{ item.positionName }}</Option>
+                <Option v-for="item in position.data" :value="item.id+'-'+item.backupPosition+'-'+item.positionName" :key="item.id">{{ item.positionName }}</Option>
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true" >新增班制</a>
         </div>
         <Tabs type="card"  :animated="false" v-model="tabModel" closable @on-tab-remove="handleClose"  @on-click="choseTab">
             <TabPane :label="item.dutyName"  v-for="(item,index) in suites" :key="index" :id="item.id">
-                <div class="panel-body">
+                 <div class="panel-body">
                     <div class="buttonblock"></div>
                     <div class="shifts-content">
                         <!--班制表-->
@@ -83,6 +83,7 @@
                     </div>
                 </div>
             </TabPane>
+           
         </Tabs>
         <!-- 新增班次表 -->
         <Modal title="新增班次"
@@ -338,7 +339,7 @@ export default {
             position: {
                 data: [],
                 id: null,
-                current: '2-1'
+                current: '2-1-站务员'
             },
             // 当前站区id
             dutyDistrictId:null,
@@ -672,13 +673,13 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.position.data = response.data;
-                console.log(response);
                 return;
             }
             this.$Message.error(message);
         },
         // 切换岗位获取班制
         getChangeSuite: async function () {
+            console.log("11111");
             console.log(this.position.current);
             this.suiteName = 0;
             let that = this;
@@ -693,15 +694,22 @@ export default {
             let response = await getSuites(data);
             let message = response.meta.message;
             if(response.meta.code === 0){
+                this.suites = response.data;
                 if(response.data.length>0){
-                    this.suites = response.data;
                     this.suiteId = response.data[0].id;
                     this.dutyDistrictId = response.data[0].districtId;
                     this.dutyDistrictName = response.data[0].districtName;
                     this.dutyStationId = response.data[0].stationId;
                     this.dutyStationName = response.data[0].stationName;
+                }else{
+                    this.suiteId = null;
+                    this.dutyDistrictId = null;
+                    this.dutyDistrictName = null;
+                    this.dutyStationId = null;
+                    this.dutyStationName = null;
                 }
                 console.log(response);
+                console.log(this.suites);
                 // 显示班制内容
                 let obj = this.suites[0]; 
                 for(let key in obj){
@@ -714,6 +722,7 @@ export default {
         },
         //  获取班制
         getSuites: async function () {
+            console.log("22222");
             this.suiteName = 0;
             let that = this;
             let currentPosition = this.position.current.split('-');
@@ -733,6 +742,12 @@ export default {
                     this.dutyDistrictName = response.data[0].districtName;
                     this.dutyStationId = response.data[0].stationId;
                     this.dutyStationName = response.data[0].stationName;
+                }else{
+                    this.suiteId = null;
+                    this.dutyDistrictId = null;
+                    this.dutyDistrictName = null;
+                    this.dutyStationId = null;
+                    this.dutyStationName = null;
                 }
                 // 显示班制内容
                 let obj = this.suites[0]; 
@@ -772,6 +787,7 @@ export default {
         },
         //  获取站点
         getStations: async function () {
+            if (this.addFormValidate.stationArea) {
             let currentDistrict = this.addFormValidate.stationArea.split('-');
             let id = parseInt(currentDistrict[0]);
             let response = await getStations(id);
@@ -781,8 +797,10 @@ export default {
                 return;
             }
             this.$Message.error(message);
+            }
         },
         getEditStation: async function () {
+            if (this.formValidate.stationArea) {
             let currentDistrict = this.formValidate.stationArea.split('-');
             let id = parseInt(currentDistrict[0]);
             let response = await getStations(id);
@@ -792,6 +810,7 @@ export default {
                 return;
             }
             this.$Message.error(message);
+            }
         },
         // 获取班次
         getClass: async function (that) {
@@ -802,6 +821,7 @@ export default {
                     that.$Loading.error();
                     that.$Message.error(response.meta.message);
                 }else{
+                    console.log(response);
                     that.shiftData = response.data.dutyclass;
                     //获取时间段
                     that.onDutyData=response.data.dutyperiodchecking
@@ -818,6 +838,13 @@ export default {
                 this.$Message.error(response.meta.message);
             }else{
                 this.$Loading.finish();
+                this.suites = response.data;
+                console.log(response);
+                console.log(this.suites);
+                  let obj = this.suites[name-1]; 
+                    for(let key in obj){
+                    this.info[key] = obj[key];
+                    }
                 this.$Message.success("删除班制成功");
             }
         },
@@ -847,7 +874,7 @@ export default {
                 stationId: parseInt(currentStation[0]),
                 stationName: currentStation[1],
                 positionId: parseInt(currentPosition[0]), 
-                positionName:'站务员',
+                positionName:currentPosition[2],
                 maxWorkingHour: that.formValidate.maxWorkingHour,
                 minWorkingHour: that.formValidate.minWorkingHour,
                 maxWeeklyRestDays: that.formValidate.maxWeeklyRestDays,
@@ -1027,7 +1054,7 @@ export default {
                 relevantClassId: that.addFormValidateClass.relevantClassId,
                 positionId: parseInt(currentPosition[0]),
                 backup: parseInt(currentPosition[1]),
-                positionName:'站务员',
+                positionName:currentPosition[2],
                 suiteId: that.suiteId,
                 userCount: that.addFormValidateClass.userCount,
                 classColor: $(".shiftColor").css('background-color'),
@@ -1036,6 +1063,7 @@ export default {
                 workingLength: that.addFormValidateClass.workingLength,
                 restMinutes: that.addFormValidateClass.restMinutes,
             }
+            console.log(data);
             let response = await addClass(data);
             let message = response.meta.message;
              if(response.meta.code === 0){
@@ -1089,7 +1117,7 @@ export default {
                     relevantClassId: that.editFormValidateClass.relevantClassId,
                     positionId: parseInt(currentPosition[0]),
                     backup: parseInt(currentPosition[1]),
-                    positionName:'站务员',
+                    positionName:currentPosition[2],
                     suiteId: that.suiteId,
                     userCount: that.editFormValidateClass.userCount,
                     classColor: $(".shiftColor").css('background-color'),
@@ -1275,7 +1303,7 @@ export default {
                 stationId: parseInt(currentStation[0]),
                 stationName: currentStation[1],
                 positionId: parseInt(currentPosition[0]), 
-                positionName:'站务员',
+                positionName:currentPosition[2],
                 maxWorkingHour: that.addFormValidate.maxWorkingHour,
                 minWorkingHour: that.addFormValidate.minWorkingHour,
                 maxWeeklyRestDays: that.addFormValidate.maxWeeklyRestDays,
@@ -1284,12 +1312,31 @@ export default {
                 yearlyWorkingHourLimit: that.addFormValidate.yearlyWorkingHourLimit,
                 backup: parseInt(currentPosition[1])
             }
-            console.log(data);
             let response = await addSuites(data);   
                 let message = response.meta.message;
                 if(response.meta.code === 0){
-                    that.suites.push(response.data.dutysuite);
+                    if (that.suites.length===0){
+                        that.suites.push(response.data.dutysuite);
+                        that.districtId = response.data.dutysuite.districtId,
+                        that.districtName = response.data.dutysuite.districtName,
+                        that.stationId  = response.data.dutysuite.stationId,
+                        that.stationName = response.data.dutysuite.stationName,
+                        that.suiteId = response.data.dutysuite.id
+                    }else{
+                        that.suites.push(response.data.dutysuite);
+                    }
+                    // 显示班制内容
+                      let obj = that.suites[0]; 
+                        for(let key in obj){
+                        that.info[key] = obj[key];
+                        }
                     that.$Message.success("新增班制成功");
+                    console.log(response);
+                    console.log(that.districtId);
+                    console.log(that.districtName);
+                    console.log(that.stationId);
+                    console.log(that.stationName);
+                    console.log(that.suiteId);
                 }else{
                     that.$Message.error(message);
                 }
