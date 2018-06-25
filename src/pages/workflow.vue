@@ -1,9 +1,9 @@
 <template>
     <div class="container">
         <div class="content-header">
-            <label style="margin-left: 10px">班制</label>
-            <Select v-model="shift" style="width:200px">
-                <Option v-for="item in shiftList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <label style="margin-left: 10px">班制：</label>
+            <Select v-model="suite" style="width:200px" @on-change="getWorkFlow(suite)">
+                <Option v-for="item in suites" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
             </Select>
             <a class="btnDefault bgBlue btnworkflow" onclick="loadWorkFlow()">加载工作流程</a>
         </div>
@@ -11,24 +11,24 @@
             <!-- 右侧内容 start -->
             <div id="shiftTemplate">
                 <table cellpadding=0 cellspacing=0 tableType="shiftTable" class="workflowTable">
-                    <template v-for="(item, index) in data">
+                    <template v-for="(item, index) in dutyClass">
                         <tr :key="'tr0'+index">
-                            <th colspan=147 tdType='title' height=40 class='font4'>{{item.shiftName+":"+item.timeSlot}}</th>
+                            <th colspan=147 tdType='title' height=40 class='font4'>{{item.dutyName+"：" + item.startTimeStr + '-' + item.endTimeStr}}</th>
                         </tr>
                         <tr :key="'tr1'+index">
                             <td colspan="3">编号</td>
-                            <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n > 10 ? n : '0' + n )+':00' }}</td>
+                            <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n > 10 ? n : '0' + n )+'00' }}</td>
                         </tr>
-                        <template v-for="post in item.postArr">
-                            <tr :code="'tr'+index+'-'+post.index+'0'" :key="'tr'+index+'-'+post.index+'0'">
-                                <td rowspan="2" colspan="3">{{post.index}}</td>
+                        <template v-for="j in item.userCount">
+                            <tr :code="'duty'+ item.id + '-' + j" :key="'tr'+index+'-'+ j +'0'" :trtype="0">
+                                <td rowspan="2" colspan="3">{{j}}</td>
                                 <template v-for="n in 24">
-                                    <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" width="30" :code="'atd'+index+'-'+post.index+'0'+'-'+n"></td>
+                                    <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" width="30" :code="(n-1)*60 + m*10"></td>
                                 </template>
                             </tr>
-                            <tr :code="'tr'+index+'-'+post.index+'1'" :key="'tr'+index+'-'+post.index+'1'">
+                            <tr :code="'duty'+ item.id + '-' + j" :key="'tr'+index+'-'+ j +'1'"  :trtype="1">
                                 <template v-for="n in 24">
-                                    <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" :code="'btd'+index+'-'+post.index+'0'+'-'+n"></td>
+                                    <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" :code="'btd'+ index +'-'+ j +'0'+'-'+n"></td>
                                 </template>
                             </tr>
                         </template>
@@ -64,14 +64,9 @@
         data:function () {
             return {
                 districtId: this.$store.get('districtId'),
-                shiftList: [
-                    {
-                        value: '1',
-                        label: '西直门替班员'
-                    }
-                ],
-                shift: '1',
-                data: items,
+                suites: [],
+                suite: [],
+                dutyClass: [],
                 //  按钮显示状态
                 showBtn: {
                     add: false,
@@ -92,8 +87,7 @@
         },
         created: function () {
             self = this;
-            this.getWorkFlow();
-            this.getClass();
+            this.getSuites();
         },
         methods:{
             //  获取班制
@@ -102,15 +96,31 @@
                     districtId: this.districtId
                 };
                 let response = await getSuites(data);
+                if(response.meta.code === 0){
+                    this.suites = response.data;
+                    this.suite = response.data[0].id;
+                    
+                    this.getWorkFlow(this.suite);
+                    return;
+                }
+                this.$Message.error(response.meta.message);
             },
             //  获取班次
-            getClass: async function () {
-                let response = await getClass(4);
-                console.log(response)
+            getClass: async function (id) {
+                let response = await getClass(id);
+                if(response.meta.code === 0){
+                    this.dutyClass = response.data.dutyclass;
+                }
+                
             },
             //  获取工作流程
-            getWorkFlow: async function () {
-                let response = await getWorkFlow(4);
+            getWorkFlow: async function (id) {
+                let suiteId = id || this.suite;
+                console.log(suiteId);
+                let response = await getWorkFlow(suiteId);
+                if(response.meta.code === 0){
+                    this.getClass(this.suite);
+                }
             },
             //  点击单元格
             clickTd: function (e) {
