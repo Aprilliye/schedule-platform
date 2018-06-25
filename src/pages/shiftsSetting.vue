@@ -8,8 +8,7 @@
         </div>
         <Tabs type="card"  :animated="false" v-model="tabModel" closable @on-tab-remove="handleClose"  @on-click="choseTab">
             <TabPane :label="item.dutyName"  v-for="(item,index) in suites" :key="index" :id="item.id">
-            </TabPane>
-            <div class="panel-body">
+                <div class="panel-body">
                     <div class="buttonblock"></div>
                     <div class="shifts-content">
                         <!--班制表-->
@@ -83,6 +82,8 @@
                         </div>
                     </div>
                 </div>
+            </TabPane>
+            
         </Tabs>
         <!-- 新增班次表 -->
         <Modal title="新增班次"
