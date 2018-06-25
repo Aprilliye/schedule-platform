@@ -8,7 +8,8 @@
         </div>
         <Tabs type="card"  :animated="false" v-model="tabModel" closable @on-tab-remove="handleClose"  @on-click="choseTab">
             <TabPane :label="item.dutyName"  v-for="(item,index) in suites" :key="index" :id="item.id">
-                 <div class="panel-body">
+            </TabPane>
+            <div class="panel-body">
                     <div class="buttonblock"></div>
                     <div class="shifts-content">
                         <!--班制表-->
@@ -82,8 +83,6 @@
                         </div>
                     </div>
                 </div>
-            </TabPane>
-           
         </Tabs>
         <!-- 新增班次表 -->
         <Modal title="新增班次"
@@ -361,6 +360,8 @@ export default {
             districts: [],
             //  站点
             stations: [],
+            //当前tab标签name值
+            tabName: 0,
             modal3:false,
             currentIndex:'',
             editShiftValue:[],
@@ -679,6 +680,7 @@ export default {
         },
         // 切换岗位获取班制
         getChangeSuite: async function () {
+            this.showEchart = false;
             console.log("11111");
             console.log(this.position.current);
             this.suiteName = 0;
@@ -760,6 +762,8 @@ export default {
             this.$Message.error(message);
         },
         choseTab: async function (name) {
+            this.showEchart = false;
+            this.tabName = name;
             let that = this;
             if (this.suites.length>0){
                 let obj = this.suites[name]; 
@@ -831,6 +835,7 @@ export default {
         },
         //删除班制
         handleClose: async function (name) {
+            console.log(this.tabName);
             let id = this.suites[name].id;
             let response = await deteleSuites(id);
             if (response.meta.code !== 0) {
@@ -841,10 +846,44 @@ export default {
                 this.suites = response.data;
                 console.log(response);
                 console.log(this.suites);
-                  let obj = this.suites[name-1]; 
+                if (this.tabName == name && name!=0){
+                    this.showEchart = false;
+                    let that = this;
+                    let obj = this.suites[name-1]; 
                     for(let key in obj){
                     this.info[key] = obj[key];
                     }
+                    this.districtId = this.suites[name-1].districtId,
+                    this.districtName = this.suites[name-1].districtName,
+                    this.stationId  = this.suites[name-1].stationId,
+                    this.stationName = this.suites[name-1].stationName,
+                    this.suiteId = this.suites[name-1].id
+                    this.$options.methods.getClass(that);
+                }else if (name==0){
+                    this.showEchart = false;
+                    if (this.suites.length>0){
+                    let that = this;
+                    let obj = this.suites[name]; 
+                    for(let key in obj){
+                    this.info[key] = obj[key];
+                    }
+                    this.districtId = this.suites[name].districtId,
+                    this.districtName = this.suites[name].districtName,
+                    this.stationId  = this.suites[name].stationId,
+                    this.stationName = this.suites[name].stationName,
+                    this.suiteId = this.suites[name].id
+                    this.$options.methods.getClass(that);
+                    }else{
+                        this.showEchart = false;
+                        this.info=[];
+                        this.districtId = null,
+                        this.districtName = null,
+                        this.stationId  = null,
+                        this.stationName = null,
+                        this.suiteId =null
+                    }
+                }
+             
                 this.$Message.success("删除班制成功");
             }
         },
