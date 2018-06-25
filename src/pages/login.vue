@@ -62,6 +62,7 @@
                        this.$Message.error(response.meta.message);
                    }else{
                        let user = response.data.user;
+                       console.log(response);
                        this.$store.set('districtId', user.districtId);
                        this.$store.set('stationId', user.stationId);
                        this.$store.set('userName', user.userName);

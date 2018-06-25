@@ -55,7 +55,7 @@
                         </thead>
                         <tbody id="userDataTable">
                         <tr v-for="(item,index) in personList" :key='index' :id="item.userId">
-                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">{{item.action[0]}}</a><a style="color: #0000FF" @click="editPersonModalMethod">{{item.action[1]}}</a></td>
+                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">{{item.action[0]}}</a><a style="color: #0000FF" @click="editPersonMethod">{{item.action[1]}}</a></td>
                             <td>{{item.workNumber}}</td>
                             <td>{{item.name}}</td>
                             <td>{{item.sex}}</td>
@@ -91,297 +91,278 @@
                 title="新增人员"
                 v-model="addPersonModal"
                 width="800"
+                :loading="true"
+                @on-ok="beforeAddUser('addPerson')"
+                @on-cancel="beforeCancel('addPerson')"
                 :mask-closable="false">
-                <ul class="form">
-                    <li>
-                        <label>员工卡号</label>
-                        <input name="cardNum" type="text" v-model="addPerson.cardNum">
-                    </li>
-                    <li>
-                        <label>人员编码</label>
-                        <input name="code" type="text" v-model="addPerson.code">
-                    </li>
-                    <li class="require">
-                        <label class="require">姓名</label>
-                        <input name="name" type="text" v-model="addPerson.name">
-                    </li>
-                    <li>
-                        <label>站区/站点</label>
-                        <select name="station" class=" reset-input" v-model="addPerson.station">
-                            <option value="西直门">西直门</option>
-                            <option value="西直门">车公庄</option>
-                        </select>
-                    </li>
-                    <li class="require">
-                        <label class="require">岗位</label>
-                        <select name="postName" v-model="addPerson.post">
-                            <option value="站务员">站务员</option>
-                            <option value="值班站长">值班站长</option>
-                            <option value="站区长助理">站区长助理</option>
-                        </select>
-                    </li>
-                    <li>
-                        <label>管理员</label>
-                        <select name="manager" v-model="addPerson.manager">
-                            <option value="0" selected="selected">否</option>
-                            <option value="1">是</option>
-                        </select>
-                    </li>
-                    <li> 
-                        <label class="red">密码</label>
-                        <input type="text" name="password" v-model="addPerson.psw">
-                        <span class="orange">请记录此密码作为下次登录用</span>
-                    </li>
-                    <li>
-                        <label>权限方案</label>
-                        <select name="plan" v-model="addPerson.plan">
-                            <option value="超级管理员">超级管理员</option>
-                            <option value="系统管理员">系统管理员</option>
-                            <option value="管理员">管理员</option>
-                        </select>
-                    </li>
-                    <li class="require">
-                        <label class="require">性别</label>
-                        <select name="sex" v-model="addPerson.sex">
-                            <option value="">请选择</option>
-                            <option value="男">男</option>
-                            <option value="女">女</option>
-                        </select>
-                    </li>
-                    <li class="require">
-                        <label class="require">手机号</label>
-                        <input name="phoneNumber" type="text" v-model="addPerson.phoneNumber">
-                    </li>
-                    <li class="require">
-                        <label class="require" id="heightp">生日</label>
-                        <input name="birthday" type="text" v-model="addPerson.birthday">
-                    </li>
-                    <li class="require">
-                        <label class="require">身份证</label>
-                        <input name="idCode" type="text" v-model="addPerson.idCode">
-                    </li>
-                    <li class="require">
-                        <label class="require" id="heightpp">入职时间</label>
-                        <input name="onBoardDate" type="text" placeholder="例2015-03-06" v-model="addPerson.onBoardDate">
-                    </li>
-                    <li class="require">
-                        <label class="require">婚否</label>
-                        <select name="isMarried" v-model="addPerson.isMarried">
-                            <option value="">请选择</option>
-                            <option value="已婚">已婚</option>
-                            <option value="未婚">未婚</option>
-                        </select>
-                    </li>
-                    <li class="require">
-                        <label class="require">生育</label>
-                        <select name="hasChild" v-model="addPerson.hasChild">
-                            <option value="">请选择</option>
-                            <option value="已育">已育</option>
-                            <option value="未育">未育</option>
-                        </select>
-                    </li>
-                    <li class="require">
-                        <label class="require">学历</label>
-                        <select name="eduBackGround" v-model="addPerson.eduBackGround">
-                            <option value="">请选择</option>
-                            <option value="高中以下">高中以下</option>
-                            <option value="大专">大专</option>
-                            <option value="本科">本科</option>
-                            <option value="硕士">硕士</option>
-                            <option value="博士以上">博士以上</option>
-                        </select>
-                    </li>
-                    <li class="require">
-                        <label class="require">政治面貌</label>
-                        <select name="isPartyMember" v-model="addPerson.isPartyMember">
-                            <option value="">请选择</option>
-                            <option value="群众">群众</option>
-                            <option value="共青团员">共青团员</option>
-                            <option value="共产党员">共产党员</option>
-                            <option value="民主党派">民主党派</option>
-                        </select>
-                    </li>
-                    <li>
-                        <label>入党时间</label>
-                        <input name="joinDate" type="text" v-model="addPerson.joinDate">
-                    </li>
-                    <li>
-                        <label class="require">站务员证书编号</label>
-                        <input name="stationCertificateNum" type="text" v-model="addPerson.stationCertificateNum">
-                    </li>
-                    <li>
-                        <label class="require">站务员证等级</label>
-                        <input name="stationCertificateGrade" type="text" v-model="addPerson.stationCertificateGrade">
-                    </li>
-                    <li class="lang require">
-                        <label class="require">住址</label>
-                        <input name="address" type="text" v-model="addPerson.address">
-                    </li>
-                    <li>
-                        <label class="require">消防证书编号</label>
-                        <input name="fireControlCertificateNum" type="text" v-model="addPerson.fireControlCertificateNum">
-                    </li>
-                    <li>
-                        <label class="require">综控员证书编号</label>
-                        <input name="controllerCertificateNum" type="text" v-model="addPerson.controllerCertificateNum">
-                    </li>
-                    <li>
-                        <label class="require">综控员证书级别</label>
-                        <input name="controllerCertificateGrade" type="text" v-model="addPerson.controllerCertificateGrade">
-                    </li>
-                    <li class="clear"></li>
-                </ul>
+                <Form ref="addPerson" :model="addPerson" :label-width="120" :rules="rule">
+                    <FormItem label="员工卡号" prop="employeeCard" class="userModal">
+                        <Input v-model="addPerson.employeeCard"></Input>
+                    </FormItem>
+                    <FormItem label="人员编码" prop="peopleCode" class="userModal">
+                        <Input  v-model="addPerson.peopleCode"></Input>
+                    </FormItem>
+                    <FormItem label="姓名" prop="userName" class="userModal">
+                        <Input v-model="addPerson.userName"></Input>
+                    </FormItem>
+                     <FormItem label="站区" prop="district" class="userModal" >
+                        <Select v-model="addPerson.district" @on-change="getAllStations">
+                            <Option v-for="(item,index) in districts" :value="item.id+'-'+item.districtName" :key="index">{{item.districtName}}</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="岗位" prop="post" class="userModal">
+                        <Select v-model="addPerson.post">
+                            <Option v-for="(item,index) in position" :value="item.id+'-'+item.positionName" :key="index">{{item.positionName}}</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="站点" prop="station" class="userModal">
+                        <Select v-model="addPerson.station">
+                             <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="管理员" prop="manager" class="userModal">
+                        <Select v-model="addPerson.manager">
+                            <Option value="0">否</Option>
+                            <Option value="1">是</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="密码" prop="password" class="userModal">
+                        <Input v-model="addPerson.password"></Input>
+                        <span class="red">请记录此密码作为下次登录用</span>
+                    </FormItem>
+                    <FormItem label="权限方案" prop="plan" class="userModal">
+                        <Select  v-model="addPerson.plan">
+                        <Option value="超级管理员">超级管理员</Option>
+                        <Option value="系统管理员">系统管理员</Option>
+                        <Option value="管理员">管理员</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="性别" prop="gender" class="userModal">
+                        <Select v-model="addPerson.gender">
+                            <Option value="1">男</Option>
+                            <Option value="0">女</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="手机号" prop="phoneNumber" class="userModal">
+                        <Input v-model="addPerson.phoneNumber"></Input>
+                    </FormItem>
+                    <FormItem label="生日" prop="birthday" class="userModal">
+                        <Input v-model="addPerson.birthday"></Input>
+                    </FormItem>
+                    <FormItem label="身份证" prop="idCardNumber" class="userModal">
+                        <Input  v-model="addPerson.idCardNumber"></Input>
+                    </FormItem>
+                    <FormItem label="入职时间" prop="entryDate" class="userModal">
+                        <Input placeholder="例2015-03-06" v-model="addPerson.entryDate"></Input>
+                    </FormItem>
+                    <FormItem label="婚否" prop="isMarried" class="userModal">
+                        <Select  v-model="addPerson.isMarried">
+                            <Option value="0">已婚</Option>
+                            <Option value="0">未婚</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="生育" prop="hasChild" class="userModal">
+                        <Select v-model="addPerson.hasChild">
+                            <Option value="1">已育</Option>
+                            <Option value="0">未育</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="学历" prop="eduBackGround" class="userModal">
+                        <Select v-model="addPerson.eduBackGround">
+                            <Option value="高中以下">高中以下</Option>
+                            <Option value="大专">大专</Option>
+                            <Option value="本科">本科</Option>
+                            <Option value="硕士">硕士</Option>
+                            <Option value="博士以上">博士以上</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="政治面貌" prop="partyMember" class="userModal">
+                        <Select v-model="addPerson.partyMember">
+                            <Option value="群众">群众</Option>
+                            <Option value="共青团员">共青团员</Option>
+                            <Option value="共产党员">共产党员</Option>
+                            <Option value="民主党派">民主党派</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="入党时间" prop="joinDate" class="userModal">
+                        <Input  v-model="addPerson.joinDate"></Input>
+                    </FormItem>
+                    <FormItem label="站务员证书编号" prop="certNo" class="userModal">
+                        <Input v-model="addPerson.certNo"></Input>
+                    </FormItem>
+                    <FormItem label="站务员证等级" prop="certLevel" class="userModal">
+                        <Input v-model="addPerson.certLevel"></Input>
+                    </FormItem>
+                    <FormItem label="住址" prop="homeAddress" class="userModal">
+                        <Input  v-model="addPerson.homeAddress"></Input>
+                    </FormItem>
+                    <FormItem label="消防证书编号" prop="xfzNo" class="userModal">
+                        <Input  v-model="addPerson.xfzNo"></Input>
+                    </FormItem>
+                    <FormItem label="综控员证书编号" prop="zwyNo" class="userModal">
+                        <Input v-model="addPerson.zwyNo"></Input>
+                    </FormItem>
+                    <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
+                        <Input v-model="addPerson.zwyLevel"></Input>
+                    </FormItem>
+                    <FormItem label="是否为补位人员" prop="backup" class="userModal">
+                        <Select  v-model ="addPerson.backup" placeholder="请选择">
+                            <Option value = "1">是</Option>
+                            <Option value = "0">否</Option>
+                        </Select>
+                    </FormItem>
+                    <div class="clear"></div>
+                </Form>
         </Modal>
         <!--编辑人员-->
         <Modal class="usermanage-model"
                title="编辑人员"
                v-model="editPersonModal"
                width="800"
-               @on-ok="editPersonModalMethod"
+               @on-ok="editPersonModalMethod('editPerson')"
+               @on-cancel="beforeCancel('editPerson')"
                :loading="true"
                :mask-closable="false">
-            <ul class="form">
-                <li>
-                    <label>员工卡号</label>
-                    <input name="workNumber" type="text" v-model="editPerson.workNumber">
-                </li>
-                <li>
-                    <label>人员编码</label>
-                    <input name="peopleCode" type="text" v-model="editPerson.peopleCode">
-                </li>
-                <li class="require">
-                    <label class="require">姓名</label>
-                    <input name="name" type="text" v-model="editPerson.name">
-                </li>
-                <li>
-                    <label>站点</label>
-                    <select name="station" class=" reset-input" v-model="editPerson.station">
-                        <option value="西直门">西直门</option>
-                        <option value="西直门">车公庄</option>
-                    </select>
-                </li>
-                <li class="require">
-                    <label class="require">岗位</label>
-                    <select name="post" v-model="editPerson.post">
-                        <option value="站务员">站务员</option>
-                        <option value="值班站长">值班站长</option>
-                        <option value="站区长">站区长</option>
-                    </select>
-                </li>
-                <li>
-                    <label>管理员</label>
-                    <select name="manager" v-model="editPerson.manager">
-                        <option value="否">否</option>
-                        <option value="是">是</option>
-                    </select>
-                </li>
-                <li>
-                    <label class="red">密码</label>
-                    <input type="text" name="password" v-model="editPerson.psw">
-                    <span class="orange">请记录此密码作为下次登录用</span>
-                </li>
-                <li>
-                    <label>权限方案</label>
-                    <select name="plan" v-model="editPerson.plan">
-                        <option value="超级管理员">超级管理员</option>
-                        <option value="系统管理员">系统管理员</option>
-                        <option value="管理员">管理员</option>
-                    </select>
-                </li>
-                <li class="require">
-                    <label class="require">性别</label>
-                    <select name="sex" v-model="editPerson.sex">
-                        <option value="男">男</option>
-                        <option value="女">女</option>
-                    </select>
-                </li>
-                <li class="require">
-                    <label class="require">手机号</label>
-                    <input name="phoneNumber" type="text" v-model="editPerson.phoneNumber">
-                </li>
-                <li class="require">
-                    <label class="require" id="heightpDay">生日</label>
-                    <input name="birthday" type="text" v-model="editPerson.birthday">
-                </li>
-                <li class="require">
-                    <label class="require">身份证</label>
-                    <input name="idCard" type="text" v-model="editPerson.idCard">
-                </li>
-                <li class="require">
-                    <label class="require" id="heightppTime">入职时间</label>
-                    <input name="entryTime" type="text" placeholder="例2015-03-06" v-model="editPerson.entryTime">
-                </li>
-                <li class="require">
-                    <label class="require">婚否</label>
-                    <select name="maritalStatus" v-model="editPerson.maritalStatus">
-                        <option value="">请选择</option>
-                        <option value="已婚" selected = "selected">已婚</option>
-                        <option value="未婚">未婚</option>
-                    </select>
-                </li>
-                <li class="require">
-                    <label class="require">生育</label>
-                    <select name="childrenHave" v-model="editPerson.childrenHave">
-                        <option value="已育">已育</option>
-                        <option value="未育">未育</option>
-                    </select>
-                </li>
-                <li class="require">
-                    <label class="require">学历</label>
-                    <select name="education" v-model="editPerson.education">
-                        <option value="高中以下">高中以下</option>
-                        <option value="大专">大专</option>
-                        <option value="本科">本科</option>
-                        <option value="硕士">硕士</option>
-                        <option value="博士以上">博士以上</option>
-                    </select>
-                </li>
-                <li class="require">
-                    <label class="require">政治面貌</label>
-                    <select name="political" v-model="editPerson.political">
-                        <option value="群众">群众</option>
-                        <option value="共青团员">共青团员</option>
-                        <option value="共产党员">共产党员</option>
-                        <option value="民主党派">民主党派</option>
-                    </select>
-                </li>
-                <li>
-                    <label>入党时间</label>
-                    <input name="partyTime" type="text" v-model="editPerson.partyTime">
-                </li>
-                <li>
-                    <label class="require">站务员证书编号</label>
-                    <input name="stationCertificateNumber" type="text" v-model="editPerson.stationCertificateNumber">
-                </li>
-                <li>
-                    <label class="require">站务员证等级</label>
-                    <input name="stationCertificateLevel" type="text" v-model="editPerson.stationCertificateLevel">
-                </li>
-                <li class="lang require">
-                    <label class="require">住址</label>
-                    <input name="address" type="text" v-model="editPerson.address">
-                </li>
-                <li>
-                    <label class="require">消防证书编号</label>
-                    <input name="fireCertificateNumber" type="text" v-model="editPerson.fireCertificateNumber">
-                </li>
-                <li>
-                    <label class="require">综控员证书编号</label>
-                    <input name="controllerNumber" type="text" v-model="editPerson.controllerNumber">
-                </li>
-                <li>
-                    <label class="require">综控员证书级别</label>
-                    <input name="controllerLevel" type="text" v-model="editPerson.controllerLevel">
-                </li>
-                <li class="clear"></li>
-            </ul>
+            <Form ref="editPerson" :model="editPerson" :label-width="120" :rules="rule">
+                    <FormItem label="员工卡号" prop="employeeCard" class="userModal">
+                        <Input v-model="editPerson.employeeCard"></Input>
+                    </FormItem>
+                    <FormItem label="人员编码" prop="peopleCode" class="userModal">
+                        <Input  v-model="editPerson.peopleCode"></Input>
+                    </FormItem>
+                    <FormItem label="姓名" prop="userName" class="userModal">
+                        <Input v-model="editPerson.userName"></Input>
+                    </FormItem>
+                     <FormItem label="站区" prop="district" class="userModal" >
+                        <Select v-model="editPerson.district" @on-change="getAllStations">
+                            <Option v-for="(item,index) in districts" :value="item.id+'-'+item.districtName" :key="index">{{item.districtName}}</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="岗位" prop="post" class="userModal">
+                        <Select v-model="editPerson.post">
+                            <Option v-for="(item,index) in position" :value="item.id+'-'+item.positionName" :key="index">{{item.positionName}}</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="站点" prop="station" class="userModal">
+                        <Select v-model="editPerson.station">
+                             <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="管理员" prop="manager" class="userModal">
+                        <Select v-model="editPerson.manager">
+                            <Option value="0">否</Option>
+                            <Option value="1">是</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="密码" prop="password" class="userModal">
+                        <Input v-model="editPerson.password"></Input>
+                        <span class="red">请记录此密码作为下次登录用</span>
+                    </FormItem>
+                    <FormItem label="权限方案" prop="plan" class="userModal">
+                        <Select  v-model="editPerson.plan">
+                        <Option value="超级管理员">超级管理员</Option>
+                        <Option value="系统管理员">系统管理员</Option>
+                        <Option value="管理员">管理员</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="性别" prop="gender" class="userModal">
+                        <Select v-model="editPerson.gender">
+                            <Option value="1">男</Option>
+                            <Option value="0">女</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="手机号" prop="phoneNumber" class="userModal">
+                        <Input v-model="editPerson.phoneNumber"></Input>
+                    </FormItem>
+                    <FormItem label="生日" prop="birthday" class="userModal">
+                        <Input v-model="editPerson.birthday"></Input>
+                    </FormItem>
+                    <FormItem label="身份证" prop="idCardNumber" class="userModal">
+                        <Input  v-model="editPerson.idCardNumber"></Input>
+                    </FormItem>
+                    <FormItem label="入职时间" prop="entryDate" class="userModal">
+                        <Input placeholder="例2015-03-06" v-model="editPerson.entryDate"></Input>
+                    </FormItem>
+                    <FormItem label="婚否" prop="isMarried" class="userModal">
+                        <Select  v-model="editPerson.isMarried">
+                            <Option value="0">已婚</Option>
+                            <Option value="0">未婚</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="生育" prop="hasChild" class="userModal">
+                        <Select v-model="editPerson.hasChild">
+                            <Option value="1">已育</Option>
+                            <Option value="0">未育</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="学历" prop="eduBackGround" class="userModal">
+                        <Select v-model="editPerson.eduBackGround">
+                            <Option value="高中以下">高中以下</Option>
+                            <Option value="大专">大专</Option>
+                            <Option value="本科">本科</Option>
+                            <Option value="硕士">硕士</Option>
+                            <Option value="博士以上">博士以上</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="政治面貌" prop="partyMember" class="userModal">
+                        <Select v-model="editPerson.partyMember">
+                            <Option value="群众">群众</Option>
+                            <Option value="共青团员">共青团员</Option>
+                            <Option value="共产党员">共产党员</Option>
+                            <Option value="民主党派">民主党派</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="入党时间" prop="joinDate" class="userModal">
+                        <Input  v-model="editPerson.joinDate"></Input>
+                    </FormItem>
+                    <FormItem label="站务员证书编号" prop="certNo" class="userModal">
+                        <Input v-model="editPerson.certNo"></Input>
+                    </FormItem>
+                    <FormItem label="站务员证等级" prop="certLevel" class="userModal">
+                        <Input v-model="editPerson.certLevel"></Input>
+                    </FormItem>
+                    <FormItem label="住址" prop="homeAddress" class="userModal">
+                        <Input  v-model="editPerson.homeAddress"></Input>
+                    </FormItem>
+                    <FormItem label="消防证书编号" prop="xfzNo" class="userModal">
+                        <Input  v-model="editPerson.xfzNo"></Input>
+                    </FormItem>
+                    <FormItem label="综控员证书编号" prop="zwyNo" class="userModal">
+                        <Input v-model="editPerson.zwyNo"></Input>
+                    </FormItem>
+                    <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
+                        <Input v-model="editPerson.zwyLevel"></Input>
+                    </FormItem>
+                    <FormItem label="是否为补位人员" prop="backup" class="userModal">
+                        <Select  v-model ="editPerson.backup" placeholder="请选择">
+                            <Option value = "1">是</Option>
+                            <Option value = "0">否</Option>
+                        </Select>
+                    </FormItem>
+                    <div class="clear"></div>
+                </Form>
         </Modal>
     </div>
 </template>
 <script>
+    import {getAllPost} from '@/api/api';
+    import {stationAreaList, getStations, addUser} from '@/api/commonAPI';
     export default {
         data: function () {
             return {
+                // 站区
+                districts:[],
+                // 岗位
+                position:[],
+                // 站点
+                stations:[],
+                // 当前站区
+                currentDistrict:'',
+                // 当前站点
+                currentStation:'',
+                // 当前岗位
+                currentPosition:'',
+                stationId: this.$store.get('stationId'),
                 addPersonModal: false,
                 editPersonModal: false,
                 targetId:'',
@@ -443,6 +424,35 @@
                         ifShow: false
                     },
                 ],
+                rule:{
+                   employeeCard: [{required: true, message: '员工卡号不能为空', trigger: 'blur' }],
+                   peopleCode: [{required: true, message: '人员编码不能为空', trigger: 'blur' }],
+                   userName: [{required: true, message: '姓名不能为空', trigger: 'blur' }],
+                   station: [{required: true, message: '站点不能为空', trigger: 'change' }],
+                   district: [{required: true, message: '站区不能为空', trigger: 'change' }],
+                   post: [{required: true, message: '岗位不能为空', trigger: 'change' }],
+                   manager: [{required: true, message: '管理员不能为空', trigger: 'change' }],
+                   password: [{required: true, message: '密码不能为空', trigger: 'blur' }],
+                   plan: [{required: true, message: '权限方案不能为空', trigger: 'change' }],
+                   gender: [{required: true, message: '性别不能为空', trigger: 'change' }],
+                   phoneNumber: [{required: true, message: '手机号不能为空', trigger: 'blur' }],
+                   birthday: [{required: true, message: '生日不能为空', trigger: 'blur' }],
+                   idCardNumber: [{required: true, message: '身份证不能为空', trigger: 'blur' }],
+                   isMarried: [{required: true, message: '婚否不能为空', trigger: 'change' }],
+                   hasChild: [{required: true, message: '生育不能为空', trigger: 'change' }],
+                   eduBackGround: [{required: true, message: '学历不能为空', trigger: 'change' }],
+                   partyMember: [{required: true, message: '政治面貌不能为空', trigger: 'change' }],
+                   joinDate: [{required: true, message: '入党时间不能为空', trigger: 'blur' }],
+                   certNo: [{required: true, message: '站务员证书编号不能为空', trigger: 'blur' }],
+                   certLevel: [{required: true, message: '站务员证等级不能为空', trigger: 'blur' }],
+                   xfzNo: [{required: true, message: '消防证书编号不能为空', trigger: 'blur' }],
+                   zwyNo: [{required: true, message: '综控员证书编号不能为空', trigger: 'blur' }],
+                   zwyLevel: [{required: true, message: '综控员证书级别不能为空', trigger: 'blur' }],
+                   entryDate: [{required: true, message: '入职时间不能为空', trigger: 'blur' }],
+                   homeAddress: [{required: true, message: '住址不能为空', trigger: 'blur' }],
+                   backup: [{required: true, message: '是否为补位人员不能为空', trigger: 'change' }],
+                   
+                },
                 personList:[
                     {
                         userId:1,
@@ -582,76 +592,191 @@
                 ],
                 selectedItmes: [],
                 addPerson: {
-                    cardNum: '',
-                    code: '',
-                    name: '',
+                    employeeCard: '',
+                    peopleCode: '',
+                    userName: '',
+                    district: '',
                     station: '',
-                    postName: '',
+                    post: '',
                     manager: '',
                     password: '',
                     plan: '',
-                    sex: '',
+                    gender: null,
                     phoneNumber: '',
                     birthday: '',
-                    idCode: '',
-                    onBoardDate: '',
-                    isMarried: '',
-                    hasChild: '',
+                    idCardNumber: '',
+                    entryDate: '',
+                    isMarried: null,
+                    hasChild: null,
                     eduBackGround: '',
-                    isPartyMember: '',
+                    partyMember: '',
                     joinDate: '',
-                    stationCertificateNum: '',
-                    stationCertificateGrade: '',
-                    address: '',
-                    fireControlCertificateNum: '',
-                    controllerCertificateNum: '',
-                    controllerCertificateGrade: ''
+                    certNo: '',
+                    certLevel: '',
+                    homeAddress: '',
+                    xfzNo: '',
+                    zwyNo: '',
+                    zwyLevel: '',
+                    backup:null
                 },
                 editPerson: {
-                        workNumber:'',
-                        name:'',
-                        sex:'',
-                        phoneNumber:'',
-                        birthday:'',
-                        post:'',
-                        station:'',
-                        stationArea:'',
-                        manager:'',
-                        idCard:'',
-                        entryTime:'',
-                        maritalStatus:'',
-                        childrenHave:'',
-                        education:'',
-                        political:'',
-                        partyTime:'',
-                        address:'',
-                        stationCertificateNumber:'',
-                        stationCertificateLevel:'',
-                        peopleCode:'',
-                        fireCertificateNumber:'',
-                        controllerNumber:'',
-                        controllerLevel:''
+                    employeeCard: '',
+                    peopleCode: '',
+                    userName: '',
+                    district: '',
+                    station: '',
+                    post: '',
+                    manager: '',
+                    password: '',
+                    plan: '',
+                    gender: null,
+                    phoneNumber: '',
+                    birthday: '',
+                    idCardNumber: '',
+                    entryDate: '',
+                    isMarried: null,
+                    hasChild: null,
+                    eduBackGround: '',
+                    partyMember: '',
+                    joinDate: '',
+                    certNo: '',
+                    certLevel: '',
+                    homeAddress: '',
+                    xfzNo: '',
+                    zwyNo: '',
+                    zwyLevel: '',
+                    backup:null
                 }
 
             }
         },
-        
+        mounted: function () {
+            //  获取岗位
+            this.getAllPost();
+            // 获取站区
+            this.request();
+        },
         methods:{
+              //  获取站区
+            request: async function(){
+                let response = await stationAreaList();
+                if (response.meta.code !== 0) {
+                    this.$Loading.error();
+                    this.$Message.error(response.meta.message);
+                }else{
+                    this.$Loading.finish();
+                    this.districts = response.data;
+                    console.log(this.districts);
+                }
+            },
+              // 获取站点
+             getAllStations: async function () {
+                if (this.addPerson.district) {
+                let currentDistrict = this.addPerson.district.split('-');
+                let id = parseInt(currentDistrict[0]);
+                let response = await getStations(id);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.stations = response.data;
+                    console.log(response);
+                    return;
+                }
+                this.$Message.error(message);
+                }
+            },
+              //  获取所有岗位
+            getAllPost: async function () {
+                console.log(this.stationId);
+                let response = await getAllPost(this.stationId);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.position = response.data;
+                    console.log(response);
+                    return;
+                }
+                this.$Message.error(message);
+            },
             //  删除一行
             removeLine:function(){
                 var e = e || window.event;
                 var target = e.target || e.srcElement;
                 target.parentNode.parentNode.remove();
             },
-            //  编辑人员
-            editPersonModalMethod:function(e){
+            //  编辑人员提交验证
+            editPersonModalMethod:function(name){
+                console.log(name);
+                  this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        this.$Message.success('新增人员成功!');
+                        this.addPersonModal = false;
+                        this.$refs[name].resetFields();
+                    } else {
+                        this.$Message.error('新增人员失败');
+                    }
+                })
+                // this.editPersonModal=true;
+                // var id=e.target.parentNode.parentNode.id-1;
+                // let obj = this.personList[id]; 
+                // for(let key in obj){
+                //     this.editPerson[key] = obj[key];
+                // }
+            },
+            // 编辑人员
+            editPersonMethod:function () {
                 this.editPersonModal=true;
-                var id=e.target.parentNode.parentNode.id-1;
-                let obj = this.personList[id]; 
-                for(let key in obj){
-                    this.editPerson[key] = obj[key];
+            },
+            // 新增人员前进行验证
+            beforeAddUser:function (name) {
+                   this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        this.$Message.success('新增人员成功!');
+                        this.addPersonModal = false;
+                        this.$refs[name].resetFields();
+                    } else {
+                        this.$Message.error('新增人员失败');
+                    }
+                })
+            },
+            addUser: function (that) {
+                let currentDistrict = this.addPerson.district;
+                let currentStation = this.addPerson.station;
+                let currentPosition = this.addPerson.post;
+                let data = {
+                    districtId: parseInt(currentDistrict[0]),
+                    districtName: parseInt(currentDistrict[1]),
+                    stationId: parseInt(currentStation[0]),
+                    stationName: parseInt(currentStation[1]),
+                    positionId: parseInt(currentPosition[0]),
+                    positionName: parseInt(currentPosition[1]),
+                    employeeCard: addPerson.employeeCard,
+                    peopleCode: addPerson.peopleCode,
+                    userName: addPerson.userName,
+                    manager: addPerson.manager,
+                    password: addPerson.password,
+                    plan: addPerson.plan,
+                    gender: addPerson.gender,
+                    phoneNumber: addPerson.phoneNumber,
+                    birthday: addPerson.birthday,
+                    idCardNumber: addPerson.idCardNumber,
+                    entryDate: addPerson.entryDate,
+                    isMarried: ddPerson.isMarried,
+                    hasChild: addPerson.hasChild,
+                    eduBackGround: addPerson.eduBackGround,
+                    partyMember: addPerson.partyMember,
+                    joinDate: addPerson.joinDate,
+                    certNo: addPerson.certNo,
+                    certLevel: addPerson.certLevel,
+                    homeAddress: addPerson.homeAddress,
+                    xfzNo: addPerson.xfzNo,
+                    zwyNo: addPerson.zwyNo,
+                    zwyLevel: addPerson.zwyLevel,
+                    backup:addPerson.backup
                 }
             },
+            // 取消提交清空验证信息
+            beforeCancel:function (name){
+                this.$refs[name].resetFields();
+            }
         }
        
     }

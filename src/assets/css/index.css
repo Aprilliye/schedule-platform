@@ -72,7 +72,11 @@
     margin-left: 10px;
     float: left;
 }
-
+/* 人员设置 */
+.userModal {
+    float:left;
+    width:320px;
+}
 
 /*站区设置*/
 .activeSpan {

@@ -119,8 +119,10 @@
                     </Poptip>
                 </FormItem>
                 <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot">
-                    <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addShiftValue'  @on-change="getsectionTime"></TimePicker>
-                    <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
+                    <!-- <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addShiftValue'  @on-change="getsectionTime"></TimePicker>
+                    <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div> -->
+                    <TimePicker  v-model="addFormValidateClass.timeSlotBegin" placeholder="选择开始时间" format="HH:mm" :value="timeSlotBegin"  @on-change=""></TimePicker>至
+                    <TimePicker  v-model="addFormValidateClass.timeSlotEnd" placeholder="选择结束时间" format="HH:mm" :value="timeSlotEnd"  @on-change=""></TimePicker>
                 </FormItem>
                 <FormItem label="总时间" prop="totalTime">
                     <Input v-model="addFormValidateClass.totalTime" placeholder="" readonly/>
@@ -332,6 +334,8 @@ let echarts = require('echarts');
 export default {
     data:function () {
         return {
+            timeSlotBegin:null,
+            timeSlotEnd:null,
             suiteName:null,
             tabModel:null,
             suiteId:null,
@@ -420,7 +424,9 @@ export default {
                 restMinutes:null,
                 relevantClassId:null,
                 userCount:null,
-                ifTimeSlot:false
+                ifTimeSlot:false,
+                timeSlotBegin:null,
+                timeSlotEnd:null,
             },
             editFormValidateClass:{
             timeSlot: [],
@@ -844,11 +850,11 @@ export default {
                     for(let key in obj){
                     this.info[key] = obj[key];
                     }
-                    this.districtId = this.suites[name-1].districtId,
-                    this.districtName = this.suites[name-1].districtName,
-                    this.stationId  = this.suites[name-1].stationId,
-                    this.stationName = this.suites[name-1].stationName,
-                    this.suiteId = this.suites[name-1].id
+                    this.suiteId = this.suites[name-1].id;
+                    this.dutyDistrictId = this.suites[name-1].districtId;
+                    this.dutyDistrictName = this.suites[name-1].districtName;
+                    this.dutyStationId = this.suites[name-1].stationId;
+                    this.dutyStationName = this.suites[name-1].stationName;
                     this.$options.methods.getClass(that);
                 }else if (name==0){
                     this.showEchart = false;
@@ -858,19 +864,19 @@ export default {
                     for(let key in obj){
                     this.info[key] = obj[key];
                     }
-                    this.districtId = this.suites[name].districtId,
-                    this.districtName = this.suites[name].districtName,
-                    this.stationId  = this.suites[name].stationId,
-                    this.stationName = this.suites[name].stationName,
+                    this.dutyDistrictId = this.suites[name].districtId,
+                    this.dutyDistrictName = this.suites[name].districtName,
+                    this.dutyStationId  = this.suites[name].stationId,
+                    this.dutyStationName = this.suites[name].stationName,
                     this.suiteId = this.suites[name].id
                     this.$options.methods.getClass(that);
                     }else{
                         this.showEchart = false;
                         this.info=[];
-                        this.districtId = null,
-                        this.districtName = null,
-                        this.stationId  = null,
-                        this.stationName = null,
+                        this.dutyDistrictId = null,
+                        this.dutyDistrictName = null,
+                        this.dutyStationId  = null,
+                        this.dutyStationName = null,
                         this.suiteId =null
                     }
                 }
@@ -1045,6 +1051,8 @@ export default {
         },
         //新增班次验证
         addClassMethods:function(name){
+            console.log(typeof(this.timeSlotBegin));
+            console.log(this.timeSlotEnd);
             let that = this;
             let arr = this.addFormValidateClass.timeSlot;
             for(let i=0;i<arr.length;i++){
@@ -1072,6 +1080,8 @@ export default {
             })
         },
         beforeAddClassMethods: async function  (that) {
+            let beginTime = this.addFormValidateClass.timeSlotBegin;
+            let endTime = this.addFormValidateClass.timeSlotEnd;
             let currentPosition = that.position.current.split('-');
             let data={
                 dutyName: that.addFormValidateClass.dutyName,
@@ -1346,10 +1356,10 @@ export default {
                 if(response.meta.code === 0){
                     if (that.suites.length===0){
                         that.suites.push(response.data.dutysuite);
-                        that.districtId = response.data.dutysuite.districtId,
-                        that.districtName = response.data.dutysuite.districtName,
-                        that.stationId  = response.data.dutysuite.stationId,
-                        that.stationName = response.data.dutysuite.stationName,
+                        that.dutyDistrictId = response.data.dutysuite.districtId,
+                        that.dutyDistrictName = response.data.dutysuite.districtName,
+                        that.dutyStationId  = response.data.dutysuite.stationId,
+                        that.dutyStationName = response.data.dutysuite.stationName,
                         that.suiteId = response.data.dutysuite.id
                     }else{
                         that.suites.push(response.data.dutysuite);
