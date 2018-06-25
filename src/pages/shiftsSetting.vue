@@ -681,8 +681,6 @@ export default {
         // 切换岗位获取班制
         getChangeSuite: async function () {
             this.showEchart = false;
-            console.log("11111");
-            console.log(this.position.current);
             this.suiteName = 0;
             let that = this;
             let currentPosition = this.position.current.split('-');
@@ -692,7 +690,6 @@ export default {
                 positionId: parseInt(currentPosition[0]),
                 backup: parseInt(currentPosition[1])
             }
-            console.log(data);
             let response = await getSuites(data);
             let message = response.meta.message;
             if(response.meta.code === 0){
@@ -710,8 +707,6 @@ export default {
                     this.dutyStationId = null;
                     this.dutyStationName = null;
                 }
-                console.log(response);
-                console.log(this.suites);
                 // 显示班制内容
                 let obj = this.suites[0]; 
                 for(let key in obj){
@@ -724,7 +719,6 @@ export default {
         },
         //  获取班制
         getSuites: async function () {
-            console.log("22222");
             this.suiteName = 0;
             let that = this;
             let currentPosition = this.position.current.split('-');
@@ -825,7 +819,6 @@ export default {
                     that.$Loading.error();
                     that.$Message.error(response.meta.message);
                 }else{
-                    console.log(response);
                     that.shiftData = response.data.dutyclass;
                     //获取时间段
                     that.onDutyData=response.data.dutyperiodchecking
@@ -835,7 +828,6 @@ export default {
         },
         //删除班制
         handleClose: async function (name) {
-            console.log(this.tabName);
             let id = this.suites[name].id;
             let response = await deteleSuites(id);
             if (response.meta.code !== 0) {
@@ -844,8 +836,6 @@ export default {
             }else{
                 this.$Loading.finish();
                 this.suites = response.data;
-                console.log(response);
-                console.log(this.suites);
                 if (this.tabName == name && name!=0){
                     this.showEchart = false;
                     let that = this;
@@ -1102,7 +1092,6 @@ export default {
                 workingLength: that.addFormValidateClass.workingLength,
                 restMinutes: that.addFormValidateClass.restMinutes,
             }
-            console.log(data);
             let response = await addClass(data);
             let message = response.meta.message;
              if(response.meta.code === 0){
@@ -1370,12 +1359,6 @@ export default {
                         that.info[key] = obj[key];
                         }
                     that.$Message.success("新增班制成功");
-                    console.log(response);
-                    console.log(that.districtId);
-                    console.log(that.districtName);
-                    console.log(that.stationId);
-                    console.log(that.stationName);
-                    console.log(that.suiteId);
                 }else{
                     that.$Message.error(message);
                 }
