@@ -49,11 +49,7 @@
                     </div>
                     <div class="roledescribe">
                         <p>暂无描述</p>
-                        <p v-for="item in managesystemItem">{{item.describe}}</p>
-                        <p>暂无描述</p>
-                        <p v-for="item in groupsystemItem">{{item.describe}}</p>
-                        <p>暂无描述</p>
-                        <p v-for="item in rolesystemItem">{{item.describe}}</p>
+                        <p v-for="(item, index) in rolesystemItem" :key="index">{{item.describe}}</p>
                     </div>
                 </div>
                 <!--排班管理部分-->
@@ -67,7 +63,7 @@
                         </CheckboxGroup>
                     </div>
                     <div  class="roledescribe">
-                        <p v-for="item in schedulmanageItem">{{item.describe}}</p>
+                        <p v-for="(item,index) in schedulmanageItem" :key="index">{{item.describe}}</p>
                     </div>
                 </div>
                 <!--排班设置部分-->
@@ -87,9 +83,7 @@
                     </div>
                     <div  class="roledescribe">
                         <p>暂无描述</p>
-                        <p v-for="item in shiftschedulsetItem">{{item.describe}}</p>
-                        <p>暂无描述</p>
-                        <p v-for="item in postschedulsetItem">{{item.describe}}</p>
+                        <p v-for="(item,index) in postschedulsetItem" :key="index">{{item.describe}}</p>
                     </div>
                 </div>
                 <!--统计报表部分-->
@@ -103,7 +97,7 @@
                         </CheckboxGroup>
                     </div>
                     <div  class="roledescribe">
-                        <p v-for="item in reportItem">{{item.describe}}</p>
+                        <p v-for="(item,index) in reportItem" :key="index">{{item.describe}}</p>
                     </div>
                 </div>
             </div>
@@ -111,6 +105,7 @@
     </div>
 </template>
 <script>
+import {getAllPermissions} from '@/api/api';
     export default {
         data:function () {
             return {
@@ -263,7 +258,15 @@
                 ]
             }
         },
+        created: function () {
+            this.getAllPermissions();
+        },
         methods:{
+            //  获取所有的权限列表
+            getAllPermissions: async function () {
+                let response = await getAllPermissions();
+                console.log(response);
+            },
             checkAllsystemset:function(){//系统设置全选
                 if (this.checkAllsystemsetmodel){
                     this.checkUsermanagemodel=true;

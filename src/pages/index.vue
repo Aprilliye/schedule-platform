@@ -144,6 +144,12 @@
             doLogout: async function () {
                 // TODO
                 this.$router.replace({name: 'Login'});
+                this.$store.remove('districtId')
+                this.$store.remove('districtId');
+                this.$store.remove('stationId');
+                this.$store.remove('userName');
+                this.$store.remove('positionId');
+                this.$store.remove('schedule_identify');
             },
         }
     }
