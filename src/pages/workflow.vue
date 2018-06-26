@@ -2,7 +2,7 @@
     <div class="container">
         <div class="content-header">
             <label style="margin-left: 10px">班制：</label>
-            <Select v-model="suite" style="width:200px" @on-change="getWorkFlow(suite)">
+            <Select v-model="suite" style="width:200px" @on-change="getClass(suite)">
                 <Option v-for="item in suites" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
             </Select>
             <a class="btnDefault bgBlue btnworkflow" onclick="loadWorkFlow()">加载工作流程</a>
@@ -13,7 +13,7 @@
                 <table cellpadding=0 cellspacing=0 tableType="shiftTable" class="workflowTable">
                     <template v-for="(item, index) in dutyClass">
                         <tr :key="'tr0'+index">
-                            <th colspan=147 tdType='title' height=40 class='font4'>{{item.dutyName+"：" + item.startTimeStr + '-' + item.endTimeStr}}</th>
+                            <th colspan=147 tdType='title' height=40 class='font4'>{{item.dutyName + '(' + item.dutyCode + ')' + "：" + item.startTimeStr + '-' + item.endTimeStr}}</th>
                         </tr>
                         <tr :key="'tr1'+index">
                             <td colspan="3">编号</td>
@@ -81,7 +81,8 @@
                 ifEdit: false,      //  确定按钮事件状态
                 currentTd: null,    //   当前操作的单元格
                 editItem: '',      //  编辑工作流程的颜色
-                temporary: ''
+                temporary: '',
+                currentSuite: null,
 
             }
         },
@@ -99,7 +100,7 @@
                 if(response.meta.code === 0){
                     this.suites = response.data;
                     this.suite = response.data[0].id;
-                    
+                    this.currentPositionId = response.data[0].positionId;
                     this.getWorkFlow(this.suite);
                     return;
                 }
@@ -107,7 +108,9 @@
             },
             //  获取班次
             getClass: async function (id) {
-                let response = await getClass(id);
+                let suiteId = id || this.suite;
+                let response = await getClass(suiteId);
+                this.currentPositionId = response.data.dutysuite.positionId;
                 if(response.meta.code === 0){
                     this.dutyClass = response.data.dutyclass;
                 }
@@ -116,8 +119,9 @@
             //  获取工作流程
             getWorkFlow: async function (id) {
                 let suiteId = id || this.suite;
-                console.log(suiteId);
+                console.log('suiteId:'+suiteId);
                 let response = await getWorkFlow(suiteId);
+                console.log(response);
                 if(response.meta.code === 0){
                     this.getClass(this.suite);
                 }

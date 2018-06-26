@@ -35,78 +35,76 @@
                         <template slot="title">
                             系统设置
                         </template>
-                        <router-link to="./user-manage" id="indexRouter">
-                            <menu-item name="1-1" class="active">
+                        <menu-item name="1-1" class="active">
+                            <router-link :to="{name: 'Usermanage'}" id="indexRouter">
                                 <span class="icon-19"></span>
                                 人员管理
-                            </menu-item>
-                        </router-link>
-                        <router-link to="./setStationArea" >
-                            <menu-item name="1-2">
+                            </router-link>
+                        </menu-item>
+                        <menu-item name="1-2">
+                            <router-link :to="{name: 'setStationArea'}" >
                                 <span class="icon-18"></span>
                                 站区设置
-                            </menu-item>
-                        </router-link>
-                        <router-link to="./role" >
-                            <menu-item name="1-3">
+                            </router-link>
+                        </menu-item>
+                        <menu-item name="1-3">
+                            <router-link :to="{name: 'Role'}" >
                                 <span class="icon-17"></span>
                                 权限管理
-                            </menu-item>
-                        </router-link>
+                            </router-link>
+                        </menu-item>
                     </submenu>
                     <submenu name="3">
                         <template slot="title">
                             排班设置
                         </template>
-                        <router-link to="./shiftsSetting" >
-                            <menu-item name="3-1">
+                        <menu-item name="3-1">
+                            <router-link to="./shiftsSetting" >
                                 <span class="icon-7"></span>
                                 班次设置
-                            </menu-item>
-                        </router-link>
-                        <router-link to="./postSetting" >
-                            <menu-item name="3-2">
+                            </router-link>
+                        </menu-item>
+                        <menu-item name="3-2">
+                            <router-link to="./postSetting" >
                                 <span class="icon-8"></span>
                                 岗位设置
-                            </menu-item>
-                        </router-link>
+                            </router-link>
+                        </menu-item>
                     </submenu>
                     <submenu name="2">
                         <template slot="title">
                             排班管理
                         </template>
-                        <router-link to="./scheduleForm" >
-                            <menu-item name="2-1">
+                        <menu-item name="2-1">
+                            <router-link :to="{name: 'ScheduleForm'}" >
                                 <span class="icon-16"></span>
                                 排班表格
-                            </menu-item>
-                        </router-link>
-                        <router-link to="./autoSchedule" >
-                            <menu-item name="2-2">
+                            </router-link>
+                        </menu-item>
+                        <menu-item name="2-2">
+                            <router-link :to="{name: 'autoSchedule'}" >
                                 <span class="icon-6"></span>
                                 新增排班
-                            </menu-item>
-                        </router-link>
-                        <router-link :to="{name: 'candidateSchedule'}" >
-                            <menu-item name="2-3">
+                            </router-link>
+                        </menu-item>
+                        <menu-item name="2-3">
+                            <router-link :to="{name: 'candidateSchedule'}" >
                                 <Icon  type="clipboard" class="iconsize"></Icon>
                                 备班排班
-                            </menu-item>
-                        </router-link>
-                        
-                        <router-link to="./workflow" >
-                            <menu-item name="2-4">
+                            </router-link>
+                        </menu-item>
+                        <menu-item name="2-4">
+                            <router-link :to="{name: 'Workflow'}" >
                                 <Icon type="code-working" class="iconsize"></Icon>
                                 工作流程
-                            </menu-item>
-                        </router-link>
-                        <router-link to="/schedulePlan" >
-                            <menu-item name="2-5">
+                            </router-link>
+                        </menu-item>
+                        <menu-item name="2-5">
+                            <router-link :to="{name: 'schedulePlan'}" >
                                 <Icon  type="ios-paper" class="iconsize"></Icon>
                                 排班计划
-                            </menu-item>
-                        </router-link>
-                        
+                            </router-link>
+                        </menu-item>
                     </submenu>
                     <submenu name="4">
                         <template slot="title">
@@ -122,7 +120,7 @@
                         </menu-item>
                     </submenu>
                     <menu-item name="1-1">
-                        <router-link to="./operations">操作记录</router-link>
+                        <router-link :to="{name: 'operations'}">操作记录</router-link>
                     </menu-item>
                 </i-menu>
               </i-col>
