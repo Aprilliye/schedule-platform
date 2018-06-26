@@ -19,7 +19,7 @@ let IDENTIFICATION = 'schedule_identify';
 http.interceptors.request.use(
     config => {
       if (store.has(IDENTIFICATION)) {
-          // 若token存在则添加request header
+        // 若token存在则添加request header
         let identify = store.get(IDENTIFICATION);
         config.headers.Authorization = identify;
       }

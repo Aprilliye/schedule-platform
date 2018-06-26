@@ -4,17 +4,17 @@
             <div class="container">
                 <div class="content-header">
                     <div class="float-left">
-                        <a class="btnDefault bgGreen"  @click="roleConfigshow"><span>新增权限方案</span></a>
+                        <a class="btnDefault bgGreen"  @click="roleConfigshow"><span>新增角色</span></a>
                     </div>
                     <div class=" float-right">
                         <form class="form-container" id="roleForm1">
                             <div class="search-input float-left">
                                 <span class="icon-5"></span>
-                                <input type="text" placeholder="权限方案名称" name="roleName" v-model="roleName">
+                                <input type="text" placeholder="角色名称" name="roleName" v-model="roleName">
                             </div>
                             <a class="btnDefault bgBlue queryBtn float-left" href="javascript:;" @click="getTableData">查询</a>
                             <div class="clear"></div>
-                            <span style="color: red;margin-left: 80px" v-show="roleNameShow">权限方案名称不能为空</span>
+                            <span style="color: red;margin-left: 80px" v-show="roleNameShow">角色名称不能为空</span>
                         </form>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
             obj:{},
             columns1: [
                 {
-                    title: '权限方案名称',
+                    title: '角色名称',
                     key: 'roleName'
                 },
                 {

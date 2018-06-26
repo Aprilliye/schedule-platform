@@ -36,5 +36,17 @@ export const updateStation = (id, data) => fetch('/station/' + id, data, 'PUT');
 /***************************** 人员设置 *******************************/
 
 /** 新增用户 */
-export const addUser = data => fetch('/user/add', data, 'POST');
+export const addUser = data => fetch('/user', data, 'POST');
+
+/** 获取角色 */
+export const getRole = () => fetch('/role', {},'GET');
+
+/** 获取用户列表 */
+export const getUser = data => fetch('/user', data ,'GET');
+
+/** 修改用户 */
+export const updateUser = data => fetch('/user', data, 'PUT');
+
+/** 删除用户 */
+export const deleteUser = id => fetch('/user/' + id, {}, 'DELETE');
 
