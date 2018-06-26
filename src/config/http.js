@@ -20,8 +20,8 @@ http.interceptors.request.use(
     config => {
       if (store.has(IDENTIFICATION)) {
         // 若token存在则添加request header
-        let identify = JSON.parse(store.get(IDENTIFICATION));
-        config.headers.Authorization = identify.token;
+        let identify = store.get(IDENTIFICATION);
+        config.headers.Authorization = identify;
       }
 
       return config;

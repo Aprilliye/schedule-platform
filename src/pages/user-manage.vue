@@ -5,14 +5,14 @@
                 <div class="float-left">
                     <button class="btnDefault bgGreen mansgebutton" type="button" @click="addPersonModal = true">新增人员</button>
                     <a class="btnDefault" href="#" data-toggle="modal" data-target="#export">导入</a>
-                    <a class="btnDefault" href="javascript:void(0)" onclick="printUserTemplate()">模板</a>
+                    <a class="btnDefault">模板</a>
                 </div>
                 <div class=" float-right">
                     <div class="search-input float-left">
                         <span class="icon-5"></span>
                         <input type="text" placeholder="" name="roleName">
                     </div>
-                    <a class="btnDefault bgBlue queryBtn" href="javascript:;" onclick="getTableData()">查询</a>
+                    <a class="btnDefault bgBlue queryBtn">查询</a>
                 </div>
                 <div class="clear"></div>
             </div>
@@ -53,30 +53,30 @@
                         </tr>
                         </thead>
                         <tbody id="userDataTable">
-                        <tr v-for="(item,index) in personList" :key='index' :id="item.userId">
-                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">{{item.action[0]}}</a><a style="color: #0000FF" @click="editPersonMethod">{{item.action[1]}}</a></td>
-                            <td>{{item.workNumber}}</td>
-                            <td>{{item.name}}</td>
-                            <td>{{item.sex}}</td>
+                        <tr v-for="(item,index) in personList" :key='index' :id="index+'-'+item.id">
+                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">删除</a><a style="color: #0000FF" @click="editPersonMethod">修改</a></td>
+                            <td>{{item.employeeCard}}</td>
+                            <td>{{item.userName}}</td>
+                            <td>{{item.gender}}</td>
                             <td>{{item.phoneNumber}}</td>
                             <td>{{item.birthday}}</td>
-                            <td>{{item.post}}</td>
-                            <td>{{item.station}}</td>
-                            <td>{{item.stationArea}}</td>
-                            <td v-show="tableItem[0].ifShow">{{item.idCard}}</td>
-                            <td v-show="tableItem[1].ifShow">{{item.entryTime}}</td>
-                            <td v-show="tableItem[2].ifShow">{{item.maritalStatus}}</td>
-                            <td v-show="tableItem[3].ifShow">{{item.childrenHave}}</td>
-                            <td v-show="tableItem[4].ifShow">{{item.education}}</td>
-                            <td v-show="tableItem[5].ifShow">{{item.political}}</td>
-                            <td v-show="tableItem[6].ifShow">{{item.partyTime}}</td>
-                            <td v-show="tableItem[7].ifShow">{{item.address}}</td>
-                            <td v-show="tableItem[8].ifShow">{{item.stationCertificateNumber}}</td>
-                            <td v-show="tableItem[9].ifShow">{{item.stationCertificateLevel}}</td>
-                            <td v-show="tableItem[10].ifShow">{{item.peopleCode}}</td>
-                            <td v-show="tableItem[11].ifShow">{{item.fireCertificateNumber}}</td>
-                            <td v-show="tableItem[12].ifShow">{{item.controllerNumber}}</td>
-                            <td v-show="tableItem[13].ifShow">{{item.controllerLevel}}</td>
+                            <td>{{item.positionName}}</td>
+                            <td>{{item.stationName}}</td>
+                            <td>{{item.districtName}}</td>
+                            <td v-show="tableItem[0].ifShow">{{item.idCardNumber}}</td>
+                            <td v-show="tableItem[1].ifShow">{{item.entryDate}}</td>
+                            <td v-show="tableItem[2].ifShow">{{item.isMarried}}</td>
+                            <td v-show="tableItem[3].ifShow">{{item.hasChild}}</td>
+                            <td v-show="tableItem[4].ifShow">{{item.eduBackGround}}</td>
+                            <td v-show="tableItem[5].ifShow">{{item.partyMember}}</td>
+                            <td v-show="tableItem[6].ifShow">{{item.joinDate}}</td>
+                            <td v-show="tableItem[7].ifShow">{{item.homeAddress}}</td>
+                            <td v-show="tableItem[8].ifShow">{{item.certNo}}</td>
+                            <td v-show="tableItem[9].ifShow">{{item.certLevel}}</td>
+                            <td v-show="tableItem[10].ifShow">{{item.employeeCode}}</td>
+                            <td v-show="tableItem[11].ifShow">{{item.xfzNo}}</td>
+                            <td v-show="tableItem[12].ifShow">{{item.zwyNo}}</td>
+                            <td v-show="tableItem[13].ifShow">{{item.zwyLevel}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -97,8 +97,8 @@
                     <FormItem label="员工卡号" prop="employeeCard" class="userModal">
                         <Input v-model="addPerson.employeeCard"></Input>
                     </FormItem>
-                    <FormItem label="人员编码" prop="peopleCode" class="userModal">
-                        <Input  v-model="addPerson.peopleCode"></Input>
+                    <FormItem label="人员编码" prop="employeeCode" class="userModal">
+                        <Input  v-model="addPerson.employeeCode"></Input>
                     </FormItem>
                     <FormItem label="姓名" prop="userName" class="userModal">
                         <Input v-model="addPerson.userName"></Input>
@@ -120,19 +120,12 @@
                     </FormItem>
                     <FormItem label="角色" prop="plan" class="userModal">
                         <Select v-model="addPerson.plan">
-                        <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
+                        <Option v-for="(item,index) in roles" :value="item.id+'-'+item.name" :key="index">{{item.name}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="密码" prop="password" class="userModal">
                         <Input v-model="addPerson.password"></Input>
                         <span class="red">请记录此密码作为下次登录用</span>
-                    </FormItem>
-                    <FormItem label="角色" prop="plan" class="userModal">
-                        <Select  v-model="addPerson.plan">
-                        <Option value="超级管理员">超级管理员</Option>
-                        <Option value="系统管理员">系统管理员</Option>
-                        <Option value="管理员">管理员</Option>
-                        </Select>
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
                         <Select v-model="addPerson.gender">
@@ -224,8 +217,8 @@
                     <FormItem label="员工卡号" prop="employeeCard" class="userModal">
                         <Input v-model="editPerson.employeeCard"></Input>
                     </FormItem>
-                    <FormItem label="人员编码" prop="peopleCode" class="userModal">
-                        <Input  v-model="editPerson.peopleCode"></Input>
+                    <FormItem label="人员编码" prop="employeeCode" class="userModal">
+                        <Input  v-model="editPerson.employeeCode"></Input>
                     </FormItem>
                     <FormItem label="姓名" prop="userName" class="userModal">
                         <Input v-model="editPerson.userName"></Input>
@@ -245,19 +238,13 @@
                              <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
                         </Select>
                     </FormItem>
-                    <FormItem label="管理员" prop="manager" class="userModal">
-                        <Select v-model="editPerson.manager">
-                            <Option value="0">否</Option>
-                            <Option value="1">是</Option>
-                        </Select>
-                    </FormItem>
                     <FormItem label="密码" prop="password" class="userModal">
                         <Input v-model="editPerson.password"></Input>
                         <span class="red">请记录此密码作为下次登录用</span>
                     </FormItem>
-                     <FormItem label="角色" prop="plan" class="userModal">
+                    <FormItem label="角色" prop="plan" class="userModal">
                         <Select v-model="editPerson.plan">
-                        <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
+                            <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
@@ -341,7 +328,7 @@
 </template>
 <script>
     import {getAllPost} from '@/api/api';
-    import {stationAreaList, getStations, addUser, getRole} from '@/api/commonAPI';
+    import {stationAreaList, getStations, addUser, getRole, updateUser, getUser, deleteUse} from '@/api/commonAPI';
     export default {
         data: function () {
             return {
@@ -361,6 +348,9 @@
                 roles:[],
                 addPersonModal: false,
                 editPersonModal: false,
+                districtId: this.$store.get('districtId'),
+                stationId: this.$store.get('stationId'),
+                positionId: this.$store.get('positionId'),
                 targetId:'',
                 tableItem: [
                     {
@@ -422,7 +412,7 @@
                 ],
                 rule:{
                    employeeCard: [{required: true, message: '员工卡号不能为空', trigger: 'blur' }],
-                   peopleCode: [{required: true, message: '人员编码不能为空', trigger: 'blur' }],
+                   employeeCode: [{required: true, message: '人员编码不能为空', trigger: 'blur' }],
                    userName: [{required: true, message: '姓名不能为空', trigger: 'blur' }],
                    district: [{required: true, message: '站区不能为空', trigger: 'change' }],
                    post: [{required: true, message: '岗位不能为空', trigger: 'change' }],
@@ -442,146 +432,146 @@
                    
                 },
                 personList:[
-                    {
-                        userId:1,
-                        action:['删除','修改'],
-                        workNumber:60502868,
-                        name:'梅松',
-                        sex:'男',
-                        phoneNumber:13810582556,
-                        birthday:'1990-12-12',
-                        post:'站区长',
-                        station:'西直门',
-                        stationArea:'西直门',
-                        manager:'是',
-                        idCard:'110108198212142712',
-                        entryTime:'1990-12-12',
-                        maritalStatus:'已婚',
-                        childrenHave:'未育',
-                        education:'高中以下',
-                        political:'群众',
-                        partyTime:'2008-05-01',
-                        address:'北京市石景山区古城南路19号楼',
-                        stationCertificateNumber:'1401061060501034',
-                        stationCertificateLevel:'站务初级',
-                        peopleCode:'5963265595466658',
-                        fireCertificateNumber:'156598965236566',
-                        controllerNumber:'1401061060501034',
-                        controllerLevel:'站务初级'
-                    },
-                    {
-                        userId:2,
-                        action:['删除','修改'],
-                        workNumber:60506796,
-                        name:'伊坤',
-                        sex:'男',
-                        phoneNumber:13785663247,
-                        birthday:'1992-10-6',
-                        post:'站务员',
-                        station:'西直门',
-                        stationArea:'西直门',
-                        manager:'否',
-                        idCard:'110106199210060344',
-                        entryTime:'1990-12-12',
-                        maritalStatus:'已婚',
-                        childrenHave:'未育',
-                        education:'本科',
-                        political:'共产党员',
-                        partyTime:'2006-10-11',
-                        address:'北京市丰台区花乡羊坊花园西院1',
-                        stationCertificateNumber:'1701061060500643',
-                        stationCertificateLevel:'站务初级',
-                        peopleCode:'7852632594125789',
-                        fireCertificateNumber:'1458962574123658',
-                        controllerNumber:'1752695213699541',
-                        controllerLevel:'站务初级'
-                    },
-                     {
-                        userId:3,
-                        action:['删除','修改'],
-                        workNumber:60508808,
-                        name:'李璇',
-                        sex:'女',
-                        phoneNumber:13051679861,
-                        birthday:'1994-02-12',
-                        post:'站务员',
-                        station:'西直门',
-                        stationArea:'西直门',
-                        manager:'否',
-                        idCard:'110108199402123410',
-                        entryTime:'2015-2-12',
-                        maritalStatus:'未婚',
-                        childrenHave:'未育',
-                        education:'大专',
-                        political:'共青团员',
-                        partyTime:'2010-01-1',
-                        address:'北京市丰台区青塔蔚园10号楼101',
-                        stationCertificateNumber:'5269541236985423',
-                        stationCertificateLevel:'站务初级',
-                        peopleCode:'4152956325841256',
-                        fireCertificateNumber:'5962354852695412',
-                        controllerNumber:'5963258412596584',
-                        controllerLevel:'站务初级'
-                    },
-                    {
-                        userId:4,
-                        action:['删除','修改'],
-                        workNumber:60507613,
-                        name:'黄旭',
-                        sex:'男',
-                        phoneNumber:13051679861,
-                        birthday:'1994-02-12',
-                        post:'站务员',
-                        station:'西直门',
-                        stationArea:'西直门',
-                        manager:'否',
-                        idCard:'131002199401282015',
-                        entryTime:'2015-07-03',
-                        maritalStatus:'未婚',
-                        childrenHave:'未育',
-                        education:'大专',
-                        political:'共青团员',
-                        partyTime:'2015-12-11',
-                        address:'北京市西城区寿长街2号',
-                        stationCertificateNumber:'5952362515895255',
-                        stationCertificateLevel:'站务初级',
-                        peopleCode:'985625412695459',
-                        fireCertificateNumber:'595213695845258',
-                        controllerNumber:'596235158745953',
-                        controllerLevel:'站务初级'
-                    },
-                       {
-                        userId:5,
-                        action:['删除','修改'],
-                        workNumber:60502986,
-                        name:'薛婷婷',
-                        sex:'女',
-                        phoneNumber:13811580959,
-                        birthday:'1990-05-07',
-                        post:'站务员',
-                        station:'西直门',
-                        stationArea:'西直门',
-                        manager:'否',
-                        idCard:'110224199005073822',
-                        entryTime:'1997-01-07',
-                        maritalStatus:'未婚',
-                        childrenHave:'未育',
-                        education:'大专',
-                        political:'共青团员',
-                        partyTime:'2012-08-23',
-                        address:'北京市大兴区安定镇杜庄屯十一条',
-                        stationCertificateNumber:'5956321478952695',
-                        stationCertificateLevel:'站务初级',
-                        peopleCode:'5236598451259635',
-                        fireCertificateNumber:'5963251489562359',
-                        controllerNumber:'5956321584596325',
-                        controllerLevel:'站务初级'
-                    },
+                    // {
+                    //     userId:1,
+                    //     action:['删除','修改'],
+                    //     workNumber:60502868,
+                    //     name:'梅松',
+                    //     sex:'男',
+                    //     phoneNumber:13810582556,
+                    //     birthday:'1990-12-12',
+                    //     post:'站区长',
+                    //     station:'西直门',
+                    //     stationArea:'西直门',
+                    //     manager:'是',
+                    //     idCard:'110108198212142712',
+                    //     entryTime:'1990-12-12',
+                    //     maritalStatus:'已婚',
+                    //     childrenHave:'未育',
+                    //     education:'高中以下',
+                    //     political:'群众',
+                    //     partyTime:'2008-05-01',
+                    //     address:'北京市石景山区古城南路19号楼',
+                    //     stationCertificateNumber:'1401061060501034',
+                    //     stationCertificateLevel:'站务初级',
+                    //     peopleCode:'5963265595466658',
+                    //     fireCertificateNumber:'156598965236566',
+                    //     controllerNumber:'1401061060501034',
+                    //     controllerLevel:'站务初级'
+                    // },
+                    // {
+                    //     userId:2,
+                    //     action:['删除','修改'],
+                    //     workNumber:60506796,
+                    //     name:'伊坤',
+                    //     sex:'男',
+                    //     phoneNumber:13785663247,
+                    //     birthday:'1992-10-6',
+                    //     post:'站务员',
+                    //     station:'西直门',
+                    //     stationArea:'西直门',
+                    //     manager:'否',
+                    //     idCard:'110106199210060344',
+                    //     entryTime:'1990-12-12',
+                    //     maritalStatus:'已婚',
+                    //     childrenHave:'未育',
+                    //     education:'本科',
+                    //     political:'共产党员',
+                    //     partyTime:'2006-10-11',
+                    //     address:'北京市丰台区花乡羊坊花园西院1',
+                    //     stationCertificateNumber:'1701061060500643',
+                    //     stationCertificateLevel:'站务初级',
+                    //     peopleCode:'7852632594125789',
+                    //     fireCertificateNumber:'1458962574123658',
+                    //     controllerNumber:'1752695213699541',
+                    //     controllerLevel:'站务初级'
+                    // },
+                    //  {
+                    //     userId:3,
+                    //     action:['删除','修改'],
+                    //     workNumber:60508808,
+                    //     name:'李璇',
+                    //     sex:'女',
+                    //     phoneNumber:13051679861,
+                    //     birthday:'1994-02-12',
+                    //     post:'站务员',
+                    //     station:'西直门',
+                    //     stationArea:'西直门',
+                    //     manager:'否',
+                    //     idCard:'110108199402123410',
+                    //     entryTime:'2015-2-12',
+                    //     maritalStatus:'未婚',
+                    //     childrenHave:'未育',
+                    //     education:'大专',
+                    //     political:'共青团员',
+                    //     partyTime:'2010-01-1',
+                    //     address:'北京市丰台区青塔蔚园10号楼101',
+                    //     stationCertificateNumber:'5269541236985423',
+                    //     stationCertificateLevel:'站务初级',
+                    //     peopleCode:'4152956325841256',
+                    //     fireCertificateNumber:'5962354852695412',
+                    //     controllerNumber:'5963258412596584',
+                    //     controllerLevel:'站务初级'
+                    // },
+                    // {
+                    //     userId:4,
+                    //     action:['删除','修改'],
+                    //     workNumber:60507613,
+                    //     name:'黄旭',
+                    //     sex:'男',
+                    //     phoneNumber:13051679861,
+                    //     birthday:'1994-02-12',
+                    //     post:'站务员',
+                    //     station:'西直门',
+                    //     stationArea:'西直门',
+                    //     manager:'否',
+                    //     idCard:'131002199401282015',
+                    //     entryTime:'2015-07-03',
+                    //     maritalStatus:'未婚',
+                    //     childrenHave:'未育',
+                    //     education:'大专',
+                    //     political:'共青团员',
+                    //     partyTime:'2015-12-11',
+                    //     address:'北京市西城区寿长街2号',
+                    //     stationCertificateNumber:'5952362515895255',
+                    //     stationCertificateLevel:'站务初级',
+                    //     peopleCode:'985625412695459',
+                    //     fireCertificateNumber:'595213695845258',
+                    //     controllerNumber:'596235158745953',
+                    //     controllerLevel:'站务初级'
+                    // },
+                    //    {
+                    //     userId:5,
+                    //     action:['删除','修改'],
+                    //     workNumber:60502986,
+                    //     name:'薛婷婷',
+                    //     sex:'女',
+                    //     phoneNumber:13811580959,
+                    //     birthday:'1990-05-07',
+                    //     post:'站务员',
+                    //     station:'西直门',
+                    //     stationArea:'西直门',
+                    //     manager:'否',
+                    //     idCard:'110224199005073822',
+                    //     entryTime:'1997-01-07',
+                    //     maritalStatus:'未婚',
+                    //     childrenHave:'未育',
+                    //     education:'大专',
+                    //     political:'共青团员',
+                    //     partyTime:'2012-08-23',
+                    //     address:'北京市大兴区安定镇杜庄屯十一条',
+                    //     stationCertificateNumber:'5956321478952695',
+                    //     stationCertificateLevel:'站务初级',
+                    //     peopleCode:'5236598451259635',
+                    //     fireCertificateNumber:'5963251489562359',
+                    //     controllerNumber:'5956321584596325',
+                    //     controllerLevel:'站务初级'
+                    // },
                 ],
                 selectedItmes: [],
                 addPerson: {
                     employeeCard: '',
-                    peopleCode: '',
+                    employeeCode: '',
                     userName: '',
                     district: '',
                     station: '',
@@ -609,7 +599,7 @@
                 },
                 editPerson: {
                     employeeCard: '',
-                    peopleCode: '',
+                    employeeCode: '',
                     userName: '',
                     district: '',
                     station: '',
@@ -643,9 +633,28 @@
             this.request();
             // 获取角色
             this.getRole();
+            // 获取用户列表
+            this.getUserList();
         },
         methods:{
-              //  获取站区
+            //  获取用户列表
+            getUserList: async function () {
+                let data = {
+                   districtId: this.districtId,
+                   stationId: this.stationId,
+                   positionId: this.positionId
+                }
+                let response = await getUser(data);
+                console.log(response.data);
+                if (response.meta.code !== 0) {
+                    this.$Loading.error();
+                    this.$Message.error(response.meta.message);
+                }else{
+                    this.$Loading.finish();
+                    this.personList = response.data;
+                }
+            },
+            //  获取站区
             request: async function(){
                 let response = await stationAreaList();
                 if (response.meta.code !== 0) {
@@ -654,7 +663,6 @@
                 }else{
                     this.$Loading.finish();
                     this.districts = response.data;
-                    console.log(this.districts);
                 }
             },
             // 获取角色
@@ -667,7 +675,6 @@
                 this.$Loading.finish();
                 this.roles = response.data;
                 }
-                console.log(response);
             },
               // 获取站点
              getAllStations: async function () {
@@ -679,7 +686,6 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.stations = response.data;
-                    console.log(response);
                     return;
                 }
                 this.$Message.error(message);
@@ -695,7 +701,6 @@
                     let message = response.meta.message;
                     if(response.meta.code === 0){
                         this.position = response.data;
-                        console.log(response);
                         return;
                     }
                     this.$Message.error(message);
@@ -703,37 +708,25 @@
                 
             },
             //  删除一行
-            removeLine:function(){
+            removeLine: async function(){
                 var e = e || window.event;
                 var target = e.target || e.srcElement;
-                target.parentNode.parentNode.remove();
+                var currentId=e.target.parentNode.parentNode.id.split("-");
+                var id = parseInt(currentId[1]);
+                //target.parentNode.parentNode.remove();
+                //  let response = await deleteUser(id);
+                //     if (response.meta.code !== 0) {
+                //         this.$Loading.error();
+                //         this.$Message.error(response.meta.message);
+                //     }else{
+                //         this.$Loading.finish();
+                //         console.log(response);
+                //         this.$Message.success("删除人员成功")
+                //     } 
             },
-            //  编辑人员提交验证
-            editPersonModalMethod:function(name){
-                console.log(name);
+             //编辑人员提交验证
+            editPersonModalMethod: function(name){
                   this.$refs[name].validate((valid) => {
-                    if (valid) {
-                        this.$Message.success('新增人员成功!');
-                        this.addPersonModal = false;
-                        this.$refs[name].resetFields();
-                    } else {
-                        this.$Message.error('新增人员失败');
-                    }
-                })
-                // this.editPersonModal=true;
-                // var id=e.target.parentNode.parentNode.id-1;
-                // let obj = this.personList[id]; 
-                // for(let key in obj){
-                //     this.editPerson[key] = obj[key];
-                // }
-            },
-            // 编辑人员
-            editPersonMethod:function () {
-                this.editPersonModal=true;
-            },
-            // 新增人员前进行验证
-            beforeAddUser:function (name) {
-                   this.$refs[name].validate((valid) => {
                     if (valid) {
                         this.$Message.success('编辑人员成功!');
                         this.addPersonModal = false;
@@ -743,41 +736,125 @@
                     }
                 })
             },
-            addUser: function (that) {
-                let currentDistrict = this.addPerson.district;
-                let currentStation = this.addPerson.station;
-                let currentPosition = this.addPerson.post;
+            beforeEditPersonModalMethod: async function (that) {
+                let currentDistrict = that.editPerson.district.split('-');
+                let currentStation = that.editPerson.station.split('-');
+                let currentPosition = that.editPerson.post.split('-');
                 let data = {
                     districtId: parseInt(currentDistrict[0]),
-                    districtName: parseInt(currentDistrict[1]),
+                    districtName: currentDistrict[1],
                     stationId: parseInt(currentStation[0]),
-                    stationName: parseInt(currentStation[1]),
+                    stationName: currentStation[1],
                     positionId: parseInt(currentPosition[0]),
-                    positionName: parseInt(currentPosition[1]),
-                    employeeCard: addPerson.employeeCard,
-                    peopleCode: addPerson.peopleCode,
-                    userName: addPerson.userName,
-                    manager: addPerson.manager,
-                    password: addPerson.password,
-                    plan: addPerson.plan,
-                    gender: addPerson.gender,
-                    phoneNumber: addPerson.phoneNumber,
-                    birthday: addPerson.birthday,
-                    idCardNumber: addPerson.idCardNumber,
-                    entryDate: addPerson.entryDate,
-                    isMarried: ddPerson.isMarried,
-                    hasChild: addPerson.hasChild,
-                    eduBackGround: addPerson.eduBackGround,
-                    partyMember: addPerson.partyMember,
-                    joinDate: addPerson.joinDate,
-                    certNo: addPerson.certNo,
-                    certLevel: addPerson.certLevel,
-                    homeAddress: addPerson.homeAddress,
-                    xfzNo: addPerson.xfzNo,
-                    zwyNo: addPerson.zwyNo,
-                    zwyLevel: addPerson.zwyLevel,
-                    backup:addPerson.backup
+                    positionName: currentPosition[1],
+                    employeeCard: that.editPerson.employeeCard,
+                    employeeCode: that.editPerson.employeeCode,
+                    userName: that.editPerson.userName,
+                    password: that.editPerson.password,
+                    roleId: that.editPerson.plan,
+                    gender: that.editPerson.gender,
+                    phoneNumber: that.editPerson.phoneNumber,
+                    birthday: that.editPerson.birthday,
+                    idCardNumber: that.editPerson.idCardNumber,
+                    entryDate: that.editPerson.entryDate,
+                    isMarried: that.editPerson.isMarried,
+                    hasChild: that.editPerson.hasChild,
+                    eduBackGround: that.editPerson.eduBackGround,
+                    partyMember: that.editPerson.partyMember,
+                    joinDate: that.editPerson.joinDate,
+                    certNo: that.editPerson.certNo,
+                    certLevel: that.editPerson.certLevel,
+                    homeAddress: that.editPerson.homeAddress,
+                    xfzNo: that.editPerson.xfzNo,
+                    zwyNo: that.editPerson.zwyNo,
+                    zwyLevel: that.editPerson.zwyLevel,
+                    backup:that.editPerson.backup
                 }
+                   let response = await updateUser(data);
+                    if (response.meta.code !== 0) {
+                        that.$Loading.error();
+                        that.$Message.error(response.meta.message);
+                    }else{
+                        that.$Loading.finish();
+                        that.$Message.success("修改人员成功")
+                    } 
+            },
+            // 编辑人员
+            editPersonMethod:function (e) {
+                this.editPersonModal=true;
+                var currentId=e.target.parentNode.parentNode.id.split("-");
+                var id = parseInt(currentId[0]);
+                let obj = this.personList[id]; 
+                for(let key in obj){
+                    this.editPerson[key] = obj[key];
+                }
+            },
+            // 新增人员前进行验证
+            beforeAddUser:function (name) {
+                let that = this
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        this.addPersonModal = false;
+                        this.$options.methods.addUser(that);
+                        this.$refs[name].resetFields();
+                    } else {
+                        this.$Message.error('新增人员失败');
+                    }
+                })
+            },
+            addUser: async function (that) {
+                console.log("11111");
+                console.log(that.addPerson.district);
+                console.log(that.addPerson.station);
+                console.log(that.addPerson.post);
+                console.log(that.addPerson.plan);
+                let currentDistrict = that.addPerson.district.split('-');
+                let currentStation = that.addPerson.station.split('-');
+                let currentPosition = that.addPerson.post.split('-');
+                let currentRole = that.addPerson.plan.split('-');
+                console.log("11111");
+                let data = {
+                    districtId: parseInt(currentDistrict[0]),
+                    districtName: currentDistrict[1],
+                    stationId: parseInt(currentStation[0]),
+                    stationName: currentStation[1],
+                    positionId: parseInt(currentPosition[0]),
+                    positionName: currentPosition[1],
+                    employeeCard: that.addPerson.employeeCard,
+                    employeeCode: that.addPerson.employeeCode,
+                    userName: that.addPerson.userName,
+                    password: that.addPerson.password,
+                    roleId: parseInt(currentRole[0]),
+                    gender: that.addPerson.gender,
+                    phoneNumber: that.addPerson.phoneNumber,
+                    birthday: that.addPerson.birthday,
+                    idCardNumber: that.addPerson.idCardNumber,
+                    entryDate: that.addPerson.entryDate,
+                    isMarried: that.addPerson.isMarried,
+                    hasChild: that.addPerson.hasChild,
+                    eduBackGround: that.addPerson.eduBackGround,
+                    partyMember: that.addPerson.partyMember,
+                    joinDate: that.addPerson.joinDate,
+                    certNo: that.addPerson.certNo,
+                    certLevel: that.addPerson.certLevel,
+                    homeAddress: that.addPerson.homeAddress,
+                    xfzNo: that.addPerson.xfzNo,
+                    zwyNo: that.addPerson.zwyNo,
+                    zwyLevel: that.addPerson.zwyLevel,
+                    backup:that.addPerson.backup
+                }
+                console.log(data);
+                let response = await addUser(data);
+                console.log(response);
+                if (response.meta.code !== 0) {
+                    that.$Loading.error();
+                    that.$Message.error(response.meta.message);
+                }else{
+                    that.$Loading.finish();
+                    that.personList.push(response.data);
+                    console.log(response);
+                    that.$Message.success("新增人员成功")
+                } 
             },
             // 取消提交清空验证信息
             beforeCancel:function (name){
@@ -785,7 +862,7 @@
             }
         }
        
-    }
+}
 </script>
 <style scoped>
     @import '../assets/css/index.css';
