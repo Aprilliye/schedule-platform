@@ -55,3 +55,15 @@ export const getWorkFlow = id => fetch('/workflow/getallworkflowcontent/'+ id, {
 
 /** 新增工作流程 */
 //export const addWorkFlow = id => fetch();
+
+
+/********************* 新增排班 **********************/
+
+/** 查询排班计划 */
+export const getScheduleInfo = id => fetch('/schedule/getscheduleinfo/' + id, {}, 'GET');
+
+/** 生成模版 */
+export const createTemplate = id => fetch('/schedule/createtemplate/' + id, {}, 'POST');
+
+/** 加载排班模版 */
+export const loadTemplate = id => fetch('/schedule/templatelist/' + id, {}, 'GET');

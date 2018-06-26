@@ -4,11 +4,11 @@
             <div class="content-header">
                 <div class="tabItem">
                     <span>选择班制：</span>
-                    <Select v-model="currentShift" style="width:200px">
-                        <Option v-for="(item, index) in shifts" :value="item" :key="index">{{ item }}</Option>
+                    <Select v-model="currentSuiteId" style="width:200px" @on-change="loadTemplate(currentSuiteId)">
+                        <Option v-for="item in suites" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
                     </Select>
                     <button class="btnDefault bgGreen" @click="loadTemplate">保存排班</button>
-                    <button class="btnDefault bgBlue" @click="generateTemplate">生成模板</button>
+                    <button type="button" class="btnDefault bgBlue" @click="createTemplate(currentSuiteId)">生成模板</button>
                     <!-- <button class="btnDefault bgGreen" v-show="showSaveBtn">保存排班</button> -->
                     <p class="result" v-show="showResult">
                         <span>日平均<b>{{result.dayAverage}}</b>小时，</span>
@@ -80,10 +80,12 @@
 </template>
 <script>
     let self = null;
-    import {result} from '@/assets/data/data.js'
+    import {result} from '@/assets/data/data.js';
+    import {getSuites, getScheduleInfo, loadTemplate, createTemplate} from '@/api/api';
     export default {
         data:function () {
             return {
+                districtId: this.$store.get('districtId'),
                 showChangeBtn: false,
                 showTable: false,
                 globalShiftCounts: {},
@@ -99,8 +101,8 @@
                     userId: null
                 },
                 currentResult: {},
-                shifts: ['班制一','班制二'],
-                currentShift: '班制一',
+                suites: [],
+                currentSuiteId: '班制一',
                 //showSaveBtn: false,
                 showResult: false,
                 result: {
@@ -137,19 +139,52 @@
         },
         mounted: function () {
             self = this;
+            //  获取班制列表
+            this.getSuites();
             for(let key in result.shifts){
                 this.shiftsData.push(result.shifts[key]);
             }
-            setTimeout(function () {
-                self.loadTemplate();
-            },10)
+            // setTimeout(function () {
+            //     self.loadTemplate();
+            // },10)
         },
         methods:{
+            //  获取所有班制
+            getSuites: async function () {
+                let data = {
+                    districtId: this.districtId
+                };
+                let response = await getSuites(data);
+                if(response.meta.code === 0){
+                    this.suites = response.data;
+                    if(this.suites.length !== 0){
+                        this.currentSuiteId = response.data[0].id;
+                        this.loadTemplate(this.currentSuiteId);
+                    }
+                    return;
+                }
+                this.$Message.error(response.meta.message);
+            },
+            //  生成模版
+            createTemplate: async function (id) {
+                console.log(id)
+                let response = await createTemplate(id);
+                console.log(response);
+            },
+            // 查询排班计划
+            getScheduleInfo: async function (id) {
+                let response = await getScheduleInfo(id);
+            },
             //  加载模板
-            loadTemplate: function(){
-                this.autoData = this.deepCopy(result);
-                this.currentResult = this.autoData;
-                this.template(this.autoData);
+            loadTemplate: async function(id){
+                if(!id){
+                    return;
+                }
+                let response = await loadTemplate(id);
+                console.log(response);
+                // this.autoData = this.deepCopy(result);
+                // this.currentResult = this.autoData;
+                // this.template(this.autoData);
             },
             //  计算周工时
             calcWeeklyTime: function (n) {

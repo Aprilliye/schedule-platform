@@ -10,8 +10,8 @@ let baseURL = '';
 let routerMode = 'history';
 
 if (process.env.NODE_ENV === 'development') {
-    //baseURL = 'http://192.168.2.232:8765';
-    baseURL = 'http://suspnp.com/schedule/api/';
+    baseURL = 'http://192.168.2.232:8765';
+    //baseURL = 'http://suspnp.com/schedule/api/';
 } else {
     baseURL = '';
 }
