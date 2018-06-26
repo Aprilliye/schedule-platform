@@ -33,3 +33,8 @@ export const deleteStation = id => fetch('/station/' + id, {}, 'DELETE');
 /** 修改站点 */
 export const updateStation = (id, data) => fetch('/station/' + id, data, 'PUT');
 
+/***************************** 人员设置 *******************************/
+
+/** 新增用户 */
+export const addUser = data => fetch('/user/add', data, 'POST');
+

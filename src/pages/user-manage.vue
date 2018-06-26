@@ -729,11 +729,11 @@
             beforeAddUser:function (name) {
                    this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$Message.success('新增人员成功!');
+                        this.$Message.success('编辑人员成功!');
                         this.addPersonModal = false;
                         this.$refs[name].resetFields();
                     } else {
-                        this.$Message.error('新增人员失败');
+                        this.$Message.error('编辑人员失败');
                     }
                 })
             },
