@@ -38,3 +38,6 @@ export const updateStation = (id, data) => fetch('/station/' + id, data, 'PUT');
 /** 新增用户 */
 export const addUser = data => fetch('/user/add', data, 'POST');
 
+/** 获取角色 */
+export const getRole = () => fetch('/role', {},'GET');
+

@@ -11,12 +11,12 @@
                 <input type="hidden" id="permissionIds" name="permissionIds"/>
                 <input type="hidden" name="roleId" id="roleId" value="$!role.roleId">
                 <div class="form_line">
-                    <label class="requireredstar">权限方案名称：</label>
+                    <label class="requireredstar">角色名称：</label>
                     <input type="text" name="roleName" v-model="addroleName">
-                    <span style="color: red" v-show="updateRolespan">权限方案名称不能为空</span>
+                    <span style="color: red" v-show="updateRolespan">角色名称不能为空</span>
                 </div>
                 <div class="form_line">
-                    <label class="float-left">权限方案描述：</label>
+                    <label class="float-left">角色描述：</label>
                     <textarea class="roleSchemedescription" name="comment"  v-model="addrolecomment"></textarea>
                 </div>
                 <div class="clear"></div>

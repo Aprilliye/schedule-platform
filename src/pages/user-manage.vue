@@ -36,7 +36,6 @@
                             <th width="80">岗位</th>
                             <th width="80">站点</th>
                             <th width="80">站区</th>
-                            <th width="80">管理员</th>
                             <th width="80" v-show="tableItem[0].ifShow">身份证</th>
                             <th width="120" v-show="tableItem[1].ifShow">入职时间</th>
                             <th width="80" v-show="tableItem[2].ifShow">婚姻状况</th>
@@ -64,7 +63,6 @@
                             <td>{{item.post}}</td>
                             <td>{{item.station}}</td>
                             <td>{{item.stationArea}}</td>
-                            <td>{{item.manager}}</td>
                             <td v-show="tableItem[0].ifShow">{{item.idCard}}</td>
                             <td v-show="tableItem[1].ifShow">{{item.entryTime}}</td>
                             <td v-show="tableItem[2].ifShow">{{item.maritalStatus}}</td>
@@ -116,21 +114,20 @@
                         </Select>
                     </FormItem>
                     <FormItem label="站点" prop="station" class="userModal">
-                        <Select v-model="addPerson.station">
+                        <Select v-model="addPerson.station" @on-change="getAllPosts">
                              <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
                         </Select>
                     </FormItem>
-                    <FormItem label="管理员" prop="manager" class="userModal">
-                        <Select v-model="addPerson.manager">
-                            <Option value="0">否</Option>
-                            <Option value="1">是</Option>
+                    <FormItem label="角色" prop="plan" class="userModal">
+                        <Select v-model="addPerson.plan">
+                        <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="密码" prop="password" class="userModal">
                         <Input v-model="addPerson.password"></Input>
                         <span class="red">请记录此密码作为下次登录用</span>
                     </FormItem>
-                    <FormItem label="权限方案" prop="plan" class="userModal">
+                    <FormItem label="角色" prop="plan" class="userModal">
                         <Select  v-model="addPerson.plan">
                         <Option value="超级管理员">超级管理员</Option>
                         <Option value="系统管理员">系统管理员</Option>
@@ -157,7 +154,7 @@
                     </FormItem>
                     <FormItem label="婚否" prop="isMarried" class="userModal">
                         <Select  v-model="addPerson.isMarried">
-                            <Option value="0">已婚</Option>
+                            <Option value="1">已婚</Option>
                             <Option value="0">未婚</Option>
                         </Select>
                     </FormItem>
@@ -205,7 +202,7 @@
                     <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
                         <Input v-model="addPerson.zwyLevel"></Input>
                     </FormItem>
-                    <FormItem label="是否为补位人员" prop="backup" class="userModal">
+                    <FormItem label="是否为备班人员" prop="backup" class="userModal">
                         <Select  v-model ="addPerson.backup" placeholder="请选择">
                             <Option value = "1">是</Option>
                             <Option value = "0">否</Option>
@@ -258,11 +255,9 @@
                         <Input v-model="editPerson.password"></Input>
                         <span class="red">请记录此密码作为下次登录用</span>
                     </FormItem>
-                    <FormItem label="权限方案" prop="plan" class="userModal">
-                        <Select  v-model="editPerson.plan">
-                        <Option value="超级管理员">超级管理员</Option>
-                        <Option value="系统管理员">系统管理员</Option>
-                        <Option value="管理员">管理员</Option>
+                     <FormItem label="角色" prop="plan" class="userModal">
+                        <Select v-model="editPerson.plan">
+                        <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
@@ -285,7 +280,7 @@
                     </FormItem>
                     <FormItem label="婚否" prop="isMarried" class="userModal">
                         <Select  v-model="editPerson.isMarried">
-                            <Option value="0">已婚</Option>
+                            <Option value="1">已婚</Option>
                             <Option value="0">未婚</Option>
                         </Select>
                     </FormItem>
@@ -333,7 +328,7 @@
                     <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
                         <Input v-model="editPerson.zwyLevel"></Input>
                     </FormItem>
-                    <FormItem label="是否为补位人员" prop="backup" class="userModal">
+                    <FormItem label="是否备班人员" prop="backup" class="userModal">
                         <Select  v-model ="editPerson.backup" placeholder="请选择">
                             <Option value = "1">是</Option>
                             <Option value = "0">否</Option>
@@ -346,7 +341,7 @@
 </template>
 <script>
     import {getAllPost} from '@/api/api';
-    import {stationAreaList, getStations, addUser} from '@/api/commonAPI';
+    import {stationAreaList, getStations, addUser, getRole} from '@/api/commonAPI';
     export default {
         data: function () {
             return {
@@ -362,7 +357,8 @@
                 currentStation:'',
                 // 当前岗位
                 currentPosition:'',
-                stationId: this.$store.get('stationId'),
+                // 角色
+                roles:[],
                 addPersonModal: false,
                 editPersonModal: false,
                 targetId:'',
@@ -428,10 +424,8 @@
                    employeeCard: [{required: true, message: '员工卡号不能为空', trigger: 'blur' }],
                    peopleCode: [{required: true, message: '人员编码不能为空', trigger: 'blur' }],
                    userName: [{required: true, message: '姓名不能为空', trigger: 'blur' }],
-                   station: [{required: true, message: '站点不能为空', trigger: 'change' }],
                    district: [{required: true, message: '站区不能为空', trigger: 'change' }],
                    post: [{required: true, message: '岗位不能为空', trigger: 'change' }],
-                   manager: [{required: true, message: '管理员不能为空', trigger: 'change' }],
                    password: [{required: true, message: '密码不能为空', trigger: 'blur' }],
                    plan: [{required: true, message: '权限方案不能为空', trigger: 'change' }],
                    gender: [{required: true, message: '性别不能为空', trigger: 'change' }],
@@ -442,15 +436,9 @@
                    hasChild: [{required: true, message: '生育不能为空', trigger: 'change' }],
                    eduBackGround: [{required: true, message: '学历不能为空', trigger: 'change' }],
                    partyMember: [{required: true, message: '政治面貌不能为空', trigger: 'change' }],
-                   joinDate: [{required: true, message: '入党时间不能为空', trigger: 'blur' }],
-                   certNo: [{required: true, message: '站务员证书编号不能为空', trigger: 'blur' }],
-                   certLevel: [{required: true, message: '站务员证等级不能为空', trigger: 'blur' }],
-                   xfzNo: [{required: true, message: '消防证书编号不能为空', trigger: 'blur' }],
-                   zwyNo: [{required: true, message: '综控员证书编号不能为空', trigger: 'blur' }],
-                   zwyLevel: [{required: true, message: '综控员证书级别不能为空', trigger: 'blur' }],
                    entryDate: [{required: true, message: '入职时间不能为空', trigger: 'blur' }],
                    homeAddress: [{required: true, message: '住址不能为空', trigger: 'blur' }],
-                   backup: [{required: true, message: '是否为补位人员不能为空', trigger: 'change' }],
+                   backup: [{required: true, message: '是否备班不能为空', trigger: 'change' }],
                    
                 },
                 personList:[
@@ -651,10 +639,10 @@
             }
         },
         mounted: function () {
-            //  获取岗位
-            this.getAllPost();
             // 获取站区
             this.request();
+            // 获取角色
+            this.getRole();
         },
         methods:{
               //  获取站区
@@ -669,8 +657,21 @@
                     console.log(this.districts);
                 }
             },
+            // 获取角色
+            getRole: async function (){
+                let response = await getRole();
+                if (response.meta.code !== 0) {
+                this.$Loading.error();
+                this.$Message.error(response.meta.message);
+                }else{
+                this.$Loading.finish();
+                this.roles = response.data;
+                }
+                console.log(response);
+            },
               // 获取站点
              getAllStations: async function () {
+                this.addPerson.station = '';
                 if (this.addPerson.district) {
                 let currentDistrict = this.addPerson.district.split('-');
                 let id = parseInt(currentDistrict[0]);
@@ -685,16 +686,21 @@
                 }
             },
               //  获取所有岗位
-            getAllPost: async function () {
-                console.log(this.stationId);
-                let response = await getAllPost(this.stationId);
-                let message = response.meta.message;
-                if(response.meta.code === 0){
-                    this.position = response.data;
-                    console.log(response);
-                    return;
-                }
-                this.$Message.error(message);
+            getAllPosts: async function () {
+                this.addPerson.post = '';
+                if (this.addPerson.station) {
+                    let stationCurrent = this.addPerson.station.split('-');
+                    let id =parseInt(stationCurrent[0]);
+                    let response = await getAllPost(id);
+                    let message = response.meta.message;
+                    if(response.meta.code === 0){
+                        this.position = response.data;
+                        console.log(response);
+                        return;
+                    }
+                    this.$Message.error(message);
+                    }
+                
             },
             //  删除一行
             removeLine:function(){
