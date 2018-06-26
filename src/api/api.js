@@ -67,3 +67,8 @@ export const createTemplate = id => fetch('/schedule/createtemplate/' + id, {}, 
 
 /** 加载排班模版 */
 export const loadTemplate = id => fetch('/schedule/templatelist/' + id, {}, 'GET');
+
+/******************  权限管理  ******************/
+
+/** 获取所有权限 */
+export const getAllPermissions = () => fetch('/permissions', {}, 'GET');

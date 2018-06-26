@@ -67,6 +67,7 @@
                        this.$store.set('stationId', user.stationId);
                        this.$store.set('userName', user.userName);
                        this.$store.set('positionId', user.positionId);
+                       this.$store.set('schedule_identify', response.data.token);
                        this.$router.push({ path: "/home" });
                    }
                 //  }else{
