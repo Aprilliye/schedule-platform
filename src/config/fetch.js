@@ -23,7 +23,6 @@ export default async (url = '', data = {}, method = 'GET') => {
             params = params.substr(0, params.lastIndexOf('&'));
             url = url + '?' + params;
         }
-
         return await http.get(url)
             .then(response => response)
             .catch(function (err) {

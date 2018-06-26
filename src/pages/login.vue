@@ -23,6 +23,7 @@
 </template>
 <script>
     import {login} from "../api/commonAPI";
+    import {DISTRICTID, STATIONID, USERNAME, POSITIONID, SCHEDULE_IDENTIFY} from '@/utils/const';
     export default{
         data: function () {
             return {
@@ -62,12 +63,11 @@
                        this.$Message.error(response.meta.message);
                    }else{
                        let user = response.data.user;
-                       console.log(response);
-                       this.$store.set('districtId', user.districtId);
-                       this.$store.set('stationId', user.stationId);
-                       this.$store.set('userName', user.userName);
-                       this.$store.set('positionId', user.positionId);
-                       this.$store.set('schedule_identify', response.data.token);
+                       this.$store.set(DISTRICTID, user.districtId);
+                       this.$store.set(STATIONID, user.stationId);
+                       this.$store.set(USERNAME, user.userName);
+                       this.$store.set(POSITIONID, user.positionId);
+                       this.$store.set(SCHEDULE_IDENTIFY, response.data.token);
                        this.$router.push({ path: "/home" });
                    }
                 //  }else{

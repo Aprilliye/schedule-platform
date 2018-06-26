@@ -392,3 +392,42 @@ select {
   border-bottom: 1px solid #ddd;
   line-height: 40px;
 }
+.permission {
+  border-bottom: 1px solid #e5e5e5;
+  padding: 10px;
+  overflow: hidden;
+  clear: both;
+}
+.permission > div {
+  float: left;
+}
+.permission > div label {
+  float: left;
+  width: 100%;
+  overflow: hidden;
+  clear: 0;
+  line-height: 28px;
+}
+.permission > div label input {
+  float: left;
+  margin-right: 5px;
+}
+.permission .level1 {
+  width: 33%;
+  margin-left: 15%;
+}
+.permission .level1 label b {
+  color: #000;
+}
+.permission .level2 {
+  width: 40%;
+}
+.permission .level2 label b {
+  color: #000;
+}
+.permission .level3 {
+  width: 100%;
+}
+.permission .level3 label {
+  margin-left: 20px;
+}

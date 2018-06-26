@@ -134,6 +134,7 @@
   </div>
 </template>
 <script>
+import {DISTRICTID, STATIONID, USERNAME, POSITIONID, SCHEDULE_IDENTIFY} from '@/utils/const';
     export default {
         data: function () {
             return {
@@ -144,12 +145,11 @@
             doLogout: async function () {
                 // TODO
                 this.$router.replace({name: 'Login'});
-                this.$store.remove('districtId')
-                this.$store.remove('districtId');
-                this.$store.remove('stationId');
-                this.$store.remove('userName');
-                this.$store.remove('positionId');
-                this.$store.remove('schedule_identify');
+                this.$store.remove(DISTRICTID);
+                this.$store.remove(STATIONID);
+                this.$store.remove(USERNAME);
+                this.$store.remove(POSITIONID);
+                this.$store.remove(SCHEDULE_IDENTIFY);
             },
         }
     }
