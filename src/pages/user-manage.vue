@@ -10,9 +10,9 @@
                 <div class=" float-right">
                     <div class="search-input float-left">
                         <span class="icon-5"></span>
-                        <input type="text" placeholder="" name="roleName">
+                        <input type="text" placeholder="按员工卡号查询" name="roleName" v-model="fuzzyQueryModal">
                     </div>
-                    <a class="btnDefault bgBlue queryBtn">查询</a>
+                    <a class="btnDefault bgBlue queryBtn" @click="fuzzyQuery">查询</a>
                 </div>
                 <div class="clear"></div>
             </div>
@@ -103,15 +103,14 @@
                     <FormItem label="姓名" prop="userName" class="userModal">
                         <Input v-model="addPerson.userName"></Input>
                     </FormItem>
-                     <FormItem label="站区" prop="district" class="userModal" >
+                     <FormItem label="站区" prop="district" class="userModal"  v-show="showDistrict">
                         <Select v-model="addPerson.district" @on-change="getAllStations">
                             <Option v-for="(item,index) in districts" :value="item.id+'-'+item.districtName" :key="index">{{item.districtName}}</Option>
                         </Select>
                     </FormItem>
-                    <FormItem label="岗位" prop="post" class="userModal">
-                        <Select v-model="addPerson.post">
-                            <Option v-for="(item,index) in position" :value="item.id+'-'+item.positionName" :key="index">{{item.positionName}}</Option>
-                        </Select>
+                    <FormItem label="密码" prop="password" class="userModal">
+                        <Input v-model="addPerson.password"></Input>
+                        <span class="red">请记录此密码作为下次登录用</span>
                     </FormItem>
                     <FormItem label="站点" prop="station" class="userModal">
                         <Select v-model="addPerson.station" @on-change="getAllPosts">
@@ -123,9 +122,10 @@
                         <Option v-for="(item,index) in roles" :value="item.id+'-'+item.name" :key="index">{{item.name}}</Option>
                         </Select>
                     </FormItem>
-                    <FormItem label="密码" prop="password" class="userModal">
-                        <Input v-model="addPerson.password"></Input>
-                        <span class="red">请记录此密码作为下次登录用</span>
+                    <FormItem label="岗位" prop="post" class="userModal">
+                        <Select v-model="addPerson.post">
+                            <Option v-for="(item,index) in position" :value="item.id+'-'+item.positionName" :key="index">{{item.positionName}}</Option>
+                        </Select>
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
                         <Select v-model="addPerson.gender">
@@ -223,9 +223,18 @@
                     <FormItem label="姓名" prop="userName" class="userModal">
                         <Input v-model="editPerson.userName"></Input>
                     </FormItem>
-                     <FormItem label="站区" prop="district" class="userModal" >
+                     <FormItem label="站区" prop="district" class="userModal" v-show="showDistrict">
                         <Select v-model="editPerson.district" @on-change="getAllStations">
                             <Option v-for="(item,index) in districts" :value="item.id+'-'+item.districtName" :key="index">{{item.districtName}}</Option>
+                        </Select>
+                    </FormItem>
+                     <FormItem label="密码" prop="password" class="userModal">
+                        <Input v-model="editPerson.password"></Input>
+                        <span class="red">请记录此密码作为下次登录用</span>
+                    </FormItem>
+                    <FormItem label="站点" prop="station" class="userModal">
+                        <Select v-model="editPerson.station" @on-change="getAllPosts">
+                             <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="岗位" prop="post" class="userModal">
@@ -233,18 +242,9 @@
                             <Option v-for="(item,index) in position" :value="item.id+'-'+item.positionName" :key="index">{{item.positionName}}</Option>
                         </Select>
                     </FormItem>
-                    <FormItem label="站点" prop="station" class="userModal">
-                        <Select v-model="editPerson.station">
-                             <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="密码" prop="password" class="userModal">
-                        <Input v-model="editPerson.password"></Input>
-                        <span class="red">请记录此密码作为下次登录用</span>
-                    </FormItem>
                     <FormItem label="角色" prop="plan" class="userModal">
                         <Select v-model="editPerson.plan">
-                            <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
+                            <Option v-for="(item,index) in roles" :value="item.id+'-'+item.name" :key="index">{{item.name}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
@@ -328,7 +328,7 @@
 </template>
 <script>
     import {getAllPost} from '@/api/api';
-    import {stationAreaList, getStations, addUser, getRole, updateUser, getUser, deleteUse} from '@/api/commonAPI';
+    import {stationAreaList, getStations, addUser, getRole, updateUser, getUser, deleteUser} from '@/api/commonAPI';
     export default {
         data: function () {
             return {
@@ -344,13 +344,20 @@
                 currentStation:'',
                 // 当前岗位
                 currentPosition:'',
-                // 角色
+                // 角色列表
                 roles:[],
+                // 当前角色
+                role:this.$store.get('role'),
+                // 修改用户当前id
+                EditId:null,
+                fuzzyQueryModal:'',
+                showDistrict:false,
                 addPersonModal: false,
                 editPersonModal: false,
                 districtId: this.$store.get('districtId'),
                 stationId: this.$store.get('stationId'),
                 positionId: this.$store.get('positionId'),
+                districtName: this.$store.get('districtName'),
                 targetId:'',
                 tableItem: [
                     {
@@ -414,7 +421,6 @@
                    employeeCard: [{required: true, message: '员工卡号不能为空', trigger: 'blur' }],
                    employeeCode: [{required: true, message: '人员编码不能为空', trigger: 'blur' }],
                    userName: [{required: true, message: '姓名不能为空', trigger: 'blur' }],
-                   district: [{required: true, message: '站区不能为空', trigger: 'change' }],
                    post: [{required: true, message: '岗位不能为空', trigger: 'change' }],
                    password: [{required: true, message: '密码不能为空', trigger: 'blur' }],
                    plan: [{required: true, message: '权限方案不能为空', trigger: 'change' }],
@@ -645,7 +651,6 @@
                    positionId: this.positionId
                 }
                 let response = await getUser(data);
-                console.log(response.data);
                 if (response.meta.code !== 0) {
                     this.$Loading.error();
                     this.$Message.error(response.meta.message);
@@ -654,16 +659,47 @@
                     this.personList = response.data;
                 }
             },
-            //  获取站区
-            request: async function(){
-                let response = await stationAreaList();
+            // 模糊查询
+            fuzzyQuery: async function (){
+                let data = {
+                    districtId: this.districtId,
+                    stationId: this.stationId,
+                    positionId: this.positionId,
+                    employeeCard: this.fuzzyQueryModal
+                }
+                let response = await getUser(data);
                 if (response.meta.code !== 0) {
                     this.$Loading.error();
                     this.$Message.error(response.meta.message);
                 }else{
                     this.$Loading.finish();
-                    this.districts = response.data;
+                    this.personList = response.data;
                 }
+                this.fuzzyQueryModal='';
+            },
+            //  获取站区/站点
+            request: async function(){
+                if(this.role === 'admin'){
+                    this.showDistrict = true;
+                    let response = await stationAreaList();
+                    if (response.meta.code !== 0) {
+                        this.$Loading.error();
+                        this.$Message.error(response.meta.message);
+                    }else{
+                        this.$Loading.finish();
+                        this.districts = response.data;
+                    }
+                }else if(this.role === 'district'){
+                    this.showDistrict = false;
+                    let id = this.districtId;
+                    let response = await getStations(id);
+                    let message = response.meta.message;
+                    if(response.meta.code === 0){
+                        this.stations = response.data;
+                        return;
+                    }
+                    this.$Message.error(message);
+                    }
             },
             // 获取角色
             getRole: async function (){
@@ -679,8 +715,19 @@
               // 获取站点
              getAllStations: async function () {
                 this.addPerson.station = '';
+                this.editPerson.station = ''
                 if (this.addPerson.district) {
                 let currentDistrict = this.addPerson.district.split('-');
+                let id = parseInt(currentDistrict[0]);
+                let response = await getStations(id);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.stations = response.data;
+                    return;
+                }
+                this.$Message.error(message);
+                }else if(this.editPerson.district){
+                let currentDistrict = this.editPerson.district.split('-');
                 let id = parseInt(currentDistrict[0]);
                 let response = await getStations(id);
                 let message = response.meta.message;
@@ -694,6 +741,7 @@
               //  获取所有岗位
             getAllPosts: async function () {
                 this.addPerson.post = '';
+                this.editPerson.post = '';
                 if (this.addPerson.station) {
                     let stationCurrent = this.addPerson.station.split('-');
                     let id =parseInt(stationCurrent[0]);
@@ -704,6 +752,15 @@
                         return;
                     }
                     this.$Message.error(message);
+                    }else if (this.editPerson.station){
+                        let stationCurrent = this.editPerson.station.split('-');
+                        let id =parseInt(stationCurrent[0]);
+                        let response = await getAllPost(id);
+                        let message = response.meta.message;
+                        if(response.meta.code === 0){
+                            this.position = response.data;
+                            return;
+                        }
                     }
                 
             },
@@ -713,23 +770,23 @@
                 var target = e.target || e.srcElement;
                 var currentId=e.target.parentNode.parentNode.id.split("-");
                 var id = parseInt(currentId[1]);
-                //target.parentNode.parentNode.remove();
-                //  let response = await deleteUser(id);
-                //     if (response.meta.code !== 0) {
-                //         this.$Loading.error();
-                //         this.$Message.error(response.meta.message);
-                //     }else{
-                //         this.$Loading.finish();
-                //         console.log(response);
-                //         this.$Message.success("删除人员成功")
-                //     } 
+                let response = await deleteUser(id);
+                if (response.meta.code !== 0) {
+                    this.$Loading.error();
+                    this.$Message.error(response.meta.message);
+                }else{
+                    this.$Loading.finish();
+                    this.personList = response.data;
+                    this.$Message.success("删除人员成功")
+                } 
             },
              //编辑人员提交验证
             editPersonModalMethod: function(name){
+                let that = this;
                   this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$Message.success('编辑人员成功!');
-                        this.addPersonModal = false;
+                        this.editPersonModal = false;
+                        this.$options.methods.beforeEditPersonModalMethod(that);
                         this.$refs[name].resetFields();
                     } else {
                         this.$Message.error('编辑人员失败');
@@ -740,9 +797,11 @@
                 let currentDistrict = that.editPerson.district.split('-');
                 let currentStation = that.editPerson.station.split('-');
                 let currentPosition = that.editPerson.post.split('-');
+                let currentRole = that.addPerson.plan.split('-');
                 let data = {
-                    districtId: parseInt(currentDistrict[0]),
-                    districtName: currentDistrict[1],
+                    id: that.EditId,
+                    districtId: null,
+                    districtName: '',
                     stationId: parseInt(currentStation[0]),
                     stationName: currentStation[1],
                     positionId: parseInt(currentPosition[0]),
@@ -751,7 +810,7 @@
                     employeeCode: that.editPerson.employeeCode,
                     userName: that.editPerson.userName,
                     password: that.editPerson.password,
-                    roleId: that.editPerson.plan,
+                    roleId: parseInt(currentRole[0]),
                     gender: that.editPerson.gender,
                     phoneNumber: that.editPerson.phoneNumber,
                     birthday: that.editPerson.birthday,
@@ -770,17 +829,27 @@
                     zwyLevel: that.editPerson.zwyLevel,
                     backup:that.editPerson.backup
                 }
-                   let response = await updateUser(data);
-                    if (response.meta.code !== 0) {
-                        that.$Loading.error();
-                        that.$Message.error(response.meta.message);
-                    }else{
-                        that.$Loading.finish();
-                        that.$Message.success("修改人员成功")
-                    } 
+                if(that.role === "district"){
+                    data.districtId = that.districtId;
+                    data.districtName = that.districtName;
+                }else if(that.role === "admin"){
+                    data.districtId = parseInt(currentDistrict[0]);
+                    data.districtName = currentDistrict[1];
+                }
+                let response = await updateUser(data);
+                if (response.meta.code !== 0) {
+                    that.$Loading.error();
+                    that.$Message.error(response.meta.message);
+                }else{
+                    that.$Loading.finish();
+                    this.personList = response.data;
+                    that.$Message.success("修改人员成功")
+                } 
             },
             // 编辑人员
             editPersonMethod:function (e) {
+                var currentId=e.target.parentNode.parentNode.id.split("-");
+                this.EditId = parseInt(currentId[1]);
                 this.editPersonModal=true;
                 var currentId=e.target.parentNode.parentNode.id.split("-");
                 var id = parseInt(currentId[0]);
@@ -803,19 +872,13 @@
                 })
             },
             addUser: async function (that) {
-                console.log("11111");
-                console.log(that.addPerson.district);
-                console.log(that.addPerson.station);
-                console.log(that.addPerson.post);
-                console.log(that.addPerson.plan);
                 let currentDistrict = that.addPerson.district.split('-');
                 let currentStation = that.addPerson.station.split('-');
                 let currentPosition = that.addPerson.post.split('-');
                 let currentRole = that.addPerson.plan.split('-');
-                console.log("11111");
                 let data = {
-                    districtId: parseInt(currentDistrict[0]),
-                    districtName: currentDistrict[1],
+                   // districtId: parseInt(currentDistrict[0]),
+                   // districtName: currentDistrict[1],
                     stationId: parseInt(currentStation[0]),
                     stationName: currentStation[1],
                     positionId: parseInt(currentPosition[0]),
@@ -843,17 +906,21 @@
                     zwyLevel: that.addPerson.zwyLevel,
                     backup:that.addPerson.backup
                 }
-                console.log(data);
+                if(that.role === "district"){
+                    data.districtId = that.districtId;
+                    data.districtName = that.districtName;
+                }else if(that.role === "admin"){
+                    data.districtId = parseInt(currentDistrict[0]);
+                    data.districtName = currentDistrict[1];
+                }
                 let response = await addUser(data);
-                console.log(response);
                 if (response.meta.code !== 0) {
                     that.$Loading.error();
                     that.$Message.error(response.meta.message);
                 }else{
                     that.$Loading.finish();
-                    that.personList.push(response.data);
-                    console.log(response);
-                    that.$Message.success("新增人员成功")
+                    that.personList = response.data;
+                    that.$Message.success("新增人员成功");
                 } 
             },
             // 取消提交清空验证信息

@@ -30,19 +30,19 @@
                 <div class="permission" v-for="(item, index) in allPermissions" :key="'level1-'+index">
                     <div class="level1">
                         <label>
-                            <input type="checkbox" level="1">
+                            <input type="checkbox" level="1" @click="ckeckBoxAll">
                             <b>{{item.level1}}</b>
                         </label>
                     </div>
                     <div class="level2">
                         <div v-for="(list,index) in item.permisions" :key="'level2-'+index">
                             <label>
-                                <input type="checkbox" level="2">
+                                <input type="checkbox" level="2" @click="checkBoxLevelTwo">
                                 <b>{{list.level2}}</b>
                             </label>
                             <div class="level3" v-for="permision in list.permisions" :key="'level3-'+permision.id">
                                 <label>
-                                    <input type="checkbox" :code="permision.id">{{permision.name}}
+                                    <input type="checkbox" :code="permision.id" @click="checkBoxLevelThree">{{permision.name}}
                                 </label>
                             </div>
                         </div>
@@ -60,7 +60,7 @@ import {getAllPermissions} from '@/api/api';
                 allPermissions: [],                 //  所有权限
                 addroleName:'',
                 addrolecomment:'',
-                updateRolespan: false
+                updateRolespan: false,
             }
         },
         created: function () {
@@ -70,7 +70,6 @@ import {getAllPermissions} from '@/api/api';
             //  获取所有的权限列表
             getAllPermissions: async function () {
                 let response = await getAllPermissions();
-                console.log(response)
                 if(response.meta.code === 0){
                     let data = response.data;
                     let arr = [];
@@ -89,7 +88,38 @@ import {getAllPermissions} from '@/api/api';
                     }
                     this.allPermissions = arr;
                 }
-                //console.log(response);
+            },
+            // 选中事件
+            ckeckBoxAll: function (e) {
+                let targetNode = e.target.parentNode.parentNode.parentNode.getElementsByTagName('input');
+                if(e.target.checked === true){
+                    for(var i=1;i<targetNode.length;i++){
+                        targetNode[i].checked = true;
+                    }
+                }else{
+                    for(var i=1;i<targetNode.length;i++){
+                        targetNode[i].checked = false;
+                    }
+                }
+            },
+            checkBoxLevelTwo: function (e) {
+                let targetNode = e.target.parentNode.parentNode.getElementsByTagName('input');
+                if(e.target.checked === true){
+                    for(var i=1;i<targetNode.length;i++){
+                        targetNode[i].checked = true;
+                    }
+                }else{
+                    for(var i=1;i<targetNode.length;i++){
+                        targetNode[i].checked = false;
+                    }
+                }
+            },
+            checkBoxLevelThree: function (e) {
+                let targetNode = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
+                if(e.target.checked === false){
+                    targetNode[0].checked=false;
+                    targetNode[1].checked=false;
+                }
             },
             callback:function(){
                 this.$router.push('/role');

@@ -28,82 +28,25 @@
             </div>
             <div class="tbody">
                 <!--系统设置部分-->
-                <div class="rolesystemset clear">
-                    <div class="rolecheckallbox">
-                        <Checkbox class="checkboxtitle" @on-change="checkAllsystemset" v-model="checkAllsystemsetmodel">系统设置</Checkbox>
+                <div class="permission" v-for="(item,index) in allPermissions" :key="'level1-'+index">
+                    <div class="level1">
+                        <label>
+                            <input type="checkbox" level="1" @click="ckeckBoxAll">
+                            <b>{{item.level1}}</b>
+                        </label>
                     </div>
-                    <div class="rolecheckboxdiv">
-                        <Checkbox class="checkboxtitle" @on-change="checkUsermanage" v-model="checkUsermanagemodel">人员管理</Checkbox>
-
-                        <CheckboxGroup @on-change="checkUserManageReverse">
-                            <Checkbox  class="rolecheckbox"  v-for="(item,index) in managesystemItem" :key="index" :label="item.name" v-model="item.ifChecked"></Checkbox>
-                        </CheckboxGroup>
-                        <Checkbox class="checkboxtitle" @on-change="checkUsergroup" v-model="checkUsergroupmodel">人员分组</Checkbox>
-                        <CheckboxGroup  @on-change="checkGroupModelReveser">
-                            <Checkbox class="rolecheckbox"  v-for="(item,index) in groupsystemItem" :key="index" :label="item.name" v-model="item.ifChecked"></Checkbox>
-                        </CheckboxGroup>
-                        <Checkbox class="checkboxtitle" @on-change="checkUserrole" v-model="checkUserrolemodel">权限设置</Checkbox>
-                        <CheckboxGroup @on-change="checkUserRoleReverse">
-                            <Checkbox class="rolecheckbox"  v-for="(item,index) in rolesystemItem" :key="index" :label="item.name" v-model="item.ifChecked"></Checkbox>
-                        </CheckboxGroup>
-                    </div>
-                    <div class="roledescribe">
-                        <p>暂无描述</p>
-                        <p v-for="item in managesystemItem">{{item.describe}}</p>
-                        <p>暂无描述</p>
-                        <p v-for="item in groupsystemItem">{{item.describe}}</p>
-                        <p>暂无描述</p>
-                        <p v-for="item in rolesystemItem">{{item.describe}}</p>
-                    </div>
-                </div>
-                <!--排班管理部分-->
-                <div class="roleschedulmanage clear">
-                    <div class="rolecheckallbox">
-                        <Checkbox class="checkboxtitle"  @on-change="checkAllschedulmanage"  v-model="checkAllschedulmanagemodel">排班管理</Checkbox>
-                    </div>
-                    <div class="rolecheckboxdiv">
-                        <CheckboxGroup  @on-change="checkSchedulManageReserve">
-                            <Checkbox class="rolecheckbox"  v-for="(item,index) in schedulmanageItem" :key="index" :label="item.name" v-model="item.ifChecked"></Checkbox>
-                        </CheckboxGroup>
-                    </div>
-                    <div  class="roledescribe">
-                        <p v-for="item in schedulmanageItem">{{item.describe}}</p>
-                    </div>
-                </div>
-                <!--排班设置部分-->
-                <div class="roleschedulset clear">
-                    <div class="rolecheckallbox">
-                        <Checkbox class="checkboxtitle"  @on-change="checkAllschedulset"  v-model="checkAllschedulsetmodel">排班设置</Checkbox>
-                    </div>
-                    <div class="rolecheckboxdiv">
-                        <Checkbox class="checkboxtitle"  @on-change="checkAllshift"  v-model="checkAllshiftmodel">班次设置</Checkbox>
-                        <CheckboxGroup @on-change="checkSchedulSetReverse">
-                            <Checkbox class="rolecheckbox"  v-for="(item,index) in shiftschedulsetItem" :key="index" :label="item.name" v-model="item.ifChecked"></Checkbox>
-                        </CheckboxGroup>
-                        <Checkbox class="checkboxtitle"  @on-change="checkAllpost"  v-model="checkAllpostmodel">岗位设置</Checkbox>
-                        <CheckboxGroup @on-change="checkAllPostReverse">
-                            <Checkbox class="rolecheckbox"  v-for="(item,index) in postschedulsetItem" :key="index" :label="item.name" v-model="item.ifChecked"></Checkbox>
-                        </CheckboxGroup>
-                    </div>
-                    <div  class="roledescribe">
-                        <p>暂无描述</p>
-                        <p v-for="item in shiftschedulsetItem">{{item.describe}}</p>
-                        <p>暂无描述</p>
-                        <p v-for="item in postschedulsetItem">{{item.describe}}</p>
-                    </div>
-                </div>
-                <!--统计报表部分-->
-                <div class="rolereport clear">
-                    <div class="rolecheckallbox">
-                        <Checkbox class="checkboxtitle"  @on-change="checkAllreport"  v-model="checkAllreportmodel">统计报表</Checkbox>
-                    </div>
-                    <div class="rolecheckboxdiv">
-                        <CheckboxGroup @on-change="checkAllReportReverse">
-                            <Checkbox class="rolecheckbox"  v-for="(item,index) in reportItem" :key="index" :label="item.name" v-model="item.ifChecked"></Checkbox>
-                        </CheckboxGroup>
-                    </div>
-                    <div  class="roledescribe">
-                        <p v-for="item in reportItem">{{item.describe}}</p>
+                    <div class="level2">
+                        <div v-for="(list,index) in item.permisions" :key="'level2-'+index">
+                            <label>
+                                <input type="checkbox" level="2" @click="checkBoxLevelTwo">
+                                <b>{{list.level2}}</b>
+                            </label>
+                            <div class="level3" v-for="permision in list.permisions" :key="'level3-'+permision.id">
+                                <label>
+                                    <input type="checkbox" :code="permision.id" @click="checkBoxLevelThree">{{permision.name}}
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -111,359 +54,75 @@
     </div>
 </template>
 <script>
+    import {getAllPermissions} from '@/api/api';
     export default {
         data:function () {
             return {
                 updateRolespan:false,
-                checkAllsystemsetmodel:false,
-                checkAllschedulmanagemodel:false,
-                checkAllschedulsetmodel:false,
-                checkAllreportmodel:false,
-                checkUsermanagemodel:false,
-                checkUsergroupmodel:false,
-                checkUserrolemodel:false,
-                checkAllshiftmodel:false,
-                checkAllpostmodel:false,
-                checkAllschedultablemodel:false,
                 addroleName:'',
                 addrolecomment:'',
-                index:'',
-                managesystemItem:[
-                    {
-                        name: '新增人员',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '编辑人员',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '删除人员',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '导入人员',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                ],
-                groupsystemItem:[
-                    {
-                        name: '新增站区',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '修改站区',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '删除站区',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '新增站点',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '修改站点',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '删除站点',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    }
-                ],
-                rolesystemItem:[
-                    {
-                        name: '新增权限',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '修改权限',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '删除权限',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                ],
-                schedulmanageItem:[
-                    {
-                        name: '排班表格',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '新增排班',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    }
-                ],
-                shiftschedulsetItem:[
-                    {
-                        name: '新增班制',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '修改班制',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '删除班制',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '岗位设置',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                ],
-                postschedulsetItem:[
-                    {
-                        name: '新增岗位',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '修改岗位',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '删除岗位',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                ],
-                reportItem:[
-                    {
-                        name: '工时报表',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    },
-                    {
-                        name: '临时报表',
-                        ifChecked: false,
-                        describe:'暂无描述'
-                    }
-                ]
+                allPermissions:[],
             }
         },
-        //取得编辑行数
         created:function(){
+            // 取得编辑行数
             this.getIndex();
+            // 获取所有权限列表
+            this.getAllPermissions();
         },
         methods:{
-            checkAllsystemset:function(){//系统设置全选
-                if (this.checkAllsystemsetmodel){
-                    this.checkUsermanagemodel=true;
-                    this.checkUsergroupmodel=true;
-                    this.checkUserrolemodel=true;
-                    for(var i=0;i<this.managesystemItem.length;i++){
-                        this.managesystemItem[i].ifChecked=true;
+            // 获取所有权限列表
+            getAllPermissions: async function () {
+                let response = await getAllPermissions();
+                if(response.meta.code === 0){
+                    let data = response.data;
+                    let arr = [];
+                    for(let key1 in data){
+                        let arr2 = [];
+                        for(let key2 in data[key1]){
+                            arr2.push({
+                                level2: key2,
+                                permisions: data[key1][key2]
+                            });
+                        }
+                        arr.push({
+                            level1: key1,
+                            permisions: arr2
+                        });
                     }
-                    for(var i=0;i<this.groupsystemItem.length;i++){
-                        this.groupsystemItem[i].ifChecked=true;
-                    }
-                    for(var i=0;i<this.rolesystemItem.length;i++){
-                        this.rolesystemItem[i].ifChecked=true;
+                    this.allPermissions = arr;
+                }
+            },
+             // 选中事件
+            ckeckBoxAll: function (e) {
+                let targetNode = e.target.parentNode.parentNode.parentNode.getElementsByTagName('input');
+                if(e.target.checked === true){
+                    for(var i=1;i<targetNode.length;i++){
+                        targetNode[i].checked = true;
                     }
                 }else{
-                    this.checkUsermanagemodel=false;
-                    this.checkUsergroupmodel=false;
-                    this.checkUserrolemodel=false;
-                    for(var i=0;i<this.managesystemItem.length;i++){
-                        this.managesystemItem[i].ifChecked=false;
-                    }
-                    for(var i=0;i<this.groupsystemItem.length;i++){
-                        this.groupsystemItem[i].ifChecked=false;
-                    }
-                    for(var i=0;i<this.rolesystemItem.length;i++){
-                        this.rolesystemItem[i].ifChecked=false;
+                    for(var i=1;i<targetNode.length;i++){
+                        targetNode[i].checked = false;
                     }
                 }
             },
-            checkAllschedulmanage:function(){//排班管理全选
-                if (this.checkAllschedulmanagemodel){
-                    for(var i=0;i<this.schedulmanageItem.length;i++){
-                        this.schedulmanageItem[i].ifChecked=true;
-                    }
-
-                }else{
-                    for(var i=0;i<this.schedulmanageItem.length;i++){
-                        this.schedulmanageItem[i].ifChecked=false;
-                    }
-                }
-
-            },
-            checkAllschedulset:function(){//排班设置全选
-                if(this.checkAllschedulsetmodel){
-                    this.checkAllshiftmodel=true;
-                    this.checkAllpostmodel=true;
-                    for(var i=0;i<this.shiftschedulsetItem.length;i++){
-                        this.shiftschedulsetItem[i].ifChecked=true;
-                    }
-                    for(var i=0;i<this.postschedulsetItem.length;i++){
-                        this.postschedulsetItem[i].ifChecked=true;
+            checkBoxLevelTwo: function (e) {
+                let targetNode = e.target.parentNode.parentNode.getElementsByTagName('input');
+                if(e.target.checked === true){
+                    for(var i=1;i<targetNode.length;i++){
+                        targetNode[i].checked = true;
                     }
                 }else{
-                    this.checkAllshiftmodel=false;
-                    this.checkAllpostmodel=false;
-                    for(var i=0;i<this.shiftschedulsetItem.length;i++){
-                        this.shiftschedulsetItem[i].ifChecked=false;
-                    }
-                    for(var i=0;i<this.postschedulsetItem.length;i++){
-                        this.postschedulsetItem[i].ifChecked=false;
+                    for(var i=1;i<targetNode.length;i++){
+                        targetNode[i].checked = false;
                     }
                 }
             },
-            checkAllreport:function(){
-                if (this.checkAllreportmodel){//统计报表全选
-                    for(var i=0;i<this.reportItem.length;i++){
-                        this.reportItem[i].ifChecked=true;
-                    }
-                }else{
-                    for(var i=0;i<this.reportItem.length;i++){
-                        this.reportItem[i].ifChecked=false;
-                    }
-                }
-            },
-            checkUsermanage:function(){//人员管理全选
-                if (this.checkUsermanagemodel){
-                    for(var i=0;i<this.managesystemItem.length;i++){
-                        this.managesystemItem[i].ifChecked=true;
-                        this.checkAllsystemsetmodel=true;
-
-                    }
-                }else{
-                    for(var i=0;i<this.managesystemItem.length;i++){
-                        this.managesystemItem[i].ifChecked=false;
-                    }
-                }
-            },
-            checkUsergroup:function(){//人员分组全选
-                if (this.checkUsergroupmodel){
-                    for(var i=0;i<this.groupsystemItem.length;i++){
-                        this.groupsystemItem[i].ifChecked=true;
-                        this.checkAllsystemsetmodel=true;
-                    }
-                }else{
-                    for(var i=0;i<this.groupsystemItem.length;i++){
-                        this.groupsystemItem[i].ifChecked=false;
-                    }
-                }
-
-            },
-            checkUserrole:function(){//权限设置全选
-                if (this.checkUserrolemodel){
-                    for(var i=0;i<this.rolesystemItem.length;i++){
-                        this.rolesystemItem[i].ifChecked=true;
-                        this.checkAllsystemsetmodel=true;
-                    }
-                }else{
-                    for(var i=0;i<this.rolesystemItem.length;i++){
-                        this.rolesystemItem[i].ifChecked=false;
-                    }
-                }
-            },
-            checkAllshift:function(){//班次设置全选
-                if (this.checkAllshiftmodel){
-                    for(var i=0;i<this.shiftschedulsetItem.length;i++){
-                        this.shiftschedulsetItem[i].ifChecked=true;
-                        this.checkAllschedulsetmodel=true;
-                    }
-                }else{
-                    for(var i=0;i<this.shiftschedulsetItem.length;i++){
-                        this.shiftschedulsetItem[i].ifChecked=false;
-                    }
-                }
-            },
-            checkAllpost:function(){//岗位设置全选
-                if (this.checkAllpostmodel){
-                    for(var i=0;i<this.postschedulsetItem.length;i++){
-                        this.postschedulsetItem[i].ifChecked=true;
-                        this.checkAllschedulsetmodel=true;
-                    }
-                }else{
-                    for(var i=0;i<this.postschedulsetItem.length;i++){
-                        this.postschedulsetItem[i].ifChecked=false;
-                    }
-                }
-            },
-            //人员管理反选
-            checkUserManageReverse:function(){
-                for(var i=0;i<this.managesystemItem.length;i++){
-                    if(this.managesystemItem[i].ifChecked){
-                        this.checkUsermanagemodel=true;
-                        this.checkAllsystemsetmodel=true;
-                    }
-                }
-            },
-            //人员分组反选
-            checkGroupModelReveser:function(){
-                for(var i=0;i<this.groupsystemItem.length;i++){
-                    if(this.groupsystemItem[i].ifChecked){
-                        this.checkUsergroupmodel=true;
-                        this.checkAllsystemsetmodel=true;
-                    }
-                }
-            },
-            //权限设置反选
-            checkUserRoleReverse:function(){
-                for(var i=0;i<this.rolesystemItem.length;i++){
-                    if(this.rolesystemItem[i].ifChecked){
-                        this.checkUserrolemodel=true;
-                        this.checkAllsystemsetmodel=true;
-                    }
-                }
-            },
-            //排班管理反选
-            checkSchedulManageReserve:function(){
-                for(var i=0;i<this.schedulmanageItem.length;i++){
-                    if(this.schedulmanageItem[i].ifChecked){
-                        this.checkAllschedulmanagemodel=true;
-                    }
-                }
-            },
-            //班次设置全选
-            checkSchedulSetReverse:function(){
-                for(var i=0;i<this.shiftschedulsetItem.length;i++){
-                    if(this.shiftschedulsetItem[i].ifChecked){
-                        this.checkAllshiftmodel=true;
-                        this.checkAllschedulsetmodel=true;
-                    }
-                }
-            },
-            //岗位设置反选
-            checkAllPostReverse:function(){
-                for(var i=0;i<this.postschedulsetItem.length;i++){
-                    if(this.postschedulsetItem[i].ifChecked){
-                        this.checkAllpostmodel=true;
-                        this.checkAllschedulsetmodel=true;
-                    }
-                }
-            },
-            //统计报表全选
-            checkAllReportReverse:function(){
-                for(var i=0;i<this.reportItem.length;i++){
-                    if(this.reportItem[i].ifChecked){
-                        this.checkAllreportmodel=true;
-                    }
+            checkBoxLevelThree: function (e) {
+                let targetNode = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
+                if(e.target.checked === false){
+                    targetNode[0].checked=false;
+                    targetNode[1].checked=false;
                 }
             },
             callback:function(){
