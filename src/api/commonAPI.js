@@ -50,3 +50,8 @@ export const updateUser = data => fetch('/user', data, 'PUT');
 /** 删除用户 */
 export const deleteUser = id => fetch('/user/' + id, {}, 'DELETE');
 
+/***************************** 权限设置*********************************/
+
+/** 新增角色 */
+export const addRoler = data => fetch('/role', data, 'POST');
+

@@ -42,7 +42,7 @@
                             </label>
                             <div class="level3" v-for="permision in list.permisions" :key="'level3-'+permision.id">
                                 <label>
-                                    <input type="checkbox" :code="permision.id" @click="checkBoxLevelThree">{{permision.name}}
+                                    <input class= "level4" type="checkbox" :id="permision.id" @click="checkBoxLevelThree">{{permision.name}}
                                 </label>
                             </div>
                         </div>
@@ -54,6 +54,7 @@
 </template>
 <script>
 import {getAllPermissions} from '@/api/api';
+import {addRoler} from '@/api/commonAPI';
     export default {
         data:function () {
             return {
@@ -125,21 +126,50 @@ import {getAllPermissions} from '@/api/api';
                 this.$router.push('/role');
 
             },
-            updateRole:function(){
+            // updateRole:function(){
+            //     if(!this.addroleName){
+            //         this.updateRolespan=true;
+            //         return false;
+            //     }else{
+            //         this.$router.push({
+            //             name:'Role',
+            //             params:{
+            //                 roleName:this.addroleName,
+            //                 description:this.addrolecomment
+            //             }
+            //         });
+            //         this.updateRolespan=false;
+            //         this.addroleName='';
+            //         this.addrolecomment='';
+            //     }
+            // }
+            updateRole: async function(){
+                
                 if(!this.addroleName){
                     this.updateRolespan=true;
                     return false;
                 }else{
-                    this.$router.push({
-                        name:'Role',
-                        params:{
-                            roleName:this.addroleName,
-                            description:this.addrolecomment
+                    let arr = [];
+                    $(".level4").each(function (){
+                        if (this.checked === true){
+                            arr.push(this.id);
                         }
                     });
-                    this.updateRolespan=false;
-                    this.addroleName='';
-                    this.addrolecomment='';
+                    let ids = arr.join(",");
+                    let data = {
+                        name:this.addroleName,
+                        description: this.addrolecomment,
+                        permissionIds:arr
+                    }
+                    console.log(data);
+                    let response = await addRoler(data);
+                    console.log(response);
+                     if (response.meta.code !== 0) {
+                        this.$Loading.error();
+                        this.$Message.error(response.meta.message);
+                    }else{
+                        this.$Loading.finish();
+                    }
                 }
             }
         }

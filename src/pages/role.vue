@@ -6,17 +6,6 @@
                     <div class="float-left">
                         <a class="btnDefault bgGreen"  @click="roleConfigshow"><span>新增角色</span></a>
                     </div>
-                    <div class=" float-right">
-                        <form class="form-container" id="roleForm1">
-                            <div class="search-input float-left">
-                                <span class="icon-5"></span>
-                                <input type="text" placeholder="角色名称" name="roleName" v-model="roleName">
-                            </div>
-                            <a class="btnDefault bgBlue queryBtn float-left" href="javascript:;" @click="getTableData">查询</a>
-                            <div class="clear"></div>
-                            <span style="color: red;margin-left: 80px" v-show="roleNameShow">角色名称不能为空</span>
-                        </form>
-                    </div>
                 </div>
                 <div class="panel-body">
                     <div class="table-container">
@@ -31,17 +20,17 @@
     export default {
         data:function () {
         return {
-            roleName:'',
-            roleNameShow:false,
             obj:{},
             columns1: [
                 {
                     title: '角色名称',
-                    key: 'roleName'
+                    key: 'roleName',
+                    align: 'left',
                 },
                 {
                     title: '职务描述',
-                    key: 'description'
+                    key: 'description',
+                    align: 'center',
                 },
                 {
                     title: '操作',
@@ -102,15 +91,7 @@
             roleConfigshow:function(){
                 this.$router.push("/addJurisdiction");
             },
-            getTableData:function(){
-                if(this.roleName){
-                    this.roleNameShow=false;
-                    this.roleName='';
-                }else{
-                    this.roleNameShow=true;
-                    return false;
-                }
-            },
+    
             //获取页面传值
             getParams:function(){
                 if(typeof this.$route.params.index=="number" && this.$route.params.roleName){
