@@ -131,13 +131,9 @@
                                     let colspan = end-start+1;
                                     for(let i = start+1;i<=end;i++){
                                         let target = obj.find(obj.find('td[code="'+ i*10 +'"]'));
-                                        if(target.attr('colspan')){
-                                            colspan += parseInt(target.attr('colspan'));
-                                        }
                                         target.remove();
                                     }
-                                    
-                                    obj.find('td[code="'+ start*10 +'"]').removeClass('gray').attr('colspan', colspan).css('background', '#'+content.color).html(content.content);
+                                    obj.find('td[code="'+ start*10 +'"]').removeClass('gray').attr('colspan', colspan).attr('endTime', content.endTime).attr('color', content.color).css('background', '#'+content.color).html(content.content);
                                 }
                             }
                         }
@@ -150,13 +146,18 @@
                 self.currentTd = obj;
                 let top = e.clientY - 40;
                 let left = e.clientX - 300;
+                left = left>1000 ? 1000 : left;
+                let scrollTop = $(window).scrollTop();
+                top += scrollTop;
                 let L = $('.gray').length;
                 let parent = obj.parent();
                 /** 有颜色单元格 */
                 if(obj.attr('style')){
                     self.workflowText = obj.html();
+                    $('.btnGroup').css({'left': left + 'px', 'top': top + 'px'});
                     self.showBtn.edit = true;
                     self.showBtn.delete = true;
+                    $('li[color="'+ obj.attr('color') +'"]').addClass('active');
                     self.editItem = obj.attr('name');
                 }
                 /**  无颜色的单元格  */
@@ -171,6 +172,10 @@
                 }
                 if(obj.hasClass('gray')){
                     obj.removeClass('gray');
+                    this.showBtn.submit = false;
+                    this.showBtn.input = false;
+                    this.showBtn.edit = false;
+                    this.showBtn.delete = false;
                     L--;
                 } else {
                     if(L==2){
@@ -183,11 +188,7 @@
                     self.currentWorkflowId = parseInt(parent.attr('code'));
                     L++;  
                 }
-                
                 if(L == 2){
-                    left = left>1000 ? 1000 : left;
-                    let scrollTop = $(window).scrollTop();
-                    top += scrollTop;
                     $('.btnGroup').css({'left': left + 'px', 'top': top + 'px'});
                     self.showBtn.add = true;
                     self.showBtn.edit = false;
@@ -257,11 +258,7 @@
                 let endTd = $('.gray').eq(1);
                 this.editItem = this.temporary;
                 let startTime = startTd.attr('code');
-                let endTime = endTd.attr('code');
-                // for(let i = startTime;i<endTime;i++){
-                //     parent.find('td').eq(i).addClass('remove');
-                // }
-                // $('.remove').remove();
+                let endTime = endTd.attr('endtime') ? endTd.attr('endtime') : endTd.attr('code');
                 let data = {
                     workFlowId: this.currentWorkflowId,
                     startTime: parseInt(startTime),
@@ -270,7 +267,6 @@
                     color: this.temporary,
                     lineNumber: this.currentLineNumber
                 }
-                console.log(data)
                 let response = await addContent(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
@@ -283,8 +279,37 @@
                 }
                 this.$Message.error(message);
             },
-            updateContent: function () {
-                console.log(11111)
+            updateContent: async function () {
+                if(!this.currentColor){
+                    this.$Message.warning('请选择背景色！');
+                    return;
+                }
+                if(!this.workflowText){
+                    this.$Message.warning('工作流程内容不能为空！');
+                    return;
+                }
+                let startTime = $('.gray').attr('code');
+                let endTime = $('.gray').attr('endtime');
+                let data = {
+                    workFlowId: this.currentWorkflowId,
+                    startTime: parseInt(startTime),
+                    endTime: parseInt(endTime),
+                    content: this.workflowText,
+                    color: this.temporary,
+                    lineNumber: this.currentLineNumber
+                }
+                let response = await updateContent(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.workflowText = '';
+                    this.showBtn.submit = false;
+                    this.showBtn.input = false;
+                    this.getWorkFlow(this.suite);
+                    return;
+                }
+                this.$Message.error(message);
+
             },
             // 选择颜色
             pickUp: function (e) {
@@ -309,7 +334,7 @@
                 this.showBtn.input = true;
                 this.showBtn.edit = false;
                 this.showBtn.delete = false;
-                $('li[code="'+ this.editItem +'"]').addClass('active').siblings().removeClass('active');
+                this.currentColor = $('.colorSelector .active').attr('color');
             },
             //  删除工作流程
             handleDelete: function () {

@@ -59,6 +59,9 @@ export const updateWorkFlow = data => fetch('/workflow', data, 'PUT');
 /** 新增工作流程内容 */
 export const addContent = data => fetch('/workflow/content', data, 'POST');
 
+/** 更新工作流程内容 */
+export const updateContent = data => fetch('/workflow/content', data, 'PUT');
+
 
 /********************* 新增排班 **********************/
 
