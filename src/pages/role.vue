@@ -17,20 +17,22 @@
     </div>
 </template>
 <script>
+    import {getRole,} from '@/api/commonAPI';
     export default {
         data:function () {
         return {
+            roleId:this.$store.get('role'),
             obj:{},
             columns1: [
                 {
                     title: '角色名称',
-                    key: 'roleName',
+                    key: 'name',
                     align: 'left',
                 },
                 {
                     title: '职务描述',
                     key: 'description',
-                    align: 'center',
+                    align: 'left',
                 },
                 {
                     title: '操作',
@@ -58,32 +60,19 @@
                     }
                 }
             ],
-            data: [
-                {
-                    roleName: '系统管理员',
-                    description: '--'
-                },
-                {
-                    roleName: '站区管理员',
-                    description: '--'
-                },
-                {
-                    roleName: '普通用户',
-                    description: '--'
-                }
-            ]
+            data: []
         }
     },
-        //获取页面传值
-        created:function(){
-            this.getParams()
-    },
+        mounted: function () {
+            // 获取角色列表
+            this.roleList();
+        },
         methods:{
             show:function (index) {
                 this.$router.push({
                     name:'EditJurisdiction',
                     params:{
-                        index:index
+                        id:this.data[index].id
                     }
 
                 });
@@ -91,20 +80,18 @@
             roleConfigshow:function(){
                 this.$router.push("/addJurisdiction");
             },
-    
-            //获取页面传值
-            getParams:function(){
-                if(typeof this.$route.params.index=="number" && this.$route.params.roleName){
-                    this.data[this.$route.params.index].roleName=this.$route.params.roleName;
-                    this.data[this.$route.params.index].description=this.$route.params.description;
-                }else if(typeof this.$route.params.index!="number" && this.$route.params.roleName){
-                    this.obj.roleName=this.$route.params.roleName;
-                    this.obj.description=this.$route.params.description;
-                    this.data.push(this.obj);
+            // 获取角色列表
+            roleList: async function(){
+                let id = this.roleId;
+                let response = await getRole('/'+id);
+                if (response.meta.code !== 0) {
+                    this.$Loading.error();
+                    this.$Message.error(response.meta.message);
+                }else{
+                    this.$Loading.finish();
+                    this.data = response.data;
                 }
-
-
-            }
+            },
         }
     }
 </script>

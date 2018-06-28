@@ -43,7 +43,7 @@
                             </label>
                             <div class="level3" v-for="permision in list.permisions" :key="'level3-'+permision.id">
                                 <label>
-                                    <input type="checkbox" :code="permision.id" @click="checkBoxLevelThree">{{permision.name}}
+                                    <input class= "level4" type="checkbox" :id="permision.id" @click="checkBoxLevelThree" :checked="permision.selected">{{permision.name}}
                                 </label>
                             </div>
                         </div>
@@ -55,6 +55,7 @@
 </template>
 <script>
     import {getAllPermissions} from '@/api/api';
+    import {getCurrentRole, updateCurrentRole} from '@/api/commonAPI';
     export default {
         data:function () {
             return {
@@ -62,37 +63,18 @@
                 addroleName:'',
                 addrolecomment:'',
                 allPermissions:[],
+                id:null,
             }
         },
         created:function(){
             // 取得编辑行数
             this.getIndex();
-            // 获取所有权限列表
-            this.getAllPermissions();
+        },
+        mounted: function () {
+            // 获取当前角色权限
+            this.getCurrentRole();
         },
         methods:{
-            // 获取所有权限列表
-            getAllPermissions: async function () {
-                let response = await getAllPermissions();
-                if(response.meta.code === 0){
-                    let data = response.data;
-                    let arr = [];
-                    for(let key1 in data){
-                        let arr2 = [];
-                        for(let key2 in data[key1]){
-                            arr2.push({
-                                level2: key2,
-                                permisions: data[key1][key2]
-                            });
-                        }
-                        arr.push({
-                            level1: key1,
-                            permisions: arr2
-                        });
-                    }
-                    this.allPermissions = arr;
-                }
-            },
              // 选中事件
             ckeckBoxAll: function (e) {
                 let targetNode = e.target.parentNode.parentNode.parentNode.getElementsByTagName('input');
@@ -129,31 +111,67 @@
                 this.$router.push('/role');
 
             },
-            updateRole:function(){
+            // 获取当前角色权限
+            getCurrentRole: async function () {
+                let roleId = this.id;
+                let response = await getCurrentRole(roleId);
+                if (response.meta.code !== 0) {
+                    this.$Loading.error();
+                    this.$Message.error(response.meta.message);
+                }else{
+                    this.$Loading.finish();
+                    let data = response.data.permissions;
+                    let arr = [];
+                    for(let key1 in data){
+                        let arr2 = [];
+                        for(let key2 in data[key1]){
+                            arr2.push({
+                                level2: key2,
+                                permisions: data[key1][key2]
+                            });
+                        }
+                        arr.push({
+                            level1: key1,
+                            permisions: arr2
+                        });
+                    }
+                    this.allPermissions = arr;
+                }
+            },
+            // 更新当前角色权限
+            updateRole:async function(){
+                let roleId = this.id;
                 if(!this.addroleName){
                     this.updateRolespan=true;
                     return false;
                 }else{
-                    this.$router.push({
-                        name:'Role',
-                        params:{
-                            roleName:this.addroleName,
-                            description:this.addrolecomment,
-                            index:this.index
+                    let arr = [];
+                    $(".level4").each(function (){
+                        if (this.checked === true){
+                            arr.push(this.id);
                         }
                     });
-                    this.updateRolespan=false;
-                    this.addroleName='';
-                    this.addrolecomment='';
+                    let data = {
+                        name:this.addroleName,
+                        description: this.addrolecomment,
+                        permissionIds:arr
+                    }
+                    let response = await updateCurrentRole(roleId,data);
+                     if (response.meta.code !== 0) {
+                        this.$Loading.error();
+                        this.$Message.error(response.meta.message);
+                    }else{
+                        this.$Loading.finish();
+                        this.$router.push('/role');
+                    }
                 }
             },
             //取得传递值index
             getIndex:function(){
-                this.index=this.$route.params.index;
+                this.id=this.$route.params.id;
             }
         }
     }
-
 </script>
 <style scoped>
     @import '../assets/css/index.css';
