@@ -679,7 +679,7 @@
             },
             //  获取站区/站点
             request: async function(){
-                if(this.role === 'admin'){
+                if(this.role === 2){
                     this.showDistrict = true;
                     let response = await stationAreaList();
                     if (response.meta.code !== 0) {
@@ -689,7 +689,7 @@
                         this.$Loading.finish();
                         this.districts = response.data;
                     }
-                }else if(this.role === 'district'){
+                }else if(this.role === 2){
                     this.showDistrict = false;
                     let id = this.districtId;
                     let response = await getStations(id);
@@ -829,10 +829,10 @@
                     zwyLevel: that.editPerson.zwyLevel,
                     backup:that.editPerson.backup
                 }
-                if(that.role === "district"){
+                if(that.role === 2){
                     data.districtId = that.districtId;
                     data.districtName = that.districtName;
-                }else if(that.role === "admin"){
+                }else if(that.role === 1){
                     data.districtId = parseInt(currentDistrict[0]);
                     data.districtName = currentDistrict[1];
                 }
@@ -906,10 +906,10 @@
                     zwyLevel: that.addPerson.zwyLevel,
                     backup:that.addPerson.backup
                 }
-                if(that.role === "district"){
+                if(that.role === 2){
                     data.districtId = that.districtId;
                     data.districtName = that.districtName;
-                }else if(that.role === "admin"){
+                }else if(that.role === 1){
                     data.districtId = parseInt(currentDistrict[0]);
                     data.districtName = currentDistrict[1];
                 }

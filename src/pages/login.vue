@@ -23,7 +23,7 @@
 </template>
 <script>
     import {login} from "../api/commonAPI";
-    import {DISTRICTID, STATIONID, USERNAME, POSITIONID, SCHEDULE_IDENTIFY, ROLE, DISTRICTID_NAME} from '@/utils/const';
+    import {DISTRICTID, STATIONID, USERNAME, POSITIONID, SCHEDULE_IDENTIFY, ROLEID, DISTRICTID_NAME} from '@/utils/const';
     export default{
         data: function () {
             return {
@@ -63,13 +63,13 @@
                        this.$Message.error(response.meta.message);
                    }else{
                        let user = response.data.user;
-                       let role = user.roles[0].split(":")[1];
+                       let role = user.roles[0].id;
                        this.$store.set(DISTRICTID, user.districtId);
                        this.$store.set(STATIONID, user.stationId);
                        this.$store.set(USERNAME, user.userName);
                        this.$store.set(POSITIONID, user.positionId);
                        this.$store.set(SCHEDULE_IDENTIFY, response.data.token);
-                       this.$store.set(ROLE, role);
+                       this.$store.set(ROLEID, role);
                        this.$store.set(DISTRICTID_NAME, user.districtName);
                        this.$router.push({ path: "/home" });
                        console.log(response.data.user);
