@@ -51,10 +51,13 @@ export const updatePeriod = data => fetch('/duty/periodupdate' , data, 'PUT');
 export const detelePeriod = id => fetch('/duty/perioddelete/' + id, {}, 'DELETE');
 
 /** 获取工作流程 */
-export const getWorkFlow = id => fetch('/workflow/getallworkflowcontent/'+ id, {}, 'GET');
+export const getWorkFlow = id => fetch('/workflow/'+ id, {}, 'GET');
 
-/** 新增工作流程 */
-//export const addWorkFlow = id => fetch();
+/** 更新工作流程 */
+export const updateWorkFlow = data => fetch('/workflow', data, 'PUT');
+
+/** 新增工作流程内容 */
+export const addContent = data => fetch('/workflow/content', data, 'POST');
 
 
 /********************* 新增排班 **********************/

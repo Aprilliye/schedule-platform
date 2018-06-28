@@ -2,7 +2,7 @@
     <div class="container">
         <div class="content-header">
             <label style="margin-left: 10px">班制：</label>
-            <Select v-model="suite" style="width:200px" @on-change="getClass(suite)">
+            <Select v-model="suite" style="width:200px" @on-change="getWorkFlow(suite)">
                 <Option v-for="item in suites" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
             </Select>
             <a class="btnDefault bgBlue btnworkflow" onclick="loadWorkFlow()">加载工作流程</a>
@@ -11,24 +11,27 @@
             <!-- 右侧内容 start -->
             <div id="shiftTemplate">
                 <table cellpadding=0 cellspacing=0 tableType="shiftTable" class="workflowTable">
-                    <template v-for="(item, index) in dutyClass">
-                        <tr :key="'tr0'+index">
-                            <th colspan=147 tdType='title' height=40 class='font4'>{{item.dutyName + '(' + item.dutyCode + ')' + "：" + item.startTimeStr + '-' + item.endTimeStr}}</th>
+                    <template v-for="item in workflows">
+                        <tr>
+                            <th colspan='150' tdType='title' height='40'>{{item.dutyName + '(' + item.dutyCode + ')' + "：" + item.startTimeStr + '-' + item.endTimeStr}}</th>
                         </tr>
-                        <tr :key="'tr1'+index">
-                            <td colspan="3">编号</td>
+                        <tr>
+                            <td colspan="6">编号</td>
                             <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n > 10 ? n : '0' + n )+'00' }}</td>
                         </tr>
-                        <template v-for="j in item.userCount">
-                            <tr :code="'duty'+ item.id + '-' + j" :key="'tr'+index+'-'+ j +'0'" :trtype="0">
-                                <td rowspan="2" colspan="3">{{j}}</td>
+                        <template v-for="workflow in item.scheduleWorkflowVolist">
+                            <tr :trtype="0" :code="workflow.id">
+                                <td rowspan="2" colspan="6" :code="workflow.id" class="workflowCode">
+                                    <span @click="beforeAddWorkflow(workflow)">{{workflow.code ? workflow.code : '--'}}</span>
+                                    <input type="text" style="display:none;" @blur="updateWorkFlow()">
+                                </td>
                                 <template v-for="n in 24">
-                                    <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" width="30" :code="(n-1)*60 + m*10"></td>
+                                    <td class="timeTd" v-for="m in 6" :code="(n-1)*60 + m*10"></td>
                                 </template>
                             </tr>
-                            <tr :code="'duty'+ item.id + '-' + j" :key="'tr'+index+'-'+ j +'1'"  :trtype="1">
+                            <tr :trtype="1" :code="workflow.id">
                                 <template v-for="n in 24">
-                                    <td v-for="m in 6" :key="'td'+n+'-'+m" @click="clickTd" :code="'btd'+ index +'-'+ j +'0'+'-'+n"></td>
+                                    <td class="timeTd" v-for="m in 6" :code="(n-1)*60 + m*10"></td>
                                 </template>
                             </tr>
                         </template>
@@ -41,15 +44,15 @@
         </div>
         <!-- 按钮 -->
         <div class="btnGroup" v-show="showBtn.add || showBtn.edit || showBtn.submit || showBtn.delete">
-            <button type="button" class="btnDefault bgGreen" v-show="showBtn.add" @click="handleAdd">新建</button>
+            <button type="button" class="btnDefault bgGreen" v-show="showBtn.add" @click="beforeAddContent">新建</button>
             <button type="button" class="btnDefault bgGreen" v-show="showBtn.edit" @click="handleEdit">修改</button>
-            <button type="button" class="btnDefault bgGreen" v-show="showBtn.submit" @click="handleConfirm">提交</button>
+            <button type="button" class="btnDefault bgGreen" v-show="showBtn.submit" @click="addContent">提交</button>
             <button type="button" class="btnDefault bgRed" v-show="showBtn.delete" @click="handleDelete">删除</button> 
             <button type="button" class="btnDefault" v-show="showBtn.add || showBtn.submit" @click="handleCancel">取消</button>
             <div class="colorSelector" v-show="showBtn.input">
                 <input type="text" v-model.trim="workflowText">
                 <ul>
-                    <li v-for="(color, index) in colorArr" :key="'li'+index" :style="'background:#'+color" :code="'color'+index" @click="pickUp"></li>
+                    <li v-for="(color, index) in colorArr" :key="'li'+index" :style="'background:#'+color" :color="color" :code="'color'+index" @click="pickUp"></li>
                 </ul>
             </div>           
         </div>
@@ -58,7 +61,7 @@
 <script>
     import {showColorPanel} from '../assets/js/workflow.js';
     import {items} from '../assets/data/workflow.js';
-    import {getSuites, getWorkFlow, addWorkFlow, getClass} from '@/api/api';
+    import {getSuites, getWorkFlow, updateWorkFlow, addContent} from '@/api/api';
     let self = null;
     export default {
         data:function () {
@@ -66,7 +69,7 @@
                 districtId: this.$store.get('districtId'),
                 suites: [],
                 suite: [],
-                dutyClass: [],
+                workflows: [],              //  工作流程
                 //  按钮显示状态
                 showBtn: {
                     add: false,
@@ -83,7 +86,9 @@
                 editItem: '',      //  编辑工作流程的颜色
                 temporary: '',
                 currentSuite: null,
-
+                currentWorkflow: null,
+                currentLineNumber: null,
+                currentWorkflowId: null,
             }
         },
         created: function () {
@@ -101,37 +106,49 @@
                     this.suites = response.data;
                     this.suite = response.data[0].id;
                     this.currentPositionId = response.data[0].positionId;
-                    this.getWorkFlow(this.suite);
                     return;
                 }
                 this.$Message.error(response.meta.message);
             },
-            //  获取班次
-            getClass: async function (id) {
-                let suiteId = id || this.suite;
-                let response = await getClass(suiteId);
-                this.currentPositionId = response.data.dutysuite.positionId;
-                if(response.meta.code === 0){
-                    this.dutyClass = response.data.dutyclass;
-                }
-                
-            },
             //  获取工作流程
             getWorkFlow: async function (id) {
                 let suiteId = id || this.suite;
-                console.log('suiteId:'+suiteId);
                 let response = await getWorkFlow(suiteId);
-                console.log(response);
                 if(response.meta.code === 0){
-                    this.getClass(this.suite);
+                    this.workflows = response.data;
                 }
             },
-            //  点击单元格
-            clickTd: function (e) {
-                
+            //  更新工作流程
+            beforeAddWorkflow: function (item) {
+                this.currentWorkflow = item;
+                let obj = $('.workflowCode[code="'+ item.id +'"]');
+                let span = obj.find('span');
+                obj.find('span').hide();
+                obj.find('input').val(item.code).show();
+                // let obj = $(e.target);
+                // obj.hide().next().show();
             },
-            //  新建工作流程
-            handleAdd: function () {
+            updateWorkFlow: async function () {
+                let item = this.currentWorkflow;
+                let obj = $('.workflowCode[code="'+ item.id +'"]');
+                let input = obj.find('input');
+                let data = {
+                    id: this.currentWorkflow.id,
+                    code: input.val()
+                };
+                let response = await updateWorkFlow(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    let data = response.data;
+                    this.$Message.success(message);
+                    obj.find('span').html(data.code).show();
+                    input.hide();
+                    return;
+                }
+                this.$Message.error(message);
+            },
+            //  新建工作流程内容
+            beforeAddContent: function () {
                 this.workflowText = '';
                 $('.colorSelector').find('.active').removeClass('active');
                 this.ifEdit = false;
@@ -139,13 +156,65 @@
                 this.showBtn.submit = true;
                 this.showBtn.input = true;
             },
+            addContent: async function () {
+                if(!this.currentColor){
+                    this.$Message.warning('请选择背景色！');
+                    return;
+                }
+                if(!this.workflowText){
+                    this.$Message.warning('工作流程内容不能为空！');
+                    return;
+                }
+                this.editItem = this.temporary;
+                let startTime = null;
+                let endTime = null;
+                /** 新增确定事件 */
+                if(!this.ifEdit){
+                    let startTd = $('.gray').eq(0);
+                    startTime = startTd.attr('code');
+                    let startTdColspan = startTd.attr('colspan') ? parseInt(startTd.attr('colspan'))-1 : 0;
+                    
+                    let endTd = $('.gray').eq(1);
+                    endTime = endTd.attr('code');
+                    let endTdColspan = endTd.attr('colspan') ? parseInt(endTd.attr('colspan'))-1 : 0;
+                    let start = startTd.index();
+                    let end = endTd.index();
+                    let parent = startTd.parent();
+                    for(let i = start+1;i<=end;i++){
+                        parent.find('td').eq(i).addClass('remove');
+                    }
+                    $('.remove').remove();
+                    let colspan = end - start + 1 + startTdColspan + endTdColspan;
+                    startTd.attr('colspan', colspan);
+                }
+                $('.gray').html(this.workflowText).attr('title', this.workflowText).css('background-color', this.currentColor).attr('name', this.editItem);
+                $('.gray').removeClass('gray');
+                let data = {
+                    workFlowId: this.currentWorkflowId,
+                    startTime: parseInt(startTime),
+                    endTime: parseInt(endTime),
+                    content: this.workflowText,
+                    color: this.temporary,
+                    lineNumber: this.currentLineNumber
+                }
+                let response = await addContent(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.workflowText = '';
+                    this.showBtn.submit = false;
+                    this.showBtn.input = false;
+                    return;
+                }
+                this.$Message.error(message);
+            },
             // 选择颜色
             pickUp: function (e) {
                 let obj = $(e.target);
                 obj.toggleClass('active');
                 obj.siblings().removeClass('active');
                 this.currentColor = obj.hasClass('active') ? obj.css('background-color') : '';
-                this.temporary = obj.attr('code');
+                this.temporary = obj.attr('color');
             },
             //  确定操作
             handleConfirm: function () {
@@ -160,7 +229,6 @@
                 this.editItem = this.temporary;
                 /** 新增确定事件 */
                 if(!this.ifEdit){
-                    
                     let startTd = $('.gray').eq(0);
                     let startTdColspan = startTd.attr('colspan') ? parseInt(startTd.attr('colspan'))-1 : 0;
                     
@@ -176,7 +244,7 @@
                     let colspan = end - start + 1 + startTdColspan + endTdColspan;
                     startTd.attr('colspan', colspan);
                 }
-                $('.gray').html(this.workflowText).attr('title', this.workflowText).css('background-color', this.currentColor).attr('name', this.editItem);
+                $('.gray').html(this.workflowText).attr('title', this.workflowText).css('background-color', '#' + this.currentColor).attr('name', this.editItem);
                 $('.gray').removeClass('gray');
                 this.workflowText = '';
                 this.showBtn.submit = false;
@@ -229,7 +297,8 @@
         }
     }
     $(function () {
-        $(document).on('click', '#shiftTemplate td[code]', function (e) {
+        //  点击单元格
+        $(document).on('click', '#shiftTemplate .timeTd', function (e) {
             let obj = $(e.target);
             self.currentTd = obj;
             let top = e.clientY - 40;
@@ -266,6 +335,9 @@
                     return;
                 }
                 obj.addClass('gray');
+                let parent = obj.parent();
+                self.currentLineNumber = parseInt(parent.attr('trtype'));
+                self.currentWorkflowId = parseInt(parent.attr('code'));
                 L++;  
             }
             
