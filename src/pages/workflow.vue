@@ -11,27 +11,27 @@
             <!-- 右侧内容 start -->
             <div id="shiftTemplate">
                 <table cellpadding=0 cellspacing=0 tableType="shiftTable" class="workflowTable">
-                    <template v-for="item in workflows">
-                        <tr>
+                    <template v-for="(item, index) in workflows">
+                        <tr :key="'item0-'+index" :id="'item0-'+index">
                             <th colspan='150' tdType='title' height='40'>{{item.dutyName + '(' + item.dutyCode + ')' + "：" + item.startTimeStr + '-' + item.endTimeStr}}</th>
                         </tr>
-                        <tr>
+                        <tr :key="'item1-'+index" :id="'item1-'+index">
                             <td colspan="6">编号</td>
                             <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n > 10 ? n : '0' + n )+'00' }}</td>
                         </tr>
                         <template v-for="workflow in item.scheduleWorkflowVolist">
-                            <tr :trtype="0" :code="workflow.id">
+                            <tr :trtype="0" :code="workflow.id" :key="'tr0-'+workflow.id">
                                 <td rowspan="2" colspan="6" :code="workflow.id" class="workflowCode">
                                     <span @click="beforeAddWorkflow(workflow)">{{workflow.code ? workflow.code : '--'}}</span>
                                     <input type="text" style="display:none;" @blur="updateWorkFlow()">
                                 </td>
                                 <template v-for="n in 24">
-                                    <td class="timeTd" v-for="m in 6" :code="(n-1)*60 + m*10" @click="clickTd"></td>
+                                    <td class="timeTd" v-for="m in 6" :code="(n-1)*60 + m*10" @click="clickTd" :key="'td0-'+(n-1)*60 + m*10"></td>
                                 </template>
                             </tr>
-                            <tr :trtype="1" :code="workflow.id">
+                            <tr :trtype="1" :code="workflow.id" :key="'tr1-'+workflow.id">
                                 <template v-for="n in 24">
-                                    <td class="timeTd" v-for="m in 6" :code="(n-1)*60 + m*10" @click="clickTd"></td>
+                                    <td class="timeTd" v-for="m in 6" :code="(n-1)*60 + m*10" @click="clickTd" :key="'td1-'+(n-1)*60 + m*10"></td>
                                 </template>
                             </tr>
                         </template>
@@ -45,7 +45,7 @@
         <!-- 按钮 -->
         <div class="btnGroup" v-show="showBtn.add || showBtn.edit || showBtn.submit || showBtn.delete">
             <button type="button" class="btnDefault bgGreen" v-show="showBtn.add" @click="beforeAddContent">新建</button>
-            <button type="button" class="btnDefault bgGreen" v-show="showBtn.edit" @click="handleEdit">修改</button>
+            <button type="button" class="btnDefault bgGreen" v-show="showBtn.edit" @click="beforeUpdateContent">修改</button>
             <button type="button" class="btnDefault bgGreen" v-show="showBtn.submit" @click="handleSubmit">提交</button>
             <button type="button" class="btnDefault bgRed" v-show="showBtn.delete" @click="handleDelete">删除</button> 
             <button type="button" class="btnDefault" v-show="showBtn.add || showBtn.submit" @click="handleCancel">取消</button>
@@ -61,7 +61,7 @@
 <script>
     import {showColorPanel} from '../assets/js/workflow.js';
     import {items} from '../assets/data/workflow.js';
-    import {getSuites, getWorkFlow, updateWorkFlow, addContent, updateContent} from '@/api/api';
+    import {getSuites, getWorkFlow, updateWorkFlow, addContent, updateContent, deleteContent} from '@/api/api';
     let self = null;
     export default {
         data:function () {
@@ -88,7 +88,7 @@
                 currentSuite: null,
                 currentWorkflow: null,
                 currentLineNumber: null,
-                currentWorkflowId: null,
+                currentWorkflowId: null
             }
         },
         mounted: function () {
@@ -131,13 +131,11 @@
                                     let colspan = end-start+1;
                                     for(let i = start+1;i<=end;i++){
                                         let target = obj.find(obj.find('td[code="'+ i*10 +'"]'));
-                                        if(target.attr('colspan')){
-                                            colspan += parseInt(target.attr('colspan'));
-                                        }
                                         target.remove();
                                     }
-                                    
-                                    obj.find('td[code="'+ start*10 +'"]').removeClass('gray').attr('colspan', colspan).css('background', '#'+content.color).html(content.content);
+                                    obj.find('td[code="'+ start*10 +'"]').removeClass('gray')
+                                    .attr('colspan', colspan).attr('color', content.color).attr('contentid', content.id)
+                                    .css('background', '#'+content.color).html(content.content);
                                 }
                             }
                         }
@@ -150,14 +148,26 @@
                 self.currentTd = obj;
                 let top = e.clientY - 40;
                 let left = e.clientX - 300;
+                left = left>1000 ? 1000 : left;
+                let scrollTop = $(window).scrollTop();
+                top += scrollTop;
                 let L = $('.gray').length;
                 let parent = obj.parent();
+                let colorL = $('.gray[color]').length;
+                //  如果点击的已有工作流程内容的单元格就不能再选择其它单元格
+                if(colorL>0){
+                    return;
+                }
                 /** 有颜色单元格 */
                 if(obj.attr('style')){
                     self.workflowText = obj.html();
+                    $('.btnGroup').css({'left': left + 'px', 'top': top + 'px'});
                     self.showBtn.edit = true;
                     self.showBtn.delete = true;
+                    $('li[color="'+ obj.attr('color') +'"]').addClass('active');
                     self.editItem = obj.attr('name');
+                    obj.addClass('gray');
+                    return;
                 }
                 /**  无颜色的单元格  */
                 //  如果两个单元格不在同一行
@@ -171,6 +181,10 @@
                 }
                 if(obj.hasClass('gray')){
                     obj.removeClass('gray');
+                    this.showBtn.submit = false;
+                    this.showBtn.input = false;
+                    this.showBtn.edit = false;
+                    this.showBtn.delete = false;
                     L--;
                 } else {
                     if(L==2){
@@ -183,11 +197,7 @@
                     self.currentWorkflowId = parseInt(parent.attr('code'));
                     L++;  
                 }
-                
                 if(L == 2){
-                    left = left>1000 ? 1000 : left;
-                    let scrollTop = $(window).scrollTop();
-                    top += scrollTop;
                     $('.btnGroup').css({'left': left + 'px', 'top': top + 'px'});
                     self.showBtn.add = true;
                     self.showBtn.edit = false;
@@ -206,14 +216,7 @@
                 // let obj = $(e.target);
                 // obj.hide().next().show();
             },
-            //  提交
-            handleSubmit: function () {
-                if(this.type === 0){
-                    this.addContent();
-                    return;
-                }
-                this.updateContent();
-            },
+            
             updateWorkFlow: async function () {
                 let item = this.currentWorkflow;
                 let obj = $('.workflowCode[code="'+ item.id +'"]');
@@ -233,17 +236,37 @@
                 }
                 this.$Message.error(message);
             },
+            //  提交
+            handleSubmit: function () {
+                if(this.type === 0){
+                    this.addContent();
+                    return;
+                }
+                this.updateContent();
+            },
             //  新建工作流程内容
             beforeAddContent: function () {
+                let startTd = $('.gray').eq(0);
+                let endTd = $('.gray').eq(1);
+                let startTime = startTd.attr('code');
+                let endTime = endTd.attr('code');
+                let start = parseInt(startTime)/10;
+                let end = parseInt(endTime)/10;
+                for(let i=start;i<=end;i++){
+                    let td = startTd.siblings('[code="'+ i*10 +'"]');
+                    if(td.attr('color')){
+                        this.$Message.warning('请先删除包含的工作流程内容再创建新的工作流程内容');
+                        return;
+                    }
+                }
                 this.type = 0;
-                console.log('type:'+this.type)
                 this.workflowText = '';
                 $('.colorSelector').find('.active').removeClass('active');
                 this.showBtn.add = false;
                 this.showBtn.submit = true;
                 this.showBtn.input = true;
             },
-            // 新增工作流程内容 
+            //  新增工作流程内容 
             addContent: async function () {
                 if(!this.currentColor){
                     this.$Message.warning('请选择背景色！');
@@ -258,10 +281,6 @@
                 this.editItem = this.temporary;
                 let startTime = startTd.attr('code');
                 let endTime = endTd.attr('code');
-                // for(let i = startTime;i<endTime;i++){
-                //     parent.find('td').eq(i).addClass('remove');
-                // }
-                // $('.remove').remove();
                 let data = {
                     workFlowId: this.currentWorkflowId,
                     startTime: parseInt(startTime),
@@ -270,21 +289,85 @@
                     color: this.temporary,
                     lineNumber: this.currentLineNumber
                 }
-                console.log(data)
                 let response = await addContent(data);
                 let message = response.meta.message;
+                this.workflowText = '';
+                this.showBtn.submit = false;
+                this.showBtn.input = false;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    this.workflowText = '';
-                    this.showBtn.submit = false;
-                    this.showBtn.input = false;
                     this.getWorkFlow(this.suite);
                     return;
                 }
                 this.$Message.error(message);
             },
-            updateContent: function () {
-                console.log(11111)
+            //  更新工作流程内容
+            beforeUpdateContent: function () {
+                this.type = 1;
+                this.showBtn.submit = true;
+                this.showBtn.input = true;
+                this.showBtn.edit = false;
+                this.showBtn.delete = false;
+                this.currentColor = $('.colorSelector .active').attr('color');
+            },
+            updateContent: async function () {
+                if(!this.currentColor){
+                    this.$Message.warning('请选择背景色！');
+                    return;
+                }
+                if(!this.workflowText){
+                    this.$Message.warning('工作流程内容不能为空！');
+                    return;
+                }
+                let id = $('.gray').attr('contentid');
+                let color = $('.colorSelector li.active').attr('color');
+                let data = {
+                    content: this.workflowText,
+                    color: color
+                }
+                let response = await updateContent(id, data);
+                let message = response.meta.message;
+                this.workflowText = '';
+                this.showBtn.submit = false;
+                this.showBtn.input = false;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    
+                    this.getWorkFlow(this.suite);
+                    return;
+                }
+                this.$Message.error(message);
+
+            },
+            //  删除工作流程
+            handleDelete: function () {
+                let currentTd = this.currentTd;
+                let id = $('.gray').attr('contentid');
+                this.$Modal.confirm({
+                    content: '确定删除工作流程吗？',
+                    onOk: () => {
+                        this.workflows = [];
+                        this.deleteContent(id);
+                        
+                    },
+                    onCancel: () => {
+                        this.handleCancel();
+                    }
+                });
+            },
+            deleteContent: async function (id) {
+                let response = await deleteContent(id);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.showBtn.delete = false;
+                    this.showBtn.edit = false;
+                    this.workflowText = '';
+                    this.currentColor = '';
+                    this.getWorkFlow(this.suite);
+                    return;
+                }
+                this.$Message.error(message);
             },
             // 选择颜色
             pickUp: function (e) {
@@ -302,41 +385,7 @@
                     this.showBtn[obj] = false;
                 }
             },
-            //  修改工作流程
-            handleEdit: function () {
-                this.type = 1;
-                this.showBtn.submit = true;
-                this.showBtn.input = true;
-                this.showBtn.edit = false;
-                this.showBtn.delete = false;
-                $('li[code="'+ this.editItem +'"]').addClass('active').siblings().removeClass('active');
-            },
-            //  删除工作流程
-            handleDelete: function () {
-                let currentTd = this.currentTd;
-                this.$Modal.confirm({
-                    content: '确定删除工作流程吗？',
-                    onOk: () => {
-                        this.currentTd.html('');
-                        let n = currentTd.attr('colspan');
-                        let str = '';
-                        for(let i=0;i<n-1;i++){
-                            str += '';
-                            $('<td></td>').insertBefore(currentTd);
-                        }
-                        currentTd.removeAttr('colspan').removeAttr('style').removeClass('gray');
-                        this.showBtn.delete = false;
-                        this.showBtn.edit = false;
-                        this.workflowText = '';
-                        this.currentColor = '';
-                    },
-                    onCancel: () => {
-                        currentTd.css('background-color', this.currentColor).removeClass('gray');
-                        this.showBtn.delete = false;
-                        this.showBtn.edit = false;
-                    }
-                });
-            }
+            
         }
     }    
 </script>
