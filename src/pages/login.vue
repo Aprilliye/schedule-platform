@@ -72,7 +72,6 @@
                        this.$store.set(ROLEID, role);
                        this.$store.set(DISTRICTID_NAME, user.districtName);
                        this.$router.push({ path: "/home" });
-                       console.log(response.data.user);
                    }
                 //  }else{
                 //      this.errorMsg = '账号或密码错误';

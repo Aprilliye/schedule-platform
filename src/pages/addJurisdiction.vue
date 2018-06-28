@@ -126,25 +126,7 @@ import {addRoler} from '@/api/commonAPI';
                 this.$router.push('/role');
 
             },
-            // updateRole:function(){
-            //     if(!this.addroleName){
-            //         this.updateRolespan=true;
-            //         return false;
-            //     }else{
-            //         this.$router.push({
-            //             name:'Role',
-            //             params:{
-            //                 roleName:this.addroleName,
-            //                 description:this.addrolecomment
-            //             }
-            //         });
-            //         this.updateRolespan=false;
-            //         this.addroleName='';
-            //         this.addrolecomment='';
-            //     }
-            // }
             updateRole: async function(){
-                
                 if(!this.addroleName){
                     this.updateRolespan=true;
                     return false;
@@ -155,7 +137,6 @@ import {addRoler} from '@/api/commonAPI';
                             arr.push(this.id);
                         }
                     });
-                    let ids = arr.join(",");
                     let data = {
                         name:this.addroleName,
                         description: this.addrolecomment,
@@ -163,12 +144,12 @@ import {addRoler} from '@/api/commonAPI';
                     }
                     console.log(data);
                     let response = await addRoler(data);
-                    console.log(response);
                      if (response.meta.code !== 0) {
                         this.$Loading.error();
                         this.$Message.error(response.meta.message);
                     }else{
                         this.$Loading.finish();
+                        this.$router.push('/role');
                     }
                 }
             }

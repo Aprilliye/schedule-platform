@@ -679,7 +679,7 @@
             },
             //  获取站区/站点
             request: async function(){
-                if(this.role === 2){
+                if(this.role === 1){
                     this.showDistrict = true;
                     let response = await stationAreaList();
                     if (response.meta.code !== 0) {

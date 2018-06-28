@@ -115,7 +115,7 @@ const router = new Router({
             path: '/operations',
             name: 'operations',
             component: operations
-        }
+        },
       ]
     }
   ]

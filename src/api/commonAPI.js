@@ -55,3 +55,8 @@ export const deleteUser = id => fetch('/user/' + id, {}, 'DELETE');
 /** 新增角色 */
 export const addRoler = data => fetch('/role', data, 'POST');
 
+/** 获取当前角色权限 */
+export const getCurrentRole = id => fetch('/role/' + id , {}, 'GET');
+
+/** 更新当前角色权限 */
+export const updateCurrentRole = (id, data) => fetch('/role/' + id , data, 'PUT');
