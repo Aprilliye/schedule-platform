@@ -71,11 +71,32 @@ export const deleteContent = id => fetch('/workflow/content/'+ id, {}, 'DELETE')
 /** 查询排班计划 */
 export const getScheduleInfo = id => fetch('/schedule/getscheduleinfo/' + id, {}, 'GET');
 
+/** 生成排班计划 */
+export const createScheduleInfo = (suiteId, dateStr) => fetch('/schedule/createscheduleinfo?suiteId=' + suiteId +'&&dateStr='+ dateStr, {}, 'POST');
+
+/** 排班模板删除一周 */
+export const deleteOneWeek = (suiteId, weekNum) => fetch('/schedule/deleteoneweek?suiteId=' + suiteId +'&&weekNum='+ weekNum, {}, 'DELETE');
+
+/** 排班模板交换任务 */
+export const changeTemplate = data => fetch('/schedule/exchangeTemplate', data, 'PUT');
+
+/** 手动排班创建数据 */
+export const manualTemplate = id => fetch('/schedule/manualtemplate/' + id, {}, 'POST');
+
 /** 生成模版 */
 export const createTemplate = id => fetch('/schedule/createtemplate/' + id, {}, 'POST');
 
 /** 加载排班模版 */
 export const loadTemplate = id => fetch('/schedule/templatelist/' + id, {}, 'GET');
+
+/** 排班模板取消人员 */
+export const resetSheduleUser = data => fetch('/schedule/removescheduleuser', data, 'PUT'); // suiteId,weekNum
+
+/** 排班模板设置人员 */ 
+export const setSheduleUser = data => fetch('/schedule/setscheduleuser', data, 'PUT'); // suiteId,weekNum,userId
+
+/** 手动排版设置班次 */
+export const setTemplateClass = data => fetch('/schedule/settemplateclass', data, 'PUT'); // suiteId,weekNum,classId,dayNum
 
 /******************  权限管理  ******************/
 

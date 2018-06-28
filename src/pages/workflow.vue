@@ -11,11 +11,11 @@
             <!-- 右侧内容 start -->
             <div id="shiftTemplate">
                 <table cellpadding=0 cellspacing=0 tableType="shiftTable" class="workflowTable">
-                    <template v-for="item in workflows">
-                        <tr>
+                    <template v-for="(item, index) in workflows">
+                        <tr :key="'item0-'+index" :id="'item0-'+index">
                             <th colspan='150' tdType='title' height='40'>{{item.dutyName + '(' + item.dutyCode + ')' + "：" + item.startTimeStr + '-' + item.endTimeStr}}</th>
                         </tr>
-                        <tr>
+                        <tr :key="'item1-'+index" :id="'item1-'+index">
                             <td colspan="6">编号</td>
                             <td colspan="6" v-for="n in 24" :key="'time'+n">{{ (n > 10 ? n : '0' + n )+'00' }}</td>
                         </tr>
