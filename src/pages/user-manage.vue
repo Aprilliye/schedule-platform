@@ -36,6 +36,7 @@
                             <th width="80">岗位</th>
                             <th width="80">站点</th>
                             <th width="80">站区</th>
+                            <th width="80">是否备班</th>
                             <th width="80" v-show="tableItem[0].ifShow">身份证</th>
                             <th width="120" v-show="tableItem[1].ifShow">入职时间</th>
                             <th width="80" v-show="tableItem[2].ifShow">婚姻状况</th>
@@ -63,6 +64,7 @@
                             <td>{{item.positionName}}</td>
                             <td>{{item.stationName}}</td>
                             <td>{{item.districtName}}</td>
+                            <td>{{item.backup}}</td>
                             <td v-show="tableItem[0].ifShow">{{item.idCardNumber}}</td>
                             <td v-show="tableItem[1].ifShow">{{item.entryDate}}</td>
                             <td v-show="tableItem[2].ifShow">{{item.isMarried}}</td>
@@ -197,8 +199,8 @@
                     </FormItem>
                     <FormItem label="是否为备班人员" prop="backup" class="userModal">
                         <Select  v-model ="addPerson.backup" placeholder="请选择">
-                            <Option value = "1">是</Option>
-                            <Option value = "0">否</Option>
+                            <Option value = 1>是</Option>
+                            <Option value = 0>否</Option>
                         </Select>
                     </FormItem>
                     <div class="clear"></div>
@@ -249,8 +251,8 @@
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
                         <Select v-model="editPerson.gender">
-                            <Option value="1">男</Option>
-                            <Option value="0">女</Option>
+                            <Option value="男">男</Option>
+                            <Option value="女">女</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="手机号" prop="phoneNumber" class="userModal">
@@ -267,14 +269,14 @@
                     </FormItem>
                     <FormItem label="婚否" prop="isMarried" class="userModal">
                         <Select  v-model="editPerson.isMarried">
-                            <Option value="1">已婚</Option>
-                            <Option value="0">未婚</Option>
+                            <Option value="已婚">已婚</Option>
+                            <Option value="未婚">未婚</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="生育" prop="hasChild" class="userModal">
                         <Select v-model="editPerson.hasChild">
-                            <Option value="1">已育</Option>
-                            <Option value="0">未育</Option>
+                            <Option value="已育">已育</Option>
+                            <Option value="未育">未育</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="学历" prop="eduBackGround" class="userModal">
@@ -317,8 +319,8 @@
                     </FormItem>
                     <FormItem label="是否备班人员" prop="backup" class="userModal">
                         <Select  v-model ="editPerson.backup" placeholder="请选择">
-                            <Option value = "1">是</Option>
-                            <Option value = "0">否</Option>
+                            <Option value = 1>是</Option>
+                            <Option value = 0>否</Option>
                         </Select>
                     </FormItem>
                     <div class="clear"></div>
@@ -585,13 +587,13 @@
                     manager: '',
                     password: '',
                     plan: '',
-                    gender: null,
+                    gender: '',
                     phoneNumber: '',
                     birthday: '',
                     idCardNumber: '',
                     entryDate: '',
-                    isMarried: null,
-                    hasChild: null,
+                    isMarried: '',
+                    hasChild: '',
                     eduBackGround: '',
                     partyMember: '',
                     joinDate: '',
@@ -613,13 +615,13 @@
                     manager: '',
                     password: '',
                     plan: '',
-                    gender: null,
+                    gender: '',
                     phoneNumber: '',
                     birthday: '',
                     idCardNumber: '',
                     entryDate: '',
-                    isMarried: null,
-                    hasChild: null,
+                    isMarried: '',
+                    hasChild: '',
                     eduBackGround: '',
                     partyMember: '',
                     joinDate: '',
@@ -904,7 +906,7 @@
                     xfzNo: that.addPerson.xfzNo,
                     zwyNo: that.addPerson.zwyNo,
                     zwyLevel: that.addPerson.zwyLevel,
-                    backup:that.addPerson.backup
+                    backup:that.addPerson.backup === '0' ? 0:1,
                 }
                 if(that.role === 2){
                     data.districtId = that.districtId;
@@ -913,6 +915,7 @@
                     data.districtId = parseInt(currentDistrict[0]);
                     data.districtName = currentDistrict[1];
                 }
+                console.log(data);
                 let response = await addUser(data);
                 if (response.meta.code !== 0) {
                     that.$Loading.error();
@@ -920,6 +923,7 @@
                 }else{
                     that.$Loading.finish();
                     that.personList = response.data;
+                    console.log(response);
                     that.$Message.success("新增人员成功");
                 } 
             },

@@ -124,8 +124,8 @@ import {addRoler} from '@/api/commonAPI';
             },
             callback:function(){
                 this.$router.push('/role');
-
             },
+            // 新增角色
             updateRole: async function(){
                 if(!this.addroleName){
                     this.updateRolespan=true;

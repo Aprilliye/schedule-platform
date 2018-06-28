@@ -16,6 +16,7 @@ import EditJurisdiction from '@/pages/editJurisdiction';
 import schedulePlan from '@/pages/schedulePlan';
 import candidateSchedule from '@/pages/candidateSchedule';
 import operations from '@/pages/operations';
+import workHourReport from '@/pages/workHourReport';
 import iView from 'iview';
 
 Vue.use(iView);
@@ -116,6 +117,12 @@ const router = new Router({
             name: 'operations',
             component: operations
         },
+        // 工时报表
+        {
+          path: '/workHourReport',
+          name: 'workHourReport',
+          component: workHourReport
+      },
       ]
     }
   ]

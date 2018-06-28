@@ -110,13 +110,11 @@
                         <template slot="title">
                             统计报表
                         </template>
-                        <menu-item name="3-1">
+                        <menu-item name="4-1">
+                            <router-link :to="{name: 'workHourReport'}" >
                             <span class="icon-15"></span>
                             工时报表
-                        </menu-item>
-                        <menu-item name="3-2">
-                            <span class="icon-16"></span>
-                            临时报表
+                            </router-link>
                         </menu-item>
                     </submenu>
                     <menu-item name="1-1">

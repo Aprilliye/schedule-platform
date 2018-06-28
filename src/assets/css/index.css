@@ -360,3 +360,8 @@
 .ivu-menu-item .active{
     color: #3A6BCE;
 }
+/* 工时报表 */
+.workHourTable td,.workHourTable th{
+    border:1px solid black;
+    text-align: center;
+}
