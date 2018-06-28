@@ -60,7 +60,10 @@ export const updateWorkFlow = data => fetch('/workflow', data, 'PUT');
 export const addContent = data => fetch('/workflow/content', data, 'POST');
 
 /** 更新工作流程内容 */
-export const updateContent = data => fetch('/workflow/content', data, 'PUT');
+export const updateContent = (id, data) => fetch('/workflow/content/' + id, data, 'PUT');
+
+/** 更新工作流程内容 */
+export const deleteContent = id => fetch('/workflow/content/'+ id, {}, 'DELETE');
 
 
 /********************* 新增排班 **********************/
