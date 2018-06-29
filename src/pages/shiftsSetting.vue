@@ -675,6 +675,7 @@ export default {
         },
         // 切换岗位获取班制
         getChangeSuite: async function () {
+            // 方案验算清空
             this.showEchart = false;
             this.suiteName = 0;
             let that = this;
@@ -1451,17 +1452,17 @@ export default {
                 }else if (endTime<beginTime) {
                     total=endTime-beginTime+1440;
                 }
-                let totalTime='';
-                let totalHour;
-                let totalMinute;
-                if(total>0){
-                    totalHour=parseInt(total/60);
-                    totalMinute=total%60;
-                    totalTime=totalHour+'小时'+totalMinute+'分钟';
-                }else{
-                    totalTime=0+'小时'+0+'分钟';
-                }
-                this.addFormValidateClass.workingLength=totalTime;
+                // let totalTime='';
+                // let totalHour;
+                // let totalMinute;
+                // if(total>0){
+                //     totalHour=parseInt(total/60);
+                //     totalMinute=total%60;
+                //     totalTime=totalHour+'小时'+totalMinute+'分钟';
+                // }else{
+                //     totalTime=0+'小时'+0+'分钟';
+                // }
+                this.addFormValidateClass.workingLength=total;
             }
             
         },

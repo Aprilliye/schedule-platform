@@ -63,6 +63,8 @@
                        this.$Message.error(response.meta.message);
                    }else{
                        let user = response.data.user;
+                       console.log(user);
+                       console.log(user.stationId);
                        let role = user.roles[0].id;
                        this.$store.set(DISTRICTID, user.districtId);
                        this.$store.set(STATIONID, user.stationId);
