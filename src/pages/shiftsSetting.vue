@@ -1076,6 +1076,14 @@ export default {
         },
         beforeAddClassMethods: async function  (that) {
             let currentPosition = that.position.current.split('-');
+            let excBeginTime=parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[1]);
+            let excEndTime=parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[1]);
+            let total=0;
+            if (excEndTime>excBeginTime){
+                total=excEndTime-excBeginTime;
+            }else if (excEndTime<excBeginTime) {
+                total=excEndTime-excBeginTime+1440;
+            }
             let data={
                 dutyName: that.addFormValidateClass.dutyName,
                 dutyCode: that.addFormValidateClass.dutyCode,
@@ -1083,7 +1091,7 @@ export default {
                 districtName: that.dutyDistrictName,
                 stationId: that.dutyStationId,
                 stationName: that.dutyStationName,
-                restMinutes: that.addFormValidateClass.restMinutes,
+                restMinutes: that.addFormValidateClass.restMinutes*60,
                 positionId: parseInt(currentPosition[0]),
                 backup: parseInt(currentPosition[1]),
                 positionName:currentPosition[2],
@@ -1092,7 +1100,7 @@ export default {
                 classColor: $(".shiftColor").css('background-color'),
                 startTimeStr: that.addFormValidateClass.timeSlotBegin,
                 endTimeStr: that.addFormValidateClass.timeSlotEnd,
-                workingLength: that.addFormValidateClass.workingLength,
+                workingLength: total,
             }
              let dataBegin={
                 dutyName: that.addFormValidateClass.dutyName,
@@ -1101,7 +1109,7 @@ export default {
                 districtName: that.dutyDistrictName,
                 stationId: that.dutyStationId,
                 stationName: that.dutyStationName,
-                restMinutes: that.addFormValidateClass.restMinutes,
+                restMinutes: that.addFormValidateClass.restMinutes*60,
                 relevantClassId: that.CurrentRelevantClassId,
                 positionId: parseInt(currentPosition[0]),
                 backup: parseInt(currentPosition[1]),
@@ -1111,7 +1119,7 @@ export default {
                 classColor: $(".shiftColor").css('background-color'),
                 startTimeStr: that.addFormValidateClass.timeSlotBegin,
                 endTimeStr: '24:00',
-                workingLength: that.addFormValidateClass.workingLength,
+                workingLength: total,
             }
             let dataEnd={
                 dutyName: '下夜班',
@@ -1120,7 +1128,7 @@ export default {
                 districtName: that.dutyDistrictName,
                 stationId: that.dutyStationId,
                 stationName: that.dutyStationName,
-                restMinutes: that.addFormValidateClass.restMinutes,
+                restMinutes: that.addFormValidateClass.restMinutes*60,
                 positionId: parseInt(currentPosition[0]),
                 backup: parseInt(currentPosition[1]),
                 positionName:currentPosition[2],
@@ -1129,7 +1137,7 @@ export default {
                 classColor: $(".shiftColor").css('background-color'),
                 startTimeStr: '00:00',
                 endTimeStr: that.addFormValidateClass.timeSlotEnd,
-                workingLength: that.addFormValidateClass.workingLength,
+                workingLength: total,
             }
             let beginTime = that.addFormValidateClass.timeSlotBegin.split(':');
             let endTime = that.addFormValidateClass.timeSlotEnd.split(':');
@@ -1140,6 +1148,7 @@ export default {
             arrEnd.push(parseInt(endTime[0]));
             arrEnd.push(parseInt(endTime[1]));
             let response = {};
+            console.log(data);
             if (arrBegin[0]==arrEnd[0] && arrBegin[0]>arrEnd[0]){
                 let result = await addClass(dataEnd);
                  if(result.meta.code === 0){
@@ -1205,8 +1214,15 @@ export default {
             })
         },
         beforeEditShifyClassMethods: async function (that) {
-            this.currentIndex
-                let currentPosition = that.position.current.split('-');
+            let currentPosition = that.position.current.split('-');
+            let excBeginTime=parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[1]);
+            let excEndTime=parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[1]);
+            let total=0;
+            if (excEndTime>excBeginTime){
+                total=excEndTime-excBeginTime;
+            }else if (excEndTime<excBeginTime) {
+                total=excEndTime-excBeginTime+1440;
+            }
                 let data={
                     id: that.classId,
                     dutyName: that.editFormValidateClass.dutyName,
@@ -1215,7 +1231,7 @@ export default {
                     districtName: that.dutyDistrictName,
                     stationId: that.dutyStationId,
                     stationName: that.dutyStationName,
-                    restMinutes: that.editFormValidateClass.restMinutes,
+                    restMinutes: that.editFormValidateClass.restMinutes*60,
                     relevantClassId: that.editFormValidateClass.relevantClassId,
                     positionId: parseInt(currentPosition[0]),
                     backup: parseInt(currentPosition[1]),
@@ -1225,7 +1241,7 @@ export default {
                     classColor: $(".shiftColor").css('background-color'),
                     startTimeStr: that.editFormValidateClass.timeSlotBegin,
                     endTimeStr: that.editFormValidateClass.timeSlotEnd,
-                    workingLength: that.editFormValidateClass.workingLength,
+                    workingLength: total,
                     restMinutes: that.editFormValidateClass.restMinutes,
                 }
                 let response = await updateClass(data);
@@ -1244,6 +1260,19 @@ export default {
             for(let key in obj){
                 this.formValidate[key] = obj[key];
             }
+            this.formValidate.restMinutes = obj.restMinutes/60;
+            let total=  obj.workingLength;
+            let totalTime='';
+            let totalHour;
+            let totalMinute;
+            if(total>0){
+                totalHour=parseInt(total/60);
+                totalMinute=total%60;
+                totalTime=totalHour+'小时'+totalMinute+'分钟';
+            }else{
+                totalTime=0+'小时'+0+'分钟';
+            }
+            this.formValidate.workingLength = total;
             this.modal.editShift = true;
         },
         //编辑班次
@@ -1452,17 +1481,17 @@ export default {
                 }else if (endTime<beginTime) {
                     total=endTime-beginTime+1440;
                 }
-                // let totalTime='';
-                // let totalHour;
-                // let totalMinute;
-                // if(total>0){
-                //     totalHour=parseInt(total/60);
-                //     totalMinute=total%60;
-                //     totalTime=totalHour+'小时'+totalMinute+'分钟';
-                // }else{
-                //     totalTime=0+'小时'+0+'分钟';
-                // }
-                this.addFormValidateClass.workingLength=total;
+                let totalTime='';
+                let totalHour;
+                let totalMinute;
+                if(total>0){
+                    totalHour=parseInt(total/60);
+                    totalMinute=total%60;
+                    totalTime=totalHour+'小时'+totalMinute+'分钟';
+                }else{
+                    totalTime=0+'小时'+0+'分钟';
+                }
+                this.addFormValidateClass.workingLength=totalTime;
             }
             
         },
