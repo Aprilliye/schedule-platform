@@ -112,7 +112,7 @@
                     </FormItem>
                     <FormItem label="密码" prop="password" class="userModal">
                         <Input v-model="addPerson.password"></Input>
-                        <span class="red">请记录此密码作为下次登录用</span>
+                        <span class="orange">请记录此密码作为下次登录用</span>
                     </FormItem>
                     <FormItem label="站点" prop="station" class="userModal">
                         <Select v-model="addPerson.station" @on-change="getAllPosts">
@@ -232,7 +232,7 @@
                     </FormItem>
                      <FormItem label="密码" prop="password" class="userModal">
                         <Input v-model="editPerson.password"></Input>
-                        <span class="red">请记录此密码作为下次登录用</span>
+                        <span class="orange">请记录此密码作为下次登录用</span>
                     </FormItem>
                     <FormItem label="站点" prop="station" class="userModal">
                         <Select v-model="editPerson.station" @on-change="getAllPosts">
@@ -251,8 +251,8 @@
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
                         <Select v-model="editPerson.gender">
-                            <Option value="男">男</Option>
-                            <Option value="女">女</Option>
+                            <Option value="1">男</Option>
+                            <Option value="0">女</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="手机号" prop="phoneNumber" class="userModal">
@@ -269,14 +269,14 @@
                     </FormItem>
                     <FormItem label="婚否" prop="isMarried" class="userModal">
                         <Select  v-model="editPerson.isMarried">
-                            <Option value="已婚">已婚</Option>
-                            <Option value="未婚">未婚</Option>
+                            <Option value="1">已婚</Option>
+                            <Option value="0">未婚</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="生育" prop="hasChild" class="userModal">
                         <Select v-model="editPerson.hasChild">
-                            <Option value="已育">已育</Option>
-                            <Option value="未育">未育</Option>
+                            <Option value="1">已育</Option>
+                            <Option value="0">未育</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="学历" prop="eduBackGround" class="userModal">
@@ -319,8 +319,8 @@
                     </FormItem>
                     <FormItem label="是否备班人员" prop="backup" class="userModal">
                         <Select  v-model ="editPerson.backup" placeholder="请选择">
-                            <Option value = 1>是</Option>
-                            <Option value = 0>否</Option>
+                            <Option value = '1'>是</Option>
+                            <Option value = '0'>否</Option>
                         </Select>
                     </FormItem>
                     <div class="clear"></div>
@@ -659,6 +659,12 @@
                 }else{
                     this.$Loading.finish();
                     this.personList = response.data;
+                    for(let i=0;i<response.data.length;i++){
+                        this.personList[i].gender = response.data[i].gender==="0" ? "女":"男";
+                        this.personList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
+                        this.personList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
+                        this.personList[i].backup = response.data[i].backup=== 0 ? "否":"是";
+                    }
                 }
             },
             // 模糊查询
@@ -764,7 +770,6 @@
                             return;
                         }
                     }
-                
             },
             //  删除一行
             removeLine: async function(){
@@ -779,6 +784,12 @@
                 }else{
                     this.$Loading.finish();
                     this.personList = response.data;
+                    for(let i=0;i<response.data.length;i++){
+                        this.personList[i].gender = response.data[i].gender==="0" ? "女":"男";
+                        this.personList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
+                        this.personList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
+                        this.personList[i].backup = response.data[i].backup=== 0 ? "否":"是";
+                    }
                     this.$Message.success("删除人员成功")
                 } 
             },
@@ -829,7 +840,7 @@
                     xfzNo: that.editPerson.xfzNo,
                     zwyNo: that.editPerson.zwyNo,
                     zwyLevel: that.editPerson.zwyLevel,
-                    backup:that.editPerson.backup
+                    backup:that.addPerson.backup === '0' ? 0:1,
                 }
                 if(that.role === 2){
                     data.districtId = that.districtId;
@@ -844,7 +855,13 @@
                     that.$Message.error(response.meta.message);
                 }else{
                     that.$Loading.finish();
-                    this.personList = response.data;
+                    that.personList = response.data;
+                    for(let i=0;i<response.data.length;i++){
+                    that.personList[i].gender = response.data[i].gender==="0" ? "女":"男";
+                    that.personList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
+                    that.personList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
+                    that.personList[i].backup = response.data[i].backup=== 0 ? "否":"是";
+                    }
                     that.$Message.success("修改人员成功")
                 } 
             },
@@ -915,7 +932,6 @@
                     data.districtId = parseInt(currentDistrict[0]);
                     data.districtName = currentDistrict[1];
                 }
-                console.log(data);
                 let response = await addUser(data);
                 if (response.meta.code !== 0) {
                     that.$Loading.error();
@@ -923,7 +939,12 @@
                 }else{
                     that.$Loading.finish();
                     that.personList = response.data;
-                    console.log(response);
+                    for(let i=0;i<response.data.length;i++){
+                    that.personList[i].gender = response.data[i].gender==="0" ? "女":"男";
+                    that.personList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
+                    that.personList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
+                    that.personList[i].backup = response.data[i].backup=== 0 ? "否":"是";
+                    }
                     that.$Message.success("新增人员成功");
                 } 
             },
