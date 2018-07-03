@@ -2,8 +2,8 @@
     <div class="container">
         <div class="content-header">
             <span>选择班制：</span>
-            <Select v-model="shift" style="width:200px" @on-change="changeShift">
-                <Option v-for="item in shifts" :value="item.shiftId" :key="item.shiftId">{{ item.shiftName }}</Option>
+            <Select v-model="suite" style="width:200px" @on-change="changeShift">
+                <Option v-for="item in suites" :value="item.id" :key="item.shiftId">{{ item.dutyName }}</Option>
             </Select>
             <!-- <button type="button" class="btnDefault bgBlue">创建排班</button> -->
             <button type="button" class="btnDefault bgGreen">保存排班</button>
@@ -43,33 +43,14 @@
     </div>
 </template>
 <script>
-import {result} from '@/assets/data/data.js'
+import {result} from '@/assets/data/data.js';
+import {getSuites} from '@/api/api';
 export default {
     data: function () {
         return {
+            districtId: this.$store.get('districtId'),
             shiftsModal: false,
-            shifts: [
-                {
-                    shiftName: '班制一',
-                    shiftId: 1,
-                    users: [
-                        {userName: '封伟', userId: 0, shifts: new Map(), totalHours: 0},
-                        {userName: '王惠云', userId: 1, shifts: new Map(), totalHours: 0},
-                        {userName: '祁爱军', userId: 2, shifts: new Map(), totalHours: 0},
-                        {userName: '鞠淑云', userId: 3, shifts: new Map(), totalHours: 0},
-                        {userName: '孟凡君', userId: 4, shifts: new Map(), totalHours: 0}
-                    ],
-                },
-                {
-                    shiftName: '班制二',
-                    shiftId: 2,
-                    users: [
-                        {userName: '张海军', userId: 7, shifts: new Map(), totalHours: 0},
-                        {userName: '王素梅', userId: 8, shifts: new Map(), totalHours: 0},
-                        {userName: '王磊', userId: 9, shifts: new Map(), totalHours: 0}
-                    ],
-                },
-            ],
+            suites: [],
             users: [
                 {userName: '封伟', userId: 0, shifts: new Map(), totalHours: 0},
                 {userName: '王惠云', userId: 1, shifts: new Map(), totalHours: 0},
@@ -77,7 +58,7 @@ export default {
                 {userName: '鞠淑云', userId: 3, shifts: new Map(), totalHours: 0},
                 {userName: '孟凡君', userId: 4, shifts: new Map(), totalHours: 0}
             ],
-            shift: 1,
+            suite: null,
             shiftsMap: new Map(),
             modalShifts: [],
             modalShiftsMap: new Map(),
@@ -87,6 +68,7 @@ export default {
         }
     },
     created: function () {
+        this.getSuites();
         for(let obj of this.shifts){
             this.shiftsMap.set(obj.shiftId, obj.users);
         }
@@ -96,6 +78,20 @@ export default {
         }
     },
     methods: {
+        //  获取班制
+        getSuites: async function () {
+            let data = {
+                districtId: this.districtId
+            };
+            let response = await getSuites(data);
+            if(response.meta.code === 0){
+                this.suites = response.data;
+                this.suite = response.data[0].id;
+                //this.currentPositionId = response.data[0].positionId;
+                return;
+            }
+            this.$Message.error(response.meta.message);
+        },
         changeShift: function () {
             this.users = this.shiftsMap.get(this.shift);
         },

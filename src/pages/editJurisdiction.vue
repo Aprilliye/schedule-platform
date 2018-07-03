@@ -109,7 +109,6 @@
             },
             callback:function(){
                 this.$router.push('/role');
-
             },
             // 获取当前角色权限
             getCurrentRole: async function () {
@@ -122,6 +121,9 @@
                     this.$Loading.finish();
                     let data = response.data.permissions;
                     let arr = [];
+                    let role = response.data.role;
+                    this.addroleName = role.name;
+                    this.addrolecomment = role.description;
                     for(let key1 in data){
                         let arr2 = [];
                         for(let key2 in data[key1]){
@@ -136,6 +138,25 @@
                         });
                     }
                     this.allPermissions = arr;
+                    this.$nextTick(function () {
+                        $('.level2>div').each(function (i) {
+                            let input = $(this).find('input[level="2"]');
+                            let L1 = $(this).find('.level3').length;
+                            let L2 = $(this).find('input:checked').length;
+                            if(L1===L2){
+                                input.prop('checked', true);
+                            }
+                        })
+                        $('.permission').each(function () {
+                            let input = $(this).find('input[level="1"]'); 
+                            let L1 = $(this).find('input[level="2"]').length;
+                            let L2 = $(this).find('input[level="2"]:checked').length;
+                            if(L1 === L2){
+                                input.prop('checked', true);
+                            }
+                        })
+                    })
+                    
                 }
             },
             // 更新当前角色权限

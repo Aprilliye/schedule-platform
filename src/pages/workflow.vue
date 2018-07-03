@@ -216,7 +216,6 @@
                 // let obj = $(e.target);
                 // obj.hide().next().show();
             },
-            
             updateWorkFlow: async function () {
                 let item = this.currentWorkflow;
                 let obj = $('.workflowCode[code="'+ item.id +'"]');
