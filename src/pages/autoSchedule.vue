@@ -42,7 +42,7 @@
                                 <tbody id="theBody">
                                     <tr v-for="(n, index) in data" :key="'tr'+index" :row="index">
                                         <td class="userName" :id="'user'+n" @click="clickUserTd"></td>
-                                        <td v-for="m in 7" :key="'td'+ m" :id="'td'+(n-1)+'-'+(m-1)" @click="beforeChange"></td>
+                                        <td v-for="m in 7" :key="'td'+ m" :id="'td'+(n-1)+'-'+(m-1)" :weeknum="n-1" :daynum="m-1" @click="beforeChange"></td>
                                         <td class="workHours">
                                             <span></span>
                                             <!-- <button type="button" class="deleteItem" v-show="(index === currentTr) && showDelete">删除本行</button> -->
@@ -85,6 +85,7 @@
     export default {
         data:function () {
             return {
+                jsy: [],
                 districtId: this.$store.get('districtId'),
                 showChangeBtn: false,
                 showTable: false,
@@ -121,7 +122,7 @@
                     saturday: '--',
                     sunday: '--',
                 },
-                data: result.weeks,
+                data: 0,
                 currentTr: null,
                 showDelete: false,
                 totalHours: 0,
@@ -141,9 +142,10 @@
             self = this;
             //  获取班制列表
             this.getSuites();
-            for(let key in result.shifts){
-                this.shiftsData.push(result.shifts[key]);
-            }
+            // console.log(result)
+            // for(let key in result.shifts){
+            //     this.shiftsData.push(result.shifts[key]);
+            // }
             // setTimeout(function () {
             //     self.loadTemplate();
             // },10)
@@ -167,9 +169,10 @@
             },
             //  生成模版
             createTemplate: async function (id) {
-                console.log(id)
-                let response = await createTemplate(id);
-                console.log(response);
+                // let response = await createTemplate(id);
+                // if(response.meta.code === 0){
+                //     this.template(response.data.scheduleUserlist);
+                // }
             },
             // 查询排班计划
             getScheduleInfo: async function (id) {
@@ -181,10 +184,13 @@
                     return;
                 }
                 let response = await loadTemplate(id);
-                console.log(response);
-                // this.autoData = this.deepCopy(result);
-                // this.currentResult = this.autoData;
-                // this.template(this.autoData);
+                if(response.meta.code === 0){
+                    let data = response.data.templatelist;
+                    this.jsy = data;
+                    this.data = Math.ceil(data.length/7);
+                    this.template(data);
+                }
+                
             },
             //  计算周工时
             calcWeeklyTime: function (n) {
@@ -473,49 +479,52 @@
             },
             //  加载模版
             template: function (allData) {
-                let data = allData.data;
-                let dataLen = data.length;
+                //let data = allData.data;
+                let data = allData;
+                let dataLen = allData.length;
                 this.totalHours = 0;
                 $('#theHead0').find('p span').html('0');
-                for(let i=0;i<dataLen;i++){
-                    let obj = data[i];
-                    let n = obj.weekNumber;
-                    let m = obj.weekDay;
-                    let hours = obj.shiftMinutes/60;
-                    this.totalHours += hours;
-                    $('#td'+ n + '-'+ m).html(obj.shiftName).css('background-color', '#' + obj.shiftColor).attr({'data-hours': hours,'code': i});
-                    let weekDay = obj.weekDay;
-                    let shiftId = obj.shiftId;
-                    let span = $('#weekDay'+weekDay).find('[code="'+ shiftId +'"]').find('span');
-                    let num = parseInt(span.html());
-                    num++;
-                    span.html(num);
-                }
-                let ps = $('#theHead0').find('p');
-                for(let i=0;i<ps.length;i++){
-                    let obj = ps.eq(i);
-                    if(obj.attr('shiftnum') !== obj.find('span').html()){
-                        obj.addClass('red');
+                this.$nextTick(function () {
+                    for(let i=0;i<dataLen;i++){
+                        let obj = data[i];
+                        let n = obj.weekNum;
+                        let m = obj.dayNum;
+                        let hours = obj.workingLength/60;
+                        this.totalHours += hours;
+                        $('[weeknum="'+ n +'"][daynum="'+ m +'"]').html(obj.dutyName).css('background-color', obj.cellColor).attr({'data-hours': hours,'code': i});
+                        let weekDay = obj.weekDay;
+                        let shiftId = obj.shiftId;
+                        let span = $('#weekDay'+weekDay).find('[code="'+ shiftId +'"]').find('span');
+                        let num = parseInt(span.html());
+                        num++;
+                        span.html(num);
                     }
+
+                    let ps = $('#theHead0').find('p');
+                    for(let i=0;i<ps.length;i++){
+                        let obj = ps.eq(i);
+                        if(obj.attr('shiftnum') !== obj.find('span').html()){
+                            obj.addClass('red');
+                        }
+                    }
+                    this.calcAverage();
+                    $(".workHours").each(function (n) {
+                        self.calcWeeklyTime(n);
+                    });
+                    self.globalShiftCounts = allData.shifts;
+                    self.globalShiftIds = allData.shiftIds;
+                    //$("#btnLoad").hide();
+                    //codes = result.codes;
+                    //setCodes();
                     
-                }
-                this.calcAverage();
-                $(".workHours").each(function (n) {
-                    self.calcWeeklyTime(n);
-                });
-                self.globalShiftCounts = allData.shifts;
-                self.globalShiftIds = allData.shiftIds;
-                //$("#btnLoad").hide();
-                //codes = result.codes;
-                //setCodes();
-                
-                //self.initUserTable(result.users);
-                self.users = allData.users;
-                allData.owners && self.drawOwners(allData.owners);
-                $("th[thead]").each(function(n) {
-                    self.calcDailySchedule(n);
-                });
-                this.showTable = true;
+                    //self.initUserTable(result.users);
+                    self.users = allData.users;
+                    allData.owners && self.drawOwners(allData.owners);
+                    $("th[thead]").each(function(n) {
+                        self.calcDailySchedule(n);
+                    });
+                    this.showTable = true;
+                })
             }
         }
     }
