@@ -6,7 +6,7 @@
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true" >新增班制</a>
         </div>
-        <Tabs type="card" :animated="false" v-model="tabModel"  @on-click="choseTab">
+        <Tabs type="card"  :animated="false" v-model="tabModel" closable @on-tab-remove="handleClose"  @on-click="choseTab">
             <TabPane :label="item.dutyName"  v-for="(item,index) in suites" :key="index" :id="item.id">
                 <div class="panel-body">
                     <div class="buttonblock"></div>
@@ -17,7 +17,6 @@
                                 <b>班制表</b>
                                 <div class="btn-group">
                                     <a class="btnDefault bgGreen" href="javascript:;" @click="beforeEditShift">编辑班制</a>
-                                    <a class="btnDefault bgRed" href="javascript:;" @click="handleClose(item.id)" style="margin-left:8px;">删除班制</a>
                                 </div>
                             </div>
                             <ul class="info">
@@ -79,7 +78,7 @@
                                     <a class="btnDefault bgGreen" @click="modal.addClass=true">新增班次</a>
                                 </div>
                             </div>
-                            <Table :columns="shiftColumns" :data="dutyData" class="shiftTableColor"></Table>
+                            <Table :columns="shiftColumns" :data="shiftData" class="shiftTableColor"></Table>
                         </div>
                     </div>
                 </div>
@@ -88,10 +87,10 @@
         </Tabs>
         <!-- 新增班次表 -->
         <Modal title="新增班次"
-            v-model="modal.addClass"
-            @on-ok="addClassMethods('addFormValidateClass')"
-            @on-cancel="handleCancel('addFormValidateClass')"
-            :loading="true"
+               v-model="modal.addClass"
+                @on-ok="addClassMethods('addFormValidateClass')"
+               @on-cancel="handleCancel('addFormValidateClass')"
+               :loading="true"
             >
             <Form ref="addFormValidateClass" :model="addFormValidateClass" :rules="ruleValidate1" :label-width="80">
                 <FormItem label="班次名称" prop="dutyName">
@@ -121,7 +120,7 @@
                 </FormItem>
                 <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot">
                     <!-- <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addShiftValue'  @on-change="getsectionTime"></TimePicker> -->
-                    <TimePicker  v-model="addFormValidateClass.timeSlotBegin" placeholder="选择开始时间" format="HH:mm" @on-change="getsectionTime"></TimePicker> 至 
+                    <TimePicker  v-model="addFormValidateClass.timeSlotBegin" placeholder="选择开始时间" format="HH:mm" @on-change="getsectionTime"></TimePicker>至
                     <TimePicker  v-model="addFormValidateClass.timeSlotEnd" placeholder="选择结束时间" format="HH:mm" @on-change="getsectionTime"></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
@@ -526,7 +525,7 @@ export default {
                     yeartime:'1'
                 }
             ],
-            //  班次表
+            //班次表
             shiftColumns: [
                 {
                     title: '班制名称',
@@ -546,31 +545,25 @@ export default {
                     title: '起止时间',
                     align: 'center',
                     key: 'timeSlot',
-                    render: (h, params) => {
-                        let beginTimeSlot=params.row.startTimeStr;
-                        let endTimeSlot=params.row.endTimeStr;
-                        return h('div', [
-                            h('span', params.row.startTimeStr),
-                            h('span', '-'),
-                            h('span', params.row.endTimeStr),
-                        ]);
-                    }
+                            render: (h, params) => {
+                    let beginTimeSlot=params.row.startTimeStr;
+                    let endTimeSlot=params.row.endTimeStr;
+                    return h('div', [
+                        h('span', beginTimeSlot),
+                        h('span', '-'),
+                        h('span', endTimeSlot),
+                    ]);
+                }
                 },
                 {
                     title: '本班工时',
                     align: 'center',
-                    key: 'workingLength',
-                    render: (h, params) => {
-                        return h('div', params.row.workingLength/60 + '小时');
-                    }
+                    key: 'workingLength'
                 },
                 {
                     title: '班次间隔',
                     align: 'center',
-                    key: 'restMinutes',
-                    render: (h, params) => {
-                        return h('div', params.row.restMinutes/60 + '小时');
-                    }
+                    key: 'restMinutes'
                 },
                 {
                     title: '班次关联',
@@ -609,6 +602,7 @@ export default {
                     }
                 }
             ],
+            shiftData:[],
             onDutyColumns: [
                 {
                     title: '时间段',
@@ -826,19 +820,89 @@ export default {
                     that.$Message.error(response.meta.message);
                 }else{
                     that.dutyData = response.data.dutyclass;
+                    that.shiftData = response.data.dutyclass;
+                    for (let i=0;i<response.data.dutyclass.length;i++){
+                        that.shiftData[i].restMinutes = response.data.dutyclass[i].restMinutes/60;
+                        let total = response.data.dutyclass[i].workingLength;
+                        let totalTime = '';
+                        let totalHour;
+                        let totalMinute;
+                        if(total>0){
+                            totalHour=parseInt(total/60);
+                            totalMinute=total%60;
+                            totalTime=totalHour+'小时'+totalMinute+'分钟';
+                        }else{
+                            totalTime = 0+'小时'+0+'分钟';
+                        }
+                        that.shiftData[i].workingLength = totalTime;
+                        // let currentData = that.response.data.dutyclass[i];
+                        // if(currentData.relevantClassId){
+                        //     let id = currentData.relevantClassId;
+                        //     for(let obj of that.response.data.dutyclass){
+                        //         if(obj.relevantClassId === id){
+                        //             that.shiftData[i].relevantDutyName = obj.dutyName;
+                        //             return;
+                        //         }
+                        //     }
+                        // }
+                    }
+                    //获取时间段
+                    that.onDutyData=response.data.dutyperiodchecking
+                    that.$Loading.finish();
                 }
             }
         },
         //  删除班制
-        handleClose: async function (id) {
+        handleClose: async function (name) {
+            let id = this.suites[name].id;
             let response = await deteleSuites(id);
-            let message = response.meta.message;
-            if(response.meta.code === 0){
-                this.$Message.success(message);
-                this.getSuites();
-                return;
+            if (response.meta.code !== 0) {
+                this.$Loading.error();
+                this.$Message.error(response.meta.message);
+            }else{
+                this.$Loading.finish();
+                this.suites = response.data;
+                if (this.tabName == name && name!=0){
+                    this.showEchart = false;
+                    let that = this;
+                    let obj = this.suites[name-1]; 
+                    for(let key in obj){
+                    this.info[key] = obj[key];
+                    }
+                    this.suiteId = this.suites[name-1].id;
+                    this.dutyDistrictId = this.suites[name-1].districtId;
+                    this.dutyDistrictName = this.suites[name-1].districtName;
+                    this.dutyStationId = this.suites[name-1].stationId;
+                    this.dutyStationName = this.suites[name-1].stationName;
+                    this.$options.methods.getClass(that);
+                    this.tabName =name;
+                }else if (name==0){
+                    this.showEchart = false;
+                    if (this.suites.length>0){
+                    let that = this;
+                    let obj = this.suites[name];
+                    for(let key in obj){
+                    this.info[key] = obj[key];
+                    }
+                    this.dutyDistrictId = this.suites[name].districtId,
+                    this.dutyDistrictName = this.suites[name].districtName,
+                    this.dutyStationId  = this.suites[name].stationId,
+                    this.dutyStationName = this.suites[name].stationName,
+                    this.suiteId = this.suites[name].id
+                    this.$options.methods.getClass(that);
+                    }else{
+                        this.showEchart = false;
+                        this.info=[];
+                        this.dutyDistrictId = null,
+                        this.dutyDistrictName = null,
+                        this.dutyStationId  = null,
+                        this.dutyStationName = null,
+                        this.suiteId =null
+                    }
+                }
+             
+                this.$Message.success("删除班制成功");
             }
-            this.$Message.error(message);
         },
         //  编辑班制验证
         editShift: function (name) {
