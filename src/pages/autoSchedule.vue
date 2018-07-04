@@ -33,7 +33,7 @@
                                     <th>站务员</th>
                                     <th v-for="i in 7" :key="'th'+i">
                                         <div :id="'weekDay'+(i-1)">
-                                            <p v-for="item in shiftsData" :key="item.shiftId" :code="item.shiftId" :shiftNum="item.shiftNum"><em>{{item.shiftName}}：</em><span>0</span></p>
+                                            <p v-for="item in dutyClass" :key="item.id" :code="item.id" :shiftNum="item.dutyName"><em>{{item.dutyName}}：</em><span>0</span></p>
                                         </div>
                                     </th>
                                     <th>周工时</th>
@@ -85,7 +85,7 @@
     export default {
         data:function () {
             return {
-                jsy: [],
+                dutyClass: [],                              //  所有班次
                 districtId: this.$store.get('districtId'),
                 showChangeBtn: false,
                 showTable: false,
@@ -142,13 +142,6 @@
             self = this;
             //  获取班制列表
             this.getSuites();
-            // console.log(result)
-            // for(let key in result.shifts){
-            //     this.shiftsData.push(result.shifts[key]);
-            // }
-            // setTimeout(function () {
-            //     self.loadTemplate();
-            // },10)
         },
         methods:{
             //  获取所有班制
@@ -186,8 +179,8 @@
                 let response = await loadTemplate(id);
                 if(response.meta.code === 0){
                     let data = response.data.templatelist;
-                    this.jsy = data;
                     this.data = Math.ceil(data.length/7);
+                    this.dutyClass = response.data.dutyclass;
                     this.template(data);
                 }
                 

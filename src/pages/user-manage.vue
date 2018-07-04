@@ -97,13 +97,13 @@
                 :mask-closable="false">
                 <Form ref="addPerson" :model="addPerson" :label-width="120" :rules="rule">
                     <FormItem label="员工卡号" prop="employeeCard" class="userModal">
-                        <Input v-model="addPerson.employeeCard"></Input>
+                        <i-input v-model="addPerson.employeeCard"></i-input>
                     </FormItem>
                     <FormItem label="人员编码" prop="employeeCode" class="userModal">
-                        <Input  v-model="addPerson.employeeCode"></Input>
+                        <i-input  v-model="addPerson.employeeCode"></i-input>
                     </FormItem>
                     <FormItem label="姓名" prop="userName" class="userModal">
-                        <Input v-model="addPerson.userName"></Input>
+                        <i-input v-model="addPerson.userName"></i-input>
                     </FormItem>
                      <FormItem label="站区" prop="district" class="userModal"  v-show="showDistrict">
                         <Select v-model="addPerson.district" @on-change="getAllStations">
@@ -111,7 +111,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="密码" prop="password" class="userModal">
-                        <Input v-model="addPerson.password"></Input>
+                        <i-input v-model="addPerson.password"></i-input>
                         <span class="orange">请记录此密码作为下次登录用</span>
                     </FormItem>
                     <FormItem label="站点" prop="station" class="userModal">
@@ -136,16 +136,16 @@
                         </Select>
                     </FormItem>
                     <FormItem label="手机号" prop="phoneNumber" class="userModal">
-                        <Input v-model="addPerson.phoneNumber"></Input>
+                        <i-input v-model="addPerson.phoneNumber"></i-input>
                     </FormItem>
                     <FormItem label="生日" prop="birthday" class="userModal">
-                        <Input v-model="addPerson.birthday"></Input>
+                        <i-input v-model="addPerson.birthday"></i-input>
                     </FormItem>
                     <FormItem label="身份证" prop="idCardNumber" class="userModal">
-                        <Input  v-model="addPerson.idCardNumber"></Input>
+                        <i-input  v-model="addPerson.idCardNumber"></i-input>
                     </FormItem>
                     <FormItem label="入职时间" prop="entryDate" class="userModal">
-                        <Input placeholder="例2015-03-06" v-model="addPerson.entryDate"></Input>
+                        <i-input placeholder="例2015-03-06" v-model="addPerson.entryDate"></i-input>
                     </FormItem>
                     <FormItem label="婚否" prop="isMarried" class="userModal">
                         <Select  v-model="addPerson.isMarried">
@@ -177,25 +177,25 @@
                         </Select>
                     </FormItem>
                     <FormItem label="入党时间" prop="joinDate" class="userModal">
-                        <Input  v-model="addPerson.joinDate"></Input>
+                        <i-input  v-model="addPerson.joinDate"></i-input>
                     </FormItem>
                     <FormItem label="站务员证书编号" prop="certNo" class="userModal">
-                        <Input v-model="addPerson.certNo"></Input>
+                        <i-input v-model="addPerson.certNo"></i-input>
                     </FormItem>
                     <FormItem label="站务员证等级" prop="certLevel" class="userModal">
-                        <Input v-model="addPerson.certLevel"></Input>
+                        <i-input v-model="addPerson.certLevel"></i-input>
                     </FormItem>
                     <FormItem label="住址" prop="homeAddress" class="userModal">
-                        <Input  v-model="addPerson.homeAddress"></Input>
+                        <i-input  v-model="addPerson.homeAddress"></i-input>
                     </FormItem>
                     <FormItem label="消防证书编号" prop="xfzNo" class="userModal">
-                        <Input  v-model="addPerson.xfzNo"></Input>
+                        <i-input  v-model="addPerson.xfzNo"></i-input>
                     </FormItem>
                     <FormItem label="综控员证书编号" prop="zwyNo" class="userModal">
-                        <Input v-model="addPerson.zwyNo"></Input>
+                        <i-input v-model="addPerson.zwyNo"></i-input>
                     </FormItem>
                     <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
-                        <Input v-model="addPerson.zwyLevel"></Input>
+                        <i-input v-model="addPerson.zwyLevel"></i-input>
                     </FormItem>
                     <FormItem label="是否为备班人员" prop="backup" class="userModal">
                         <Select  v-model ="addPerson.backup" placeholder="请选择">
@@ -217,13 +217,13 @@
                :mask-closable="false">
             <Form ref="editPerson" :model="editPerson" :label-width="120" :rules="rule">
                     <FormItem label="员工卡号" prop="employeeCard" class="userModal">
-                        <Input v-model="editPerson.employeeCard"></Input>
+                        <i-input v-model="editPerson.employeeCard"></i-input>
                     </FormItem>
                     <FormItem label="人员编码" prop="employeeCode" class="userModal">
-                        <Input  v-model="editPerson.employeeCode"></Input>
+                        <i-input  v-model="editPerson.employeeCode"></i-input>
                     </FormItem>
                     <FormItem label="姓名" prop="userName" class="userModal">
-                        <Input v-model="editPerson.userName"></Input>
+                        <i-input v-model="editPerson.userName"></i-input>
                     </FormItem>
                      <FormItem label="站区" prop="district" class="userModal" v-show="showDistrict">
                         <Select v-model="editPerson.district" @on-change="getAllStations">
@@ -231,7 +231,7 @@
                         </Select>
                     </FormItem>
                      <FormItem label="密码" prop="password" class="userModal">
-                        <Input v-model="editPerson.password"></Input>
+                        <i-input v-model="editPerson.password"></i-input>
                         <span class="orange">请记录此密码作为下次登录用</span>
                     </FormItem>
                     <FormItem label="站点" prop="station" class="userModal">
@@ -256,16 +256,16 @@
                         </Select>
                     </FormItem>
                     <FormItem label="手机号" prop="phoneNumber" class="userModal">
-                        <Input v-model="editPerson.phoneNumber"></Input>
+                        <i-input v-model="editPerson.phoneNumber"></i-input>
                     </FormItem>
                     <FormItem label="生日" prop="birthday" class="userModal">
-                        <Input v-model="editPerson.birthday"></Input>
+                        <i-input v-model="editPerson.birthday"></i-input>
                     </FormItem>
                     <FormItem label="身份证" prop="idCardNumber" class="userModal">
-                        <Input  v-model="editPerson.idCardNumber"></Input>
+                        <i-input  v-model="editPerson.idCardNumber"></i-input>
                     </FormItem>
                     <FormItem label="入职时间" prop="entryDate" class="userModal">
-                        <Input placeholder="例2015-03-06" v-model="editPerson.entryDate"></Input>
+                        <i-input placeholder="例2015-03-06" v-model="editPerson.entryDate"></i-input>
                     </FormItem>
                     <FormItem label="婚否" prop="isMarried" class="userModal">
                         <Select  v-model="editPerson.isMarried">
@@ -297,25 +297,25 @@
                         </Select>
                     </FormItem>
                     <FormItem label="入党时间" prop="joinDate" class="userModal">
-                        <Input  v-model="editPerson.joinDate"></Input>
+                        <i-input  v-model="editPerson.joinDate"></i-input>
                     </FormItem>
                     <FormItem label="站务员证书编号" prop="certNo" class="userModal">
-                        <Input v-model="editPerson.certNo"></Input>
+                        <i-input v-model="editPerson.certNo"></i-input>
                     </FormItem>
                     <FormItem label="站务员证等级" prop="certLevel" class="userModal">
-                        <Input v-model="editPerson.certLevel"></Input>
+                        <i-input v-model="editPerson.certLevel"></i-input>
                     </FormItem>
                     <FormItem label="住址" prop="homeAddress" class="userModal">
-                        <Input  v-model="editPerson.homeAddress"></Input>
+                        <i-input  v-model="editPerson.homeAddress"></i-input>
                     </FormItem>
                     <FormItem label="消防证书编号" prop="xfzNo" class="userModal">
-                        <Input  v-model="editPerson.xfzNo"></Input>
+                        <i-input  v-model="editPerson.xfzNo"></i-input>
                     </FormItem>
                     <FormItem label="综控员证书编号" prop="zwyNo" class="userModal">
-                        <Input v-model="editPerson.zwyNo"></Input>
+                        <i-input v-model="editPerson.zwyNo"></i-input>
                     </FormItem>
                     <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
-                        <Input v-model="editPerson.zwyLevel"></Input>
+                        <i-input v-model="editPerson.zwyLevel"></i-input>
                     </FormItem>
                     <FormItem label="是否备班人员" prop="backup" class="userModal">
                         <Select  v-model ="editPerson.backup" placeholder="请选择">
