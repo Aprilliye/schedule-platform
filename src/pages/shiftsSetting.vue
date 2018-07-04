@@ -4,7 +4,7 @@
             <Select v-model="position.current" placeholder="请选择岗位" style="width:200px;margin: 0px 0px 4px 20px " @on-change="getChangeSuite">
                 <Option v-for="item in position.data" :value="item.id+'-'+item.backupPosition+'-'+item.positionName" :key="item.id">{{ item.positionName }}</Option>
             </Select>
-            <a class="btnDefault bgGreen" @click="modal.addShift=true" >新增班制</a>
+            <a class="btnDefault bgGreen" @click="modal.addShift=true">新增班制</a>
         </div>
         <Tabs type="card" :animated="false" v-model="tabModel"  @on-click="choseTab">
             <TabPane :label="item.dutyName"  v-for="(item,index) in suites" :key="index" :id="item.id">
@@ -16,7 +16,7 @@
                             <div class="title">
                                 <b>班制表</b>
                                 <div class="btn-group">
-                                    <a class="btnDefault bgGreen" href="javascript:;" @click="beforeEditShift">编辑班制</a>
+                                    <a class="btnDefault bgGreen" href="javascript:;" @click="beforeUpdateSuite">编辑班制</a>
                                     <a class="btnDefault bgRed" href="javascript:;" @click="handleClose(item.id)" style="margin-left:8px;">删除班制</a>
                                 </div>
                             </div>
@@ -196,16 +196,16 @@
         </Modal>
         <!-- 编辑班制 -->
         <Modal title="编辑班制"
-                v-model="modal.editShift"
-                :loading="true"
-                @on-ok="editShift('formValidate')"
-                @on-cancel="handleCancel('formValidate')">
+            v-model="modal.editShift"
+            :loading="true"
+            @on-ok="updateSuite('formValidate')"
+            @on-cancel="handleCancel('formValidate')">
             <Form ref="formValidate" :model="formValidate"  :label-width="110">
                 <FormItem label="班制名称：" prop="dutyName">
-                    <Input v-model="formValidate.dutyName" placeholder=""></Input>
+                    <Input v-model="formValidate.dutyName" placeholder=""/>
                 </FormItem>
-                <FormItem label="是否启用：" prop="active" :rules="{required:true,message:'是否启用不能为空'}">
-                    <Select v-model="formValidate.active" placeholder="请选择">
+                <FormItem label="是否备班：" prop="backup" :rules="{required:true,message:'是否备班不能为空'}">
+                    <Select v-model="formValidate.backup" placeholder="请选择">
                         <Option :value="1">是</Option>
                         <Option :value="0">否</Option>
                     </Select>
@@ -221,37 +221,37 @@
                     </Select>
                 </FormItem>
                 <FormItem label="周工时下限：" prop="minWorkingHour">
-                    <Input v-model="formValidate.minWorkingHour" placeholder=""></Input>
+                    <Input v-model="formValidate.minWorkingHour" placeholder=""/>
                 </FormItem>
                 <FormItem label="周工时上限：" prop="maxWorkingHour">
-                    <Input v-model="formValidate.maxWorkingHour" placeholder=""></Input>
+                    <Input v-model="formValidate.maxWorkingHour" placeholder=""/>
                 </FormItem>
                 <FormItem label="每周最少休班：" prop="minWeeklyRestDays">
-                    <Input v-model="formValidate.minWeeklyRestDays" placeholder=""></Input>
+                    <Input v-model="formValidate.minWeeklyRestDays" placeholder=""/>
                 </FormItem>
                 <FormItem label="每周最多休班：" prop="maxWeeklyRestDays">
-                    <Input v-model="formValidate.maxWeeklyRestDays" placeholder=""></Input>
+                    <Input v-model="formValidate.maxWeeklyRestDays" placeholder=""/>
                 </FormItem>
                 <FormItem label="月工时上限：" prop="monthlyWorkingHourLimit">
-                    <Input v-model="formValidate.monthlyWorkingHourLimit" placeholder=""></Input>
+                    <Input v-model="formValidate.monthlyWorkingHourLimit" placeholder=""/>
                 </FormItem>
                 <FormItem label="年工时上限：" prop="yearlyWorkingHourLimit">
-                    <Input v-model="formValidate.yearlyWorkingHourLimit" placeholder=""></Input>
+                    <Input v-model="formValidate.yearlyWorkingHourLimit" placeholder=""/>
                 </FormItem>
             </Form>
         </Modal>
-        <!--新增班制弹框-->
+        <!-- 新增班制 -->
         <Modal title="新增班制"
-               v-model="modal.addShift"
-               :loading="true"
-               @on-ok="addShift('addFormValidate')"
-               @on-cancel="handleCancel('addFormValidate')">
+            v-model="modal.addShift"
+            :loading="true"
+            @on-ok="addSuite('addFormValidate')"
+            @on-cancel="handleCancel('addFormValidate')">
             <Form ref="addFormValidate" :model="addFormValidate" :label-width="110">
                 <FormItem label="班制名称：" prop="dutyName" :rules="{required:true,message:'班制名称不能为空'}">
                     <Input v-model="addFormValidate.dutyName" placeholder=""/>
                 </FormItem>
-                <FormItem label="是否启用：" prop="active" :rules="{required:true,message:'是否启用不能为空'}">
-                    <Select v-model="addFormValidate.active" placeholder="请选择">
+                <FormItem label="是否备班：" prop="backup" :rules="{required:true,message:'是否备班不能为空'}">
+                    <Select v-model="addFormValidate.backup" placeholder="请选择">
                         <Option :value="1">是</Option>
                         <Option :value="0">否</Option>
                     </Select>
@@ -395,7 +395,7 @@ export default {
             },
             formValidate: {
                 dutyName: '',
-                active: null,
+                backup: null,
                 stationArea: '',
                 station: '',
                 minWorkingHour: '',
@@ -840,12 +840,21 @@ export default {
             }
             this.$Message.error(message);
         },
-        //  编辑班制验证
-        editShift: function (name) {
+        //  编辑班制
+        beforeUpdateSuite: function () {
+            let obj = this.info; 
+            for(let key in obj){
+                this.formValidate[key] = obj[key];
+            }
+            this.formValidate.stationArea = obj.districtId+'-'+obj.districtName;
+            this.formValidate.station = obj.stationId+'-'+obj.stationName;
+            this.modal.editShift = true;
+        },
+        updateSuite: function (name) {
             this.$refs[name].validate((valid) => {
                 let that = this;
                 if (valid) {
-                    this.$options.methods.beforeEditShiftMethod(that);
+                    this.$options.methods.updateSuiteFun(that);
                     this.$refs[name].resetFields();
                     this.modal.editShift=false;
                 } else {
@@ -853,14 +862,14 @@ export default {
                 }
             })
         },
-        beforeEditShiftMethod: async function (that) {
+        updateSuiteFun: async function (that) {
             let currentPosition = that.position.current.split('-');
             let currentDistrict = that.formValidate.stationArea.split('-');
             let currentStation = that.formValidate.station.split('-');
             let data = {
                 id: that.suiteId,
                 dutyName: that.formValidate.dutyName,
-                active: that.formValidate.active,
+                backup: that.formValidate.backup,
                 districtId: parseInt(currentDistrict[0]),
                 districtName:currentDistrict[1],
                 stationId: parseInt(currentStation[0]),
@@ -884,16 +893,6 @@ export default {
                 }else{
                     that.$Message.error(message);
                 }
-        },
-        //  编辑班制
-        beforeEditShift: function () {
-            let obj = this.info; 
-            for(let key in obj){
-                this.formValidate[key] = obj[key];
-            }
-            this.formValidate.stationArea = obj.districtId+'-'+obj.districtName;
-            this.formValidate.station = obj.stationId+'-'+obj.stationName;
-            this.modal.editShift = true;
         },
         //  新增时间段验证
         addTimeSlotMethods: function (name) {
@@ -1347,11 +1346,11 @@ export default {
             return arr;
         },
         //  新增班制
-        addShift:  function(name){
+        addSuite: function(name){
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     let that=this;
-                    this.$options.methods.beforeAddShift(that);
+                    this.$options.methods.addSuiteFun(that);
                     this.modal.addShift=false;
                     this.$refs[name].resetFields();
                 } else {
@@ -1360,13 +1359,13 @@ export default {
                 }
             })
         },
-        beforeAddShift:async function(that){
+        addSuiteFun:async function(that){
             let currentPosition = that.position.current.split('-');
             let currentDistrict = that.addFormValidate.stationArea.split('-');
             let currentStation = that.addFormValidate.station.split('-');
             let data = {
                 dutyName: that.addFormValidate.dutyName,
-                active: that.addFormValidate.active,
+                backup: that.addFormValidate.backup,
                 districtId: parseInt(currentDistrict[0]),
                 districtName:currentDistrict[1],
                 stationId: parseInt(currentStation[0]),

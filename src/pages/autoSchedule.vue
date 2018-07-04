@@ -73,14 +73,13 @@
             @on-cancel="cancel">
             <button type="button" class="btnDefault bgBlue" @click="handleCancel">重置</button>
             <div class="userList">
-                <span :class="{'selected': userIds.has(item.userId)}" v-for="(item,index) in users" :key="index" @click="clickUser" :code="item.userId">{{item.userName}}</span>
+                <span :class="{'selected': userIds.has(item.id)}" v-for="item in userList" :key="item.id" @click="clickUser" :code="item.id">{{item.userName}}</span>
             </div>
         </Modal>
     </div>
 </template>
 <script>
     let self = null;
-    import {result} from '@/assets/data/data.js';
     import {getSuites, getScheduleInfo, loadTemplate, createTemplate, changeTemplate} from '@/api/api';
     export default {
         data:function () {
@@ -91,7 +90,7 @@
                 showTable: false,
                 globalShiftCounts: {},
                 globalShiftIds: [],
-                users: [],
+                userList: [],
                 showUserModal: false,
                 temporary: {
                     userName: '',
@@ -103,7 +102,7 @@
                 },
                 currentResult: {},
                 suites: [],
-                currentSuiteId: '班制一',
+                currentSuiteId: null,
                 //showSaveBtn: false,
                 showResult: false,
                 result: {
@@ -135,7 +134,6 @@
                 lastUserId: null,       //  存放原来选择的userId
                 generateData: {},       //  生成模版数据
                 autoData: {},            //  自动排班数据
-                
             }
         },
         mounted: function () {
@@ -154,7 +152,7 @@
                     this.suites = response.data;
                     if(this.suites.length !== 0){
                         this.currentSuiteId = response.data[0].id;
-                        this.loadTemplate(this.currentSuiteId);
+                        //this.loadTemplate(this.currentSuiteId);
                     }
                     return;
                 }
@@ -178,10 +176,11 @@
                 }
                 let response = await loadTemplate(id);
                 if(response.meta.code === 0){
-                    let [...data] = response.data.templatelist;
-                    this.data = Math.ceil(data.length/7);
-                    this.dutyClass = response.data.dutyclass;
-                    this.template(data);
+                    let data = response.data;
+                    this.data = Math.ceil(data.templatelist.length/5);
+                    this.dutyClass = data.dutyclass;
+                    this.userList = data.userlist;
+                    this.template(data.templatelist);
                 }
                 
             },
@@ -350,10 +349,10 @@
                 let size = map.size;
                 let index = parseInt($(target).attr('code'));
                 let key = target.attr('id');
-                let value = index ? {
+                let value = {
                     'weekNum': target.attr('weeknum'),
                     'dayNum': target.attr('daynum')
-                } : undefined;
+                };
                 if(size<2){
                     map.set(key, value);
                 }
@@ -389,47 +388,27 @@
                     return;
                 }
                 let arr = [...map.entries()];
-                let first = arr[0];
-                let second = arr[1];
-                console.log(arr)
-                // if(first[1] && second[1]){
-                //     let index1 = parseInt($('#'+first[0]).attr('code'));
-                //     let index2 = parseInt($('#'+second[0]).attr('code'));
-                //     this.autoData.data[index1].weekNumber = second[1].weekNumber;
-                //     this.autoData.data[index1].weekDay = second[1].weekDay;
-                //     this.autoData.data[index2].weekNumber = first[1].weekNumber;
-                //     this.autoData.data[index2].weekDay = first[1].weekDay;
-                // } else if(!first[1] && second[1]){
-                //     let index = parseInt($('#'+second[0]).attr('code'));
-                //     let str = first[0].substring(2);
-                //     let arr = str.split('-');
-                //     this.autoData.data[index].weekNumber = parseInt(arr[0]);
-                //     this.autoData.data[index].weekDay = parseInt(arr[1]);
-                //     $('#'+second[0]).html('').removeAttr('data-hours').removeAttr('style').removeAttr('code');
-                // } else if(!second[1] && first[1]){
-                //     let index = parseInt($('#'+first[0]).attr('code'));
-                //     let str = second[0].substring(2);
-                //     let arr = str.split('-');
-                //     this.autoData.data[index].weekNumber = parseInt(arr[0]);
-                //     this.autoData.data[index].weekDay = parseInt(arr[1]);
-                //     $('#'+first[0]).html('').removeAttr('data-hours').removeAttr('style').removeAttr('code');
-                // }
-                
-                // $('.td-active').removeClass('td-active');
-                // this.loadTemplate();
-                // this.showChangeBtn = false;
-                // map.clear();
-                // for(let i=0;i<2;i++){
-                //     let row = this.currentRows.get(i);
-                //     let span = $('tr[row="'+ row +'"]').find('.workHours').find('span');
-                //     let html = span.html();
-                //     if(html === '0'){
-                //         this.currentTr = row;
-                //         $('[row="'+ row +'"]').find('button').show();
-                //         span.html('');
-                //         break;
-                //     }
-                // }                
+                let obj1 = arr[0][1];
+                let obj2 = arr[1][1];
+                let data = {
+                    suiteId: this.currentSuiteId,
+                    weekNum1: parseInt(obj1.weekNum),
+                    dayNum1: parseInt(obj1.dayNum),
+                    weekNum2: parseInt(obj2.weekNum),
+                    dayNum2: parseInt(obj2.dayNum)
+                };
+                let response = await changeTemplate(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    let data = response.data.templatelist;
+                    this.template(data);
+                } else {
+                    this.$Message.error(message);
+                }
+                $('.td-active').removeClass('td-active');
+                this.showChangeBtn = false;
+                this.selectedTds.clear();
             },
             //  删除一行
             deleteTr: function (index) {
@@ -463,9 +442,8 @@
                         let hours = obj.workingLength/60;
                         this.totalHours += hours;
                         $('[weeknum="'+ n +'"][daynum="'+ m +'"]').html(obj.dutyName).css('background-color', obj.cellColor).attr({'data-hours': hours,'code': i});
-                        let weekDay = obj.dayNum;
-                        let shiftId = obj.classId;
-                        let span = $('#weekDay'+weekDay).find('[code="'+ shiftId +'"]').find('span');
+                        let classId = obj.classId;
+                        let span = $('#weekDay'+ m).find('[code="'+ classId +'"]').find('span');
                         let num = parseInt(span.html());
                         num++;
                         span.html(num);
@@ -489,7 +467,6 @@
                     //setCodes();
                     
                     //self.initUserTable(result.users);
-                    self.users = allData.users;
                     allData.owners && self.drawOwners(allData.owners);
                     $("th[thead]").each(function(n) {
                         self.calcDailySchedule(n);
