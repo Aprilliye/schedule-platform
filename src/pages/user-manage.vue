@@ -26,60 +26,60 @@
                 <div class="table">
                     <table id="userTable">
                         <thead>
-                        <tr>
-                            <th width="120">操作</th>
-                            <th width="80">员工卡号</th>
-                            <th width="80">姓名</th>
-                            <th width="80">性别</th>
-                            <th width="80">电话</th>
-                            <th width="80">生日</th>
-                            <th width="80">岗位</th>
-                            <th width="80">站点</th>
-                            <th width="80">站区</th>
-                            <th width="80">是否备班</th>
-                            <th width="80" v-show="tableItem[0].ifShow">身份证</th>
-                            <th width="120" v-show="tableItem[1].ifShow">入职时间</th>
-                            <th width="80" v-show="tableItem[2].ifShow">婚姻状况</th>
-                            <th width="80" v-show="tableItem[3].ifShow">有无子女</th>
-                            <th width="80" v-show="tableItem[4].ifShow">学历</th>
-                            <th width="80" v-show="tableItem[5].ifShow">政治面貌</th>
-                            <th width="120" v-show="tableItem[6].ifShow">入党时间</th>
-                            <th width="200" v-show="tableItem[7].ifShow">住址</th>
-                            <th width="80" v-show="tableItem[8].ifShow">站务员证书编号</th>
-                            <th width="80" v-show="tableItem[9].ifShow">站务员证书等级</th>
-                            <th width="80" v-show="tableItem[10].ifShow">人员编码</th>
-                            <th width="80" v-show="tableItem[11].ifShow">消防证书编号</th>
-                            <th width="80" v-show="tableItem[12].ifShow">综控员证书编号</th>
-                            <th width="80" v-show="tableItem[13].ifShow">综控员证书级别</th>
-                        </tr>
+                            <tr>
+                                <th width="120">操作</th>
+                                <th width="80">员工卡号</th>
+                                <th width="80">姓名</th>
+                                <th width="80">性别</th>
+                                <th width="80">电话</th>
+                                <th width="80">生日</th>
+                                <th width="80">岗位</th>
+                                <th width="80">站点</th>
+                                <th width="80">站区</th>
+                                <th width="80">是否备班人员</th>
+                                <th width="80" v-show="tableItem[0].ifShow">身份证</th>
+                                <th width="120" v-show="tableItem[1].ifShow">入职时间</th>
+                                <th width="80" v-show="tableItem[2].ifShow">婚姻状况</th>
+                                <th width="80" v-show="tableItem[3].ifShow">有无子女</th>
+                                <th width="80" v-show="tableItem[4].ifShow">学历</th>
+                                <th width="80" v-show="tableItem[5].ifShow">政治面貌</th>
+                                <th width="120" v-show="tableItem[6].ifShow">入党时间</th>
+                                <th width="200" v-show="tableItem[7].ifShow">住址</th>
+                                <th width="80" v-show="tableItem[8].ifShow">站务员证书编号</th>
+                                <th width="80" v-show="tableItem[9].ifShow">站务员证书等级</th>
+                                <th width="80" v-show="tableItem[10].ifShow">人员编码</th>
+                                <th width="80" v-show="tableItem[11].ifShow">消防证书编号</th>
+                                <th width="80" v-show="tableItem[12].ifShow">综控员证书编号</th>
+                                <th width="80" v-show="tableItem[13].ifShow">综控员证书级别</th>
+                            </tr>
                         </thead>
                         <tbody id="userDataTable">
-                        <tr v-for="(item,index) in personList" :key='index' :id="index+'-'+item.id">
-                            <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">删除</a><a style="color: #0000FF" @click="editPersonMethod">修改</a></td>
-                            <td>{{item.employeeCard}}</td>
-                            <td>{{item.userName}}</td>
-                            <td>{{item.gender}}</td>
-                            <td>{{item.phoneNumber}}</td>
-                            <td>{{item.birthday}}</td>
-                            <td>{{item.positionName}}</td>
-                            <td>{{item.stationName}}</td>
-                            <td>{{item.districtName}}</td>
-                            <td>{{item.backup}}</td>
-                            <td v-show="tableItem[0].ifShow">{{item.idCardNumber}}</td>
-                            <td v-show="tableItem[1].ifShow">{{item.entryDate}}</td>
-                            <td v-show="tableItem[2].ifShow">{{item.isMarried}}</td>
-                            <td v-show="tableItem[3].ifShow">{{item.hasChild}}</td>
-                            <td v-show="tableItem[4].ifShow">{{item.eduBackGround}}</td>
-                            <td v-show="tableItem[5].ifShow">{{item.partyMember}}</td>
-                            <td v-show="tableItem[6].ifShow">{{item.joinDate}}</td>
-                            <td v-show="tableItem[7].ifShow">{{item.homeAddress}}</td>
-                            <td v-show="tableItem[8].ifShow">{{item.certNo}}</td>
-                            <td v-show="tableItem[9].ifShow">{{item.certLevel}}</td>
-                            <td v-show="tableItem[10].ifShow">{{item.employeeCode}}</td>
-                            <td v-show="tableItem[11].ifShow">{{item.xfzNo}}</td>
-                            <td v-show="tableItem[12].ifShow">{{item.zwyNo}}</td>
-                            <td v-show="tableItem[13].ifShow">{{item.zwyLevel}}</td>
-                        </tr>
+                            <tr v-for="(item,index) in userList" :key='index' :id="index+'-'+item.id">
+                                <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">删除</a><a style="color: #0000FF" @click="editPersonMethod(item)">修改</a></td>
+                                <td>{{item.employeeCard}}</td>
+                                <td>{{item.userName}}</td>
+                                <td>{{item.gender === 1 ? '男' : '女'}}</td>
+                                <td>{{item.phoneNumber}}</td>
+                                <td>{{item.birthday}}</td>
+                                <td>{{item.positionName}}</td>
+                                <td>{{item.stationName}}</td>
+                                <td>{{item.districtName}}</td>
+                                <td>{{item.backup === 1 ? '是' : '否'}}</td>
+                                <td v-show="tableItem[0].ifShow">{{item.idCardNumber}}</td>
+                                <td v-show="tableItem[1].ifShow">{{item.entryDate}}</td>
+                                <td v-show="tableItem[2].ifShow">{{item.isMarried === 1 ? '已婚' : '未婚'}}</td>
+                                <td v-show="tableItem[3].ifShow">{{item.hasChild === 1 ? '已育' : '未育'}}</td>
+                                <td v-show="tableItem[4].ifShow">{{item.eduBackGround}}</td>
+                                <td v-show="tableItem[5].ifShow">{{item.partyMember}}</td>
+                                <td v-show="tableItem[6].ifShow">{{item.joinDate}}</td>
+                                <td v-show="tableItem[7].ifShow">{{item.homeAddress}}</td>
+                                <td v-show="tableItem[8].ifShow">{{item.certNo}}</td>
+                                <td v-show="tableItem[9].ifShow">{{item.certLevel}}</td>
+                                <td v-show="tableItem[10].ifShow">{{item.employeeCode}}</td>
+                                <td v-show="tableItem[11].ifShow">{{item.xfzNo}}</td>
+                                <td v-show="tableItem[12].ifShow">{{item.zwyNo}}</td>
+                                <td v-show="tableItem[13].ifShow">{{item.zwyLevel}}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -92,75 +92,75 @@
                 v-model="addPersonModal"
                 width="800"
                 :loading="true"
-                @on-ok="beforeAddUser('addPerson')"
-                @on-cancel="beforeCancel('addPerson')"
+                @on-ok="addUser('addUserData')"
+                @on-cancel="beforeCancel('addUserData')"
                 :mask-closable="false">
-                <Form ref="addPerson" :model="addPerson" :label-width="120" :rules="rule">
+                <Form ref="addUserData" :model="addUserData" :label-width="120" :rules="rule">
                     <FormItem label="员工卡号" prop="employeeCard" class="userModal">
-                        <i-input v-model="addPerson.employeeCard"></i-input>
+                        <i-input v-model="addUserData.employeeCard"></i-input>
                     </FormItem>
                     <FormItem label="人员编码" prop="employeeCode" class="userModal">
-                        <i-input  v-model="addPerson.employeeCode"></i-input>
+                        <i-input  v-model="addUserData.employeeCode"></i-input>
                     </FormItem>
                     <FormItem label="姓名" prop="userName" class="userModal">
-                        <i-input v-model="addPerson.userName"></i-input>
+                        <i-input v-model="addUserData.userName"></i-input>
                     </FormItem>
-                     <FormItem label="站区" prop="district" class="userModal"  v-show="showDistrict">
-                        <Select v-model="addPerson.district" @on-change="getAllStations">
-                            <Option v-for="(item,index) in districts" :value="item.id+'-'+item.districtName" :key="index">{{item.districtName}}</Option>
+                     <FormItem label="站区" prop="districtId" class="userModal"  v-show="showDistrict">
+                        <Select v-model="addUserData.districtId" @on-change="getAllStations(addUserData.districtId)">
+                            <Option v-for="(item,index) in districts" :value="item.id" :key="index">{{item.districtName}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="密码" prop="password" class="userModal">
-                        <i-input v-model="addPerson.password"></i-input>
+                        <i-input v-model="addUserData.password"></i-input>
                         <span class="orange">请记录此密码作为下次登录用</span>
                     </FormItem>
-                    <FormItem label="站点" prop="station" class="userModal">
-                        <Select v-model="addPerson.station" @on-change="getAllPosts">
-                             <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
+                    <FormItem label="站点" prop="stationId" class="userModal">
+                        <Select v-model="addUserData.stationId" @on-change="getAllPosts(addUserData.stationId)">
+                             <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                         </Select>
                     </FormItem>
-                    <FormItem label="角色" prop="plan" class="userModal">
-                        <Select v-model="addPerson.plan">
-                        <Option v-for="(item,index) in roles" :value="item.id+'-'+item.name" :key="index">{{item.name}}</Option>
+                    <FormItem label="角色" prop="roleId" class="userModal">
+                        <Select v-model="addUserData.roleId">
+                        <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
                         </Select>
                     </FormItem>
-                    <FormItem label="岗位" prop="post" class="userModal">
-                        <Select v-model="addPerson.post">
-                            <Option v-for="(item,index) in position" :value="item.id+'-'+item.positionName" :key="index">{{item.positionName}}</Option>
+                    <FormItem label="岗位" prop="positionId" class="userModal">
+                        <Select v-model="addUserData.positionId">
+                            <Option v-for="(item,index) in position" :value="item.id" :key="index">{{item.positionName}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
-                        <Select v-model="addPerson.gender">
+                        <Select v-model="addUserData.gender">
                             <Option value="1">男</Option>
                             <Option value="0">女</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="手机号" prop="phoneNumber" class="userModal">
-                        <i-input v-model="addPerson.phoneNumber"></i-input>
+                        <i-input v-model="addUserData.phoneNumber"></i-input>
                     </FormItem>
                     <FormItem label="生日" prop="birthday" class="userModal">
-                        <i-input v-model="addPerson.birthday"></i-input>
+                        <i-input v-model="addUserData.birthday"></i-input>
                     </FormItem>
                     <FormItem label="身份证" prop="idCardNumber" class="userModal">
-                        <i-input  v-model="addPerson.idCardNumber"></i-input>
+                        <i-input  v-model="addUserData.idCardNumber"></i-input>
                     </FormItem>
                     <FormItem label="入职时间" prop="entryDate" class="userModal">
-                        <i-input placeholder="例2015-03-06" v-model="addPerson.entryDate"></i-input>
+                        <i-input placeholder="例2015-03-06" v-model="addUserData.entryDate"></i-input>
                     </FormItem>
                     <FormItem label="婚否" prop="isMarried" class="userModal">
-                        <Select  v-model="addPerson.isMarried">
+                        <Select  v-model="addUserData.isMarried">
                             <Option value="1">已婚</Option>
                             <Option value="0">未婚</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="生育" prop="hasChild" class="userModal">
-                        <Select v-model="addPerson.hasChild">
+                        <Select v-model="addUserData.hasChild">
                             <Option value="1">已育</Option>
                             <Option value="0">未育</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="学历" prop="eduBackGround" class="userModal">
-                        <Select v-model="addPerson.eduBackGround">
+                        <Select v-model="addUserData.eduBackGround">
                             <Option value="高中以下">高中以下</Option>
                             <Option value="大专">大专</Option>
                             <Option value="本科">本科</Option>
@@ -169,7 +169,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="政治面貌" prop="partyMember" class="userModal">
-                        <Select v-model="addPerson.partyMember">
+                        <Select v-model="addUserData.partyMember">
                             <Option value="群众">群众</Option>
                             <Option value="共青团员">共青团员</Option>
                             <Option value="共产党员">共产党员</Option>
@@ -177,28 +177,28 @@
                         </Select>
                     </FormItem>
                     <FormItem label="入党时间" prop="joinDate" class="userModal">
-                        <i-input  v-model="addPerson.joinDate"></i-input>
+                        <i-input  v-model="addUserData.joinDate"></i-input>
                     </FormItem>
                     <FormItem label="站务员证书编号" prop="certNo" class="userModal">
-                        <i-input v-model="addPerson.certNo"></i-input>
+                        <i-input v-model="addUserData.certNo"></i-input>
                     </FormItem>
                     <FormItem label="站务员证等级" prop="certLevel" class="userModal">
-                        <i-input v-model="addPerson.certLevel"></i-input>
+                        <i-input v-model="addUserData.certLevel"></i-input>
                     </FormItem>
                     <FormItem label="住址" prop="homeAddress" class="userModal">
-                        <i-input  v-model="addPerson.homeAddress"></i-input>
+                        <i-input  v-model="addUserData.homeAddress"></i-input>
                     </FormItem>
                     <FormItem label="消防证书编号" prop="xfzNo" class="userModal">
-                        <i-input  v-model="addPerson.xfzNo"></i-input>
+                        <i-input  v-model="addUserData.xfzNo"></i-input>
                     </FormItem>
                     <FormItem label="综控员证书编号" prop="zwyNo" class="userModal">
-                        <i-input v-model="addPerson.zwyNo"></i-input>
+                        <i-input v-model="addUserData.zwyNo"></i-input>
                     </FormItem>
                     <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
-                        <i-input v-model="addPerson.zwyLevel"></i-input>
+                        <i-input v-model="addUserData.zwyLevel"></i-input>
                     </FormItem>
                     <FormItem label="是否为备班人员" prop="backup" class="userModal">
-                        <Select  v-model ="addPerson.backup" placeholder="请选择">
+                        <Select  v-model ="addUserData.backup" placeholder="请选择">
                             <Option value = 1>是</Option>
                             <Option value = 0>否</Option>
                         </Select>
@@ -211,120 +211,120 @@
                title="编辑人员"
                v-model="editPersonModal"
                width="800"
-               @on-ok="editPersonModalMethod('editPerson')"
-               @on-cancel="beforeCancel('editPerson')"
+               @on-ok="editPersonModalMethod('editUser')"
+               
                :loading="true"
                :mask-closable="false">
-            <Form ref="editPerson" :model="editPerson" :label-width="120" :rules="rule">
-                    <FormItem label="员工卡号" prop="employeeCard" class="userModal">
-                        <i-input v-model="editPerson.employeeCard"></i-input>
-                    </FormItem>
-                    <FormItem label="人员编码" prop="employeeCode" class="userModal">
-                        <i-input  v-model="editPerson.employeeCode"></i-input>
-                    </FormItem>
-                    <FormItem label="姓名" prop="userName" class="userModal">
-                        <i-input v-model="editPerson.userName"></i-input>
-                    </FormItem>
-                     <FormItem label="站区" prop="district" class="userModal" v-show="showDistrict">
-                        <Select v-model="editPerson.district" @on-change="getAllStations">
-                            <Option v-for="(item,index) in districts" :value="item.id+'-'+item.districtName" :key="index">{{item.districtName}}</Option>
-                        </Select>
-                    </FormItem>
-                     <FormItem label="密码" prop="password" class="userModal">
-                        <i-input v-model="editPerson.password"></i-input>
-                        <span class="orange">请记录此密码作为下次登录用</span>
-                    </FormItem>
-                    <FormItem label="站点" prop="station" class="userModal">
-                        <Select v-model="editPerson.station" @on-change="getAllPosts">
-                             <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="岗位" prop="post" class="userModal">
-                        <Select v-model="editPerson.post">
-                            <Option v-for="(item,index) in position" :value="item.id+'-'+item.positionName" :key="index">{{item.positionName}}</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="角色" prop="plan" class="userModal">
-                        <Select v-model="editPerson.plan">
-                            <Option v-for="(item,index) in roles" :value="item.id+'-'+item.name" :key="index">{{item.name}}</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="性别" prop="gender" class="userModal">
-                        <Select v-model="editPerson.gender">
-                            <Option value="1">男</Option>
-                            <Option value="0">女</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="手机号" prop="phoneNumber" class="userModal">
-                        <i-input v-model="editPerson.phoneNumber"></i-input>
-                    </FormItem>
-                    <FormItem label="生日" prop="birthday" class="userModal">
-                        <i-input v-model="editPerson.birthday"></i-input>
-                    </FormItem>
-                    <FormItem label="身份证" prop="idCardNumber" class="userModal">
-                        <i-input  v-model="editPerson.idCardNumber"></i-input>
-                    </FormItem>
-                    <FormItem label="入职时间" prop="entryDate" class="userModal">
-                        <i-input placeholder="例2015-03-06" v-model="editPerson.entryDate"></i-input>
-                    </FormItem>
-                    <FormItem label="婚否" prop="isMarried" class="userModal">
-                        <Select  v-model="editPerson.isMarried">
-                            <Option value="1">已婚</Option>
-                            <Option value="0">未婚</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="生育" prop="hasChild" class="userModal">
-                        <Select v-model="editPerson.hasChild">
-                            <Option value="1">已育</Option>
-                            <Option value="0">未育</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="学历" prop="eduBackGround" class="userModal">
-                        <Select v-model="editPerson.eduBackGround">
-                            <Option value="高中以下">高中以下</Option>
-                            <Option value="大专">大专</Option>
-                            <Option value="本科">本科</Option>
-                            <Option value="硕士">硕士</Option>
-                            <Option value="博士以上">博士以上</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="政治面貌" prop="partyMember" class="userModal">
-                        <Select v-model="editPerson.partyMember">
-                            <Option value="群众">群众</Option>
-                            <Option value="共青团员">共青团员</Option>
-                            <Option value="共产党员">共产党员</Option>
-                            <Option value="民主党派">民主党派</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="入党时间" prop="joinDate" class="userModal">
-                        <i-input  v-model="editPerson.joinDate"></i-input>
-                    </FormItem>
-                    <FormItem label="站务员证书编号" prop="certNo" class="userModal">
-                        <i-input v-model="editPerson.certNo"></i-input>
-                    </FormItem>
-                    <FormItem label="站务员证等级" prop="certLevel" class="userModal">
-                        <i-input v-model="editPerson.certLevel"></i-input>
-                    </FormItem>
-                    <FormItem label="住址" prop="homeAddress" class="userModal">
-                        <i-input  v-model="editPerson.homeAddress"></i-input>
-                    </FormItem>
-                    <FormItem label="消防证书编号" prop="xfzNo" class="userModal">
-                        <i-input  v-model="editPerson.xfzNo"></i-input>
-                    </FormItem>
-                    <FormItem label="综控员证书编号" prop="zwyNo" class="userModal">
-                        <i-input v-model="editPerson.zwyNo"></i-input>
-                    </FormItem>
-                    <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
-                        <i-input v-model="editPerson.zwyLevel"></i-input>
-                    </FormItem>
-                    <FormItem label="是否备班人员" prop="backup" class="userModal">
-                        <Select  v-model ="editPerson.backup" placeholder="请选择">
-                            <Option value = '1'>是</Option>
-                            <Option value = '0'>否</Option>
-                        </Select>
-                    </FormItem>
-                    <div class="clear"></div>
-                </Form>
+            <Form ref="editUser" :model="editUser" :label-width="120" :rules="rule">
+                <FormItem label="员工卡号" prop="employeeCard" class="userModal">
+                    <i-input v-model="editUser.employeeCard"></i-input>
+                </FormItem>
+                <FormItem label="人员编码" prop="employeeCode" class="userModal">
+                    <i-input  v-model="editUser.employeeCode"></i-input>
+                </FormItem>
+                <FormItem label="姓名" prop="userName" class="userModal">
+                    <i-input v-model="editUser.userName"></i-input>
+                </FormItem>
+                    <FormItem label="站区" prop="districtId" class="userModal" v-show="showDistrict">
+                    <Select v-model="editUser.districtId" @on-change="getAllStations(editUser.districtId)">
+                        <Option v-for="(item,index) in districts" :value="item.id" :key="index">{{item.districtName}}</Option>
+                    </Select>
+                </FormItem>
+                    <FormItem label="密码" prop="password" class="userModal">
+                    <i-input v-model="editUser.password"></i-input>
+                    <span class="orange">请记录此密码作为下次登录用</span>
+                </FormItem>
+                <FormItem label="站点" prop="stationId" class="userModal">
+                    <Select v-model="editUser.stationId" @on-change="getAllPosts(editUser.stationId)">
+                            <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="岗位" prop="positionId" class="userModal">
+                    <Select v-model="editUser.positionId">
+                        <Option v-for="(item,index) in position" :value="item.id" :key="index">{{item.positionName}}</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="角色" prop="roleId" class="userModal">
+                    <Select v-model="editUser.roleId">
+                        <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="性别" prop="gender" class="userModal">
+                    <Select v-model="editUser.gender">
+                        <Option value="1">男</Option>
+                        <Option value="0">女</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="手机号" prop="phoneNumber" class="userModal">
+                    <i-input v-model="editUser.phoneNumber"></i-input>
+                </FormItem>
+                <FormItem label="生日" prop="birthday" class="userModal">
+                    <i-input v-model="editUser.birthday"></i-input>
+                </FormItem>
+                <FormItem label="身份证" prop="idCardNumber" class="userModal">
+                    <i-input  v-model="editUser.idCardNumber"></i-input>
+                </FormItem>
+                <FormItem label="入职时间" prop="entryDate" class="userModal">
+                    <i-input placeholder="例2015-03-06" v-model="editUser.entryDate"></i-input>
+                </FormItem>
+                <FormItem label="婚否" prop="isMarried" class="userModal">
+                    <Select  v-model="editUser.isMarried">
+                        <Option value="1">已婚</Option>
+                        <Option value="0">未婚</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="生育" prop="hasChild" class="userModal">
+                    <Select v-model="editUser.hasChild">
+                        <Option value="1">已育</Option>
+                        <Option value="0">未育</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="学历" prop="eduBackGround" class="userModal">
+                    <Select v-model="editUser.eduBackGround">
+                        <Option value="高中以下">高中以下</Option>
+                        <Option value="大专">大专</Option>
+                        <Option value="本科">本科</Option>
+                        <Option value="硕士">硕士</Option>
+                        <Option value="博士以上">博士以上</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="政治面貌" prop="partyMember" class="userModal">
+                    <Select v-model="editUser.partyMember">
+                        <Option value="群众">群众</Option>
+                        <Option value="共青团员">共青团员</Option>
+                        <Option value="共产党员">共产党员</Option>
+                        <Option value="民主党派">民主党派</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="入党时间" prop="joinDate" class="userModal">
+                    <i-input  v-model="editUser.joinDate"></i-input>
+                </FormItem>
+                <FormItem label="站务员证书编号" prop="certNo" class="userModal">
+                    <i-input v-model="editUser.certNo"></i-input>
+                </FormItem>
+                <FormItem label="站务员证等级" prop="certLevel" class="userModal">
+                    <i-input v-model="editUser.certLevel"></i-input>
+                </FormItem>
+                <FormItem label="住址" prop="homeAddress" class="userModal">
+                    <i-input  v-model="editUser.homeAddress"></i-input>
+                </FormItem>
+                <FormItem label="消防证书编号" prop="xfzNo" class="userModal">
+                    <i-input  v-model="editUser.xfzNo"></i-input>
+                </FormItem>
+                <FormItem label="综控员证书编号" prop="zwyNo" class="userModal">
+                    <i-input v-model="editUser.zwyNo"></i-input>
+                </FormItem>
+                <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
+                    <i-input v-model="editUser.zwyLevel"></i-input>
+                </FormItem>
+                <FormItem label="是否备班人员" prop="backup" class="userModal">
+                    <Select  v-model="editUser.backup" placeholder="请选择">
+                        <Option value="1">是</Option>
+                        <Option value="0">否</Option>
+                    </Select>
+                </FormItem>
+                <div class="clear"></div>
+            </Form>
         </Modal>
     </div>
 </template>
@@ -439,161 +439,25 @@
                    backup: [{required: true, message: '是否备班不能为空', trigger: 'change' }],
                    
                 },
-                personList:[
-                    // {
-                    //     userId:1,
-                    //     action:['删除','修改'],
-                    //     workNumber:60502868,
-                    //     name:'梅松',
-                    //     sex:'男',
-                    //     phoneNumber:13810582556,
-                    //     birthday:'1990-12-12',
-                    //     post:'站区长',
-                    //     station:'西直门',
-                    //     stationArea:'西直门',
-                    //     manager:'是',
-                    //     idCard:'110108198212142712',
-                    //     entryTime:'1990-12-12',
-                    //     maritalStatus:'已婚',
-                    //     childrenHave:'未育',
-                    //     education:'高中以下',
-                    //     political:'群众',
-                    //     partyTime:'2008-05-01',
-                    //     address:'北京市石景山区古城南路19号楼',
-                    //     stationCertificateNumber:'1401061060501034',
-                    //     stationCertificateLevel:'站务初级',
-                    //     peopleCode:'5963265595466658',
-                    //     fireCertificateNumber:'156598965236566',
-                    //     controllerNumber:'1401061060501034',
-                    //     controllerLevel:'站务初级'
-                    // },
-                    // {
-                    //     userId:2,
-                    //     action:['删除','修改'],
-                    //     workNumber:60506796,
-                    //     name:'伊坤',
-                    //     sex:'男',
-                    //     phoneNumber:13785663247,
-                    //     birthday:'1992-10-6',
-                    //     post:'站务员',
-                    //     station:'西直门',
-                    //     stationArea:'西直门',
-                    //     manager:'否',
-                    //     idCard:'110106199210060344',
-                    //     entryTime:'1990-12-12',
-                    //     maritalStatus:'已婚',
-                    //     childrenHave:'未育',
-                    //     education:'本科',
-                    //     political:'共产党员',
-                    //     partyTime:'2006-10-11',
-                    //     address:'北京市丰台区花乡羊坊花园西院1',
-                    //     stationCertificateNumber:'1701061060500643',
-                    //     stationCertificateLevel:'站务初级',
-                    //     peopleCode:'7852632594125789',
-                    //     fireCertificateNumber:'1458962574123658',
-                    //     controllerNumber:'1752695213699541',
-                    //     controllerLevel:'站务初级'
-                    // },
-                    //  {
-                    //     userId:3,
-                    //     action:['删除','修改'],
-                    //     workNumber:60508808,
-                    //     name:'李璇',
-                    //     sex:'女',
-                    //     phoneNumber:13051679861,
-                    //     birthday:'1994-02-12',
-                    //     post:'站务员',
-                    //     station:'西直门',
-                    //     stationArea:'西直门',
-                    //     manager:'否',
-                    //     idCard:'110108199402123410',
-                    //     entryTime:'2015-2-12',
-                    //     maritalStatus:'未婚',
-                    //     childrenHave:'未育',
-                    //     education:'大专',
-                    //     political:'共青团员',
-                    //     partyTime:'2010-01-1',
-                    //     address:'北京市丰台区青塔蔚园10号楼101',
-                    //     stationCertificateNumber:'5269541236985423',
-                    //     stationCertificateLevel:'站务初级',
-                    //     peopleCode:'4152956325841256',
-                    //     fireCertificateNumber:'5962354852695412',
-                    //     controllerNumber:'5963258412596584',
-                    //     controllerLevel:'站务初级'
-                    // },
-                    // {
-                    //     userId:4,
-                    //     action:['删除','修改'],
-                    //     workNumber:60507613,
-                    //     name:'黄旭',
-                    //     sex:'男',
-                    //     phoneNumber:13051679861,
-                    //     birthday:'1994-02-12',
-                    //     post:'站务员',
-                    //     station:'西直门',
-                    //     stationArea:'西直门',
-                    //     manager:'否',
-                    //     idCard:'131002199401282015',
-                    //     entryTime:'2015-07-03',
-                    //     maritalStatus:'未婚',
-                    //     childrenHave:'未育',
-                    //     education:'大专',
-                    //     political:'共青团员',
-                    //     partyTime:'2015-12-11',
-                    //     address:'北京市西城区寿长街2号',
-                    //     stationCertificateNumber:'5952362515895255',
-                    //     stationCertificateLevel:'站务初级',
-                    //     peopleCode:'985625412695459',
-                    //     fireCertificateNumber:'595213695845258',
-                    //     controllerNumber:'596235158745953',
-                    //     controllerLevel:'站务初级'
-                    // },
-                    //    {
-                    //     userId:5,
-                    //     action:['删除','修改'],
-                    //     workNumber:60502986,
-                    //     name:'薛婷婷',
-                    //     sex:'女',
-                    //     phoneNumber:13811580959,
-                    //     birthday:'1990-05-07',
-                    //     post:'站务员',
-                    //     station:'西直门',
-                    //     stationArea:'西直门',
-                    //     manager:'否',
-                    //     idCard:'110224199005073822',
-                    //     entryTime:'1997-01-07',
-                    //     maritalStatus:'未婚',
-                    //     childrenHave:'未育',
-                    //     education:'大专',
-                    //     political:'共青团员',
-                    //     partyTime:'2012-08-23',
-                    //     address:'北京市大兴区安定镇杜庄屯十一条',
-                    //     stationCertificateNumber:'5956321478952695',
-                    //     stationCertificateLevel:'站务初级',
-                    //     peopleCode:'5236598451259635',
-                    //     fireCertificateNumber:'5963251489562359',
-                    //     controllerNumber:'5956321584596325',
-                    //     controllerLevel:'站务初级'
-                    // },
-                ],
+                userList:[],
                 selectedItmes: [],
-                addPerson: {
+                addUserData: {
                     employeeCard: '',
                     employeeCode: '',
                     userName: '',
-                    district: '',
-                    station: '',
-                    post: '',
+                    districtId: null,
+                    stationId: null,
+                    positionId: null,
                     manager: '',
                     password: '',
-                    plan: '',
-                    gender: '',
+                    roleId: null,
+                    gender: null,
                     phoneNumber: '',
                     birthday: '',
                     idCardNumber: '',
                     entryDate: '',
-                    isMarried: '',
-                    hasChild: '',
+                    isMarried: null,
+                    hasChild: null,
                     eduBackGround: '',
                     partyMember: '',
                     joinDate: '',
@@ -603,36 +467,9 @@
                     xfzNo: '',
                     zwyNo: '',
                     zwyLevel: '',
-                    backup:null
+                    backup: null
                 },
-                editPerson: {
-                    employeeCard: '',
-                    employeeCode: '',
-                    userName: '',
-                    district: '',
-                    station: '',
-                    post: '',
-                    manager: '',
-                    password: '',
-                    plan: '',
-                    gender: '',
-                    phoneNumber: '',
-                    birthday: '',
-                    idCardNumber: '',
-                    entryDate: '',
-                    isMarried: '',
-                    hasChild: '',
-                    eduBackGround: '',
-                    partyMember: '',
-                    joinDate: '',
-                    certNo: '',
-                    certLevel: '',
-                    homeAddress: '',
-                    xfzNo: '',
-                    zwyNo: '',
-                    zwyLevel: '',
-                    backup:null
-                }
+                editUser: {}
 
             }
         },
@@ -658,13 +495,7 @@
                     this.$Message.error(response.meta.message);
                 }else{
                     this.$Loading.finish();
-                    this.personList = response.data;
-                    for(let i=0;i<response.data.length;i++){
-                        this.personList[i].gender = response.data[i].gender==="0" ? "女":"男";
-                        this.personList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
-                        this.personList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
-                        this.personList[i].backup = response.data[i].backup=== 0 ? "否":"是";
-                    }
+                    this.userList = response.data;
                 }
             },
             // 模糊查询
@@ -681,7 +512,7 @@
                     this.$Message.error(response.meta.message);
                 }else{
                     this.$Loading.finish();
-                    this.personList = response.data;
+                    this.userList = response.data;
                 }
                 this.fuzzyQueryModal='';
             },
@@ -720,39 +551,21 @@
                 this.roles = response.data;
                 }
             },
-              // 获取站点
-             getAllStations: async function () {
-                this.addPerson.station = '';
-                this.editPerson.station = ''
-                if (this.addPerson.district) {
-                let currentDistrict = this.addPerson.district.split('-');
-                let id = parseInt(currentDistrict[0]);
-                let response = await getStations(id);
-                let message = response.meta.message;
-                if(response.meta.code === 0){
-                    this.stations = response.data;
-                    return;
-                }
-                this.$Message.error(message);
-                }else if(this.editPerson.district){
-                let currentDistrict = this.editPerson.district.split('-');
-                let id = parseInt(currentDistrict[0]);
-                let response = await getStations(id);
-                let message = response.meta.message;
-                if(response.meta.code === 0){
-                    this.stations = response.data;
-                    return;
-                }
-                this.$Message.error(message);
+            // 获取站点
+            getAllStations: async function (id) {
+                if (id) {
+                    let response = await getStations(id);
+                    let message = response.meta.message;
+                    if(response.meta.code === 0){
+                        this.stations = response.data;
+                        return;
+                    }
+                    this.$Message.error(message);
                 }
             },
-              //  获取所有岗位
-            getAllPosts: async function () {
-                this.addPerson.post = '';
-                this.editPerson.post = '';
-                if (this.addPerson.station) {
-                    let stationCurrent = this.addPerson.station.split('-');
-                    let id =parseInt(stationCurrent[0]);
+            //  获取所有岗位
+            getAllPosts: async function (id) {
+                if(id){
                     let response = await getAllPost(id);
                     let message = response.meta.message;
                     if(response.meta.code === 0){
@@ -760,16 +573,7 @@
                         return;
                     }
                     this.$Message.error(message);
-                    }else if (this.editPerson.station){
-                        let stationCurrent = this.editPerson.station.split('-');
-                        let id =parseInt(stationCurrent[0]);
-                        let response = await getAllPost(id);
-                        let message = response.meta.message;
-                        if(response.meta.code === 0){
-                            this.position = response.data;
-                            return;
-                        }
-                    }
+                }
             },
             //  删除一行
             removeLine: async function(){
@@ -783,12 +587,12 @@
                     this.$Message.error(response.meta.message);
                 }else{
                     this.$Loading.finish();
-                    this.personList = response.data;
+                    this.userList = response.data;
                     for(let i=0;i<response.data.length;i++){
-                        this.personList[i].gender = response.data[i].gender==="0" ? "女":"男";
-                        this.personList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
-                        this.personList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
-                        this.personList[i].backup = response.data[i].backup=== 0 ? "否":"是";
+                        this.userList[i].gender = response.data[i].gender==="0" ? "女":"男";
+                        this.userList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
+                        this.userList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
+                        this.userList[i].backup = response.data[i].backup=== 0 ? "否":"是";
                     }
                     this.$Message.success("删除人员成功")
                 } 
@@ -807,10 +611,10 @@
                 })
             },
             beforeEditPersonModalMethod: async function (that) {
-                let currentDistrict = that.editPerson.district.split('-');
-                let currentStation = that.editPerson.station.split('-');
-                let currentPosition = that.editPerson.post.split('-');
-                let currentRole = that.addPerson.plan.split('-');
+                let currentDistrict = that.editUser.district.split('-');
+                let currentStation = that.editUser.station.split('-');
+                let currentPosition = that.editUser.post.split('-');
+                let currentRole = that.addUserData.plan.split('-');
                 let data = {
                     id: that.EditId,
                     districtId: null,
@@ -819,28 +623,28 @@
                     stationName: currentStation[1],
                     positionId: parseInt(currentPosition[0]),
                     positionName: currentPosition[1],
-                    employeeCard: that.editPerson.employeeCard,
-                    employeeCode: that.editPerson.employeeCode,
-                    userName: that.editPerson.userName,
-                    password: that.editPerson.password,
+                    employeeCard: that.editUser.employeeCard,
+                    employeeCode: that.editUser.employeeCode,
+                    userName: that.editUser.userName,
+                    password: that.editUser.password,
                     roleId: parseInt(currentRole[0]),
-                    gender: that.editPerson.gender,
-                    phoneNumber: that.editPerson.phoneNumber,
-                    birthday: that.editPerson.birthday,
-                    idCardNumber: that.editPerson.idCardNumber,
-                    entryDate: that.editPerson.entryDate,
-                    isMarried: that.editPerson.isMarried,
-                    hasChild: that.editPerson.hasChild,
-                    eduBackGround: that.editPerson.eduBackGround,
-                    partyMember: that.editPerson.partyMember,
-                    joinDate: that.editPerson.joinDate,
-                    certNo: that.editPerson.certNo,
-                    certLevel: that.editPerson.certLevel,
-                    homeAddress: that.editPerson.homeAddress,
-                    xfzNo: that.editPerson.xfzNo,
-                    zwyNo: that.editPerson.zwyNo,
-                    zwyLevel: that.editPerson.zwyLevel,
-                    backup:that.addPerson.backup === '0' ? 0:1,
+                    gender: that.editUser.gender,
+                    phoneNumber: that.editUser.phoneNumber,
+                    birthday: that.editUser.birthday,
+                    idCardNumber: that.editUser.idCardNumber,
+                    entryDate: that.editUser.entryDate,
+                    isMarried: that.editUser.isMarried,
+                    hasChild: that.editUser.hasChild,
+                    eduBackGround: that.editUser.eduBackGround,
+                    partyMember: that.editUser.partyMember,
+                    joinDate: that.editUser.joinDate,
+                    certNo: that.editUser.certNo,
+                    certLevel: that.editUser.certLevel,
+                    homeAddress: that.editUser.homeAddress,
+                    xfzNo: that.editUser.xfzNo,
+                    zwyNo: that.editUser.zwyNo,
+                    zwyLevel: that.editUser.zwyLevel,
+                    backup:that.addUserData.backup === '0' ? 0:1,
                 }
                 if(that.role === 2){
                     data.districtId = that.districtId;
@@ -855,98 +659,45 @@
                     that.$Message.error(response.meta.message);
                 }else{
                     that.$Loading.finish();
-                    that.personList = response.data;
+                    that.userList = response.data;
                     for(let i=0;i<response.data.length;i++){
-                    that.personList[i].gender = response.data[i].gender==="0" ? "女":"男";
-                    that.personList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
-                    that.personList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
-                    that.personList[i].backup = response.data[i].backup=== 0 ? "否":"是";
+                    that.userList[i].gender = response.data[i].gender==="0" ? "女":"男";
+                    that.userList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
+                    that.userList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
+                    that.userList[i].backup = response.data[i].backup=== 0 ? "否":"是";
                     }
                     that.$Message.success("修改人员成功")
                 } 
             },
             // 编辑人员
-            editPersonMethod:function (e) {
-                var currentId=e.target.parentNode.parentNode.id.split("-");
-                this.EditId = parseInt(currentId[1]);
-                this.editPersonModal=true;
-                var currentId=e.target.parentNode.parentNode.id.split("-");
-                var id = parseInt(currentId[0]);
-                let obj = this.personList[id]; 
-                for(let key in obj){
-                    this.editPerson[key] = obj[key];
-                }
+            editPersonMethod: function (item) {
+                //this.editUser = item;
+                this.getAllStations(item.districtId);
+                this.getAllPosts(item.stationId);
+                this.editUser = item;
+                this.editPersonModal = true;
             },
-            // 新增人员前进行验证
-            beforeAddUser:function (name) {
-                let that = this
+            // 新增人员
+            addUser: function (name) {
+                let self = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.addPersonModal = false;
-                        this.$options.methods.addUser(that);
-                        this.$refs[name].resetFields();
-                    } else {
-                        this.$Message.error('新增人员失败');
-                    }
+                        this.addUserFun(name);
+                    } 
                 })
             },
-            addUser: async function (that) {
-                let currentDistrict = that.addPerson.district.split('-');
-                let currentStation = that.addPerson.station.split('-');
-                let currentPosition = that.addPerson.post.split('-');
-                let currentRole = that.addPerson.plan.split('-');
-                let data = {
-                   // districtId: parseInt(currentDistrict[0]),
-                   // districtName: currentDistrict[1],
-                    stationId: parseInt(currentStation[0]),
-                    stationName: currentStation[1],
-                    positionId: parseInt(currentPosition[0]),
-                    positionName: currentPosition[1],
-                    employeeCard: that.addPerson.employeeCard,
-                    employeeCode: that.addPerson.employeeCode,
-                    userName: that.addPerson.userName,
-                    password: that.addPerson.password,
-                    roleId: parseInt(currentRole[0]),
-                    gender: that.addPerson.gender,
-                    phoneNumber: that.addPerson.phoneNumber,
-                    birthday: that.addPerson.birthday,
-                    idCardNumber: that.addPerson.idCardNumber,
-                    entryDate: that.addPerson.entryDate,
-                    isMarried: that.addPerson.isMarried,
-                    hasChild: that.addPerson.hasChild,
-                    eduBackGround: that.addPerson.eduBackGround,
-                    partyMember: that.addPerson.partyMember,
-                    joinDate: that.addPerson.joinDate,
-                    certNo: that.addPerson.certNo,
-                    certLevel: that.addPerson.certLevel,
-                    homeAddress: that.addPerson.homeAddress,
-                    xfzNo: that.addPerson.xfzNo,
-                    zwyNo: that.addPerson.zwyNo,
-                    zwyLevel: that.addPerson.zwyLevel,
-                    backup:that.addPerson.backup === '0' ? 0:1,
-                }
-                if(that.role === 2){
-                    data.districtId = that.districtId;
-                    data.districtName = that.districtName;
-                }else if(that.role === 1){
-                    data.districtId = parseInt(currentDistrict[0]);
-                    data.districtName = currentDistrict[1];
-                }
+            addUserFun: async function () {
+                let data = this.addUserData;
                 let response = await addUser(data);
-                if (response.meta.code !== 0) {
-                    that.$Loading.error();
-                    that.$Message.error(response.meta.message);
-                }else{
-                    that.$Loading.finish();
-                    that.personList = response.data;
-                    for(let i=0;i<response.data.length;i++){
-                    that.personList[i].gender = response.data[i].gender==="0" ? "女":"男";
-                    that.personList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
-                    that.personList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
-                    that.personList[i].backup = response.data[i].backup=== 0 ? "否":"是";
-                    }
-                    that.$Message.success("新增人员成功");
+                let message = response.meta.message;
+                if (response.meta.code === 0) {
+                    this.addPersonModal = false;
+                    this.$Message.success(message);
+                    this.userList = response.data;
+                    this.$refs[name].resetFields();
+                    return;
                 } 
+                this.$Message.error(message);
             },
             // 取消提交清空验证信息
             beforeCancel:function (name){
