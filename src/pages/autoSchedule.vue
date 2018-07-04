@@ -33,7 +33,7 @@
                                     <th>站务员</th>
                                     <th v-for="i in 7" :key="'th'+i">
                                         <div :id="'weekDay'+(i-1)">
-                                            <p v-for="item in dutyClass" :key="item.id" :code="item.id" :shiftNum="item.dutyName"><em>{{item.dutyName}}：</em><span>0</span></p>
+                                            <p v-for="item in dutyClass" :key="item.id" :code="item.id" :shiftNum="item.workingLength/60"><em>{{item.dutyName}}：</em><span>0</span></p>
                                         </div>
                                     </th>
                                     <th>周工时</th>
@@ -62,7 +62,7 @@
             </div>
         </div>
         <div id="btnChange" v-show="showChangeBtn">
-            <button type="button" class="btnDefault bgOrange" @click="changeShift">交换</button>
+            <button type="button" class="btnDefault bgOrange" @click="changeTemplate">交换</button>
         </div>
         <!-- 选择站务员 -->
         <Modal v-model="showUserModal"
@@ -81,7 +81,7 @@
 <script>
     let self = null;
     import {result} from '@/assets/data/data.js';
-    import {getSuites, getScheduleInfo, loadTemplate, createTemplate} from '@/api/api';
+    import {getSuites, getScheduleInfo, loadTemplate, createTemplate, changeTemplate} from '@/api/api';
     export default {
         data:function () {
             return {
@@ -134,7 +134,7 @@
                 shiftsData: [],
                 lastUserId: null,       //  存放原来选择的userId
                 generateData: {},       //  生成模版数据
-                autoData: {}            //  自动排班数据
+                autoData: {},            //  自动排班数据
                 
             }
         },
@@ -178,7 +178,7 @@
                 }
                 let response = await loadTemplate(id);
                 if(response.meta.code === 0){
-                    let data = response.data.templatelist;
+                    let [...data] = response.data.templatelist;
                     this.data = Math.ceil(data.length/7);
                     this.dutyClass = response.data.dutyclass;
                     this.template(data);
@@ -350,10 +350,9 @@
                 let size = map.size;
                 let index = parseInt($(target).attr('code'));
                 let key = target.attr('id');
-                let data = result.data;
                 let value = index ? {
-                    'weekNumber': data[index].weekNumber,
-                    'weekDay': data[index].weekDay
+                    'weekNum': target.attr('weeknum'),
+                    'dayNum': target.attr('daynum')
                 } : undefined;
                 if(size<2){
                     map.set(key, value);
@@ -383,7 +382,7 @@
                 }
             },
             //  交换排班
-            changeShift: function () {
+            changeTemplate: async function () {
                 let map = this.selectedTds;
                 if(map.size !== 2){
                     this.$Message.error("操作失败，无法定位交换节点");
@@ -392,44 +391,45 @@
                 let arr = [...map.entries()];
                 let first = arr[0];
                 let second = arr[1];
-                if(first[1] && second[1]){
-                    let index1 = parseInt($('#'+first[0]).attr('code'));
-                    let index2 = parseInt($('#'+second[0]).attr('code'));
-                    this.autoData.data[index1].weekNumber = second[1].weekNumber;
-                    this.autoData.data[index1].weekDay = second[1].weekDay;
-                    this.autoData.data[index2].weekNumber = first[1].weekNumber;
-                    this.autoData.data[index2].weekDay = first[1].weekDay;
-                } else if(!first[1] && second[1]){
-                    let index = parseInt($('#'+second[0]).attr('code'));
-                    let str = first[0].substring(2);
-                    let arr = str.split('-');
-                    this.autoData.data[index].weekNumber = parseInt(arr[0]);
-                    this.autoData.data[index].weekDay = parseInt(arr[1]);
-                    $('#'+second[0]).html('').removeAttr('data-hours').removeAttr('style').removeAttr('code');
-                } else if(!second[1] && first[1]){
-                    let index = parseInt($('#'+first[0]).attr('code'));
-                    let str = second[0].substring(2);
-                    let arr = str.split('-');
-                    this.autoData.data[index].weekNumber = parseInt(arr[0]);
-                    this.autoData.data[index].weekDay = parseInt(arr[1]);
-                    $('#'+first[0]).html('').removeAttr('data-hours').removeAttr('style').removeAttr('code');
-                }
+                console.log(arr)
+                // if(first[1] && second[1]){
+                //     let index1 = parseInt($('#'+first[0]).attr('code'));
+                //     let index2 = parseInt($('#'+second[0]).attr('code'));
+                //     this.autoData.data[index1].weekNumber = second[1].weekNumber;
+                //     this.autoData.data[index1].weekDay = second[1].weekDay;
+                //     this.autoData.data[index2].weekNumber = first[1].weekNumber;
+                //     this.autoData.data[index2].weekDay = first[1].weekDay;
+                // } else if(!first[1] && second[1]){
+                //     let index = parseInt($('#'+second[0]).attr('code'));
+                //     let str = first[0].substring(2);
+                //     let arr = str.split('-');
+                //     this.autoData.data[index].weekNumber = parseInt(arr[0]);
+                //     this.autoData.data[index].weekDay = parseInt(arr[1]);
+                //     $('#'+second[0]).html('').removeAttr('data-hours').removeAttr('style').removeAttr('code');
+                // } else if(!second[1] && first[1]){
+                //     let index = parseInt($('#'+first[0]).attr('code'));
+                //     let str = second[0].substring(2);
+                //     let arr = str.split('-');
+                //     this.autoData.data[index].weekNumber = parseInt(arr[0]);
+                //     this.autoData.data[index].weekDay = parseInt(arr[1]);
+                //     $('#'+first[0]).html('').removeAttr('data-hours').removeAttr('style').removeAttr('code');
+                // }
                 
-                $('.td-active').removeClass('td-active');
-                this.loadTemplate();
-                this.showChangeBtn = false;
-                map.clear();
-                for(let i=0;i<2;i++){
-                    let row = this.currentRows.get(i);
-                    let span = $('tr[row="'+ row +'"]').find('.workHours').find('span');
-                    let html = span.html();
-                    if(html === '0'){
-                        this.currentTr = row;
-                        $('[row="'+ row +'"]').find('button').show();
-                        span.html('');
-                        break;
-                    }
-                }                
+                // $('.td-active').removeClass('td-active');
+                // this.loadTemplate();
+                // this.showChangeBtn = false;
+                // map.clear();
+                // for(let i=0;i<2;i++){
+                //     let row = this.currentRows.get(i);
+                //     let span = $('tr[row="'+ row +'"]').find('.workHours').find('span');
+                //     let html = span.html();
+                //     if(html === '0'){
+                //         this.currentTr = row;
+                //         $('[row="'+ row +'"]').find('button').show();
+                //         span.html('');
+                //         break;
+                //     }
+                // }                
             },
             //  删除一行
             deleteTr: function (index) {
@@ -445,30 +445,8 @@
             },
             //  生成模版
             generateTemplate: function () {
-                this.generateData = this.deepCopy(result);
                 this.currentResult = this.generateData;
                 this.template(this.generateData);
-            },
-            //  深拷贝对象
-            deepCopy: function (obj) {
-                if(!obj){
-                    return {};
-                }
-                if(typeof obj === "object") {
-                    if(obj.constructor === Array) {
-                        var newArr = []
-                        for(var i = 0; i < obj.length; i++) newArr.push(obj[i])
-                        return newArr
-                    } else {
-                        var newObj = {}
-                        for(var key in obj) {
-                            newObj[key] = this.deepCopy(obj[key])
-                        }
-                        return newObj
-                    }
-                } else {
-                    return obj
-                }
             },
             //  加载模版
             template: function (allData) {
@@ -485,8 +463,8 @@
                         let hours = obj.workingLength/60;
                         this.totalHours += hours;
                         $('[weeknum="'+ n +'"][daynum="'+ m +'"]').html(obj.dutyName).css('background-color', obj.cellColor).attr({'data-hours': hours,'code': i});
-                        let weekDay = obj.weekDay;
-                        let shiftId = obj.shiftId;
+                        let weekDay = obj.dayNum;
+                        let shiftId = obj.classId;
                         let span = $('#weekDay'+weekDay).find('[code="'+ shiftId +'"]').find('span');
                         let num = parseInt(span.html());
                         num++;

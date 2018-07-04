@@ -23,7 +23,7 @@ export const getSuites = data => fetch('/duty', data, 'GET');
 /** 新增班制 */
 export const addSuites = data => fetch('/duty/suite', data, 'POST');
 
-/**删除班制 */
+/** 删除班制 */
 export const deteleSuites = id => fetch('/duty/suitedelete/' + id, {}, 'DELETE');
 
 /** 编辑班制 */
