@@ -2,7 +2,7 @@
     <div class="container">
         <div class="content-header">
             <span>选择班制：</span>
-            <Select v-model="suite" style="width:200px" @on-change="changeShift">
+            <Select v-model="suiteId" style="width:200px" @on-change="manualTemplate(suiteId)">
                 <Option v-for="item in suites" :value="item.id" :key="item.shiftId">{{ item.dutyName }}</Option>
             </Select>
             <!-- <button type="button" class="btnDefault bgBlue">创建排班</button> -->
@@ -44,7 +44,7 @@
 </template>
 <script>
 import {result} from '@/assets/data/data.js';
-import {getSuites} from '@/api/api';
+import {getSuites, manualTemplate} from '@/api/api';
 export default {
     data: function () {
         return {
@@ -58,7 +58,7 @@ export default {
                 {userName: '鞠淑云', userId: 3, shifts: new Map(), totalHours: 0},
                 {userName: '孟凡君', userId: 4, shifts: new Map(), totalHours: 0}
             ],
-            suite: null,
+            suiteId: null,
             shiftsMap: new Map(),
             modalShifts: [],
             modalShiftsMap: new Map(),
@@ -86,7 +86,7 @@ export default {
             let response = await getSuites(data);
             if(response.meta.code === 0){
                 this.suites = response.data;
-                this.suite = response.data[0].id;
+                this.suiteId = response.data[0].id;
                 //this.currentPositionId = response.data[0].positionId;
                 return;
             }
@@ -98,6 +98,11 @@ export default {
         //  选择班次取消
         cancel: function () {
             $('.userList').find('.active').removeClass('active');
+        },
+        manualTemplate: async function (id) {
+            console.log(id)
+            let response = await manualTemplate(id);
+            console.log(response)
         },
         //  取消已选班次
         handleCancel: function () {

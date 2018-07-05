@@ -40,13 +40,12 @@
                                 </tr>
                                 </thead>
                                 <tbody id="theBody">
-                                    <tr v-for="(n, index) in data" :key="'tr'+index" :row="index">
-                                        <td class="userName" :id="'user'+n" @click="clickUserTd"></td>
+                                    <tr v-for="(n, index) in weeks" :key="'tr'+index" :row="index">
+                                        <td class="userName" :id="'user'+ n" @click="clickUserTd(n-1)" :weeknum="n-1"></td>
                                         <td v-for="m in 7" :key="'td'+ m" :id="'td'+(n-1)+'-'+(m-1)" :weeknum="n-1" :daynum="m-1" @click="beforeChange"></td>
                                         <td class="workHours">
-                                            <span></span>
-                                            <!-- <button type="button" class="deleteItem" v-show="(index === currentTr) && showDelete">删除本行</button> -->
-                                            <button type="button" class="deleteItem" style="display:none;" @click="deleteTr(index)">删除本行</button>
+                                            <span v-show="!((index === currentTr) && showDelete)"></span>
+                                            <button type="button" class="deleteItem" v-show="(index === currentTr) && showDelete" @click="deleteTr(n-1)">删除本行</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -69,18 +68,19 @@
             id="usersModal"
             title="选择站务员" 
             width="600"
-            @on-ok="selectUser"
-            @on-cancel="cancel">
-            <button type="button" class="btnDefault bgBlue" @click="handleCancel">重置</button>
+            @on-ok="setSheduleUser"
+            @on-cancel="cancel"
+            :loading="true">
+            <button type="button" class="btnDefault bgBlue" @click="resetSheduleUser">重置</button>
             <div class="userList">
-                <span :class="{'selected': userIds.has(item.id)}" v-for="item in userList" :key="item.id" @click="clickUser" :code="item.id">{{item.userName}}</span>
+                <span v-for="item in userList" :key="item.id" @click="clickUser(item)" :code="item.id">{{item.userName}}</span>
             </div>
         </Modal>
     </div>
 </template>
 <script>
     let self = null;
-    import {getSuites, getScheduleInfo, loadTemplate, createTemplate, changeTemplate} from '@/api/api';
+    import {getSuites, getScheduleInfo, loadTemplate, createTemplate, changeTemplate, setSheduleUser, resetSheduleUser, deleteOneWeek} from '@/api/api';
     export default {
         data:function () {
             return {
@@ -92,10 +92,6 @@
                 globalShiftIds: [],
                 userList: [],
                 showUserModal: false,
-                temporary: {
-                    userName: '',
-                    userId: null
-                },
                 currentUser: {
                     userName: '',
                     userId: null
@@ -112,28 +108,19 @@
                     yearAverage: 0,
                     minPeople: 0
                 },
-                week: {
-                    monday: '--',
-                    tuesday: '--',
-                    wednesday: '--',
-                    thursday: '--',
-                    friday: '--',
-                    saturday: '--',
-                    sunday: '--',
-                },
-                data: 0,
+                weeks: 0,
                 currentTr: null,
                 showDelete: false,
                 totalHours: 0,
                 weekMinHours: 0,
                 weekMaxHours: 0,
-                userIds: new Set(),     //  存放已选择的站务员id
                 selectedTds: new Map(),
                 currentRows: new Map(),
                 shiftsData: [],
-                lastUserId: null,       //  存放原来选择的userId
                 generateData: {},       //  生成模版数据
                 autoData: {},            //  自动排班数据
+                temporaryUser: {},
+                weekNum: null
             }
         },
         mounted: function () {
@@ -152,7 +139,6 @@
                     this.suites = response.data;
                     if(this.suites.length !== 0){
                         this.currentSuiteId = response.data[0].id;
-                        //this.loadTemplate(this.currentSuiteId);
                     }
                     return;
                 }
@@ -177,12 +163,20 @@
                 let response = await loadTemplate(id);
                 if(response.meta.code === 0){
                     let data = response.data;
-                    this.data = Math.ceil(data.templatelist.length/5);
+                    this.weeks = response.data.weeks;
                     this.dutyClass = data.dutyclass;
                     this.userList = data.userlist;
                     this.template(data.templatelist);
+                    //$('.userName').html('');
+                    this.$nextTick(function () {
+                        let users = data.scheduleUsers;
+                        for(let i=0;i<users.length;i++){
+                            let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
+                            obj.html(users[i].userName).attr('userid', users[i].userId);
+                            $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
+                        }
+                    })
                 }
-                
             },
             //  计算周工时
             calcWeeklyTime: function (n) {
@@ -220,31 +214,6 @@
                 self.result.yearAverage = Math.round(yearly * 1000) / 1000;
                 self.result.minPeople = length;
                 self.showResult = true;
-            },
-            //  加载站务员
-            initUserTable: function (users) {
-                $(".user-table").empty();
-                var rowNum = users.length / 6;
-                {
-                    var tr = $("<tr></tr>");
-                    $(tr).append($("<td userId='-1' userName=''>取消</td>"));
-                    $(".user-table").append(tr);
-                }
-                for (var i = 0; i < rowNum; i++) {
-                    var tr = $("<tr></tr>");
-                    for (var j = 0; j < 6; j++) {
-                        var index = i * 6 + j;
-                        if (index >= users.length) {
-                            continue;
-                        }
-                        var user = users[index];
-                        var td = $("<td></td>");
-                        td.attr("userId", user.userId).attr("userName", user.userName);
-                        td.text(user.userName);
-                        $(tr).append(td);
-                    }
-                    $(".user-table").append(tr);
-                }
             },
             drawOwners: function (owners) {
                 for (var i = 0; i < owners.length; i++) {
@@ -286,57 +255,77 @@
                 $(header).html(html);
             },
             //  点击站务员表格
-            clickUserTd: function (e) {
-                let obj = $(e.target);
+            clickUserTd: function (n) {
+                let obj = $('.userName[weeknum="'+ n +'"]');
                 $('#usersModal').find('.active').removeClass('active');
                 this.showUserModal = true;
                 $(".userName").removeClass("td-active");
                 obj.addClass("td-active");
-                $(".user-table td").css("color", "green");
-                $("[tdType=-1]").each(function () {
-                    let userId = $(this).attr("userId");
-                    if (userId.length > 0) {
-                        $(".user-table td[userId=" + userId + "]").css("color", "orange");
-                    }
-                });
-                let code = obj.attr('code');
-                if(code){
-                    this.lastUserId = code;
-                }
+                this.weekNum = n;
             },
             //  选择站务员
-            clickUser: function (e) {
-                let obj = $(e.target);
-                this.temporary.userName = obj.html();
-                this.temporary.userId = obj.attr('code');
-                
+            clickUser: function (item) {
+                this.temporaryUser = item;
+                let obj = $('.userList').find('span[code="'+ item.id +'"]');
                 obj.toggleClass('active').siblings().removeClass('active');
             },
-            //  确定选择站务员
-            selectUser: function () {
-                this.currentUser.userName = this.temporary.userName;
-                this.currentUser.userId = this.temporary.userId;
-                let code = this.currentUser.userId;
-                $('.userName[code="'+ code +'"]').html('');
-                $('.userName.td-active').attr('code', code).html(this.currentUser.userName).removeClass('td-active');
-                if(code){
-                    this.userIds.add(code);
+            setSheduleUser: async function () {
+                if(!this.temporaryUser.id){
+                    this.$Message.warning('请选择站务员');
+                    return;
                 }
-                if(this.lastUserId){
-                    this.userIds.delete(this.lastUserId);
+                let user = this.temporaryUser;
+                let data = {
+                    suiteId: this.currentSuiteId,
+                    weekNum: this.weekNum,
+                    userId: user.id
                 }
-                this.markUsers();
+                let response = await setSheduleUser(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    let users = response.data;
+                    $('.userName').html('').removeAttr('userid');
+                    for(let i=0;i<users.length;i++){
+                        let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
+                        obj.html(users[i].userName).attr('userid', users[i].userId);
+                        $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
+                    }
+                    $('.userName.td-active').removeClass('td-active');
+                    this.$Message.success(message);
+                    this.temporaryUser = null;
+                    this.weekNum = null;
+                } else {
+                    this.$Message.error(message);
+                }
+                this.showUserModal = false;
             },
             //  重置站务员
-            handleCancel: function () {
-                let userId = $('.userName.td-active').attr('code');
-                $('.userName.td-active').html('').removeClass('td-active');
-
-                this.showUserModal = false;
-                if(userId){
-                    this.userIds.delete(userId);
+            resetSheduleUser: async function () {
+                let obj = $('.userName[weeknum="'+ this.weekNum +'"]');
+                let userId = obj.attr('userid');
+                if(!userId){
+                    return;
                 }
-                this.markUsers();
+                let data = {
+                    suiteId: this.currentSuiteId,
+                    weekNum: this.weekNum
+                }
+                let response = await resetSheduleUser(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    let users = response.data.scheduleUsers;
+                    $('.userName').html('').removeAttr('userid');
+                    for(let i=0;i<users.length;i++){
+                        let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
+                        obj.html(users[i].userName).attr('userid', users[i].userId);
+                        $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
+                    }
+                    $('.userName.td-active').removeClass('td-active');
+                } else {
+                    this.$Message.error(message);
+                }
+                this.showUserModal = false;
             },
             //  点击选择站务员模态框取消按钮
             cancel: function () {
@@ -402,7 +391,9 @@
                 if(response.meta.code === 0){
                     this.$Message.success(message);
                     let data = response.data.templatelist;
-                    this.template(data);
+                    this.weeks = 0;
+                    this.loadTemplate(this.currentSuiteId);
+                    
                 } else {
                     this.$Message.error(message);
                 }
@@ -411,16 +402,14 @@
                 this.selectedTds.clear();
             },
             //  删除一行
-            deleteTr: function (index) {
-                $('[row="'+ index +'"]').remove();
-            },
-            //  标注已选择的站务员
-            markUsers: function () {
-                $('.userList').find('span').removeClass('selected');
-                for(let code of this.userIds){
-                    $('.userList').find('span[code="'+ code +'"]').addClass('selected');
+            deleteTr: async function (id) {
+                let response = await deleteOneWeek(this.currentSuiteId, id);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    return;
                 }
-                this.lastUserId = null;
+                this.$Message.error(message);
             },
             //  生成模版
             generateTemplate: function () {
@@ -448,7 +437,6 @@
                         num++;
                         span.html(num);
                     }
-
                     let ps = $('#theHead0').find('p');
                     for(let i=0;i<ps.length;i++){
                         let obj = ps.eq(i);
