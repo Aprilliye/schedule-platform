@@ -7,8 +7,8 @@
                     <Select v-model="currentSuiteId" style="width:200px" @on-change="loadTemplate(currentSuiteId)">
                         <Option v-for="item in suites" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
                     </Select>
-                    <button class="btnDefault bgGreen" @click="loadTemplate">保存排班</button>
-                    <button type="button" class="btnDefault bgBlue" @click="createTemplate(currentSuiteId)">生成模板</button>
+                    <button class="btnDefault bgGreen" @click="selectDateModal=true">保存排班</button>
+                    <button type="button" class="btnDefault bgBlue" @click="createTemplate">生成模板</button>
                     <!-- <button class="btnDefault bgGreen" v-show="showSaveBtn">保存排班</button> -->
                     <p class="result" v-show="showResult">
                         <span>日平均<b>{{result.dayAverage}}</b>小时，</span>
@@ -76,11 +76,25 @@
                 <span v-for="item in userList" :key="item.id" @click="clickUser(item)" :code="item.id">{{item.userName}}</span>
             </div>
         </Modal>
+        <!-- 保存排班-选择开始日期 -->
+        <Modal v-model="selectDateModal"
+            id="selectDate"
+            title="选择开始日期" 
+            width="500"
+            @on-ok="saveSchedule"
+            @on-cancel="cancel"
+            :loading="true">
+            <Form :label-width="110">
+                <FormItem label="选择开始日期">
+                    <DatePicker type="date" style="width:320px;" placeholder="请选择时间"  v-model.trim="startDate"></DatePicker>
+                </FormItem>
+            </Form>
+        </Modal>
     </div>
 </template>
 <script>
     let self = null;
-    import {getSuites, getScheduleInfo, loadTemplate, createTemplate, changeTemplate, setSheduleUser, resetSheduleUser, deleteOneWeek} from '@/api/api';
+    import {getSuites, getScheduleInfo, loadTemplate, createTemplate, changeTemplate, setSheduleUser, resetSheduleUser, deleteOneWeek, saveSchedule} from '@/api/api';
     export default {
         data:function () {
             return {
@@ -92,6 +106,8 @@
                 globalShiftIds: [],
                 userList: [],
                 showUserModal: false,
+                selectDateModal: false,
+                startDate: null,
                 currentUser: {
                     userName: '',
                     userId: null
@@ -132,7 +148,8 @@
             //  获取所有班制
             getSuites: async function () {
                 let data = {
-                    districtId: this.districtId
+                    districtId: this.districtId,
+                    backup: 0
                 };
                 let response = await getSuites(data);
                 if(response.meta.code === 0){
@@ -161,22 +178,28 @@
                     return;
                 }
                 let response = await loadTemplate(id);
+                let message = response.meta.message;
                 if(response.meta.code === 0){
+                    this.$Message.success('加载成功');
                     let data = response.data;
-                    this.weeks = response.data.weeks;
+                    this.weeks = response.data.weeks + 1;
                     this.dutyClass = data.dutyclass;
+                    this.userList = [];
+                    this.scheduleUsers = [];
                     this.userList = data.userlist;
                     this.template(data.templatelist);
-                    //$('.userName').html('');
                     this.$nextTick(function () {
                         let users = data.scheduleUsers;
+                        $('.userName').html('').removeAttr('userid');
                         for(let i=0;i<users.length;i++){
                             let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
                             obj.html(users[i].userName).attr('userid', users[i].userId);
                             $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
                         }
                     })
+                    return;
                 }
+                this.$Message.error(message);
             },
             //  计算周工时
             calcWeeklyTime: function (n) {
@@ -285,6 +308,7 @@
                 if(response.meta.code === 0){
                     let users = response.data;
                     $('.userName').html('').removeAttr('userid');
+                    $('.userList span').removeClass('selected');
                     for(let i=0;i<users.length;i++){
                         let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
                         obj.html(users[i].userName).attr('userid', users[i].userId);
@@ -316,6 +340,7 @@
                     this.$Message.success(message);
                     let users = response.data.scheduleUsers;
                     $('.userName').html('').removeAttr('userid');
+                    $('.userList span').removeClass('selected');
                     for(let i=0;i<users.length;i++){
                         let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
                         obj.html(users[i].userName).attr('userid', users[i].userId);
@@ -379,21 +404,43 @@
                 let arr = [...map.entries()];
                 let obj1 = arr[0][1];
                 let obj2 = arr[1][1];
+                let weekNum1 = parseInt(obj1.weekNum);
+                let dayNum1 = parseInt(obj1.dayNum);
+                let weekNum2 = parseInt(obj2.weekNum);
+                let dayNum2 = parseInt(obj2.dayNum);
                 let data = {
                     suiteId: this.currentSuiteId,
-                    weekNum1: parseInt(obj1.weekNum),
-                    dayNum1: parseInt(obj1.dayNum),
-                    weekNum2: parseInt(obj2.weekNum),
-                    dayNum2: parseInt(obj2.dayNum)
+                    weekNum1: weekNum1,
+                    dayNum1: dayNum1,
+                    weekNum2: weekNum2,
+                    dayNum2: dayNum2
                 };
                 let response = await changeTemplate(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
                     let data = response.data.templatelist;
-                    this.weeks = 0;
-                    this.loadTemplate(this.currentSuiteId);
-                    
+
+                    let obj1 = $('[weeknum="'+ weekNum1 +'"][dayNum="'+ dayNum1 +'"]');
+                    let obj2 = $('[weeknum="'+ weekNum2 +'"][dayNum="'+ dayNum2 +'"]');
+                    let style = obj1.attr('style');
+                    let html = obj1.html();
+                    if(obj2.attr('style')){
+                        obj1.attr('style',obj2.attr('style'));
+                    } else {
+                        obj1.removeAttr('data-hours').removeAttr('style');
+                    }
+                    obj1.html(obj2.html());
+                    if(style){
+                        obj2.attr('style', style);
+                    } else {
+                        obj2.removeAttr('data-hours').removeAttr('style');
+                    }
+                    obj2.html(html);
+                    $(".workHours").each(function (n) {
+                        self.calcWeeklyTime(n);
+                    });
+                    //this.loadTemplate(this.currentSuiteId);
                 } else {
                     this.$Message.error(message);
                 }
@@ -407,14 +454,38 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
+                    this.loadTemplate(this.currentSuiteId);
+                    $('.workHours span').show();
+                    $('.deleteItem').hide();
                     return;
                 }
                 this.$Message.error(message);
             },
             //  生成模版
-            generateTemplate: function () {
-                this.currentResult = this.generateData;
-                this.template(this.generateData);
+            createTemplate: async function () {
+                let response = await createTemplate(this.currentSuiteId);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success('生成模版成功');
+                    let data = response.data;
+                    this.weeks = response.data.weeks + 1;
+                    this.dutyClass = data.dutyclass;
+                    this.userList = [];
+                    this.scheduleUsers = [];
+                    this.userList = data.userlist;
+                    this.template(data.templatelist);
+                    this.$nextTick(function () {
+                        let users = data.scheduleUsers;
+                        $('.userName').html('').removeAttr('userid');
+                        for(let i=0;i<users.length;i++){
+                            let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
+                            obj.html(users[i].userName).attr('userid', users[i].userId);
+                            $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
+                        }
+                    })
+                    return;
+                }
+                this.$Message.error(message);
             },
             //  加载模版
             template: function (allData) {
@@ -461,6 +532,30 @@
                     });
                     this.showTable = true;
                 })
+            },
+            //  保存排班
+            saveSchedule: async function () {
+                let date = this.startDate;
+                if(!date){
+                    this.$Message.warning('请选择开始日期');
+                    return;
+                }
+                let month = (date.getMonth()+1) < 10 ? ('0' + (date.getMonth()+1)) : (date.getMonth()+1);
+                let day = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
+                let dateStr = date.getFullYear() + '' + month  + '' + day;
+                let suiteId = this.currentSuiteId;
+                // let data = {
+                //     suiteId: this.currentSuiteId,
+                //     dateStr: dateStr
+                // }
+                let response = await saveSchedule(suiteId, dateStr);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    return;
+                }
+                this.$Message.error(message);
+
             }
         }
     }

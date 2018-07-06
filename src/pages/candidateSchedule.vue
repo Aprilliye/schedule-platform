@@ -44,20 +44,14 @@
 </template>
 <script>
 import {result} from '@/assets/data/data.js';
-import {getSuites, manualTemplate} from '@/api/api';
+import {getSuites, manualTemplate, loadTemplate} from '@/api/api';
 export default {
     data: function () {
         return {
             districtId: this.$store.get('districtId'),
             shiftsModal: false,
             suites: [],
-            users: [
-                {userName: '封伟', userId: 0, shifts: new Map(), totalHours: 0},
-                {userName: '王惠云', userId: 1, shifts: new Map(), totalHours: 0},
-                {userName: '祁爱军', userId: 2, shifts: new Map(), totalHours: 0},
-                {userName: '鞠淑云', userId: 3, shifts: new Map(), totalHours: 0},
-                {userName: '孟凡君', userId: 4, shifts: new Map(), totalHours: 0}
-            ],
+            users: [],
             suiteId: null,
             shiftsMap: new Map(),
             modalShifts: [],
@@ -69,10 +63,11 @@ export default {
     },
     created: function () {
         this.getSuites();
-        for(let obj of this.shifts){
+        this.loadTemplate();
+        for(let obj of this.suites){
             this.shiftsMap.set(obj.shiftId, obj.users);
         }
-        for(let key in result.shifts){
+        for(let key in result.suites){
             this.modalShifts.push(result.shifts[key]);
             this.modalShiftsMap.set(key, result.shifts[key]);
         }
@@ -83,14 +78,19 @@ export default {
             let data = {
                 districtId: this.districtId
             };
-            let response = await getSuites(data);
-            if(response.meta.code === 0){
-                this.suites = response.data;
-                this.suiteId = response.data[0].id;
-                //this.currentPositionId = response.data[0].positionId;
-                return;
-            }
-            this.$Message.error(response.meta.message);
+            // let response = await getSuites(data);
+            // if(response.meta.code === 0){
+            //     this.suites = response.data;
+            //     this.suiteId = response.data[0].id;
+            //     //this.currentPositionId = response.data[0].positionId;
+            //     return;
+            // }
+            // this.$Message.error(response.meta.message);
+        },
+        //  加载排班模版
+        loadTemplate: async function () {
+            let response = await loadTemplate(94);
+            console.log(response);
         },
         changeShift: function () {
             this.users = this.shiftsMap.get(this.shift);
@@ -99,11 +99,34 @@ export default {
         cancel: function () {
             $('.userList').find('.active').removeClass('active');
         },
-        manualTemplate: async function (id) {
-            console.log(id)
-            let response = await manualTemplate(id);
-            console.log(response)
+        //  设置班次
+        setTemplateClass: async function () {
+            let data = {
+                suiteId: this.suiteId,
+                classId: classId,
+                weekNum: weekNum,
+                dayNum: dayNum
+            }
+            let response = await setTemplateClass(data);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                this.$Message.success(message);
+                return;
+            }
+            this.$Message.error(message);
         },
+        //  保存排班
+        manualTemplate: async function (id) {
+            let response = await manualTemplate(94);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                this.$Message.success(message);
+                this.users = response.data;
+                return;
+            }
+            this.$Message.error(message);
+        },
+        
         //  取消已选班次
         handleCancel: function () {
             $('.currentTd').html('').removeAttr('code').removeAttr('style').removeAttr('hours'); 

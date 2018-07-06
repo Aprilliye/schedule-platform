@@ -72,7 +72,7 @@ export const deleteContent = id => fetch('/workflow/content/'+ id, {}, 'DELETE')
 export const getScheduleInfo = id => fetch('/schedule/getscheduleinfo/' + id, {}, 'GET');
 
 /** 生成排班计划 */
-export const createScheduleInfo = (suiteId, dateStr) => fetch('/schedule/createscheduleinfo?suiteId=' + suiteId +'&&dateStr='+ dateStr, {}, 'POST');
+export const saveSchedule = (suiteId, dateStr) => fetch('/schedule/createscheduleinfo?suiteId=' + suiteId +'&&dateStr='+ dateStr, {}, 'POST');
 
 /** 排班模板删除一周 */
 export const deleteOneWeek = (suiteId, weekNum) => fetch('/schedule/deleteoneweek?suiteId=' + suiteId +'&&weekNum='+ weekNum, {}, 'DELETE');
