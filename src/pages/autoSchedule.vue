@@ -4,7 +4,7 @@
             <div class="content-header">
                 <div class="tabItem">
                     <span>选择班制：</span>
-                    <Select v-model="currentSuiteId" style="width:200px" @on-change="loadTemplate(currentSuiteId)">
+                    <Select v-model="suiteId" style="width:200px" @on-change="loadTemplate(suiteId)">
                         <Option v-for="item in suites" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
                     </Select>
                     <button class="btnDefault bgGreen" @click="selectDateModal=true">保存排班</button>
@@ -108,14 +108,9 @@
                 showUserModal: false,
                 selectDateModal: false,
                 startDate: null,
-                currentUser: {
-                    userName: '',
-                    userId: null
-                },
                 currentResult: {},
                 suites: [],
-                currentSuiteId: null,
-                //showSaveBtn: false,
+                suiteId: null,
                 showResult: false,
                 result: {
                     dayAverage: 0,
@@ -132,9 +127,6 @@
                 weekMaxHours: 0,
                 selectedTds: new Map(),
                 currentRows: new Map(),
-                shiftsData: [],
-                generateData: {},       //  生成模版数据
-                autoData: {},            //  自动排班数据
                 temporaryUser: {},
                 weekNum: null
             }
@@ -155,7 +147,7 @@
                 if(response.meta.code === 0){
                     this.suites = response.data;
                     if(this.suites.length !== 0){
-                        this.currentSuiteId = response.data[0].id;
+                        this.suiteId = response.data[0].id;
                     }
                     return;
                 }
@@ -291,29 +283,22 @@
                 }
                 let user = this.temporaryUser;
                 let data = {
-                    suiteId: this.currentSuiteId,
+                    suiteId: this.suiteId,
                     weekNum: this.weekNum,
                     userId: user.id
                 }
                 let response = await setSheduleUser(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
-                    // let users = response.data;
-                    // $('.userName').html('').removeAttr('userid');
-                    // $('.userList span').removeClass('selected');
-                    // for(let i=0;i<users.length;i++){
-                    //     let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
-                    //     obj.html(users[i].userName).attr('userid', users[i].userId);
-                    //     $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
-                    // }
-                    $('.userName.td-active').removeClass('td-active');
+                    $('.td-active').removeClass('td-active');
                     this.$Message.success(message);
-                    this.temporaryUser = null;
-                    this.weekNum = null;
-                    this.loadTemplate(this.currentSuiteId);
+                    
+                    this.loadTemplate(this.suiteId);
                 } else {
                     this.$Message.error(message);
                 }
+                this.temporaryUser = null;
+                this.weekNum = null;
                 this.showUserModal = false;
             },
             //  重置站务员
@@ -324,31 +309,29 @@
                     return;
                 }
                 let data = {
-                    suiteId: this.currentSuiteId,
+                    suiteId: this.suiteId,
                     weekNum: this.weekNum
                 }
                 let response = await resetSheduleUser(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    // let users = response.data.scheduleUsers;
-                    // $('.userName').html('').removeAttr('userid');
-                    // $('.userList span').removeClass('selected');
-                    // for(let i=0;i<users.length;i++){
-                    //     let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
-                    //     obj.html(users[i].userName).attr('userid', users[i].userId);
-                    //     $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
-                    // }
-                    $('.userName.td-active').removeClass('td-active');
-                    this.loadTemplate(this.currentSuiteId);
+                    $('.td-active').removeClass('td-active');
+                    $('.active').removeClass('active');
+                    $('.selected').removeClass('selected');
+                    this.loadTemplate(this.suiteId);
                 } else {
                     this.$Message.error(message);
                 }
+                this.weekNum = null;
                 this.showUserModal = false;
             },
             //  点击选择站务员模态框取消按钮
             cancel: function () {
-                $('.userName.td-active').removeClass('td-active');
+                $('.td-active').removeClass('td-active');
+                this.weekNum = null;
+                this.currentRows.clear();
+                this.selectedTds.clear();
             },
             //  点击排班单元格
             beforeChange: function (e) {
@@ -403,7 +386,7 @@
                 let weekNum2 = parseInt(obj2.weekNum);
                 let dayNum2 = parseInt(obj2.dayNum);
                 let data = {
-                    suiteId: this.currentSuiteId,
+                    suiteId: this.suiteId,
                     weekNum1: weekNum1,
                     dayNum1: dayNum1,
                     weekNum2: weekNum2,
@@ -413,8 +396,6 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    let data = response.data.templatelist;
-
                     let obj1 = $('[weeknum="'+ weekNum1 +'"][dayNum="'+ dayNum1 +'"]');
                     let obj2 = $('[weeknum="'+ weekNum2 +'"][dayNum="'+ dayNum2 +'"]');
                     let style = obj1.attr('style');
@@ -434,7 +415,7 @@
                     $(".workHours").each(function (n) {
                         self.calcWeeklyTime(n);
                     });
-                    //this.loadTemplate(this.currentSuiteId);
+                    this.loadTemplate(this.suiteId);
                 } else {
                     this.$Message.error(message);
                 }
@@ -444,11 +425,11 @@
             },
             //  删除一行
             deleteTr: async function (id) {
-                let response = await deleteOneWeek(this.currentSuiteId, id);
+                let response = await deleteOneWeek(this.suiteId, id);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    this.loadTemplate(this.currentSuiteId);
+                    this.loadTemplate(this.suiteId);
                     $('.workHours span').show();
                     $('.deleteItem').hide();
                     return;
@@ -457,7 +438,7 @@
             },
             //  生成模版
             createTemplate: async function () {
-                let response = await createTemplate(this.currentSuiteId);
+                let response = await createTemplate(this.suiteId);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success('生成模版成功');
@@ -483,7 +464,6 @@
             },
             //  加载模版
             template: function (allData) {
-                //let data = allData.data;
                 let data = allData;
                 let dataLen = allData.length;
                 this.totalHours = 0;
@@ -515,11 +495,6 @@
                     });
                     self.globalShiftCounts = allData.shifts;
                     self.globalShiftIds = allData.shiftIds;
-                    //$("#btnLoad").hide();
-                    //codes = result.codes;
-                    //setCodes();
-                    
-                    //self.initUserTable(result.users);
                     allData.owners && self.drawOwners(allData.owners);
                     $("th[thead]").each(function(n) {
                         self.calcDailySchedule(n);
@@ -537,7 +512,7 @@
                 let month = (date.getMonth()+1) < 10 ? ('0' + (date.getMonth()+1)) : (date.getMonth()+1);
                 let day = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
                 let dateStr = date.getFullYear() + '' + month  + '' + day;
-                let suiteId = this.currentSuiteId;
+                let suiteId = this.suiteId;
 
                 let response = await saveSchedule(suiteId, dateStr);
                 let message = response.meta.message;
