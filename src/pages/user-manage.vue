@@ -55,10 +55,10 @@
                         </thead>
                         <tbody id="userDataTable">
                             <tr v-for="(item,index) in userList" :key='index' :id="index+'-'+item.id">
-                                <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine">删除</a><a style="color: #0000FF" @click="editPersonMethod(item)">修改</a></td>
+                                <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine(item)">删除</a><a style="color: #0000FF" @click="editPersonMethod(item)">修改</a></td>
                                 <td>{{item.employeeCard}}</td>
                                 <td>{{item.userName}}</td>
-                                <td>{{item.gender === 1 ? '男' : '女'}}</td>
+                                <td>{{item.gender === '1' ? '男' : '女'}}</td>
                                 <td>{{item.phoneNumber}}</td>
                                 <td>{{item.birthday}}</td>
                                 <td>{{item.positionName}}</td>
@@ -67,8 +67,8 @@
                                 <td>{{item.backup === 1 ? '是' : '否'}}</td>
                                 <td v-show="tableItem[0].ifShow">{{item.idCardNumber}}</td>
                                 <td v-show="tableItem[1].ifShow">{{item.entryDate}}</td>
-                                <td v-show="tableItem[2].ifShow">{{item.isMarried === 1 ? '已婚' : '未婚'}}</td>
-                                <td v-show="tableItem[3].ifShow">{{item.hasChild === 1 ? '已育' : '未育'}}</td>
+                                <td v-show="tableItem[2].ifShow">{{item.isMarried === '1' ? '已婚' : '未婚'}}</td>
+                                <td v-show="tableItem[3].ifShow">{{item.hasChild === '1' ? '已育' : '未育'}}</td>
                                 <td v-show="tableItem[4].ifShow">{{item.eduBackGround}}</td>
                                 <td v-show="tableItem[5].ifShow">{{item.partyMember}}</td>
                                 <td v-show="tableItem[6].ifShow">{{item.joinDate}}</td>
@@ -212,7 +212,6 @@
                v-model="editPersonModal"
                width="800"
                @on-ok="editPersonModalMethod('editUser')"
-               
                :loading="true"
                :mask-closable="false">
             <Form ref="editUser" :model="editUser" :label-width="120" :rules="rule">
@@ -319,8 +318,8 @@
                 </FormItem>
                 <FormItem label="是否备班人员" prop="backup" class="userModal">
                     <Select  v-model="editUser.backup" placeholder="请选择">
-                        <Option value="1">是</Option>
-                        <Option value="0">否</Option>
+                        <Option value = 1>是</Option>
+                        <Option value = 0>否</Option>
                     </Select>
                 </FormItem>
                 <div class="clear"></div>
@@ -340,12 +339,6 @@
                 position:[],
                 // 站点
                 stations:[],
-                // 当前站区
-                currentDistrict:'',
-                // 当前站点
-                currentStation:'',
-                // 当前岗位
-                currentPosition:'',
                 // 角色列表
                 roles:[],
                 // 当前角色
@@ -423,7 +416,9 @@
                    employeeCard: [{required: true, message: '员工卡号不能为空', trigger: 'blur' }],
                    employeeCode: [{required: true, message: '人员编码不能为空', trigger: 'blur' }],
                    userName: [{required: true, message: '姓名不能为空', trigger: 'blur' }],
-                   post: [{required: true, message: '岗位不能为空', trigger: 'change' }],
+                   positionId: [{required: true, type: 'integer', message: '岗位不能为空', trigger: 'change' }],
+                   stationId: [{required: true,type: 'integer', message: '站点不能为空', trigger: 'change' }],
+                   roleId: [{required: true, type: 'integer', message: '角色不能为空', trigger: 'change' }],
                    password: [{required: true, message: '密码不能为空', trigger: 'blur' }],
                    plan: [{required: true, message: '权限方案不能为空', trigger: 'change' }],
                    gender: [{required: true, message: '性别不能为空', trigger: 'change' }],
@@ -448,7 +443,6 @@
                     districtId: null,
                     stationId: null,
                     positionId: null,
-                    manager: '',
                     password: '',
                     roleId: null,
                     gender: null,
@@ -469,8 +463,7 @@
                     zwyLevel: '',
                     backup: null
                 },
-                editUser: {}
-
+                editUser: {},
             }
         },
         mounted: function () {
@@ -554,6 +547,9 @@
             // 获取站点
             getAllStations: async function (id) {
                 if (id) {
+                    this.addUserData.stationId = '';
+                    this.editUser.stationId = '';
+                    this.stations = [];
                     let response = await getStations(id);
                     let message = response.meta.message;
                     if(response.meta.code === 0){
@@ -566,6 +562,9 @@
             //  获取所有岗位
             getAllPosts: async function (id) {
                 if(id){
+                    this.addUserData.positionId = '';
+                    this.editUser.positionId = '';
+                    this.position = [];
                     let response = await getAllPost(id);
                     let message = response.meta.message;
                     if(response.meta.code === 0){
@@ -576,11 +575,8 @@
                 }
             },
             //  删除一行
-            removeLine: async function(){
-                var e = e || window.event;
-                var target = e.target || e.srcElement;
-                var currentId=e.target.parentNode.parentNode.id.split("-");
-                var id = parseInt(currentId[1]);
+            removeLine: async function(item){
+                var id = item.id;
                 let response = await deleteUser(id);
                 if (response.meta.code !== 0) {
                     this.$Loading.error();
@@ -588,12 +584,6 @@
                 }else{
                     this.$Loading.finish();
                     this.userList = response.data;
-                    for(let i=0;i<response.data.length;i++){
-                        this.userList[i].gender = response.data[i].gender==="0" ? "女":"男";
-                        this.userList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
-                        this.userList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
-                        this.userList[i].backup = response.data[i].backup=== 0 ? "否":"是";
-                    }
                     this.$Message.success("删除人员成功")
                 } 
             },
@@ -611,47 +601,13 @@
                 })
             },
             beforeEditPersonModalMethod: async function (that) {
-                let currentDistrict = that.editUser.district.split('-');
-                let currentStation = that.editUser.station.split('-');
-                let currentPosition = that.editUser.post.split('-');
-                let currentRole = that.addUserData.plan.split('-');
-                let data = {
-                    id: that.EditId,
-                    districtId: null,
-                    districtName: '',
-                    stationId: parseInt(currentStation[0]),
-                    stationName: currentStation[1],
-                    positionId: parseInt(currentPosition[0]),
-                    positionName: currentPosition[1],
-                    employeeCard: that.editUser.employeeCard,
-                    employeeCode: that.editUser.employeeCode,
-                    userName: that.editUser.userName,
-                    password: that.editUser.password,
-                    roleId: parseInt(currentRole[0]),
-                    gender: that.editUser.gender,
-                    phoneNumber: that.editUser.phoneNumber,
-                    birthday: that.editUser.birthday,
-                    idCardNumber: that.editUser.idCardNumber,
-                    entryDate: that.editUser.entryDate,
-                    isMarried: that.editUser.isMarried,
-                    hasChild: that.editUser.hasChild,
-                    eduBackGround: that.editUser.eduBackGround,
-                    partyMember: that.editUser.partyMember,
-                    joinDate: that.editUser.joinDate,
-                    certNo: that.editUser.certNo,
-                    certLevel: that.editUser.certLevel,
-                    homeAddress: that.editUser.homeAddress,
-                    xfzNo: that.editUser.xfzNo,
-                    zwyNo: that.editUser.zwyNo,
-                    zwyLevel: that.editUser.zwyLevel,
-                    backup:that.addUserData.backup === '0' ? 0:1,
-                }
+                let data = that.cloneObj(that.editUser);
                 if(that.role === 2){
                     data.districtId = that.districtId;
-                    data.districtName = that.districtName;
+                    //data.districtName = that.districtName;
                 }else if(that.role === 1){
-                    data.districtId = parseInt(currentDistrict[0]);
-                    data.districtName = currentDistrict[1];
+                    data.districtId = that.editUser.districtId;
+                    //data.districtName = currentDistrict[1];
                 }
                 let response = await updateUser(data);
                 if (response.meta.code !== 0) {
@@ -660,22 +616,37 @@
                 }else{
                     that.$Loading.finish();
                     that.userList = response.data;
-                    for(let i=0;i<response.data.length;i++){
-                    that.userList[i].gender = response.data[i].gender==="0" ? "女":"男";
-                    that.userList[i].isMarried = response.data[i].isMarried==="0" ? "未婚":"已婚";
-                    that.userList[i].hasChild = response.data[i].hasChild==="0" ? "未育":"已育";
-                    that.userList[i].backup = response.data[i].backup=== 0 ? "否":"是";
-                    }
                     that.$Message.success("修改人员成功")
                 } 
             },
             // 编辑人员
             editPersonMethod: function (item) {
                 //this.editUser = item;
-                this.getAllStations(item.districtId);
+                // 获取编辑id
+                this.EditId = item.id;
+                // 判断角色获取站点
+                if(this.role === 1){
+                   this.getAllStations(this.districtId);
+                }else if(this.role === 2){
+                    this.getAllStations(item.districtId);
+                }
                 this.getAllPosts(item.stationId);
                 this.editUser = item;
+                this.editUser.backup = item.backup.toString();
                 this.editPersonModal = true;
+            },
+            // 对象深度拷贝
+            cloneObj:function(obj){
+                var newObj = {};
+                if (obj instanceof Array) {
+                    newObj = [];
+                }
+                for (var key in obj) {
+                    var val = obj[key];
+                    newObj[key] = typeof val === 'object' ? arguments.callee(val) : val; //arguments.callee 在哪一个函数中运行，它就代表哪个函数, 一般用在匿名函数中。
+                    //newObj[key] = typeof val === 'object' ? cloneObj(val): val;
+                }
+                return newObj;
             },
             // 新增人员
             addUser: function (name) {
@@ -686,8 +657,16 @@
                     } 
                 })
             },
-            addUserFun: async function () {
+            addUserFun: async function (name) {
                 let data = this.addUserData;
+                if(this.role === 2){
+                    data.districtId = this.districtId;
+                    //data.backup = this.addUserData.backup === '0' ? 0:1,
+                    //data.districtName = this.districtName;
+                }else if(this.role === 1){
+                    data.districtId = this.addUserData.districtId;
+                    //data.districtName = currentDistrict[1];
+                }
                 let response = await addUser(data);
                 let message = response.meta.message;
                 if (response.meta.code === 0) {
@@ -695,6 +674,8 @@
                     this.$Message.success(message);
                     this.userList = response.data;
                     this.$refs[name].resetFields();
+                    this.position = [];
+                    this.stations = [];
                     return;
                 } 
                 this.$Message.error(message);
@@ -702,6 +683,8 @@
             // 取消提交清空验证信息
             beforeCancel:function (name){
                 this.$refs[name].resetFields();
+                this.position = [];
+                this.stations = [];
             }
         }
        
