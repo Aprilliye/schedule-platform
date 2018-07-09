@@ -438,7 +438,7 @@
     </div>
 </template>
 <script>
-    import {monthdata, weekdata} from '@/assets/data/scheduleAreaForm'
+    import {monthdata, weekdata} from '@/assets/data/scheduleAreaForm';
     export default {
         data: function() {
             return {
@@ -584,10 +584,10 @@
                 this.clicktr=targettr;
                 this.clicktd=targettd;
                 //取鼠标点击位置
-               var totalWidth=$(".container").width();
-               var totalHeight=$(".container").height();
-               var bodyWidth=$("body").width();
-               var bodyHeight=$("body").height();
+                var totalWidth=$(".container").width();
+                var totalHeight=$(".container").height();
+                var bodyWidth=$("body").width();
+                var bodyHeight=$("body").height();
                 var x=e.clientX;
                 var y=e.clientY;
                 $(".vocationDiv").css({

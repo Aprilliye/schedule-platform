@@ -18,16 +18,16 @@ export const detelePost = id => fetch('/position/' + id, {}, 'DELETE');
 /*************************** 班次设置 *******************************/
 
 /** 获取班制 */
-export const getSuites = data => fetch('/duty', data, 'GET');
+export const getSuites = data => fetch('/duty/suite', data, 'GET');
 
 /** 新增班制 */
 export const addSuites = data => fetch('/duty/suite', data, 'POST');
 
 /** 删除班制 */
-export const deteleSuites = id => fetch('/duty/suitedelete/' + id, {}, 'DELETE');
+export const deteleSuites = id => fetch('/duty/suite/' + id, {}, 'DELETE');
 
 /** 编辑班制 */
-export const updateSuites = data => fetch('/duty/suitupdate' , data, 'PUT');
+export const updateSuites = data => fetch('/duty/suite' , data, 'PUT');
 
 /** 获取班次 */
 export const getClass = id => fetch('/duty/suite?suiteId='+id, {}, 'GET');
@@ -36,19 +36,19 @@ export const getClass = id => fetch('/duty/suite?suiteId='+id, {}, 'GET');
 export const addClass = data => fetch('/duty/class', data, 'POST');
 
 /** 删除班次 */
-export const deteleClass = (id, suiteId) => fetch('/duty/classdelete/' + id +'?suiteId='+ suiteId, {} ,'DELETE');
+export const deteleClass = id => fetch('/duty/class/' + id, {} ,'DELETE');
 
 /** 编辑班次 */
-export const updateClass = data => fetch('/duty/classupdate' , data, 'PUT');
+export const updateClass = data => fetch('/duty/class' , data, 'PUT');
 
 /** 新增时间段 */
-export const addPeriod = data => fetch('/duty/periodadd', data, 'POST');
+export const addPeriod = data => fetch('/duty/period', data, 'POST');
 
 /** 编辑时间段 */
-export const updatePeriod = data => fetch('/duty/periodupdate' , data, 'PUT');
+export const updatePeriod = data => fetch('/duty/period' , data, 'PUT');
 
 /** 删除时间段 */
-export const detelePeriod = id => fetch('/duty/perioddelete/' + id, {}, 'DELETE');
+export const detelePeriod = id => fetch('/duty/period/' + id, {}, 'DELETE');
 
 /** 获取工作流程 */
 export const getWorkFlow = id => fetch('/workflow/'+ id, {}, 'GET');
@@ -80,9 +80,6 @@ export const deleteOneWeek = (suiteId, weekNum) => fetch('/schedule/deleteonewee
 /** 排班模板交换任务 */
 export const changeTemplate = data => fetch('/schedule/exchangeTemplate', data, 'PUT');
 
-/** 手动排班创建数据 */
-export const manualTemplate = id => fetch('/schedule/manualtemplate/' + id, {}, 'POST');
-
 /** 生成模版 */
 export const createTemplate = id => fetch('/schedule/createtemplate/' + id, {}, 'POST');
 
@@ -90,13 +87,16 @@ export const createTemplate = id => fetch('/schedule/createtemplate/' + id, {}, 
 export const loadTemplate = id => fetch('/schedule/templatelist/' + id, {}, 'GET');
 
 /** 排班模板取消人员 */
-export const resetSheduleUser = data => fetch('/schedule/removescheduleuser', data, 'PUT'); // suiteId,weekNum
+export const resetSheduleUser = data => fetch('/schedule/removescheduleuser', data, 'PUT');
 
 /** 排班模板设置人员 */ 
-export const setSheduleUser = data => fetch('/schedule/setscheduleuser', data, 'PUT'); // suiteId,weekNum,userId
+export const setSheduleUser = data => fetch('/schedule/setscheduleuser', data, 'PUT');
 
 /** 手动排版设置班次 */
-export const setTemplateClass = data => fetch('/schedule/settemplateclass', data, 'PUT'); // suiteId,weekNum,classId,dayNum
+export const setTemplateClass = data => fetch('/schedule/settemplateclass', data, 'PUT');
+
+/** 手动排班删除班次 */
+export const deleteTemplateClass = id => fetch('/schedule/template/' + id, {}, 'DELETE');
 
 /******************  权限管理  ******************/
 

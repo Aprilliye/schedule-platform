@@ -11,11 +11,11 @@
                     <button type="button" class="btnDefault bgBlue" @click="createTemplate">生成模板</button>
                     <!-- <button class="btnDefault bgGreen" v-show="showSaveBtn">保存排班</button> -->
                     <p class="result" v-show="showResult">
-                        <span>日平均<b>{{result.dayAverage}}</b>小时，</span>
-                        <span>周平均<b>{{result.weekAverage}}</b>小时，</span>
-                        <span>30日平均<b>{{result.monthAverage}}</b>小时，</span>
-                        <span>365日平均<b>{{result.yearAverage}}</b>小时，</span>
-                        <span>最少人数<b>{{result.minPeople}}</b>人</span>
+                        <span>日平均<b>{{result.dayAverage || 0}}</b>小时，</span>
+                        <span>周平均<b>{{result.weekAverage || 0}}</b>小时，</span>
+                        <span>30日平均<b>{{result.monthAverage || 0}}</b>小时，</span>
+                        <span>365日平均<b>{{result.yearAverage || 0}}</b>小时，</span>
+                        <span>最少人数<b>{{result.minPeople || 0}}</b>人</span>
                     </p>
                 </div>
             </div>
@@ -161,13 +161,6 @@
                 }
                 this.$Message.error(response.meta.message);
             },
-            //  生成模版
-            createTemplate: async function (id) {
-                // let response = await createTemplate(id);
-                // if(response.meta.code === 0){
-                //     this.template(response.data.scheduleUserlist);
-                // }
-            },
             // 查询排班计划
             getScheduleInfo: async function (id) {
                 let response = await getScheduleInfo(id);
@@ -180,9 +173,8 @@
                 let response = await loadTemplate(id);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
-                    this.$Message.success('加载成功');
                     let data = response.data;
-                    this.weeks = response.data.weeks + 1;
+                    this.weeks = response.data.weeks;
                     this.dutyClass = data.dutyclass;
                     this.userList = [];
                     this.scheduleUsers = [];
@@ -306,18 +298,19 @@
                 let response = await setSheduleUser(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
-                    let users = response.data;
-                    $('.userName').html('').removeAttr('userid');
-                    $('.userList span').removeClass('selected');
-                    for(let i=0;i<users.length;i++){
-                        let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
-                        obj.html(users[i].userName).attr('userid', users[i].userId);
-                        $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
-                    }
+                    // let users = response.data;
+                    // $('.userName').html('').removeAttr('userid');
+                    // $('.userList span').removeClass('selected');
+                    // for(let i=0;i<users.length;i++){
+                    //     let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
+                    //     obj.html(users[i].userName).attr('userid', users[i].userId);
+                    //     $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
+                    // }
                     $('.userName.td-active').removeClass('td-active');
                     this.$Message.success(message);
                     this.temporaryUser = null;
                     this.weekNum = null;
+                    this.loadTemplate(this.currentSuiteId);
                 } else {
                     this.$Message.error(message);
                 }
@@ -338,15 +331,16 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    let users = response.data.scheduleUsers;
-                    $('.userName').html('').removeAttr('userid');
-                    $('.userList span').removeClass('selected');
-                    for(let i=0;i<users.length;i++){
-                        let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
-                        obj.html(users[i].userName).attr('userid', users[i].userId);
-                        $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
-                    }
+                    // let users = response.data.scheduleUsers;
+                    // $('.userName').html('').removeAttr('userid');
+                    // $('.userList span').removeClass('selected');
+                    // for(let i=0;i<users.length;i++){
+                    //     let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
+                    //     obj.html(users[i].userName).attr('userid', users[i].userId);
+                    //     $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
+                    // }
                     $('.userName.td-active').removeClass('td-active');
+                    this.loadTemplate(this.currentSuiteId);
                 } else {
                     this.$Message.error(message);
                 }
@@ -544,18 +538,16 @@
                 let day = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
                 let dateStr = date.getFullYear() + '' + month  + '' + day;
                 let suiteId = this.currentSuiteId;
-                // let data = {
-                //     suiteId: this.currentSuiteId,
-                //     dateStr: dateStr
-                // }
+
                 let response = await saveSchedule(suiteId, dateStr);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    return;
+                } else {
+                    this.$Message.error(message);
                 }
-                this.$Message.error(message);
-
+                this.selectDateModal = false;
+                this.startDate = '';
             }
         }
     }
