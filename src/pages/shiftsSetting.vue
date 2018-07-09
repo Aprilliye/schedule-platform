@@ -121,12 +121,9 @@
                 </FormItem>
                 <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot">
                     <!-- <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addShiftValue'  @on-change="getsectionTime"></TimePicker> -->
-                    <TimePicker  v-model="addFormValidateClass.timeSlotBegin" placeholder="选择开始时间" format="HH:mm" @on-change="getsectionTime"></TimePicker> 至 
-                    <TimePicker  v-model="addFormValidateClass.timeSlotEnd" placeholder="选择结束时间" format="HH:mm" @on-change="getsectionTime"></TimePicker>
+                    <TimePicker  v-model="addFormValidateClass.startTimeStr" placeholder="选择开始时间" format="HH:mm" @on-change="getsectionTime"></TimePicker> 至 
+                    <TimePicker  v-model="addFormValidateClass.endTimeStr" placeholder="选择结束时间" format="HH:mm" @on-change="getsectionTime"></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
-                </FormItem>
-                <FormItem label="本班工时" prop="workingLength">
-                    <Input v-model="addFormValidateClass.workingLength" placeholder="" readonly/>
                 </FormItem>
                 <FormItem label="班次间隔" prop="restMinutes">
                     <Input v-model="addFormValidateClass.restMinutes" placeholder=""/>
@@ -138,6 +135,9 @@
                 </FormItem>
                 <FormItem label="值班人数" prop="userCount">
                     <Input v-model="addFormValidateClass.userCount" placeholder=""/>
+                </FormItem>
+                <FormItem label="注意事项" prop="comment">
+                    <textarea  v-model="addFormValidateClass.comment" placeholder="" style="width:100%;"></textarea>
                 </FormItem>
             </Form>
         </Modal>
@@ -201,25 +201,6 @@
             @on-ok="updateSuite('formValidate')"
             @on-cancel="handleCancel('formValidate')">
             <Form ref="formValidate" :model="formValidate"  :label-width="110">
-                <FormItem label="班制名称：" prop="dutyName">
-                    <Input v-model="formValidate.dutyName" placeholder=""/>
-                </FormItem>
-                <FormItem label="是否备班：" prop="backup" :rules="{required:true,message:'是否备班不能为空'}">
-                    <Select v-model="formValidate.backup" placeholder="请选择">
-                        <Option :value="1">是</Option>
-                        <Option :value="0">否</Option>
-                    </Select>
-                </FormItem>
-                <FormItem label="站区：" prop="stationArea" :rules="{required:true,message:'站区不能为空'}">
-                    <Select v-model="formValidate.stationArea" placeholder="请选择" @on-change="getEditStation">
-                        <Option v-for="(item,index) in districts" :value="item.id+'-'+item.districtName" :key="index">{{item.districtName}}</Option>
-                    </Select>
-                </FormItem>
-                <FormItem label="站点：" prop="station" :rules="{required:true,message:'站点不能为空'}">
-                    <Select v-model="formValidate.station" placeholder="请选择">
-                        <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
-                    </Select>
-                </FormItem>
                 <FormItem label="周工时下限：" prop="minWorkingHour">
                     <Input v-model="formValidate.minWorkingHour" placeholder=""/>
                 </FormItem>
@@ -256,14 +237,9 @@
                         <Option :value="0">否</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="站区：" prop="stationArea" :rules="{required:true,message:'站区不能为空'}">
-                    <Select v-model="addFormValidate.stationArea" placeholder="请选择" @on-change="getStations">
-                        <Option v-for="(item,index) in districts" :value="item.id+'-'+item.districtName" :key="index">{{item.districtName}}</Option>
-                    </Select>
-                </FormItem>
-                <FormItem label="站点：" prop="station" :rules="{required:true,message:'站点不能为空'}">
-                    <Select v-model="addFormValidate.station" placeholder="请选择">
-                        <Option v-for="(item,index) in stations " :value="item.id+'-'+item.stationName" :key="index">{{item.stationName}}</Option>
+                <FormItem label="站点：" prop="stationId" :rules="{required:true,message:'站点不能为空'}">
+                    <Select v-model="addFormValidate.stationId" placeholder="请选择">
+                        <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="周工时下限：" prop="minWorkingHour" :rules="{required:true,message:'周工时下限不能为空不能为空'}">
@@ -378,7 +354,6 @@ export default {
             positions: [],
             info: {
                 dutyName: '',
-                active:null,
                 backup:null,
                 districtId:null,
                 districtName: '',
@@ -394,10 +369,6 @@ export default {
                 yearlyWorkingHourLimit: ''                 
             },
             formValidate: {
-                dutyName: '',
-                backup: null,
-                stationArea: '',
-                station: '',
                 minWorkingHour: '',
                 maxWorkingHour: '',
                 minWeeklyRestDays: '', 
@@ -418,15 +389,13 @@ export default {
             addFormValidateClass:{
                 dutyName:'',
                 dutyCode:'',
-                totalTime:'',
-                notice:'',
-                workingLength:null,
+                comment:'',
                 restMinutes:null,
                 relevantClassId:null,
                 userCount:null,
                 ifTimeSlot:false,
-                timeSlotBegin:'',
-                timeSlotEnd:'',
+                startTimeStr:'',
+                endTimeStr:'',
             },
             editFormValidateClass:{
                 dutyName:'',
@@ -443,9 +412,8 @@ export default {
             },
             addFormValidate:{
                 dutyName: '',
-                active: null,
-                stationArea: null,
-                station:'',
+                backup: null,
+                stationId:null,
                 minWorkingHour:'',
                 maxWorkingHour:'',
                 minWeeklyRestDays:'',
@@ -506,9 +474,7 @@ export default {
                 restMinutes: [
                     { required: true, message: '班次间隔不能为空', trigger: 'blur' }
                 ],
-                // relevantClassId: [
-                //     { required: true, message: '班次关联不能为空', trigger: 'blur' }
-                // ],
+                comment: [{required: true, message: '注意事项不能为空', trigger: 'blur'}],
                 userCount: [
                     { required: true, message: '值班人数不能为空', trigger: 'blur' }
                 ]
@@ -666,9 +632,24 @@ export default {
         //  获取班制
         //this.getSuites();
         //  获取站区
-        this.request();
+       // this.request();
+        // 获取站点
+        this.getCurrentStations();
     },
     methods:{
+        // 对象深度拷贝
+        cloneObj:function(obj){
+            var newObj = {};
+            if (obj instanceof Array) {
+                newObj = [];
+            }
+            for (var key in obj) {
+                var val = obj[key];
+                newObj[key] = typeof val === 'object' ? arguments.callee(val) : val; //arguments.callee 在哪一个函数中运行，它就代表哪个函数, 一般用在匿名函数中。
+                //newObj[key] = typeof val === 'object' ? cloneObj(val): val;
+            }
+            return newObj;
+        },
         //  获取所有岗位
         getAllPost: async function () {
             let response = await getAllPost(this.stationId);
@@ -700,16 +681,16 @@ export default {
                 this.suites = response.data;
                 if(response.data.length>0){
                     this.suiteId = response.data[0].id;
-                    this.dutyDistrictId = response.data[0].districtId;
-                    this.dutyDistrictName = response.data[0].districtName;
-                    this.dutyStationId = response.data[0].stationId;
-                    this.dutyStationName = response.data[0].stationName;
+                    // this.dutyDistrictId = response.data[0].districtId;
+                    // this.dutyDistrictName = response.data[0].districtName;
+                    // this.dutyStationId = response.data[0].stationId;
+                    // this.dutyStationName = response.data[0].stationName;
                 }else{
                     this.suiteId = null;
-                    this.dutyDistrictId = null;
-                    this.dutyDistrictName = null;
-                    this.dutyStationId = null;
-                    this.dutyStationName = null;
+                    // this.dutyDistrictId = null;
+                    // this.dutyDistrictName = null;
+                    // this.dutyStationId = null;
+                    // this.dutyStationName = null;
                 }
                 // 显示班制内容
                 let obj = this.suites[0]; 
@@ -741,21 +722,19 @@ export default {
             }
         },
         //  获取站区
-        request: async function(){
-            let response = await stationAreaList();
-            if (response.meta.code !== 0) {
-                this.$Loading.error();
-                this.$Message.error(response.meta.message);
-            }else{
-                this.$Loading.finish();
-                this.districts = response.data;
-            }
-        },
+        // request: async function(){
+        //     let response = await stationAreaList();
+        //     if (response.meta.code !== 0) {
+        //         this.$Loading.error();
+        //         this.$Message.error(response.meta.message);
+        //     }else{
+        //         this.$Loading.finish();
+        //         this.districts = response.data;
+        //     }
+        // },
         //  获取站点
-        getStations: async function () {
-            if (this.addFormValidate.stationArea) {
-            let currentDistrict = this.addFormValidate.stationArea.split('-');
-            let id = parseInt(currentDistrict[0]);
+        getCurrentStations: async function () {
+            let id = this.districtId;
             let response = await getStations(id);
             let message = response.meta.message;
             if(response.meta.code === 0){
@@ -763,7 +742,6 @@ export default {
                 return;
             }
             this.$Message.error(message);
-            }
         },
         getEditStation: async function () {
             if (this.formValidate.stationArea) {
@@ -790,71 +768,6 @@ export default {
                     that.dutyData = response.data.dutyclass;
                 }
             }
-        },
-        //  删除班制
-        handleClose: async function (id) {
-            let response = await deteleSuites(id);
-            let message = response.meta.message;
-            if(response.meta.code === 0){
-                this.$Message.success(message);
-                this.getSuites();
-                return;
-            }
-            this.$Message.error(message);
-        },
-        //  编辑班制
-        beforeUpdateSuite: function () {
-            let obj = this.info; 
-            for(let key in obj){
-                this.formValidate[key] = obj[key];
-            }
-            this.formValidate.stationArea = obj.districtId+'-'+obj.districtName;
-            this.formValidate.station = obj.stationId+'-'+obj.stationName;
-            this.modal.editShift = true;
-        },
-        updateSuite: function (name) {
-            this.$refs[name].validate((valid) => {
-                let that = this;
-                if (valid) {
-                    this.$options.methods.updateSuiteFun(that);
-                    this.$refs[name].resetFields();
-                    this.modal.editShift=false;
-                } else {
-                    this.$Message.error('修改失败');
-                }
-            })
-        },
-        updateSuiteFun: async function (that) {
-            let currentPosition = that.position.current.split('-');
-            let currentDistrict = that.formValidate.stationArea.split('-');
-            let currentStation = that.formValidate.station.split('-');
-            let data = {
-                id: that.suiteId,
-                dutyName: that.formValidate.dutyName,
-                backup: that.formValidate.backup,
-                districtId: parseInt(currentDistrict[0]),
-                districtName:currentDistrict[1],
-                stationId: parseInt(currentStation[0]),
-                stationName: currentStation[1],
-                positionId: parseInt(currentPosition[0]), 
-                positionName:currentPosition[2],
-                maxWorkingHour: that.formValidate.maxWorkingHour,
-                minWorkingHour: that.formValidate.minWorkingHour,
-                maxWeeklyRestDays: that.formValidate.maxWeeklyRestDays,
-                minWeeklyRestDays: that.formValidate.minWeeklyRestDays,
-                monthlyWorkingHourLimit: that.formValidate.monthlyWorkingHourLimit,
-                yearlyWorkingHourLimit: that.formValidate.yearlyWorkingHourLimit,
-                backup: parseInt(currentPosition[1])
-            }
-            let response = await updateSuites(data);   
-                let message = response.meta.message;
-                if(response.meta.code === 0){
-                    that.info = response.data.dutysuite;
-                    that.suites[that.suiteName] =  response.data.dutysuite; 
-                    that.$Message.success("编辑班制成功");
-                }else{
-                    that.$Message.error(message);
-                }
         },
         //  新增时间段验证
         addTimeSlotMethods: function (name) {
@@ -979,7 +892,7 @@ export default {
         //  新增班次验证
         addClassMethods:function(name){
             let that = this;
-            if (this.addFormValidateClass.timeSlotBegin && this.addFormValidateClass.timeSlotEnd){
+            if (this.addFormValidateClass.startTimeStr && this.addFormValidateClass.endTimeStr){
                 this.addFormValidateClass.ifTimeSlot = false;
             }else{
                 this.addFormValidateClass.ifTimeSlot = true;
@@ -995,115 +908,114 @@ export default {
                 } else {
                     this.$Message.error('修改失败');
                 }
-                this.addFormValidateClass.timeSlotBegin = '';
-                this.addFormValidateClass.timeSlotEnd = '';
+                this.addFormValidateClass.startTimeStr = '';
+                this.addFormValidateClass.endTimeStr = '';
                 this.addFormValidateClass.ifTimeSlot = false;
             })
         },
         beforeAddClassMethods: async function  (that) {
-            let currentPosition = that.position.current.split('-');
-            let excBeginTime=parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[1]);
-            let excEndTime=parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[1]);
-            let total=0;
-            if (excEndTime>excBeginTime){
-                total=excEndTime-excBeginTime;
-            }else if (excEndTime<excBeginTime) {
-                total=excEndTime-excBeginTime+1440;
-            }
-            let data = {
-                dutyName: that.addFormValidateClass.dutyName,
-                dutyCode: that.addFormValidateClass.dutyCode,
-                districtId: that.dutyDistrictId,
-                districtName: that.dutyDistrictName,
-                stationId: that.dutyStationId,
-                stationName: that.dutyStationName,
-                restMinutes: that.addFormValidateClass.restMinutes*60,
-                positionId: parseInt(currentPosition[0]),
-                backup: parseInt(currentPosition[1]),
-                positionName:currentPosition[2],
-                suiteId: that.suiteId,
-                userCount: that.addFormValidateClass.userCount,
-                classColor: $(".shiftColor").css('background-color'),
-                startTimeStr: that.addFormValidateClass.timeSlotBegin,
-                endTimeStr: that.addFormValidateClass.timeSlotEnd,
-                workingLength: total,
-            }
-             let dataBegin = {
-                dutyName: that.addFormValidateClass.dutyName,
-                dutyCode: that.addFormValidateClass.dutyCode,
-                districtId: that.dutyDistrictId,
-                districtName: that.dutyDistrictName,
-                stationId: that.dutyStationId,
-                stationName: that.dutyStationName,
-                restMinutes: 0,
-                relevantClassId: that.CurrentRelevantClassId,
-                positionId: parseInt(currentPosition[0]),
-                backup: parseInt(currentPosition[1]),
-                positionName:currentPosition[2],
-                suiteId: that.suiteId,
-                userCount: that.addFormValidateClass.userCount,
-                classColor: $(".shiftColor").css('background-color'),
-                startTimeStr: that.addFormValidateClass.timeSlotBegin,
-                endTimeStr: '24:00',
-                workingLength: total/2,
-            }
-            let dataEnd = {
-                dutyName: '下夜班',
-                dutyCode: that.addFormValidateClass.dutyCode,
-                districtId: that.dutyDistrictId,
-                districtName: that.dutyDistrictName,
-                stationId: that.dutyStationId,
-                stationName: that.dutyStationName,
-                restMinutes: that.addFormValidateClass.restMinutes*60,
-                positionId: parseInt(currentPosition[0]),
-                backup: parseInt(currentPosition[1]),
-                positionName:currentPosition[2],
-                suiteId: that.suiteId,
-                userCount: that.addFormValidateClass.userCount,
-                classColor: $(".shiftColor").css('background-color'),
-                startTimeStr: '00:00',
-                endTimeStr: that.addFormValidateClass.timeSlotEnd,
-                workingLength: total/2,
-            }
-            let beginTime = that.addFormValidateClass.timeSlotBegin.split(':');
-            let endTime = that.addFormValidateClass.timeSlotEnd.split(':');
-            let arrBegin = [];
-            let arrEnd = [];
-            arrBegin.push(parseInt(beginTime[0]));
-            arrBegin.push(parseInt(beginTime[1]));
-            arrEnd.push(parseInt(endTime[0]));
-            arrEnd.push(parseInt(endTime[1]));
-            let response = {};
-            if (arrBegin[0]==arrEnd[0] && arrBegin[0]>arrEnd[0]){
-                let result = await addClass(dataEnd);
-                 if(result.meta.code === 0){
-                    dataBegin.relevantClassId = result.data.dutyclass[result.data.dutyclass.length-1].id;
-                    response = await addClass(dataBegin);
-                }else{
-                    that.$Message.error(message);
-                }
-            }else if (arrBegin[0]==arrEnd[0] && arrBegin[0]==arrEnd[0]){
-                let result = await addClass(dataEnd);
-                if(result.meta.code === 0){
-                    dataBegin.relevantClassId = result.data.dutyclass[result.data.dutyclass.length-1].id;
-                    response = await addClass(dataBegin);
-                }else{
-                    that.$Message.error(message);
-                }
-            }else if (arrBegin[0]>arrEnd[0]){
-                let result = await addClass(dataEnd);
-                 if(result.meta.code === 0){
-                    dataBegin.relevantClassId = result.data.dutyclass[result.data.dutyclass.length-1].id;
-                    response = await addClass(dataBegin);
-                }else{
-                    that.$Message.error(message);
-                };
-            }else {
-                 response = await addClass(data);
-            }
+            console.log("新增班次");
+            // let excBeginTime=parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[1]);
+            // let excEndTime=parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[1]);
+            // let total=0;
+            // if (excEndTime>excBeginTime){
+            //     total=excEndTime-excBeginTime;
+            // }else if (excEndTime<excBeginTime) {
+            //     total=excEndTime-excBeginTime+1440;
+            // }
+            // let data = {
+            //     dutyName: that.addFormValidateClass.dutyName,
+            //     dutyCode: that.addFormValidateClass.dutyCode,
+            //     restMinutes: that.addFormValidateClass.restMinutes*60,
+            //     suiteId: that.suiteId,
+            //     userCount: that.addFormValidateClass.userCount,
+            //     classColor: $(".shiftColor").css('background-color'),
+            //     startTimeStr: that.addFormValidateClass.timeSlotBegin,
+            //     endTimeStr: that.addFormValidateClass.timeSlotEnd,
+            //     workingLength: total,
+            // }
+             let data = that.cloneObj(that.addFormValidateClass);
+             data.suiteId = that.suiteId;
+             data.classColor = $(".shiftColor").css('background-color');
+             console.log(data);
+            //  let dataBegin = {
+            //     dutyName: that.addFormValidateClass.dutyName,
+            //     dutyCode: that.addFormValidateClass.dutyCode,
+            //     districtId: that.dutyDistrictId,
+            //     districtName: that.dutyDistrictName,
+            //     stationId: that.dutyStationId,
+            //     stationName: that.dutyStationName,
+            //     restMinutes: 0,
+            //     relevantClassId: that.CurrentRelevantClassId,
+            //     positionId: parseInt(currentPosition[0]),
+            //     backup: parseInt(currentPosition[1]),
+            //     positionName:currentPosition[2],
+            //     suiteId: that.suiteId,
+            //     userCount: that.addFormValidateClass.userCount,
+            //     classColor: $(".shiftColor").css('background-color'),
+            //     startTimeStr: that.addFormValidateClass.timeSlotBegin,
+            //     endTimeStr: '24:00',
+            //     workingLength: total/2,
+            // }
+            // let dataEnd = {
+            //     dutyName: '下夜班',
+            //     dutyCode: that.addFormValidateClass.dutyCode,
+            //     districtId: that.dutyDistrictId,
+            //     districtName: that.dutyDistrictName,
+            //     stationId: that.dutyStationId,
+            //     stationName: that.dutyStationName,
+            //     restMinutes: that.addFormValidateClass.restMinutes*60,
+            //     positionId: parseInt(currentPosition[0]),
+            //     backup: parseInt(currentPosition[1]),
+            //     positionName:currentPosition[2],
+            //     suiteId: that.suiteId,
+            //     userCount: that.addFormValidateClass.userCount,
+            //     classColor: $(".shiftColor").css('background-color'),
+            //     startTimeStr: '00:00',
+            //     endTimeStr: that.addFormValidateClass.timeSlotEnd,
+            //     workingLength: total/2,
+            // }
+            // let beginTime = that.addFormValidateClass.timeSlotBegin.split(':');
+            // let endTime = that.addFormValidateClass.timeSlotEnd.split(':');
+            // let arrBegin = [];
+            // let arrEnd = [];
+            // arrBegin.push(parseInt(beginTime[0]));
+            // arrBegin.push(parseInt(beginTime[1]));
+            // arrEnd.push(parseInt(endTime[0]));
+            // arrEnd.push(parseInt(endTime[1]));
+            // let response = {};
+            // if (arrBegin[0]==arrEnd[0] && arrBegin[0]>arrEnd[0]){
+            //     let result = await addClass(dataEnd);
+            //      if(result.meta.code === 0){
+            //         dataBegin.relevantClassId = result.data.dutyclass[result.data.dutyclass.length-1].id;
+            //         response = await addClass(dataBegin);
+            //     }else{
+            //         that.$Message.error(message);
+            //     }
+            // }else if (arrBegin[0]==arrEnd[0] && arrBegin[0]==arrEnd[0]){
+            //     let result = await addClass(dataEnd);
+            //     if(result.meta.code === 0){
+            //         dataBegin.relevantClassId = result.data.dutyclass[result.data.dutyclass.length-1].id;
+            //         response = await addClass(dataBegin);
+            //     }else{
+            //         that.$Message.error(message);
+            //     }
+            // }else if (arrBegin[0]>arrEnd[0]){
+            //     let result = await addClass(dataEnd);
+            //      if(result.meta.code === 0){
+            //         dataBegin.relevantClassId = result.data.dutyclass[result.data.dutyclass.length-1].id;
+            //         response = await addClass(dataBegin);
+            //     }else{
+            //         that.$Message.error(message);
+            //     };
+            // }else {
+            //      response = await addClass(data);
+            // }
+            let response = await addClass(data);
             let message = response.meta.message;
              if(response.meta.code === 0){
                  that.$Message.success("新增班次成功");
+                 console.log(response);
                  that.shiftData = response.data.dutyclass;
                 return;
             }else{
@@ -1315,6 +1227,7 @@ export default {
                     this.$options.methods.addSuiteFun(that);
                     this.modal.addShift=false;
                     this.$refs[name].resetFields();
+                    this.stations = [];
                 } else {
                     this.$Message.error('新增班制失败');
                     return false;
@@ -1323,38 +1236,20 @@ export default {
         },
         addSuiteFun:async function(that){
             let currentPosition = that.position.current.split('-');
-            let currentDistrict = that.addFormValidate.stationArea.split('-');
-            let currentStation = that.addFormValidate.station.split('-');
-            let data = {
-                dutyName: that.addFormValidate.dutyName,
-                backup: that.addFormValidate.backup,
-                districtId: parseInt(currentDistrict[0]),
-                districtName:currentDistrict[1],
-                stationId: parseInt(currentStation[0]),
-                stationName: currentStation[1],
-                positionId: parseInt(currentPosition[0]), 
-                positionName:currentPosition[2],
-                maxWorkingHour: that.addFormValidate.maxWorkingHour,
-                minWorkingHour: that.addFormValidate.minWorkingHour,
-                maxWeeklyRestDays: that.addFormValidate.maxWeeklyRestDays,
-                minWeeklyRestDays: that.addFormValidate.minWeeklyRestDays,
-                monthlyWorkingHourLimit: that.addFormValidate.monthlyWorkingHourLimit,
-                yearlyWorkingHourLimit: that.addFormValidate.yearlyWorkingHourLimit,
-                backup: parseInt(currentPosition[1])
-            }
+            let data = that.cloneObj(that.addFormValidate);
+            data.positionId = parseInt(currentPosition[0]);
+            data.districtId = that.districtId;
             let response = await addSuites(data);   
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     if (that.suites.length===0){
-                        that.suites.push(response.data.dutysuite);
-                        that.dutyDistrictId = response.data.dutysuite.districtId,
-                        that.dutyDistrictName = response.data.dutysuite.districtName,
-                        that.dutyStationId  = response.data.dutysuite.stationId,
-                        that.dutyStationName = response.data.dutysuite.stationName,
+                        // that.dutyDistrictId = response.data.dutysuite.districtId,
+                        // that.dutyDistrictName = response.data.dutysuite.districtName,
+                        // that.dutyStationId  = response.data.dutysuite.stationId,
+                        // that.dutyStationName = response.data.dutysuite.stationName,
                         that.suiteId = response.data.dutysuite.id
-                    }else{
-                        that.suites.push(response.data.dutysuite);
                     }
+                        that.suites.push(response.data.dutysuite);
                     // 显示班制内容
                       let obj = that.suites[0]; 
                         for(let key in obj){
@@ -1364,6 +1259,51 @@ export default {
                 }else{
                     that.$Message.error(message);
                 }
+        },
+        //  删除班制
+        handleClose: async function (id) {
+            let response = await deteleSuites(id);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                this.$Message.success(message);
+                this.getSuites();
+                return;
+            }
+            this.$Message.error(message);
+        },
+        //  编辑班制取值
+        beforeUpdateSuite: function () {
+            let obj = this.info; 
+            for(let key in obj){
+                this.formValidate[key] = obj[key];
+            }
+            this.modal.editShift = true;
+        },
+        // 编辑班制验证提交
+        updateSuite: function (name) {
+            this.$refs[name].validate((valid) => {
+                let that = this;
+                if (valid) {
+                    this.$options.methods.updateSuiteFun(that);
+                    this.$refs[name].resetFields();
+                    this.modal.editShift=false;
+                } else {
+                    this.$Message.error('修改失败');
+                }
+            })
+        },
+        updateSuiteFun: async function (that) {
+            let data = that.cloneObj(that.formValidate);
+            data.id = that.suiteId;
+            let response = await updateSuites(data); 
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                that.info = response.data.dutysuite;
+                that.suites[that.suiteName] =  response.data.dutysuite; 
+                that.$Message.success("编辑班制成功");
+            }else{
+                that.$Message.error(message);
+            }
         },
         //  班次选择颜色
         getBackColor:function(){
