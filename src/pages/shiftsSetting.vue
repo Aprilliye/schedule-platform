@@ -664,7 +664,7 @@ export default {
         //  获取岗位
         this.getAllPost();
         //  获取班制
-        this.getSuites();
+        //this.getSuites();
         //  获取站区
         this.request();
     },
@@ -692,7 +692,7 @@ export default {
                 districtId: this.districtId,
                 stationId: this.stationId,
                 positionId: parseInt(currentPosition[0]),
-                backup: parseInt(currentPosition[1])
+                //backup: parseInt(currentPosition[1])
             }
             let response = await getSuites(data);
             let message = response.meta.message;
@@ -715,44 +715,6 @@ export default {
                 let obj = this.suites[0]; 
                 for(let key in obj){
                 this.info[key] = obj[key];
-                }
-                this.$options.methods.getClass(that);
-                return;
-            }
-            this.$Message.error(message);
-        },
-        //  获取班制
-        getSuites: async function () {
-            this.suiteName = 0;
-            let that = this;
-            let currentPosition = this.position.current.split('-');
-            let data = {
-                districtId: this.districtId,
-                stationId: this.stationId,
-                positionId: parseInt(currentPosition[0]),
-                backup: parseInt(currentPosition[1])
-            }
-            let response = await getSuites(data);
-            let message = response.meta.message;
-            if(response.meta.code === 0){
-                this.suites = response.data;
-                if (response.data.length>0){
-                    this.suiteId = response.data[0].id;
-                    this.dutyDistrictId = response.data[0].districtId;
-                    this.dutyDistrictName = response.data[0].districtName;
-                    this.dutyStationId = response.data[0].stationId;
-                    this.dutyStationName = response.data[0].stationName;
-                }else{
-                    this.suiteId = null;
-                    this.dutyDistrictId = null;
-                    this.dutyDistrictName = null;
-                    this.dutyStationId = null;
-                    this.dutyStationName = null;
-                }
-                // 显示班制内容
-                let obj = this.suites[0]; 
-                for(let key in obj){
-                    this.info[key] = obj[key];
                 }
                 this.$options.methods.getClass(that);
                 return;
