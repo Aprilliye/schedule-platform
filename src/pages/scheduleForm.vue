@@ -10,8 +10,8 @@
                         <Select v-model="timeQuantum" style="width:200px">
                             <Option v-for="item in timeQuantumList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
-                        <DatePicker :value="beginValue" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker> 至
-                        <DatePicker :value="endValue" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker>
+                        <DatePicker :value="startDateStr" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker> 至
+                        <DatePicker :value="endDateStr" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker>
                     </div>
                     <div class="tabItem" v-show="!showTabItem">
                         <span>时间段：</span>
@@ -20,18 +20,18 @@
                 </div>
                 <div style="margin-top: 20px">
                     <span>站点：</span>
-                    <Select v-model="station" style="width:200px" placeholder="西直门">
-                        <Option v-for="item in stationList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    <Select v-model="station" style="width:200px">
+                        <Option v-for="item in stationList" :value="item.id" :key="item.id">{{ item.stationName }}</Option>
                     </Select>
                     <span>岗位：</span>
-                    <Select v-model="post" style="width:200px" placeholder="替班员">
-                        <Option v-for="item in postList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    <Select v-model="post" style="width:200px">
+                        <Option v-for="item in postList" :value="item.id" :key="item.id">{{ item.positionName }}</Option>
                     </Select>
                     <p class="selectbutton">
                         <span class="icon-5" ></span>
-                        <input type="text" placeholder="姓名/编号" style="border: 0">
+                        <input type="text" v-model.trim="userName" placeholder="姓名/编号" style="border: 0">
                     </p>
-                    <button type="button" class="btnDefault bgBlue">查询</button>
+                    <button type="button" class="btnDefault bgBlue" @click="getScheduleInfo">查询</button>
                     <button type="button" class="btnDefault">导出</button>
                     <button type="button" class="btnDefault">导出个人</button>
                 </div>
@@ -439,15 +439,18 @@
 </template>
 <script>
     import {monthdata, weekdata} from '@/assets/data/scheduleAreaForm';
+    import {getScheduleInfo, getAllPost} from '@/api/api';
+    import {getStations} from '@/api/commonAPI';
     export default {
         data: function() {
             return {
+                districtId: this.$store.get('districtId'),
                 weekdata: [],
                 monthdate: [],
-                beginValue:BeforeDate,
+                startDateStr: BeforeDate,
                 beginTime:'',
                 endTime:'',
-                endValue:afterWeekDate,
+                endDateStr: afterWeekDate,
                 showTable:true,
                 showTabItem: true,
                 currentTd:'',
@@ -475,8 +478,9 @@
                     }
                 ],
                 timeQuantum: "1",
-                station: "",
-                post: "",
+                station: null,
+                post: null,
+                userName: '',
                 modal:{
                     editVocation:false,
                     shiftChange:false,
@@ -532,18 +536,8 @@
                     station:'',
                     substitutePeople:''
                 },
-                stationList: [
-                    {
-                        value: "1",
-                        label: "西直门"
-                    }
-                ],
-                postList: [
-                    {
-                        value: "1",
-                        label: "替班员"
-                    }
-                ],
+                stationList: [],
+                postList: [],
                 substitutePerson:   {
                     userName: '申毅',
                     postName: '站务员',
@@ -570,8 +564,57 @@
             this.weekdata = weekdata;
             this.monthdata = monthdata;
             this.clickHide();
+            this.getStations();
+            this.getAllPost();
         },
         methods: {
+            //  获取站点
+            getStations: async function () {
+                let response = await getStations(this.districtId);
+                if(response.meta.code === 0){
+                    this.stationList = response.data;
+                    return;
+                }
+                this.$Message.error(response.meta.message);
+            },
+            //  获取岗位
+            getAllPost: async function () {
+                let response = await getAllPost(this.districtId);
+                if(response.meta.code === 0){
+                    this.postList = response.data;
+                    return;
+                }
+                this.$Message.error(response.meta.message);
+            },
+            //  获取排班计划
+            getScheduleInfo: async function () {
+                let startDateStr = this.startDateStr;
+                let endDateStr = this.endDateStr;
+                if(startDateStr === '' || endDateStr === ''){
+                    this.$Message.warning('开始日期和结束日期不能为空');
+                    return;
+                }
+                let data = {
+                    startDateStr: startDateStr,
+                    endDateStr: endDateStr
+                };
+                if(this.station){
+                    data.stationId = this.station;
+                }
+                if(this.post){
+                    data.positionId = this.post;
+                }
+                if(this.userName){
+                    data.userName = this.userName;
+                }
+                let response = await getScheduleInfo(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    return;
+                } 
+                this.$Message.error(message);
+            },
             clickHide:function(){
                 $(document).click(function(e){
                     $(".vocationDiv").hide();
