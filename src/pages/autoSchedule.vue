@@ -161,13 +161,6 @@
                 }
                 this.$Message.error(response.meta.message);
             },
-            //  生成模版
-            createTemplate: async function (id) {
-                // let response = await createTemplate(id);
-                // if(response.meta.code === 0){
-                //     this.template(response.data.scheduleUserlist);
-                // }
-            },
             // 查询排班计划
             getScheduleInfo: async function (id) {
                 let response = await getScheduleInfo(id);
@@ -545,19 +538,16 @@
                 let day = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
                 let dateStr = date.getFullYear() + '' + month  + '' + day;
                 let suiteId = this.currentSuiteId;
-                // let data = {
-                //     suiteId: this.currentSuiteId,
-                //     dateStr: dateStr
-                // }
+
                 let response = await saveSchedule(suiteId, dateStr);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    this.selectDateModal = false;
-                    return;
+                } else {
+                    this.$Message.error(message);
                 }
-                this.$Message.error(message);
-
+                this.selectDateModal = false;
+                this.startDate = '';
             }
         }
     }

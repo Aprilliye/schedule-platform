@@ -2,11 +2,11 @@
     <div class="container">
         <div class="content-header">
             <span>选择班制：</span>
-            <Select v-model="suiteId" style="width:200px" @on-change="manualTemplate(suiteId)">
+            <Select v-model="suiteId" style="width:200px" @on-change="loadTemplate(suiteId)">
                 <Option v-for="item in suites" :value="item.id" :key="item.shiftId">{{ item.dutyName }}</Option>
             </Select>
             <!-- <button type="button" class="btnDefault bgBlue">创建排班</button> -->
-            <button type="button" class="btnDefault bgGreen">保存排班</button>
+            <button type="button" class="btnDefault bgGreen" @click="selectDateModal = true">保存排班</button>
         </div>
         <div class="schedule postformtable">
             <table class="scheduleForm" >
@@ -34,8 +34,9 @@
             title="选择班次" 
             width="600"
             @on-ok="setTemplateClass"
+            @on-cancel="cancel"
             :loading="true">
-            <button type="button" class="btnDefault bgBlue" @click="handleCancel">重置</button>
+            <button type="button" class="btnDefault bgBlue" @click="deleteTemplateClass">重置</button>
             <div class="userList shiftsList">
                 <span v-for="item in dutyclass" :key="item.id" @click="clickClassTd(item)" :code="item.id" :style="'background-color:'+item.classColor">{{item.dutyName}}</span>
             </div>
@@ -46,47 +47,54 @@
             title="选择站务员" 
             width="600"
             @on-ok="setSheduleUser"
+            @on-cancel="cancel"
             :loading="true">
             <button type="button" class="btnDefault bgBlue" @click="resetSheduleUser">重置</button>
             <div class="userList">
                 <span v-for="item in userList" :key="item.id" @click="clickUser(item)" :code="item.id">{{item.userName}}</span>
             </div>
         </Modal>
+        <!-- 保存排班-选择开始日期 -->
+        <Modal v-model="selectDateModal"
+            id="selectDate"
+            title="选择开始日期" 
+            width="500"
+            @on-ok="saveSchedule"
+            @on-cancel="cancel"
+            :loading="true">
+            <Form :label-width="110">
+                <FormItem label="选择开始日期">
+                    <DatePicker type="date" style="width:320px;" placeholder="请选择时间"  v-model.trim="startDate"></DatePicker>
+                </FormItem>
+            </Form>
+        </Modal>
     </div>
 </template>
 <script>
 import {result} from '@/assets/data/data.js';
-import {getSuites, manualTemplate, loadTemplate, setSheduleUser, resetSheduleUser, setTemplateClass} from '@/api/api';
+import {getSuites, loadTemplate, setSheduleUser, resetSheduleUser, setTemplateClass, deleteTemplateClass, saveSchedule} from '@/api/api';
 export default {
     data: function () {
         return {
             districtId: this.$store.get('districtId'),
             classModal: false,
             showUserModal: false,
+            selectDateModal: false,
             suites: [],
             userList: [],
             suiteId: null,
-            shiftsMap: new Map(),
             dutyclass: [],
-            modalShiftsMap: new Map(),
-            currentShift: null,
             temporary: {},
             currentUser: null,
             temporaryUser: null,
             weekNum: null,
             dayNum: null,
+            id: null,
+            startDate: '',
         }
     },
     created: function () {
         this.getSuites();
-        //this.loadTemplate();
-        for(let obj of this.suites){
-            this.shiftsMap.set(obj.shiftId, obj.users);
-        }
-        for(let key in result.suites){
-            this.modalShifts.push(result.shifts[key]);
-            this.modalShiftsMap.set(key, result.shifts[key]);
-        }
     },
     methods: {
         //  获取班制
@@ -125,12 +133,13 @@ export default {
             }
             this.$Message.error(response.meta.message);
         },
-        changeShift: function () {
-            this.users = this.shiftsMap.get(this.shift);
-        },
-        //  选择班次取消
+        //  模态框取消事件
         cancel: function () {
-            $('.userList').find('.active').removeClass('active');
+            this.weekNum = null;
+            this.dayNum = null;
+            this.temporaryUser = null;
+            this.temporary = {};
+            this.id = null;
         },
         //  设置人员
         clickUserTd: function (n) {
@@ -148,15 +157,16 @@ export default {
             obj.toggleClass('active').siblings().removeClass('active');
         },
         setSheduleUser: async function () {
-            if(!this.temporaryUser.id){
+            if(!this.temporaryUser){
                 this.$Message.warning('请选择站务员');
                 return;
             }
+            let userId = this.temporaryUser.id;
             let user = this.temporaryUser;
             let data = {
                 suiteId: this.suiteId,
                 weekNum: this.weekNum,
-                userId: user.id
+                userId: userId
             }
             let response = await setSheduleUser(data);
             let message = response.meta.message;
@@ -169,7 +179,7 @@ export default {
             }
             this.temporaryUser = null;
             this.weekNum = null;
-            this.dayNum = null;
+            this.userId = null;
             this.showUserModal = false;
         },
         //  重置站务员
@@ -194,7 +204,7 @@ export default {
             }
             this.showUserModal = false;
         },
-        // 点击单元格选择班次
+        //  点击单元格选择班次
         beforeSelectClass: function (e) {
             $('.currentTd').removeClass('currentTd');
             let obj = $(e.target);
@@ -202,6 +212,7 @@ export default {
             this.weekNum = parseInt(obj.attr('weeknum'));
             this.dayNum = parseInt(obj.attr('daynum'));
             this.classModal = true;
+            this.id = parseInt(obj.attr('id'));
         },
         //  点击模态框班次
         clickClassTd: function (item) {
@@ -233,23 +244,44 @@ export default {
             this.classModal = false;      
         },
         //  保存排班
-        manualTemplate: async function (id) {
-            // let response = await manualTemplate(94);
-            // let message = response.meta.message;
-            // if(response.meta.code === 0){
-            //     this.$Message.success(message);
-            //     this.users = response.data;
-            //     return;
-            // }
-            // this.$Message.error(message);
+        saveSchedule: async function () {
+            let date = this.startDate;
+            if(!date){
+                this.$Message.warning('请选择开始日期');
+                return;
+            }
+            let month = (date.getMonth()+1) < 10 ? ('0' + (date.getMonth()+1)) : (date.getMonth()+1);
+            let day = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
+            let dateStr = date.getFullYear() + '' + month  + '' + day;
+            let suiteId = this.suiteId;
+
+            let response = await saveSchedule(suiteId, dateStr);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                this.$Message.success(message);
+            } else {
+                this.$Message.error(message);
+            }
+            this.selectDateModal = false;
+            this.startDate = '';
         },
         //  重置班次
-        handleCancel: function () {
-            $('.currentTd').html('').removeAttr('code').removeAttr('style').removeAttr('hours'); 
-            this.shiftsModal = false;
-            this.countHours();
+        deleteTemplateClass: async function () {
+            let id = this.id;
+            if(id){
+                let response = await deleteTemplateClass(id);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.loadTemplate(this.suiteId);
+                    this.countHours();
+                } else {
+                    this.$Message.error(message);
+                }
+            }
+            this.id = null;
+            this.classModal = false;
         },
-        
         //  统计工时
         countHours: function () {
             $('.totalHours').each(function () {
@@ -267,8 +299,10 @@ export default {
         },
         //  渲染表格数据
         initTable: function (data) {
+            $('td[id]').html('').removeAttr('id').removeAttr('style').removeAttr('hours').removeAttr('class');
+            $('.shiftsList span').removeClass();
             for(let obj of data){
-                $('[weeknum="'+ obj.weekNum +'"][daynum="'+ obj.dayNum +'"]').html(obj.dutyName).css('background-color', obj.cellColor).attr('hours', obj.workingLength/60);
+                $('[weeknum="'+ obj.weekNum +'"][daynum="'+ obj.dayNum +'"]').html(obj.dutyName).css('background-color', obj.cellColor).attr('hours', obj.workingLength/60).attr('id', obj.id);
             }
             this.countHours();
         }
