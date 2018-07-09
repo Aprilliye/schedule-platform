@@ -11,11 +11,11 @@
                     <button type="button" class="btnDefault bgBlue" @click="createTemplate">生成模板</button>
                     <!-- <button class="btnDefault bgGreen" v-show="showSaveBtn">保存排班</button> -->
                     <p class="result" v-show="showResult">
-                        <span>日平均<b>{{result.dayAverage}}</b>小时，</span>
-                        <span>周平均<b>{{result.weekAverage}}</b>小时，</span>
-                        <span>30日平均<b>{{result.monthAverage}}</b>小时，</span>
-                        <span>365日平均<b>{{result.yearAverage}}</b>小时，</span>
-                        <span>最少人数<b>{{result.minPeople}}</b>人</span>
+                        <span>日平均<b>{{result.dayAverage || 0}}</b>小时，</span>
+                        <span>周平均<b>{{result.weekAverage || 0}}</b>小时，</span>
+                        <span>30日平均<b>{{result.monthAverage || 0}}</b>小时，</span>
+                        <span>365日平均<b>{{result.yearAverage || 0}}</b>小时，</span>
+                        <span>最少人数<b>{{result.minPeople || 0}}</b>人</span>
                     </p>
                 </div>
             </div>
@@ -181,7 +181,7 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     let data = response.data;
-                    this.weeks = response.data.weeks + 1;
+                    this.weeks = response.data.weeks;
                     this.dutyClass = data.dutyclass;
                     this.userList = [];
                     this.scheduleUsers = [];
