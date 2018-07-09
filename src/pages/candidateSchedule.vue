@@ -140,6 +140,8 @@ export default {
             this.temporaryUser = null;
             this.temporary = {};
             this.id = null;
+            $('.td-active').removeClass('td-active');
+            $('span.active').removeClass('active');
         },
         //  设置人员
         clickUserTd: function (n) {
@@ -171,7 +173,6 @@ export default {
             let response = await setSheduleUser(data);
             let message = response.meta.message;
             if(response.meta.code === 0){
-                $('.userName.td-active').removeClass('td-active');
                 this.$Message.success(message);
                 this.loadTemplate(this.suiteId);
             } else {
@@ -181,6 +182,7 @@ export default {
             this.weekNum = null;
             this.userId = null;
             this.showUserModal = false;
+            $('.td-active').removeClass('td-active');
         },
         //  重置站务员
         resetSheduleUser: async function () {
@@ -206,9 +208,9 @@ export default {
         },
         //  点击单元格选择班次
         beforeSelectClass: function (e) {
-            $('.currentTd').removeClass('currentTd');
+            $('.td-active').removeClass('td-active');
             let obj = $(e.target);
-            obj.addClass('currentTd');
+            obj.addClass('td-active');
             this.weekNum = parseInt(obj.attr('weeknum'));
             this.dayNum = parseInt(obj.attr('daynum'));
             this.classModal = true;
@@ -241,7 +243,8 @@ export default {
             }
             this.weekNum = null;
             this.dayNum = null;
-            this.classModal = false;      
+            this.classModal = false; 
+            $('.td-active').removeClass('td-active');     
         },
         //  保存排班
         saveSchedule: async function () {
