@@ -63,7 +63,7 @@ export default {
     },
     created: function () {
         this.getSuites();
-        this.loadTemplate();
+        //this.loadTemplate();
         for(let obj of this.suites){
             this.shiftsMap.set(obj.shiftId, obj.users);
         }
@@ -76,20 +76,21 @@ export default {
         //  获取班制
         getSuites: async function () {
             let data = {
-                districtId: this.districtId
+                districtId: this.districtId,
+                backup: 1
             };
-            // let response = await getSuites(data);
-            // if(response.meta.code === 0){
-            //     this.suites = response.data;
-            //     this.suiteId = response.data[0].id;
-            //     //this.currentPositionId = response.data[0].positionId;
-            //     return;
-            // }
-            // this.$Message.error(response.meta.message);
+            let response = await getSuites(data);
+            if(response.meta.code === 0){
+                this.suites = response.data;
+                this.suiteId = response.data[0].id;
+                this.loadTemplate(this.suiteId);
+                return;
+            }
+            this.$Message.error(response.meta.message);
         },
         //  加载排班模版
         loadTemplate: async function () {
-            let response = await loadTemplate(94);
+            let response = await loadTemplate(this.suiteId);
             console.log(response);
         },
         changeShift: function () {
@@ -117,14 +118,14 @@ export default {
         },
         //  保存排班
         manualTemplate: async function (id) {
-            let response = await manualTemplate(94);
-            let message = response.meta.message;
-            if(response.meta.code === 0){
-                this.$Message.success(message);
-                this.users = response.data;
-                return;
-            }
-            this.$Message.error(message);
+            // let response = await manualTemplate(94);
+            // let message = response.meta.message;
+            // if(response.meta.code === 0){
+            //     this.$Message.success(message);
+            //     this.users = response.data;
+            //     return;
+            // }
+            // this.$Message.error(message);
         },
         
         //  取消已选班次

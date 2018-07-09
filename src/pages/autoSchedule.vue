@@ -180,7 +180,6 @@
                 let response = await loadTemplate(id);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
-                    this.$Message.success('加载成功');
                     let data = response.data;
                     this.weeks = response.data.weeks + 1;
                     this.dutyClass = data.dutyclass;
@@ -306,18 +305,19 @@
                 let response = await setSheduleUser(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
-                    let users = response.data;
-                    $('.userName').html('').removeAttr('userid');
-                    $('.userList span').removeClass('selected');
-                    for(let i=0;i<users.length;i++){
-                        let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
-                        obj.html(users[i].userName).attr('userid', users[i].userId);
-                        $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
-                    }
+                    // let users = response.data;
+                    // $('.userName').html('').removeAttr('userid');
+                    // $('.userList span').removeClass('selected');
+                    // for(let i=0;i<users.length;i++){
+                    //     let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
+                    //     obj.html(users[i].userName).attr('userid', users[i].userId);
+                    //     $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
+                    // }
                     $('.userName.td-active').removeClass('td-active');
                     this.$Message.success(message);
                     this.temporaryUser = null;
                     this.weekNum = null;
+                    this.loadTemplate(this.currentSuiteId);
                 } else {
                     this.$Message.error(message);
                 }
@@ -338,15 +338,16 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    let users = response.data.scheduleUsers;
-                    $('.userName').html('').removeAttr('userid');
-                    $('.userList span').removeClass('selected');
-                    for(let i=0;i<users.length;i++){
-                        let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
-                        obj.html(users[i].userName).attr('userid', users[i].userId);
-                        $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
-                    }
+                    // let users = response.data.scheduleUsers;
+                    // $('.userName').html('').removeAttr('userid');
+                    // $('.userList span').removeClass('selected');
+                    // for(let i=0;i<users.length;i++){
+                    //     let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
+                    //     obj.html(users[i].userName).attr('userid', users[i].userId);
+                    //     $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
+                    // }
                     $('.userName.td-active').removeClass('td-active');
+                    this.loadTemplate(this.currentSuiteId);
                 } else {
                     this.$Message.error(message);
                 }
@@ -552,6 +553,7 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
+                    this.selectDateModal = false;
                     return;
                 }
                 this.$Message.error(message);
