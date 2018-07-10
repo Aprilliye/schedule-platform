@@ -8,6 +8,7 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import $ from 'jquery';
 import store from 'storejs';
+import conversion from '@/utils/conversion';
 
 Vue.config.productionTip = false
 Vue.use(VueRouter);
@@ -15,6 +16,7 @@ Vue.use(VueRouter);
 Vue.use(iView);
 
 Vue.prototype.$store = store;
+Vue.prototype.$conversion = conversion;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

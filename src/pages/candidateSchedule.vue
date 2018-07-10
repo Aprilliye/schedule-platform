@@ -123,6 +123,7 @@ export default {
                     this.initTable(data.templatelist);
                     let users = data.scheduleUsers;
                     $('.userName').html('').removeAttr('userid');
+                    $('.userList span').removeAttr('class');
                     for(let i=0;i<users.length;i++){
                         let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
                         obj.html(users[i].userName).attr('userid', users[i].userId);
@@ -255,7 +256,7 @@ export default {
             }
             let month = (date.getMonth()+1) < 10 ? ('0' + (date.getMonth()+1)) : (date.getMonth()+1);
             let day = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
-            let dateStr = date.getFullYear() + '' + month  + '' + day;
+            let dateStr = date.getFullYear() + '-' + month  + '-' + day;
             let suiteId = this.suiteId;
 
             let response = await saveSchedule(suiteId, dateStr);

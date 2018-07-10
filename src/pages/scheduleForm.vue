@@ -10,8 +10,8 @@
                         <Select v-model="timeQuantum" style="width:200px">
                             <Option v-for="item in timeQuantumList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
-                        <DatePicker :value="startDateStr" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker> 至
-                        <DatePicker :value="endDateStr" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker>
+                        <DatePicker v-model="startDateStr" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker> 至
+                        <DatePicker v-model="endDateStr" type="date" placeholder="请选择时间" style="width: 200px"></DatePicker>
                     </div>
                     <div class="tabItem" v-show="!showTabItem">
                         <span>时间段：</span>
@@ -52,37 +52,23 @@
                         <tr>
                             <th rowspan="2">姓名</th>
                             <th rowspan="2">岗位</th>
-                            <th>6.1</th>
-                            <th>6.2</th>
-                            <th>6.3</th>
-                            <th>6.4</th>
-                            <th>6.5</th>
-                            <th>6.6</th>
-                            <th>6.7</th>
-                            <th colspan="3">总计：7天</th>
+                            <th v-for="n in timeQuantum" :key="'th-'+ n"></th>
+                            <th colspan="3">总计：{{timeQuantum}}天</th>
                         </tr>
                         <tr>
-                            <th>二</th>
-                            <th>三</th>
-                            <th>四</th>
-                            <th>五</th>
-                            <th>六</th>
-                            <th>日</th>
-                            <th>一</th>
+                            <th v-for="n in timeQuantum" :key="'th-'+ n"></th>
                             <th>计划工时</th>
                             <th>实际工时</th>
                             <th>结余</th>
                         </tr>
-                        <tr v-for="item in weekdata" :key="item.userId" :id="item.userId">
+                        <tr v-for="item in weekdata" :key="item.id" :id="item.id">
                             <td class="scheduleName" @mouseenter="showNameMessage" @mouseleave="hideNameMessage">{{item.userName}}</td>
-                            <td>{{item.postName}}</td>
+                            <td>{{item.positionName}}</td>
                             <!--周表点击事件-->
-                            <td v-for="(list, index) in item.schedule" :key="'aa'+index" :id="list.id" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage":style="{'background-color':list.color}">
-                                {{list.name}}
-                            </td>
-                            <td>{{item.planWorkHour}}</td>
-                            <td>{{item.actualWorkHour}}</td>
-                            <td>{{item.balance}}</td>
+                            <td v-for="n in timeQuantum" :key="'aa'+ n" @click="clickTd" @mouseenter="showMessage" @mouseleave="hideMessage"></td>
+                            <td class="planWorkHour">0</td>
+                            <td class="actualWorkHour">0</td>
+                            <td class="balance">0</td>
                         </tr>
                     </table>
                 </div>
@@ -438,7 +424,7 @@
     </div>
 </template>
 <script>
-    import {monthdata, weekdata} from '@/assets/data/scheduleAreaForm';
+    // import {monthdata, weekdata} from '@/assets/data/scheduleAreaForm';
     import {getScheduleInfo, getAllPost} from '@/api/api';
     import {getStations} from '@/api/commonAPI';
     export default {
@@ -446,11 +432,13 @@
             return {
                 districtId: this.$store.get('districtId'),
                 weekdata: [],
-                monthdate: [],
-                startDateStr: BeforeDate,
+                monthdata: [],
+                // startDateStr: BeforeDate,
+                // endDateStr: afterWeekDate,
+                startDateStr: null,
+                endDateStr: null,
                 beginTime:'',
                 endTime:'',
-                endDateStr: afterWeekDate,
                 showTable:true,
                 showTabItem: true,
                 currentTd:'',
@@ -469,15 +457,15 @@
                 },
                 timeQuantumList: [
                     {
-                        value: "1",
+                        value: 7,
                         label: "一周"
                     },
                     {
-                        value: "2",
+                        value: 14,
                         label: "两周"
                     }
                 ],
-                timeQuantum: "1",
+                timeQuantum: 7,
                 station: null,
                 post: null,
                 userName: '',
@@ -556,13 +544,13 @@
                     planWorkHour:'5',
                     balance:'0',
                     actualWorkHour:'5'
-
                 },
+                postMap: new Map(),
             };
         },
         created: function () {
-            this.weekdata = weekdata;
-            this.monthdata = monthdata;
+            //this.weekdata = weekdata;
+            //this.monthdata = monthdata;
             this.clickHide();
             this.getStations();
             this.getAllPost();
@@ -582,18 +570,22 @@
                 let response = await getAllPost(this.districtId);
                 if(response.meta.code === 0){
                     this.postList = response.data;
+                    this.postMap.clear();
+                    for(let obj of response.data){
+                        this.postMap.set(obj.id, obj.positionName);
+                    }
                     return;
                 }
                 this.$Message.error(response.meta.message);
             },
             //  获取排班计划
             getScheduleInfo: async function () {
-                let startDateStr = this.startDateStr;
-                let endDateStr = this.endDateStr;
-                if(startDateStr === '' || endDateStr === ''){
+                if(!this.startDateStr || !this.endDateStr){
                     this.$Message.warning('开始日期和结束日期不能为空');
                     return;
                 }
+                let startDateStr = this.$conversion(this.startDateStr);
+                let endDateStr = this.$conversion(this.endDateStr);
                 let data = {
                     startDateStr: startDateStr,
                     endDateStr: endDateStr
@@ -610,6 +602,10 @@
                 let response = await getScheduleInfo(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
+                    this.weekdata = response.data;
+                    // for(let obj of response.data){
+                    //     console.log(obj.dateStr, obj.userName, obj.dutyName);
+                    // }
                     this.$Message.success(message);
                     return;
                 } 
@@ -1080,43 +1076,43 @@
         }
     };
     //获取当前时间
-    var myDate = new Date();
-    function get(){
-        var BeforeDate;
-        var year = myDate.getFullYear();
-        var month = myDate.getMonth()+1;
-        var date = myDate.getDate();
-        if(month<10){
-            if(date<10){
-                BeforeDate=year+'-0'+month+'-0'+date;
-            }else{
-                BeforeDate=year+'-0'+month+'-'+date;
-            }
-        }else{
-            BeforeDate=year+'-'+month+'-'+date;
-        }
-        return BeforeDate;
-    };
-    //获取一周后时间
-    function getAfterWeek(){
-        var newDate;
-        var AfterDate = new Date(myDate.getTime()+7*24*60*60*1000);
-        var year = AfterDate.getFullYear();
-        var month = AfterDate.getMonth()+1;
-        var date = AfterDate.getDate();
-        if(month<10){
-            if(date<10){
-                newDate=year+'-0'+month+'-0'+date;
-            }else{
-                newDate=year+'-0'+month+'-'+date;
-            }
-        }else{
-            newDate=year+'-'+month+'-'+date;
-        }
-        return newDate;
-    };
-    var BeforeDate=get();
-    var afterWeekDate=getAfterWeek();
+    // var myDate = new Date();
+    // function get(){
+    //     var BeforeDate;
+    //     var year = myDate.getFullYear();
+    //     var month = myDate.getMonth()+1;
+    //     var date = myDate.getDate();
+    //     if(month<10){
+    //         if(date<10){
+    //             BeforeDate=year+'-0'+month+'-0'+date;
+    //         }else{
+    //             BeforeDate=year+'-0'+month+'-'+date;
+    //         }
+    //     }else{
+    //         BeforeDate=year+'-'+month+'-'+date;
+    //     }
+    //     return BeforeDate;
+    // };
+    // //获取一周后时间
+    // function getAfterWeek(){
+    //     var newDate;
+    //     var AfterDate = new Date(myDate.getTime()+7*24*60*60*1000);
+    //     var year = AfterDate.getFullYear();
+    //     var month = AfterDate.getMonth()+1;
+    //     var date = AfterDate.getDate();
+    //     if(month<10){
+    //         if(date<10){
+    //             newDate=year+'-0'+month+'-0'+date;
+    //         }else{
+    //             newDate=year+'-0'+month+'-'+date;
+    //         }
+    //     }else{
+    //         newDate=year+'-'+month+'-'+date;
+    //     }
+    //     return newDate;
+    // };
+    // var BeforeDate=get();
+    // var afterWeekDate=getAfterWeek();
 </script>
 <style scoped>
     @import "../assets/css/index.css";
