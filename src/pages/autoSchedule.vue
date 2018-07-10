@@ -511,9 +511,8 @@
                 }
                 let month = (date.getMonth()+1) < 10 ? ('0' + (date.getMonth()+1)) : (date.getMonth()+1);
                 let day = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
-                let dateStr = date.getFullYear() + '' + month  + '' + day;
+                let dateStr = date.getFullYear() + '-' + month  + '-' + day;
                 let suiteId = this.suiteId;
-
                 let response = await saveSchedule(suiteId, dateStr);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
