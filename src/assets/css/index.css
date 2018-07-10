@@ -273,11 +273,10 @@
     text-align: center;
 }
 .peopleMessage{
-    width: 250px;
+    width: 362px;
     height: auto;
     border: 1px solid #e5e5e5;
     background-color: lightgoldenrodyellow;
-    display: none;
     position: fixed;
     top:0px;
     left:0px;
@@ -285,10 +284,16 @@
 .peopleMessage span{
   float: left;
   width: 120px;
+  line-height: 30px;
+  padding: 0 5px;
   height: auto;
   display: block;
   border-top: 1px solid #e5e5e5;
 }
+.peopleMessage span:nth-of-type(2n){
+    width: 240px;
+    border-left: 1px solid #e5e5e5;
+  }
 .tdMessage{
     width: 250px;
     height: auto;
