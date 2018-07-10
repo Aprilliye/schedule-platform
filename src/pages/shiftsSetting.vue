@@ -760,7 +760,9 @@ export default {
         getClass: async function (that) {
             if ( that.suiteId){
                 let suiteId = that.suiteId;
+                console.log(suiteId);
                 let response = await getClass(suiteId);
+                console.log(response);
                 if (response.meta.code !== 0) {
                     that.$Loading.error();
                     that.$Message.error(response.meta.message);
@@ -934,7 +936,9 @@ export default {
             //     endTimeStr: that.addFormValidateClass.timeSlotEnd,
             //     workingLength: total,
             // }
+            console.log(that.addFormValidateClass.dutyName);
              let data = that.cloneObj(that.addFormValidateClass);
+             console.log("1111");
              data.suiteId = that.suiteId;
              data.classColor = $(".shiftColor").css('background-color');
              console.log(data);
