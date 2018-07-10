@@ -8,84 +8,83 @@
         </div>
         <Tabs type="card" :animated="false" v-model="tabModel"  @on-click="choseTab">
             <TabPane :label="item.dutyName"  v-for="(item,index) in suites" :key="index" :id="item.id">
-                <div class="panel-body">
-                    <div class="buttonblock"></div>
-                    <div class="shifts-content">
-                        <!--班制表-->
-                        <div class="shiftform">
-                            <div class="title">
-                                <b>班制表</b>
-                                <div class="btn-group">
-                                    <a class="btnDefault bgGreen" href="javascript:;" @click="beforeUpdateSuite">编辑班制</a>
-                                    <a class="btnDefault bgRed" href="javascript:;" @click="handleClose(item.id)" style="margin-left:8px;">删除班制</a>
-                                </div>
-                            </div>
-                            <ul class="info">
-                                <li>
-                                    <label>班制名称：</label>
-                                    <span>{{info.dutyName}}</span>
-                                </li>
-                                <li>
-                                    <label>站区：</label>
-                                    <span>{{info.districtName}}</span>
-                                </li>
-                                <li>
-                                    <label>站点：</label>
-                                    <span>{{info.stationName}}</span>
-                                </li>
-                                <li>
-                                    <label>周工时下限：</label>
-                                    <span>{{info.minWorkingHour}}</span>
-                                </li>
-                                <li>
-                                    <label>周工时上限：</label>
-                                    <span>{{info.maxWorkingHour}}</span>
-                                </li>
-                                <li>
-                                    <label>每周最少休班：</label>
-                                    <span>{{info.minWeeklyRestDays}}</span>
-                                </li>
-                                <li>
-                                    <label>每周最多休班：</label>
-                                    <span>{{info.maxWeeklyRestDays}}</span>
-                                </li>
-                                <li>
-                                    <label>月工时上限：</label>
-                                    <span>{{info.monthlyWorkingHourLimit}}</span>
-                                </li>
-                                <li>
-                                    <label>年工时上限：</label>
-                                    <span>{{info.yearlyWorkingHourLimit}}</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <!--24小时值班人数表-->
-                        <div class="twentyfourform">
-                            <div id="echart" v-show="showEchart"></div>
-                            <div class="title">
-                                <b>24小时值班人数表</b>
-                                <div class="btn-group">
-                                    <a class="btnDefault bgGreen" @click="modal.addTimeSlot=true">新增时间段</a>
-                                    <a class="btnDefault bgBlue" style="margin-left:10px;" @click="initEchart">方案验算</a>
-                                </div>
-                            </div>
-                            <Table :columns="onDutyColumns" :data="onDutyData"></Table>
-                        </div>
-                        <!--班次表-->
-                        <div class="banciform">
-                            <div class="title">
-                                <b>班次表</b>
-                                <div class="btn-group">
-                                    <a class="btnDefault bgGreen" @click="modal.addClass=true">新增班次</a>
-                                </div>
-                            </div>
-                            <Table :columns="shiftColumns" :data="dutyData" class="shiftTableColor"></Table>
+            </TabPane>
+        </Tabs>
+        <div class="panel-body">
+            <div class="buttonblock"></div>
+            <div class="shifts-content">
+                <!--班制表-->
+                <div class="shiftform">
+                    <div class="title">
+                        <b>班制表</b>
+                        <div class="btn-group">
+                            <a class="btnDefault bgGreen" href="javascript:;" @click="beforeUpdateSuite">编辑班制</a>
+                            <a class="btnDefault bgRed" href="javascript:;" @click="handleClose()" style="margin-left:8px;">删除班制</a>
                         </div>
                     </div>
+                    <ul class="info">
+                        <li>
+                            <label>班制名称：</label>
+                            <span>{{info.dutyName}}</span>
+                        </li>
+                        <li>
+                            <label>站区：</label>
+                            <span>{{info.districtName}}</span>
+                        </li>
+                        <li>
+                            <label>站点：</label>
+                            <span>{{info.stationName}}</span>
+                        </li>
+                        <li>
+                            <label>周工时下限：</label>
+                            <span>{{info.minWorkingHour}}</span>
+                        </li>
+                        <li>
+                            <label>周工时上限：</label>
+                            <span>{{info.maxWorkingHour}}</span>
+                        </li>
+                        <li>
+                            <label>每周最少休班：</label>
+                            <span>{{info.minWeeklyRestDays}}</span>
+                        </li>
+                        <li>
+                            <label>每周最多休班：</label>
+                            <span>{{info.maxWeeklyRestDays}}</span>
+                        </li>
+                        <li>
+                            <label>月工时上限：</label>
+                            <span>{{info.monthlyWorkingHourLimit}}</span>
+                        </li>
+                        <li>
+                            <label>年工时上限：</label>
+                            <span>{{info.yearlyWorkingHourLimit}}</span>
+                        </li>
+                    </ul>
                 </div>
-            </TabPane>
-            
-        </Tabs>
+                <!--24小时值班人数表-->
+                <div class="twentyfourform">
+                    <div id="echart" v-show="showEchart"></div>
+                    <div class="title">
+                        <b>24小时值班人数表</b>
+                        <div class="btn-group">
+                            <a class="btnDefault bgGreen" @click="modal.addTimeSlot=true">新增时间段</a>
+                            <a class="btnDefault bgBlue" style="margin-left:10px;" @click="initEchart">方案验算</a>
+                        </div>
+                    </div>
+                    <Table :columns="onDutyColumns" :data="onDutyData"></Table>
+                </div>
+                <!--班次表-->
+                <div class="banciform">
+                    <div class="title">
+                        <b>班次表</b>
+                        <div class="btn-group">
+                            <a class="btnDefault bgGreen" @click="modal.addClass=true">新增班次</a>
+                        </div>
+                    </div>
+                    <Table :columns="shiftColumns" :data="dutyData" class="shiftTableColor"></Table>
+                </div>
+            </div>
+        </div>
         <!-- 新增班次表 -->
         <Modal title="新增班次"
             v-model="modal.addClass"
@@ -103,6 +102,7 @@
                 <FormItem label="班次颜色" prop="classColor">
                     <Poptip trigger="click" content="content">
                         <div class="shiftColor"></div>
+                        <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.shiftColorConfirn">班次颜色不能为空</div>
                         <div class="shiftColorBox" slot="content">
                             <a style="background-color:rgb(110, 121, 190) " value="rgb(110, 121, 190)" @click="getBackColor"></a>
                             <a style="background-color:rgb(227, 82, 140) " value="rgb(227, 82, 140)" @click="getBackColor"></a>
@@ -120,7 +120,6 @@
                     </Poptip>
                 </FormItem>
                 <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot">
-                    <!-- <TimePicker  v-model="addFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addShiftValue'  @on-change="getsectionTime"></TimePicker> -->
                     <TimePicker  v-model="addFormValidateClass.startTimeStr" placeholder="选择开始时间" format="HH:mm" @on-change="getsectionTime"></TimePicker> 至 
                     <TimePicker  v-model="addFormValidateClass.endTimeStr" placeholder="选择结束时间" format="HH:mm" @on-change="getsectionTime"></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.ifTimeSlot">时间段不能为空</div>
@@ -128,8 +127,8 @@
                 <FormItem label="班次间隔" prop="restMinutes">
                     <Input v-model="addFormValidateClass.restMinutes" placeholder=""/>
                 </FormItem>
-                <FormItem label="班次关联">
-                    <Select v-model="relevantDuty">
+                <FormItem label="班次关联" prop="relevantDuty">
+                    <Select v-model="addFormValidateClass.relevantDuty">
                         <Option v-for="item in dutyData" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
                     </Select>
                 </FormItem>
@@ -158,6 +157,7 @@
                 <FormItem label="班次颜色" prop="classColor">
                     <Poptip trigger="click" content="content">
                         <div class="shiftColor"></div>
+                        <div class="ivu-form-item-error-tip" v-if="editFormValidateClass.shiftColorConfirn">班次颜色不能为空</div>
                         <div class="shiftColorBox" slot="content">
                             <a style="background-color:rgb(110, 121, 190) " value="rgb(110, 121, 190)" @click="getBackColor"></a>
                             <a style="background-color:rgb(227, 82, 140) " value="rgb(227, 82, 140)" @click="getBackColor"></a>
@@ -176,21 +176,23 @@
                 </FormItem>
                 <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot" >
                     <!-- <TimePicker  v-model="editFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"  @on-change="getsectionTime" :value='editShiftValue'></TimePicker> -->
-                    <TimePicker  v-model="editFormValidateClass.timeSlotBegin" placeholder="选择开始时间" format="HH:mm" ></TimePicker>至
-                    <TimePicker  v-model="editFormValidateClass.timeSlotEnd" placeholder="选择结束时间" format="HH:mm" ></TimePicker>
+                    <TimePicker  v-model="editFormValidateClass.startTimeStr" placeholder="选择开始时间" format="HH:mm" ></TimePicker>至
+                    <TimePicker  v-model="editFormValidateClass.endTimeStr" placeholder="选择结束时间" format="HH:mm" ></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="editFormValidateClass.ifTimeSlot">时间段不能为空</div>
-                </FormItem>
-                <FormItem label="本班工时" prop="workingLength">
-                    <Input v-model="editFormValidateClass.workingLength" placeholder=""/>
                 </FormItem>
                 <FormItem label="班次间隔" prop="restMinutes">
                     <Input v-model="editFormValidateClass.restMinutes" placeholder=""/>
                 </FormItem>
-                <!-- <FormItem label="班次关联" prop="relevantClassId">
-                    <Input v-model="editFormValidateClass.relevantClassId" placeholder="" readonly/>
-                </FormItem> -->
+                <FormItem label="班次关联" prop="relevantDuty"> 
+                    <Select v-model="editFormValidateClass.relevantDuty">
+                        <Option v-for="item in dutyData" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
+                    </Select>
+                </FormItem>
                 <FormItem label="值班人数" prop="userCount">
                     <Input v-model="editFormValidateClass.userCount" placeholder=""/>
+                </FormItem>
+                <FormItem label="注意事项" prop="comment">
+                    <textarea  v-model="editFormValidateClass.comment" placeholder="" style="width:100%;"></textarea>
                 </FormItem>
             </Form>
         </Modal>
@@ -304,9 +306,10 @@ export default {
     data:function () {
         return {
             dutyData: [],           //  班次
-            relevantDuty: '',       //  关联班次
-            suiteName:null,
+            onDutyData:[],          // 时间段
+            showEchart:false,           //图标显示
             tabModel:null,
+            // 当前站区id
             suiteId:null,
             //  岗位
             position: {
@@ -314,14 +317,14 @@ export default {
                 id: null,
                 current: '2-1-站务员'
             },
-            // 当前站区id
-            dutyDistrictId:null,
-            // 当前站区名
-            dutyDistrictName:'',
-           // 当前站点id
-            dutyStationId:null,
-            // 当前站点名
-            dutyStationName:'',
+        //     // 当前站区id
+        //     dutyDistrictId:null,
+        //     // 当前站区名
+        //     dutyDistrictName:'',
+        //    // 当前站点id
+        //     dutyStationId:null,
+        //     // 当前站点名
+        //     dutyStationName:'',
             districtId: this.$store.get('districtId'),
             stationId: this.$store.get('stationId'),
             // 当前班次id
@@ -331,16 +334,12 @@ export default {
             //  班制
             suites: [],
             //  站区
-            districts: [],
+            //districts: [],
             //  站点
             stations: [],
-            // 当前tab标签name值
-            tabName: 0,
             // 当前关联班次
-            CurrentRelevantClassId:null,
-            modal3:false,
-            currentIndex:'',
-            addShiftValue:[],
+            //CurrentRelevantClassId:null,
+            //modal3:false,
             editTime:[],
             addTime:[],
             modal: {
@@ -390,25 +389,27 @@ export default {
                 dutyName:'',
                 dutyCode:'',
                 comment:'',
+                relevantDuty:null,
                 restMinutes:null,
                 relevantClassId:null,
                 userCount:null,
                 ifTimeSlot:false,
+                shiftColorConfirn:false,
                 startTimeStr:'',
                 endTimeStr:'',
             },
             editFormValidateClass:{
                 dutyName:'',
                 dutyCode:'',
-                totalTime:'',
-                notice:'',
-                workingLength:null,
+                comment:'',
+                relevantDuty:null,
                 restMinutes:null,
                 relevantClassId:null,
                 userCount:null,
                 ifTimeSlot:false,
-                timeSlotBegin:'',
-                timeSlotEnd:'',
+                shiftColorConfirn:false,
+                startTimeStr:'',
+                endTimeStr:'',
             },
             addFormValidate:{
                 dutyName: '',
@@ -425,9 +426,6 @@ export default {
             ruleValidate: {
                 dutyName: [
                     { required: true, message: '班制名称不能为空', trigger: 'blur' }
-                ],
-                stationArea: [
-                    { required: true, message: '站区不能为空', trigger: 'change' }
                 ],
                 station: [
                     { required: true, message: '站点不能为空', trigger: 'change' }
@@ -456,7 +454,7 @@ export default {
                 timeSlot: [
                     { required: true, type: 'array', min: 1, message: '时间段不能为空', trigger: 'blur' },
                 ],
-                shiftpeople: [
+                userCount: [
                     { required: true, message: '值班人数不能为空', trigger: 'blur' }
                 ]
             },
@@ -468,9 +466,6 @@ export default {
                 dutyCode:[
                     { required: true, message: '班制代号不能为空', trigger: 'blur' }
                 ],
-                workingLength: [
-                    { required: true, message: '本班工时不能为空', trigger: 'blur' }
-                ],
                 restMinutes: [
                     { required: true, message: '班次间隔不能为空', trigger: 'blur' }
                 ],
@@ -479,19 +474,6 @@ export default {
                     { required: true, message: '值班人数不能为空', trigger: 'blur' }
                 ]
             },
-            data: [
-                {
-                    name: '西直门替班员',
-                    stion:'西直门',
-                    site:'西直门',
-                    weektime1:'1',
-                    weektime2:'1',
-                    weekdayoff1:'1',
-                    weekdayoff2:'1',
-                    monthtime:'1',
-                    yeartime:'1'
-                }
-            ],
             //  班次表
             shiftColumns: [
                 {
@@ -622,17 +604,11 @@ export default {
                     }
                 }
             ],
-            onDutyData:[],
-            showEchart: false
         }
     },
     mounted: function () {
         //  获取岗位
         this.getAllPost();
-        //  获取班制
-        //this.getSuites();
-        //  获取站区
-       // this.request();
         // 获取站点
         this.getCurrentStations();
     },
@@ -646,7 +622,6 @@ export default {
             for (var key in obj) {
                 var val = obj[key];
                 newObj[key] = typeof val === 'object' ? arguments.callee(val) : val; //arguments.callee 在哪一个函数中运行，它就代表哪个函数, 一般用在匿名函数中。
-                //newObj[key] = typeof val === 'object' ? cloneObj(val): val;
             }
             return newObj;
         },
@@ -664,8 +639,6 @@ export default {
         getChangeSuite: async function () {
             // 方案验算清空
             this.showEchart = false;
-            this.suiteName = 0;
-            this.tabName  = 0;
             this.suites =[];
             let that = this;
             let currentPosition = this.position.current.split('-');
@@ -673,7 +646,6 @@ export default {
                 districtId: this.districtId,
                 stationId: this.stationId,
                 positionId: parseInt(currentPosition[0]),
-                //backup: parseInt(currentPosition[1])
             }
             let response = await getSuites(data);
             let message = response.meta.message;
@@ -681,16 +653,8 @@ export default {
                 this.suites = response.data;
                 if(response.data.length>0){
                     this.suiteId = response.data[0].id;
-                    // this.dutyDistrictId = response.data[0].districtId;
-                    // this.dutyDistrictName = response.data[0].districtName;
-                    // this.dutyStationId = response.data[0].stationId;
-                    // this.dutyStationName = response.data[0].stationName;
                 }else{
                     this.suiteId = null;
-                    // this.dutyDistrictId = null;
-                    // this.dutyDistrictName = null;
-                    // this.dutyStationId = null;
-                    // this.dutyStationName = null;
                 }
                 // 显示班制内容
                 let obj = this.suites[0]; 
@@ -705,8 +669,6 @@ export default {
         //  切换tab
         choseTab: async function (name) {
             this.showEchart = false;
-            this.tabName = name;
-            this.suiteName = name;
             let that = this;
             if (this.suites.length>0){
                 let obj = this.suites[name]; 
@@ -714,24 +676,9 @@ export default {
                 this.info[key] = obj[key];
                 }
                 this.suiteId = this.suites[name].id;
-                this.dutyDistrictId = this.suites[name].districtId;
-                this.dutyDistrictName = this.suites[name].districtName;
-                this.dutyStationId = this.suites[name].stationId;
-                this.dutyStationName = this.suites[name].stationName;
                 this.$options.methods.getClass(that);
             }
         },
-        //  获取站区
-        // request: async function(){
-        //     let response = await stationAreaList();
-        //     if (response.meta.code !== 0) {
-        //         this.$Loading.error();
-        //         this.$Message.error(response.meta.message);
-        //     }else{
-        //         this.$Loading.finish();
-        //         this.districts = response.data;
-        //     }
-        // },
         //  获取站点
         getCurrentStations: async function () {
             let id = this.districtId;
@@ -743,31 +690,16 @@ export default {
             }
             this.$Message.error(message);
         },
-        getEditStation: async function () {
-            if (this.formValidate.stationArea) {
-            let currentDistrict = this.formValidate.stationArea.split('-');
-            let id = parseInt(currentDistrict[0]);
-            let response = await getStations(id);
-            let message = response.meta.message;
-            if(response.meta.code === 0){
-                 this.stations = response.data;
-                return;
-            }
-            this.$Message.error(message);
-            }
-        },
-        //  获取班次
         getClass: async function (that) {
             if ( that.suiteId){
                 let suiteId = that.suiteId;
-                console.log(suiteId);
                 let response = await getClass(suiteId);
-                console.log(response);
                 if (response.meta.code !== 0) {
                     that.$Loading.error();
                     that.$Message.error(response.meta.message);
                 }else{
                     that.dutyData = response.data.dutyclass;
+                    that.onDutyData = response.data.dutyperiodchecking;
                 }
             }
         },
@@ -798,11 +730,7 @@ export default {
             })
         },
         beforeAddTimeSlotMethods: async function (that) {
-            let currentPosition = that.position.current.split('-');
             let data={
-                districtId: that.dutyDistrictId,
-                stationId: that.dutyStationId,
-                positionId: parseInt(currentPosition[0]),
                 suiteId: that.suiteId,
                 startTimeStr: that.addTimeValidate.timeSlot[0],
                 endTimeStr: that.addTimeValidate.timeSlot[1],
@@ -812,7 +740,7 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 that.$Message.success("新增时间段成功");
-                that.onDutyData = response.data.dutyperiodchecking;
+                that.getClass(that);
                 return;
             }else{
                 that.$Message.error(message);
@@ -837,21 +765,17 @@ export default {
                     this.$options.methods.beforeEditTimeSlotMethods(that);
                     this.modal.editTimeSlot = false;
                     this.$refs[name].resetFields();
+                    this.editTimeValidate.timeSlot = [];
+                    this.editTimeValidate.ifTimeSlot = false;
                 } else {
                     this.$Message.error('修改失败');
                 }
-                this.editTimeValidate.timeSlot = [];
-                this.editTimeValidate.ifTimeSlot = false;
+                
             })
         },
         beforeEditTimeSlotMethods: async function (that) {
-            let currentPosition = that.position.current.split('-');
             let data={
                 id: that.currentPeriod,
-                districtId: that.dutyDistrictId,
-                stationId: that.dutyStationId,
-                positionId: parseInt(currentPosition[0]),
-                suiteId: that.suiteId,
                 startTimeStr: that.editTimeValidate.timeSlot[0],
                 endTimeStr: that.editTimeValidate.timeSlot[1],
                 userCount: that.editTimeValidate.userCount,
@@ -860,7 +784,7 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 that.$Message.success("编辑时间段成功");
-                that.onDutyData = response.data.dutyperiodchecking;
+                that.getClass(that);
                 return;
             }else{
                 that.$Message.error(message);
@@ -872,11 +796,10 @@ export default {
             this.currentPeriod = this.onDutyData[index].id;
             arry.push(this.onDutyData[index].startTimeStr);
             arry.push(this.onDutyData[index].endTimeStr);
-            this.currentIndex=index;
             this.modal.editTimeSlot=true;
             this.editTimeValidate.timeSlot=arry;
             this.editTime=this.onDutyData[index].timeSlot;
-            this.editTimeValidate.userCount=this.onDutyData[index].userCount;
+            this.editTimeValidate.userCount=this.onDutyData[index].userCount.toString();
         },
         //  删除时间段
         remove2: async function (index) {
@@ -885,7 +808,7 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.$Message.success("删除时间段成功");
-                this.onDutyData.splice(index, 1);
+                this.getClass(this);
                 return;
             }else{
                 this.$Message.error(message);
@@ -894,6 +817,12 @@ export default {
         //  新增班次验证
         addClassMethods:function(name){
             let that = this;
+            if($(".shiftColor").css('background-color')==='rgba(0, 0, 0, 0)'){
+                this.addFormValidateClass.shiftColorConfirn = true;
+                return false;
+            }else{
+                this.addFormValidateClass.shiftColorConfirn = false;
+            }
             if (this.addFormValidateClass.startTimeStr && this.addFormValidateClass.endTimeStr){
                 this.addFormValidateClass.ifTimeSlot = false;
             }else{
@@ -906,121 +835,35 @@ export default {
                     this.modal.addClass=false
                     this.modal.editShifyClass=false
                     this.$refs[name].resetFields();
-                    $(".shiftColor").css("background-color","white");
+                    $(".shiftColor").css("background-color","rgba(0, 0, 0, 0)");
                 } else {
                     this.$Message.error('修改失败');
                 }
                 this.addFormValidateClass.startTimeStr = '';
                 this.addFormValidateClass.endTimeStr = '';
                 this.addFormValidateClass.ifTimeSlot = false;
+                this.addFormValidateClass.shiftColorConfirn = false;
             })
         },
         beforeAddClassMethods: async function  (that) {
-            console.log("新增班次");
-            // let excBeginTime=parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[1]);
-            // let excEndTime=parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[1]);
-            // let total=0;
-            // if (excEndTime>excBeginTime){
-            //     total=excEndTime-excBeginTime;
-            // }else if (excEndTime<excBeginTime) {
-            //     total=excEndTime-excBeginTime+1440;
-            // }
-            // let data = {
-            //     dutyName: that.addFormValidateClass.dutyName,
-            //     dutyCode: that.addFormValidateClass.dutyCode,
-            //     restMinutes: that.addFormValidateClass.restMinutes*60,
-            //     suiteId: that.suiteId,
-            //     userCount: that.addFormValidateClass.userCount,
-            //     classColor: $(".shiftColor").css('background-color'),
-            //     startTimeStr: that.addFormValidateClass.timeSlotBegin,
-            //     endTimeStr: that.addFormValidateClass.timeSlotEnd,
-            //     workingLength: total,
-            // }
-            console.log(that.addFormValidateClass.dutyName);
-             let data = that.cloneObj(that.addFormValidateClass);
-             console.log("1111");
+            //  let data = that.cloneObj(that.addFormValidateClass);
+             let data = {
+                dutyName:that.addFormValidateClass.dutyName,
+                dutyCode:that.addFormValidateClass.dutyCode,
+                comment:that.addFormValidateClass.comment,
+                restMinutes:that.addFormValidateClass.restMinutes*60,
+                relevantClassId:that.addFormValidateClass.relevantDuty,
+                userCount:that.addFormValidateClass.userCount,
+                startTimeStr:that.addFormValidateClass.startTimeStr,
+                endTimeStr:that.addFormValidateClass.endTimeStr,
+             }
              data.suiteId = that.suiteId;
              data.classColor = $(".shiftColor").css('background-color');
-             console.log(data);
-            //  let dataBegin = {
-            //     dutyName: that.addFormValidateClass.dutyName,
-            //     dutyCode: that.addFormValidateClass.dutyCode,
-            //     districtId: that.dutyDistrictId,
-            //     districtName: that.dutyDistrictName,
-            //     stationId: that.dutyStationId,
-            //     stationName: that.dutyStationName,
-            //     restMinutes: 0,
-            //     relevantClassId: that.CurrentRelevantClassId,
-            //     positionId: parseInt(currentPosition[0]),
-            //     backup: parseInt(currentPosition[1]),
-            //     positionName:currentPosition[2],
-            //     suiteId: that.suiteId,
-            //     userCount: that.addFormValidateClass.userCount,
-            //     classColor: $(".shiftColor").css('background-color'),
-            //     startTimeStr: that.addFormValidateClass.timeSlotBegin,
-            //     endTimeStr: '24:00',
-            //     workingLength: total/2,
-            // }
-            // let dataEnd = {
-            //     dutyName: '下夜班',
-            //     dutyCode: that.addFormValidateClass.dutyCode,
-            //     districtId: that.dutyDistrictId,
-            //     districtName: that.dutyDistrictName,
-            //     stationId: that.dutyStationId,
-            //     stationName: that.dutyStationName,
-            //     restMinutes: that.addFormValidateClass.restMinutes*60,
-            //     positionId: parseInt(currentPosition[0]),
-            //     backup: parseInt(currentPosition[1]),
-            //     positionName:currentPosition[2],
-            //     suiteId: that.suiteId,
-            //     userCount: that.addFormValidateClass.userCount,
-            //     classColor: $(".shiftColor").css('background-color'),
-            //     startTimeStr: '00:00',
-            //     endTimeStr: that.addFormValidateClass.timeSlotEnd,
-            //     workingLength: total/2,
-            // }
-            // let beginTime = that.addFormValidateClass.timeSlotBegin.split(':');
-            // let endTime = that.addFormValidateClass.timeSlotEnd.split(':');
-            // let arrBegin = [];
-            // let arrEnd = [];
-            // arrBegin.push(parseInt(beginTime[0]));
-            // arrBegin.push(parseInt(beginTime[1]));
-            // arrEnd.push(parseInt(endTime[0]));
-            // arrEnd.push(parseInt(endTime[1]));
-            // let response = {};
-            // if (arrBegin[0]==arrEnd[0] && arrBegin[0]>arrEnd[0]){
-            //     let result = await addClass(dataEnd);
-            //      if(result.meta.code === 0){
-            //         dataBegin.relevantClassId = result.data.dutyclass[result.data.dutyclass.length-1].id;
-            //         response = await addClass(dataBegin);
-            //     }else{
-            //         that.$Message.error(message);
-            //     }
-            // }else if (arrBegin[0]==arrEnd[0] && arrBegin[0]==arrEnd[0]){
-            //     let result = await addClass(dataEnd);
-            //     if(result.meta.code === 0){
-            //         dataBegin.relevantClassId = result.data.dutyclass[result.data.dutyclass.length-1].id;
-            //         response = await addClass(dataBegin);
-            //     }else{
-            //         that.$Message.error(message);
-            //     }
-            // }else if (arrBegin[0]>arrEnd[0]){
-            //     let result = await addClass(dataEnd);
-            //      if(result.meta.code === 0){
-            //         dataBegin.relevantClassId = result.data.dutyclass[result.data.dutyclass.length-1].id;
-            //         response = await addClass(dataBegin);
-            //     }else{
-            //         that.$Message.error(message);
-            //     };
-            // }else {
-            //      response = await addClass(data);
-            // }
             let response = await addClass(data);
             let message = response.meta.message;
              if(response.meta.code === 0){
                  that.$Message.success("新增班次成功");
-                 console.log(response);
-                 that.shiftData = response.data.dutyclass;
+                 that.getClass(that);
                 return;
             }else{
                 that.$Message.error(message);
@@ -1028,10 +871,16 @@ export default {
         },
         //  编辑班次验证提交
         editShifyClassMethods:function(name){
-            if (this.addFormValidateClass.timeSlotBegin && this.addFormValidateClass.timeSlotEnd){
-                this.addFormValidateClass.ifTimeSlot = false;
+            if($(".shiftColor").css('background-color')==='rgba(0, 0, 0, 0)'){
+                this.editFormValidateClass.shiftColorConfirn = true;
+                return false;
             }else{
-                this.addFormValidateClass.ifTimeSlot = true;
+                this.editFormValidateClass.shiftColorConfirn = false;
+            }
+            if (this.editFormValidateClass.startTimeStr && this.editFormValidateClass.endTimeStr){
+                this.editFormValidateClass.ifTimeSlot = false;
+            }else{
+                this.editFormValidateClass.ifTimeSlot = true;
                 return false;
             }
             this.$refs[name].validate((valid) => {
@@ -1042,49 +891,33 @@ export default {
                     this.modal.editShifyClass=false
                     this.$refs[name].resetFields();
                     $(".shiftColor").css("background-color","white");
+                    this.editFormValidateClass.startTimeStr = '';
+                    this.editFormValidateClass.endTimeStr = '';
+                    this.editFormValidateClass.ifTimeSlot = false;
+                    this.editFormValidateClass.shiftColorConfirn = false;
                 } else {
                     this.$Message.error('修改失败');
                 }
-                this.editFormValidateClass.timeSlot = [];
-                this.editFormValidateClass.ifTimeSlot = false;
             })
         },
         beforeEditShifyClassMethods: async function (that) {
-            let currentPosition = that.position.current.split('-');
-            let excBeginTime=parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotBegin.split(":")[1]);
-            let excEndTime=parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[0])*60+parseInt(that.addFormValidateClass.timeSlotEnd.split(":")[1]);
-            let total=0;
-            if (excEndTime>excBeginTime){
-                total=excEndTime-excBeginTime;
-            }else if (excEndTime<excBeginTime) {
-                total=excEndTime-excBeginTime+1440;
-            }
-                let data={
-                    id: that.classId,
-                    dutyName: that.editFormValidateClass.dutyName,
-                    dutyCode: that.editFormValidateClass.dutyCode,
-                    districtId: that.dutyDistrictId,
-                    districtName: that.dutyDistrictName,
-                    stationId: that.dutyStationId,
-                    stationName: that.dutyStationName,
-                    restMinutes: that.editFormValidateClass.restMinutes*60,
-                    relevantClassId: that.editFormValidateClass.relevantClassId,
-                    positionId: parseInt(currentPosition[0]),
-                    backup: parseInt(currentPosition[1]),
-                    positionName:currentPosition[2],
-                    suiteId: that.suiteId,
-                    userCount: that.editFormValidateClass.userCount,
-                    classColor: $(".shiftColor").css('background-color'),
-                    startTimeStr: that.editFormValidateClass.timeSlotBegin,
-                    endTimeStr: that.editFormValidateClass.timeSlotEnd,
-                    workingLength: total,
-                    restMinutes: that.editFormValidateClass.restMinutes,
+                let data = {
+                    dutyName:that.editFormValidateClass.dutyName,
+                    dutyCode:that.editFormValidateClass.dutyCode,
+                    comment:that.editFormValidateClass.comment,
+                    restMinutes:that.editFormValidateClass.restMinutes*60,
+                    relevantClassId:that.editFormValidateClass.relevantDuty,
+                    userCount:that.editFormValidateClass.userCount,
+                    startTimeStr:that.editFormValidateClass.startTimeStr,
+                    endTimeStr:that.editFormValidateClass.endTimeStr,
                 }
+                data.id = that.classId;
+                data.classColor = $(".shiftColor").css('background-color');
                 let response = await updateClass(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                 that.$Message.success("编辑班次成功");
-                that.shiftData = response.data.dutyclass;
+                that.getClass(that);
                 return;
                 }else{
                     that.$Message.error(message);
@@ -1092,39 +925,30 @@ export default {
         },
         //  编辑班次
         edite: function(index){
-            this.currentIndex=index;
-            this.classId= this.shiftData[index].id;
+            this.classId= this.dutyData[index].id;
             this.modal.editShifyClass=true;
-            this.editFormValidateClass.dutyName = this.shiftData[index].dutyName;
-            this.editFormValidateClass.dutyCode = this.shiftData[index].dutyCode;
-            //this.editFormValidateClass.workingLength = this.shiftData[index].workingLength;
-            //this.editFormValidateClass.restMinutes = this.shiftData[index].restMinutes;
-            this.editFormValidateClass.relevantClassId = this.shiftData[index].relevantClassId;
-            this.editFormValidateClass.userCount = this.shiftData[index].userCount;
-            var color=this.shiftData[index].classColor;
-            this.editFormValidateClass.timeSlotEnd = this.shiftData[index].endTimeStr
-            this.editFormValidateClass.timeSlotBegin = this.shiftData[index].startTimeStr
-            $(".shiftColor").css("background-color",color);
-
-            this.editFormValidateClass.restMinutes = this.shiftData[index].restMinutes;
-            this.editFormValidateClass.workingLength = this.shiftData[index].workingLength;
+            let obj = this.dutyData[index];
+            for(let key in obj){
+                this.editFormValidateClass[key] =  obj[key];
+            }
+            this.editFormValidateClass.relevantDuty = obj.relevantClassId;
+            this.editFormValidateClass.restMinutes = (obj.restMinutes/60).toString();;
+            this.editFormValidateClass.userCount = obj.userCount.toString();
+            $(".shiftColor").css("background-color",this.dutyData[index].classColor);
         },
         //  删除班次
         remove1:async function (index) {
-            let id = this.shiftData[index].id;
+            let id = this.dutyData[index].id;
             let suiteId = this.suiteId;
             let response = await deteleClass(id,suiteId);
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.$Message.success("删除班次成功");
-                this.shiftData = response.data.dutyclass;
-            return;
+                this.getClass(this);
+                return;
             }else{
                 this.$Message.error(message);
             }
-        },
-        del:function(){
-            this.modal3=false;
         },
         //  选择时间段
         selectTime: function (arr) {
@@ -1137,7 +961,9 @@ export default {
             this.$refs[name].resetFields();
             this.addFormValidateClass.ifTimeSlot = false;
             this.addTimeValidate.ifTimeSlot = false;
-            $(".shiftColor").css("background-color","white");
+            this.addFormValidateClass.shiftColorConfirn = false;
+            this.editFormValidateClass.shiftColorConfirn = false;
+            $(".shiftColor").css("background-color","rgba(0, 0, 0, 0)");
         },
         handleCancelTime:function(name){
             this.$refs[name].resetFields();
@@ -1150,7 +976,7 @@ export default {
             let myChart = echarts.init(document.getElementById('echart'));
             let arr = [];
             for(let i=1;i<=24;i++){
-                let str = i<10 ? '0'+i+':00' : i+':00'
+                let str = i<10 ? '0'+ i +':00' : i + ':00'
                 arr.push(str);
             }
             // 指定图表的配置项和数据
@@ -1185,7 +1011,7 @@ export default {
                     {
                         name: '班次表',
                         type: 'line',
-                        data: this.countOnDutyNum(this.shiftData)
+                        data: this.countOnDutyNum(this.dutyData)
                     }
                 ]
             };
@@ -1247,10 +1073,6 @@ export default {
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     if (that.suites.length===0){
-                        // that.dutyDistrictId = response.data.dutysuite.districtId,
-                        // that.dutyDistrictName = response.data.dutysuite.districtName,
-                        // that.dutyStationId  = response.data.dutysuite.stationId,
-                        // that.dutyStationName = response.data.dutysuite.stationName,
                         that.suiteId = response.data.dutysuite.id
                     }
                         that.suites.push(response.data.dutysuite);
@@ -1265,12 +1087,14 @@ export default {
                 }
         },
         //  删除班制
-        handleClose: async function (id) {
+        handleClose: async function () {
+            let id = this.suiteId;
             let response = await deteleSuites(id);
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.$Message.success(message);
-                this.getSuites();
+                this.getChangeSuite();
+                this.tabModel = -1;
                 return;
             }
             this.$Message.error(message);
@@ -1303,7 +1127,8 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 that.info = response.data.dutysuite;
-                that.suites[that.suiteName] =  response.data.dutysuite; 
+                that.getChangeSuite();
+                that.tabModel = -1;
                 that.$Message.success("编辑班制成功");
             }else{
                 that.$Message.error(message);
