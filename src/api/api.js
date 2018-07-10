@@ -30,7 +30,7 @@ export const deteleSuites = id => fetch('/duty/suite/' + id, {}, 'DELETE');
 export const updateSuites = data => fetch('/duty/suite' , data, 'PUT');
 
 /** 获取班次 */
-export const getClass = id => fetch('/duty/suite?suiteId='+id, {}, 'GET');
+export const getClass = id => fetch('/duty/suite/'+id, {}, 'GET');
 
 /** 新增班次 */
 export const addClass = data => fetch('/duty/class', data, 'POST');
