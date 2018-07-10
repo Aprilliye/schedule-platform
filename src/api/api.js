@@ -68,9 +68,6 @@ export const deleteContent = id => fetch('/workflow/content/'+ id, {}, 'DELETE')
 
 /********************* 新增排班 **********************/
 
-/** 查询排班计划 */
-export const getScheduleInfo = data => fetch('/schedule/scheduleinfo', data, 'GET');
-
 /** 生成排班计划 */
 export const saveSchedule = (suiteId, dateStr) => fetch('/schedule/scheduleinfo?suiteId=' + suiteId +'&&dateStr='+ dateStr, {}, 'POST');
 
@@ -102,3 +99,10 @@ export const deleteTemplateClass = id => fetch('/schedule/template/' + id, {}, '
 
 /** 获取所有权限 */
 export const getAllPermissions = () => fetch('/permissions', {}, 'GET');
+
+/**************************** 排班表格 ****************************/
+/** 查询排班计划 */
+export const getScheduleInfo = data => fetch('/schedule/scheduleinfo', data, 'GET');
+
+/** 请假 */
+export const askForLeave = data => fetch('/leave', data, 'POST');
