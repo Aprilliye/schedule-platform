@@ -90,7 +90,7 @@ import {addRoler} from '@/api/commonAPI';
                     this.allPermissions = arr;
                 }
             },
-            // 选中事件
+            // 选中level1
             ckeckBoxAll: function (e) {
                 let targetNode = e.target.parentNode.parentNode.parentNode.getElementsByTagName('input');
                 if(e.target.checked === true){
@@ -103,6 +103,7 @@ import {addRoler} from '@/api/commonAPI';
                     }
                 }
             },
+            // 选中level2
             checkBoxLevelTwo: function (e) {
                 let targetNode = e.target.parentNode.parentNode.getElementsByTagName('input');
                 if(e.target.checked === true){
@@ -115,20 +116,56 @@ import {addRoler} from '@/api/commonAPI';
                     }
                 }
             },
+            // level3反选
             checkBoxLevelThree: function (e) {
+                console.log("1111");
                 let targetNode = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
-                if(e.target.checked === false){
-                    if($(".level4").find(checked===true)){
-                        targetNode[0].checked=true;
-                        e.target.parentNode.parentNode.parentNode.getElementsByTagName('input')[0].checked=true;
-                    }else{
-                        targetNode[0].checked=false;
-                        e.target.parentNode.parentNode.parentNode.getElementsByTagName('input')[0].checked=false;
+                let targetNodeLevelTwo = e.target.parentNode.parentNode.parentNode.getElementsByTagName('input');
+                let targetNOdeLevel4 = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('level4'); 
+                let checkboxLevel1Arry = [];
+                let checkboxLevel2Arry = [];
+                for(let i = 0; i<targetNOdeLevel4.length; i++){
+                    if(targetNOdeLevel4[i].checked){
+                        checkboxLevel1Arry.push(targetNOdeLevel4[i]);
                     }
+                }
+                for(let i =1; i<targetNodeLevelTwo.length; i++){
+                     if(targetNodeLevelTwo[i].checked){
+                        checkboxLevel2Arry.push(targetNodeLevelTwo[i]);
+                    }
+                }
+                console.log(checkboxLevel1Arry.length);
+                console.log(checkboxLevel2Arry.length);
+                if(e.target.checked === false){
+                    console.log("22222");
+                    if(checkboxLevel2Arry.length>0){
+                        console.log("3333");
+                        targetNode[0].checked=true;
+                        targetNodeLevelTwo[0].checked=true;
+                    }else if (checkboxLevel2Arry.length==0 && checkboxLevel1Arry.length>0){
+                        console.log("4444");
+                        targetNode[0].checked=true;
+                        targetNodeLevelTwo[0].checked=false;
+                    }else if (checkboxLevel2Arry.length==0 && checkboxLevel1Arry.length==0){
+                        console.log("5555");
+                        targetNode[0].checked=false;
+                        targetNodeLevelTwo[0].checked=false;
+                    }else{
+                        console.log("6666");
+                    }
+                    // console.log($(".level4").checked);
+                  
+                    // if($(".level4").find(this.checked===true)){
+                    //     targetNode[0].checked=true;
+                    //     e.target.parentNode.parentNode.parentNode.getElementsByTagName('input')[0].checked=true;
+                    // }else{
+                    //     targetNode[0].checked=false;
+                    //     e.target.parentNode.parentNode.parentNode.getElementsByTagName('input')[0].checked=false;
+                    // }
                    
                 }else{
                         targetNode[0].checked=true;
-                        e.target.parentNode.parentNode.parentNode.getElementsByTagName('input')[0].checked=true;
+                        targetNodeLevelTwo[0].checked=true;
                 }
             },
             callback:function(){
