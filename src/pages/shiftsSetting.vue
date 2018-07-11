@@ -901,27 +901,27 @@ export default {
             })
         },
         beforeEditShifyClassMethods: async function (that) {
-                let data = {
-                    dutyName:that.editFormValidateClass.dutyName,
-                    dutyCode:that.editFormValidateClass.dutyCode,
-                    comment:that.editFormValidateClass.comment,
-                    restMinutes:that.editFormValidateClass.restMinutes*60,
-                    relevantClassId:that.editFormValidateClass.relevantDuty,
-                    userCount:that.editFormValidateClass.userCount,
-                    startTimeStr:that.editFormValidateClass.startTimeStr,
-                    endTimeStr:that.editFormValidateClass.endTimeStr,
-                }
-                data.id = that.classId;
-                data.classColor = $(".shiftColor").css('background-color');
-                let response = await updateClass(data);
-                let message = response.meta.message;
-                if(response.meta.code === 0){
-                that.$Message.success("编辑班次成功");
-                that.getClass(that);
-                return;
-                }else{
-                    that.$Message.error(message);
-                }
+            let data = {
+                dutyName:that.editFormValidateClass.dutyName,
+                dutyCode:that.editFormValidateClass.dutyCode,
+                comment:that.editFormValidateClass.comment,
+                restMinutes:that.editFormValidateClass.restMinutes*60,
+                relevantClassId:that.editFormValidateClass.relevantDuty,
+                userCount:that.editFormValidateClass.userCount,
+                startTimeStr:that.editFormValidateClass.startTimeStr,
+                endTimeStr:that.editFormValidateClass.endTimeStr,
+            }
+            data.id = that.classId;
+            data.classColor = $(".shiftColor").css('background-color');
+            let response = await updateClass(data);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+            that.$Message.success("编辑班次成功");
+            that.getClass(that);
+            return;
+            }else{
+                that.$Message.error(message);
+            }
         },
         //  编辑班次
         edite: function(index){
