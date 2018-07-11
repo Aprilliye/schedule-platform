@@ -4,6 +4,7 @@ import { routerMode } from '@/config/env.js';
 import Login from '@/pages/login';
 import Index  from '@/pages/index';
 import Usermanage from '@/pages/user-manage';
+import annualLeave from '@/pages/annualLeave';
 import setStationArea from '@/pages/setStationArea';
 import Role from '@/pages/role';
 import ScheduleForm from '@/pages/scheduleForm';
@@ -39,13 +40,19 @@ const router = new Router({
       component: Index,
       redirect: '/user-manage',
       children:[
-          //人员管理页面
+        //  人员管理页面  
         {
           path: '/user-manage',
           name: 'Usermanage',
           component: Usermanage
         },
-          //站区设置页面
+        //  年假管理
+        {
+            path: '/annualLeave',
+            name: 'annualLeave',
+            component: annualLeave
+        },
+        //  站区设置页面
         {
           path: '/setStationArea',
           name: 'setStationArea',

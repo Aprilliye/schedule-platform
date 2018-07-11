@@ -41,7 +41,13 @@
                                 人员管理
                             </router-link>
                         </menu-item>
-                        <menu-item name="1-2"  v-if = 'setStationArea'>
+                        <menu-item name="1-4"  v-if='setStationArea'>
+                            <router-link :to="{name: 'annualLeave'}" >
+                                <span class="icon-18"></span>
+                                年假管理
+                            </router-link>
+                        </menu-item>
+                        <menu-item name="1-2"  v-if='setStationArea'>
                             <router-link :to="{name: 'setStationArea'}" >
                                 <span class="icon-18"></span>
                                 站区设置

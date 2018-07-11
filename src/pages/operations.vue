@@ -6,7 +6,6 @@
             <input type="text" name="roleName">
             <a class="btnDefault bgBlue queryBtn" href="javascript:;" onclick="getTableData()">查询</a>
         </div>
-        <p class="title">操作记录</p>
         <div class="panel-body">
             <Table border :columns="columns" :data="data"></Table>
         </div>
