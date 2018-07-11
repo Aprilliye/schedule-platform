@@ -114,19 +114,19 @@
                         <i-input v-model="addUserData.password"></i-input>
                         <span class="orange">请记录此密码作为下次登录用</span>
                     </FormItem>
-                    <FormItem label="站点" prop="stationId" class="userModal">
-                        <Select v-model="addUserData.stationId" @on-change="getAllPosts(addUserData.stationId)">
+                    <FormItem label="岗位" prop="positionId" class="userModal">
+                        <Select v-model="addUserData.positionId" @on-change="chosePost(addUserData.positionId)">
+                            <Option v-for="(item,index) in position" :value="item.id" :key="index">{{item.positionName}}</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="站点" prop="stationId" class="userModal"  v-show="showStation">
+                        <Select v-model="addUserData.stationId">
                              <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="角色" prop="roleId" class="userModal">
                         <Select v-model="addUserData.roleId">
                         <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="岗位" prop="positionId" class="userModal">
-                        <Select v-model="addUserData.positionId">
-                            <Option v-for="(item,index) in position" :value="item.id" :key="index">{{item.positionName}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
@@ -147,6 +147,9 @@
                     <FormItem label="入职时间" prop="entryDate" class="userModal">
                         <i-input placeholder="例2015-03-06" v-model="addUserData.entryDate"></i-input>
                     </FormItem>
+                    <!-- <FormItem label="参加工作时间" prop="workDate" class="userModal">
+                        <i-input placeholder="例2015-03-06" v-model="addUserData.workDate"></i-input>
+                    </FormItem> -->
                     <FormItem label="婚否" prop="isMarried" class="userModal">
                         <Select  v-model="addUserData.isMarried">
                             <Option value="1">已婚</Option>
@@ -233,14 +236,14 @@
                     <i-input v-model="editUser.password"></i-input>
                     <span class="orange">请记录此密码作为下次登录用</span>
                 </FormItem>
-                <FormItem label="站点" prop="stationId" class="userModal">
-                    <Select v-model="editUser.stationId" @on-change="getAllPosts(editUser.stationId)">
-                            <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
-                    </Select>
-                </FormItem>
-                <FormItem label="岗位" prop="positionId" class="userModal">
+                 <FormItem label="岗位" prop="positionId" class="userModal">
                     <Select v-model="editUser.positionId">
                         <Option v-for="(item,index) in position" :value="item.id" :key="index">{{item.positionName}}</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="站点" prop="stationId" class="userModal" v-show="showediteStation">
+                    <Select v-model="editUser.stationId" @on-change="chosePost(editUser.positionId)">
+                            <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="角色" prop="roleId" class="userModal">
@@ -266,6 +269,9 @@
                 <FormItem label="入职时间" prop="entryDate" class="userModal">
                     <i-input placeholder="例2015-03-06" v-model="editUser.entryDate"></i-input>
                 </FormItem>
+                <!-- <FormItem label="参加工作时间" prop="workDate" class="userModal">
+                        <i-input placeholder="例2015-03-06" v-model="addUserData.workDate"></i-input>
+                    </FormItem> -->
                 <FormItem label="婚否" prop="isMarried" class="userModal">
                     <Select  v-model="editUser.isMarried">
                         <Option value="1">已婚</Option>
@@ -345,6 +351,8 @@
                 role:this.$store.get('role'),
                 // 修改用户当前id
                 EditId:null,
+                showStation:true,
+                showediteStation:true,
                 fuzzyQueryModal:'',
                 showDistrict:false,
                 addPersonModal: false,
@@ -417,7 +425,6 @@
                    employeeCode: [{required: true, message: '人员编码不能为空', trigger: 'blur' }],
                    userName: [{required: true, message: '姓名不能为空', trigger: 'blur' }],
                    positionId: [{required: true, type: 'integer', message: '岗位不能为空', trigger: 'change' }],
-                   stationId: [{required: true,type: 'integer', message: '站点不能为空', trigger: 'change' }],
                    roleId: [{required: true, type: 'integer', message: '角色不能为空', trigger: 'change' }],
                    password: [{required: true, message: '密码不能为空', trigger: 'blur' }],
                    plan: [{required: true, message: '权限方案不能为空', trigger: 'change' }],
@@ -450,6 +457,7 @@
                     birthday: '',
                     idCardNumber: '',
                     entryDate: '',
+                    //workDate:'',
                     isMarried: null,
                     hasChild: null,
                     eduBackGround: '',
@@ -473,6 +481,8 @@
             this.getRole();
             // 获取用户列表
             this.getUserList();
+            // 站区长登录时获取岗位
+            this.getPosts();
         },
         methods:{
             //  获取用户列表
@@ -544,34 +554,68 @@
                 this.roles = response.data;
                 }
             },
-            // 获取站点
+            // 判断是否显示站点
+            chosePost: function(id){
+                if(id === 1){
+                    this.showStation = false;
+                }else{
+                    this.showStation = true;
+                }
+            },
+            // 获取站点和岗位
             getAllStations: async function (id) {
                 if (id) {
+                    // 清空
                     this.addUserData.stationId = '';
                     this.editUser.stationId = '';
+                    this.editUser.positionId = '';
+                    this.addUserData.positionId = '';
                     this.stations = [];
+                    this.position = [];
+                    // 获取站点
                     let response = await getStations(id);
                     let message = response.meta.message;
                     if(response.meta.code === 0){
                         this.stations = response.data;
+                    }else{
+                        this.$Message.error(message);
+                    }
+                    // 获取岗位
+                    let responsePost = await getAllPost(id);
+                    let messagePost = responsePost.meta.message;
+                    if(responsePost.meta.code === 0){
+                        this.position = responsePost.data;
                         return;
                     }
-                    this.$Message.error(message);
+                    this.$Message.error(messagePost);
                 }
             },
             //  获取所有岗位
-            getAllPosts: async function (id) {
-                if(id){
-                    this.addUserData.positionId = '';
-                    this.editUser.positionId = '';
-                    this.position = [];
-                    let response = await getAllPost(id);
-                    let message = response.meta.message;
-                    if(response.meta.code === 0){
-                        this.position = response.data;
+            // getAllPosts: async function (id) {
+            //     if(id){
+            //         this.addUserData.positionId = '';
+            //         this.editUser.positionId = '';
+            //         this.position = [];
+            //         let response = await getAllPost(id);
+            //         let message = response.meta.message;
+            //         if(response.meta.code === 0){
+            //             this.position = response.data;
+            //             return;
+            //         }
+            //         this.$Message.error(message);
+            //     }
+            // },
+            // 站区长登录时获取岗位
+            getPosts: async function(){
+                if(this.role===2){
+                    let id = this.districtId;
+                    let responsePost = await getAllPost(id);
+                    let messagePost = responsePost.meta.message;
+                    if(responsePost.meta.code === 0){
+                        this.position = responsePost.data;
                         return;
                     }
-                    this.$Message.error(message);
+                    this.$Message.error(messagePost);
                 }
             },
             //  删除一行
@@ -621,6 +665,9 @@
             },
             // 编辑人员
             editPersonMethod: function (item) {
+                if(item.positionName==="替班员"){
+                    this.showediteStation = false;
+                }
                 //this.editUser = item;
                 // 获取编辑id
                 this.EditId = item.id;
@@ -630,7 +677,7 @@
                 }else if(this.role === 2){
                     this.getAllStations(item.districtId);
                 }
-                this.getAllPosts(item.stationId);
+                //this.getAllPosts(item.stationId);
                 this.editUser = item;
                 this.editUser.backup = item.backup.toString();
                 this.editPersonModal = true;
@@ -659,8 +706,14 @@
             },
             addUserFun: async function (name) {
                 let data = this.addUserData;
+                if(!this.showStation){
+                    delete data.stationId;
+                }else{
+                    data.stationId= this.addUserData.stationId;
+                }
                 if(this.role === 2){
                     data.districtId = this.districtId;
+                    
                     //data.backup = this.addUserData.backup === '0' ? 0:1,
                     //data.districtName = this.districtName;
                 }else if(this.role === 1){

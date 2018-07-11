@@ -37,7 +37,7 @@
                     <div class="level2">
                         <div v-for="(list,index) in item.permisions" :key="'level2-'+index">
                             <label>
-                                <input type="checkbox" level="2" @click="checkBoxLevelTwo">
+                                <input class="levelTwo" type="checkbox" level="2" @click="checkBoxLevelTwo">
                                 <b>{{list.level2}}</b>
                             </label>
                             <div class="level3" v-for="permision in list.permisions" :key="'level3-'+permision.id">
@@ -103,9 +103,10 @@ import {addRoler} from '@/api/commonAPI';
                     }
                 }
             },
-            // 选中level2
+            // 选中level2//反选level2
             checkBoxLevelTwo: function (e) {
                 let targetNode = e.target.parentNode.parentNode.getElementsByTagName('input');
+                
                 if(e.target.checked === true){
                     for(var i=1;i<targetNode.length;i++){
                         targetNode[i].checked = true;
@@ -118,7 +119,6 @@ import {addRoler} from '@/api/commonAPI';
             },
             // level3反选
             checkBoxLevelThree: function (e) {
-                console.log("1111");
                 let targetNode = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
                 let targetNodeLevelTwo = e.target.parentNode.parentNode.parentNode.getElementsByTagName('input');
                 let targetNOdeLevel4 = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('level4'); 
@@ -134,35 +134,17 @@ import {addRoler} from '@/api/commonAPI';
                         checkboxLevel2Arry.push(targetNodeLevelTwo[i]);
                     }
                 }
-                console.log(checkboxLevel1Arry.length);
-                console.log(checkboxLevel2Arry.length);
                 if(e.target.checked === false){
-                    console.log("22222");
                     if(checkboxLevel2Arry.length>0){
-                        console.log("3333");
                         targetNode[0].checked=true;
                         targetNodeLevelTwo[0].checked=true;
                     }else if (checkboxLevel2Arry.length==0 && checkboxLevel1Arry.length>0){
-                        console.log("4444");
                         targetNode[0].checked=true;
                         targetNodeLevelTwo[0].checked=false;
                     }else if (checkboxLevel2Arry.length==0 && checkboxLevel1Arry.length==0){
-                        console.log("5555");
                         targetNode[0].checked=false;
                         targetNodeLevelTwo[0].checked=false;
-                    }else{
-                        console.log("6666");
                     }
-                    // console.log($(".level4").checked);
-                  
-                    // if($(".level4").find(this.checked===true)){
-                    //     targetNode[0].checked=true;
-                    //     e.target.parentNode.parentNode.parentNode.getElementsByTagName('input')[0].checked=true;
-                    // }else{
-                    //     targetNode[0].checked=false;
-                    //     e.target.parentNode.parentNode.parentNode.getElementsByTagName('input')[0].checked=false;
-                    // }
-                   
                 }else{
                         targetNode[0].checked=true;
                         targetNodeLevelTwo[0].checked=true;
@@ -188,7 +170,6 @@ import {addRoler} from '@/api/commonAPI';
                         description: this.addrolecomment,
                         permissionIds:arr
                     }
-                    console.log(data);
                     let response = await addRoler(data);
                      if (response.meta.code !== 0) {
                         this.$Loading.error();

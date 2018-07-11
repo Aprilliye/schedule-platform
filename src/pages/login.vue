@@ -63,8 +63,6 @@
                        this.$Message.error(response.meta.message);
                    }else{
                        let user = response.data.user;
-                       console.log(user);
-                       console.log(user.stationId);
                        let role = user.roles[0].id;
                        this.$store.set(DISTRICTID, user.districtId);
                        this.$store.set(STATIONID, user.stationId);
@@ -73,7 +71,12 @@
                        this.$store.set(SCHEDULE_IDENTIFY, response.data.token);
                        this.$store.set(ROLEID, role);
                        this.$store.set(DISTRICTID_NAME, user.districtName);
-                       this.$router.push({ path: "/home" });
+                       if(role === 3){
+                           this.$router.push({ path: "/schedulePlan" });
+                       }else{
+                           this.$router.push({ path: "/home" });
+                       }
+                       
                    }
                 //  }else{
                 //      this.errorMsg = '账号或密码错误';
