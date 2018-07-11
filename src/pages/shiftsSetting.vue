@@ -477,14 +477,16 @@ export default {
             //  班次表
             shiftColumns: [
                 {
-                    title: '班制名称',
+                    title: '班次名称',
                     align: 'center',
                     key: 'dutyName',
                     render: (h, params) => {
                         return h('div', [
-                            h('p', {
+                            h('div', {
                                 style: {
-                                    color:params.row.classColor
+                                    backgroundColor:params.row.classColor,
+                                    color:'white',
+                                    lineHeight:'30px',
                                 },
                                 },params.row.dutyName ),
                         ]);
@@ -523,7 +525,7 @@ export default {
                 {
                     title: '班次关联',
                     align: 'center',
-                    key: 'relevantClassId'
+                    key: 'relevantClassName'
                 },
                 {
                     title: '值班人数',
@@ -699,6 +701,11 @@ export default {
                     that.$Message.error(response.meta.message);
                 }else{
                     that.dutyData = response.data.dutyclass;
+                    for(var i = 0;i<response.data.dutyclass.length;i++){
+                        if(response.data.dutyclass[i].relevant!=null){
+                        that.dutyData[i].relevantClassName = response.data.dutyclass[i].relevant.dutyName;
+                        }
+                    }
                     that.onDutyData = response.data.dutyperiodchecking;
                 }
             }
