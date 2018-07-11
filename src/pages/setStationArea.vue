@@ -8,18 +8,26 @@
             北京地铁运三分公司
         </div>
         <div class="list">
-            <my-district v-for="(item, index) in districts" :key="index" :title="item.districtName" :districtId="item.id" @deleteDistrict="dataChange"></my-district>
+            <my-district v-for="(item, index) in districts" :key="index" :item="item" @deleteDistrict="dataChange"></my-district>
         </div>
         <!--新增站区弹框-->
         <Modal
             title="新增站区"
             v-model="addStationArea"
             @on-ok="addStationAreaMethod"
-            :loading="true">
-            <p>
-                <label class="addStationLabel"> 站区名称：</label>
-                <input id="editUserCode" name="userCode" type="text" v-model.trim="stationName">
-            </p>
+            :loading="true"
+            @on-cancel='cancel'>
+            <Form :label-width="80">
+                <FormItem label="线别：">
+                    <i-input v-model.trim="lineNum" clearable></i-input>
+                </FormItem>
+                <FormItem label="站区名称：">
+                    <i-input v-model.trim="districtName" clearable></i-input>
+                </FormItem>
+                <FormItem label="站区说明：">
+                    <i-input type="textarea" :rows="2" v-model.trim="content" clearable></i-input>
+                </FormItem>
+            </Form>
         </Modal>
     </div>
 </template>
@@ -31,7 +39,9 @@
             return {
                 addStationArea: false,
                 districts: [],
-                stationName: '',
+                lineNum: '',
+                districtName: '',
+                content: ''
             }
         },
         mounted: function () {
@@ -55,23 +65,37 @@
             },
             //  新增站区
             addStationAreaMethod: async function(){
-                let stationName = this.stationName;
-                if(stationName === ''){
-                    this.$Message.warning('站区名称不能为空');
+                let districtName = this.districtName;
+                let lineNum = this.lineNum;
+                if( !districtName || !lineNum){
+                    this.$Message.warning('线别或者站区名称不能为空');
                     return;
                 }
                 let data = {
-                    districtName: stationName,
+                    lineNumber: lineNum,
+                    districtName: districtName,
                 };
+                if(this.content){
+                    data.content = this.content;
+                }
                 let response = await addstationArea(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
                     this.districts = response.data;
                     this.addStationArea = false;
-                    return;
+                } else {
+                    this.$Message.error(mesage);
                 }
-                this.$Message.error(mesage);
+                this.lineNum = '';
+                this.districtName = '';
+                this.content = '';
+            },
+            //  取消
+            cancel: function () {
+                this.lineNum = '';
+                this.districtName = '';
+                this.content = '';
             }
         },
         components:{
