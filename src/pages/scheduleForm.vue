@@ -572,9 +572,16 @@
                             let list = obj.scheduleInfoList;
                             for(let schedule of list){
                                 let date = schedule.dateStr.substring(5);
-                                $('#'+obj.id).siblings().filter('[code="'+ date +'"]').html(schedule.dutyName).attr('id', schedule.id);
+                                $('#'+obj.id).siblings().filter('[code="'+ date +'"]').html(schedule.dutyName).attr('id', schedule.id).attr('hours', schedule.workingHours);
                             }
                         }
+                        $('.planWorkHour').each(function () {
+                            let total = 0;
+                            $(this).siblings('[hours]').each(function () {
+                                total += parseInt($(this).attr('hours'));
+                            })
+                            $(this).html(total);
+                        })
                     })
                     return;
                 } 
@@ -627,7 +634,7 @@
                 this.scheduleInfoId = null;
                 this.substring = null;
                 this.subType = null;
-                this.leaveCount = null;
+                this.leaveCount = 0;
                 this.content = '';
                 this.instead = null;
             },
@@ -670,7 +677,7 @@
                 this.scheduleInfoId = null;
                 this.substring = null;
                 this.subType = null;
-                this.leaveCount = null;
+                this.leaveCount = 0;
                 this.content = '';
                 this.instead = null;
             },

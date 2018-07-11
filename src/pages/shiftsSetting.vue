@@ -629,7 +629,7 @@ export default {
         },
         //  获取所有岗位
         getAllPost: async function () {
-            let response = await getAllPost(this.stationId);
+            let response = await getAllPost(this.districtId);
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.position.data = response.data;
