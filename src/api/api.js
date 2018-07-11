@@ -3,7 +3,7 @@ import fetch from '@/config/fetch';
 /************************* 岗位设置 **************************/
 
 /** 获取岗位 */
-export const getAllPost = id => fetch('/position?stationId='+ id, {}, 'GET');
+export const getAllPost = id => fetch('/position?districtId='+ id, {}, 'GET');
 
 /** 新增岗位 */
 export const addPost = data => fetch('/position', data, 'POST');

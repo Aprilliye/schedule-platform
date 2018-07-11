@@ -44,7 +44,6 @@ import {getAllPost, addPost, updatePost, detelePost} from '@/api/api'
                     editPost: false
                 },
                 districtId: this.$store.get('districtId'),
-                stationId: this.$store.get('stationId'),
                 addItem: {
                     positionName: '',
                     backupPosition: false,
@@ -105,7 +104,7 @@ import {getAllPost, addPost, updatePost, detelePost} from '@/api/api'
                                     on: {
                                         click: () => {
                                             let obj = params.row;
-                                            this.beforeDetelePost(obj.id)
+                                            this.beforeDetelePost(obj.id, params.index)
                                         }
                                     }
                                 }, '删除')
@@ -123,7 +122,7 @@ import {getAllPost, addPost, updatePost, detelePost} from '@/api/api'
         methods: {
             //  获取所有岗位
             getAllPost: async function () {
-                let response = await getAllPost(this.stationId);
+                let response = await getAllPost(this.districtId);
                 let message = response.meta.message;
                 if(response.meta.code !== 0){
                     this.$Message.error(message);
@@ -132,22 +131,23 @@ import {getAllPost, addPost, updatePost, detelePost} from '@/api/api'
                 this.data = response.data;
             },
             //  点击删除岗位
-            beforeDetelePost: function (id) {
+            beforeDetelePost: function (id, index) {
                 this.$Modal.confirm({
                 content: "<p>确定要删除这个岗位吗？</p>",
                 loading: true,
                 onOk: () => {
                     this.$Modal.remove();
-                    this.detelePost(id);
+                    this.detelePost(id, index);
                     }
                 });
             },
-            detelePost: async function (id) {
+            detelePost: async function (id, index) {
                 let response = await detelePost(id);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    this.data = response.data;
+                    // this.data = response.data;
+                    this.data.splice(index, 1);
                     return;
                 }
                 this.$Message.error(message);
@@ -168,7 +168,6 @@ import {getAllPost, addPost, updatePost, detelePost} from '@/api/api'
                 let backupPosition = this.addItem.backupPosition ? 1 : 0;
                 let data = {
                     districtId: this.districtId,
-                    stationId: this.stationId,
                     positionName: name,
                     backupPosition: backupPosition
                 }
@@ -193,7 +192,6 @@ import {getAllPost, addPost, updatePost, detelePost} from '@/api/api'
                 }
                 let data = {
                     districtId: this.districtId,
-                    stationId: this.stationId,
                     positionName: name,
                     backupPosition: backupPosition
                 }

@@ -191,11 +191,11 @@
                 v-model="modal.annualLeave"
                 title="年假"
                 @on-ok="askForLeave"
-                @on-cancel="cancel">
+                @on-cancel="cancel"
+                :loading="true">
                 <Form :label-width="80">
-                    <FormItem label="时间">
-                        <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="beginTime"></DatePicker><span> 至 </span>
-                        <DatePicker type="date" placeholder="请选择时间" style="width: 190px"  v-model="endTime"></DatePicker>
+                    <FormItem label="年假天数">
+                        <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="替班人">
                         <Select v-model="instead">
@@ -203,7 +203,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea  name="remark" class="content"  v-model="content"></textarea>
+                        <textarea  name="remark" class="content"  v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -212,7 +212,8 @@
                 v-model="modal.editVocation"
                 title="假期编辑"
                 @on-ok="askForLeave"
-                @on-cancel="cancel">
+                @on-cancel="cancel"
+                :loading="true">
                 <Form :label-width="80">
                     <FormItem label="假期类型">
                         <Select v-model="subType">
@@ -232,8 +233,16 @@
                             <Option value="14">调休/调</Option>
                         </Select>
                     </FormItem>
+                    <FormItem label="请假天数">
+                        <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
+                    </FormItem>
+                    <FormItem label="替班人">
+                        <Select v-model="instead">
+                            <Option v-for="item in userList" :value="item.id" :key="item.id">{{item.userName}}</Option>
+                        </Select>
+                    </FormItem>
                     <FormItem label="备注">
-                        <textarea v-model="content" name="remark" class="vocationRemark"></textarea>
+                        <textarea v-model.trim="content" name="remark" class="vocationRemark"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -242,7 +251,8 @@
                 v-model="modal.shiftChange"
                 title="班次变更"
                 @on-ok="askForLeave"
-                @on-cancel="cancel">
+                @on-cancel="cancel"
+                :loading="true">
                 <Form :label-width="80">
                     <FormItem label="班次">
                         <Select v-model="instead">
@@ -250,7 +260,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea v-model="content" name="remark" class="vocationRemark"></textarea>
+                        <textarea v-model.trim="content" name="remark" class="vocationRemark"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -259,7 +269,8 @@
                 v-model="modal.provisionalDisposition"
                 title="临时安排"
                 @on-ok="askForLeave"
-                @on-cancel="cancel">
+                @on-cancel="cancel"
+                :loading="true">
                 <Form :label-width="100">
                     <FormItem label="临时安排类型">
                         <Select>
@@ -271,19 +282,10 @@
                         </Select>
                     </FormItem>
                     <FormItem label="额外占用工时">
-                        <Select v-model="leaveCount">
-                            <Option value="1">1小时</Option>
-                            <Option value="2">2小时</Option>
-                            <Option value="3">3小时</Option>
-                            <Option value="4">4小时</Option>
-                            <Option value="5">5小时</Option>
-                            <Option value="6">6小时</Option>
-                            <Option value="7">7小时</Option>
-                            <Option value="8">8小时</Option>
-                        </Select>
+                        <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea v-model="content" name="remark" class="vocationRemark"></textarea>
+                        <textarea v-model.trim="content" name="remark" class="vocationRemark"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -292,22 +294,14 @@
                 v-model="modal.absenteeism"
                 title="旷工缺勤"
                 @on-ok="askForLeave"
-                @on-cancel="cancel">
+                @on-cancel="cancel"
+                :loading="true">
                 <Form :label-width="80">
                     <FormItem label="缺勤工时">
-                        <Select v-model="leaveCount">
-                            <Option value="1">1小时</Option>
-                            <Option value="2">2小时</Option>
-                            <Option value="3">3小时</Option>
-                            <Option value="4">4小时</Option>
-                            <Option value="5">5小时</Option>
-                            <Option value="6">6小时</Option>
-                            <Option value="7">7小时</Option>
-                            <Option value="8">8小时</Option>
-                        </Select>
+                        <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea  name="remark" class="vocationRemark"  v-model="content"></textarea>
+                        <textarea  name="remark" class="vocationRemark"  v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -316,22 +310,14 @@
                 v-model="modal.overtime"
                 title="补班加班"
                 @on-ok="askForLeave"
-                @on-cancel="cancel">
+                @on-cancel="cancel"
+                :loading="true">
                 <Form :label-width="80">
                     <FormItem label="加班工时">
-                        <Select v-model="leaveCount">
-                            <Option value="1">1小时</Option>
-                            <Option value="2">2小时</Option>
-                            <Option value="3">3小时</Option>
-                            <Option value="4">4小时</Option>
-                            <Option value="5">5小时</Option>
-                            <Option value="6">6小时</Option>
-                            <Option value="7">7小时</Option>
-                            <Option value="8">8小时</Option>
-                        </Select>
+                        <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark" v-model="content"></textarea>
+                        <textarea name="remark" class="vocationRemark" v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -340,20 +326,16 @@
                 v-model="modal.substitute"
                 title="替班"
                 @on-ok="askForLeave"
-                @on-cancel="cancel">
+                @on-cancel="cancel"
+                :loading="true">
                 <Form :label-width="80">
-                    <FormItem label="站点">
-                        <Select clearable>
-                            <Option value="item.id" v-for="item in stationList" :key="'station-'+item.id">{{item.stationName}}</Option>
-                        </Select>
-                    </FormItem>
                     <FormItem label="替班人员">
                         <Select v-model="instead">
                             <Option v-for="item in userList" :value="item.id" :key="item.id">{{item.userName}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark" v-model="content"></textarea>
+                        <textarea name="remark" class="vocationRemark" v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -362,22 +344,14 @@
                 v-model="modal.other"
                 title="其它"
                 @on-ok="askForLeave"
-                @on-cancel="cancel">
+                @on-cancel="cancel"
+                :loading="true">
                 <Form :label-width="80">
                     <FormItem label="工时">
-                        <Select v-model="leaveCount">
-                            <Option value="1">1小时</Option>
-                            <Option value="2">2小时</Option>
-                            <Option value="3">3小时</Option>
-                            <Option value="4">4小时</Option>
-                            <Option value="5">5小时</Option>
-                            <Option value="6">6小时</Option>
-                            <Option value="7">7小时</Option>
-                            <Option value="8">8小时</Option>
-                        </Select>
+                        <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark" v-model="content"></textarea>
+                        <textarea name="remark" class="vocationRemark" v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -386,22 +360,14 @@
                 v-model="modal.smallVocation"
                 title="零星假"
                 @on-ok="askForLeave"
-                @on-cancel="cancel">
+                @on-cancel="cancel"
+                :loading="true">
                 <Form :label-width="80">
                     <FormItem label="工时">
-                        <Select v-model="leaveCount">
-                            <Option value="1">1小时</Option>
-                            <Option value="2">2小时</Option>
-                            <Option value="3">3小时</Option>
-                            <Option value="4">4小时</Option>
-                            <Option value="5">5小时</Option>
-                            <Option value="6">6小时</Option>
-                            <Option value="7">7小时</Option>
-                            <Option value="8">8小时</Option>
-                        </Select>
+                        <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark" v-model="content"></textarea>
+                        <textarea name="remark" class="vocationRemark" v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -410,20 +376,16 @@
                 v-model="modal.transfer"
                 title="调离"
                 @on-ok="askForLeave"
-                @on-cancel="cancel">
+                @on-cancel="cancel"
+                :loading="true">
                 <Form :label-width="80">
-                    <FormItem label="站点">
-                        <Select clearable>
-                            <Option value="item.id" v-for="item in stationList" :key="'station-'+item.id">{{item.stationName}}</Option>
-                        </Select>
-                    </FormItem>
                     <FormItem label="上岗人员">
                         <Select v-model="instead">
                             <Option v-for="item in userList" :value="item.id" :key="item.id">{{item.userName}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark" v-model="content"></textarea>
+                        <textarea name="remark" class="vocationRemark" v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -432,7 +394,7 @@
 </template>
 <script>
     import {getScheduleInfo, getAllPost, askForLeave} from '@/api/api';
-    import {getStations, getUser} from '@/api/commonAPI';
+    import {getStations, getBackupUser} from '@/api/commonAPI';
     export default {
         data: function() {
             return {
@@ -535,7 +497,7 @@
             this.getStations();
             this.getAllPost();
             this.changeForm();
-            this.getUser();
+            this.getBackupUser();
             this.endDateStr = new Date(this.startDateStr.getTime() + 6*24*60*60*1000);
         },
         methods: {
@@ -558,8 +520,9 @@
                 this.$Message.error(response.meta.message);
             },
             // 获取站务员
-            getUser: async function () {
-                let response = await getUser(this.districtId);
+            getBackupUser: async function () {
+                let response = await getBackupUser(this.districtId);
+                console.log(response);
                 if(response.meta.code === 0){
                     this.userList = response.data;
                     return;
@@ -627,21 +590,36 @@
             },
             //  请假
             askForLeave: async function () {
-                if(this.leaveType !== 2){
+                let scheduleInfoId = this.scheduleInfoId;
+                let leaveType = this.leaveType;
+                if(!scheduleInfoId){
+                    return;
+                }
+                if(leaveType !== 2 || leaveType !== 4){
                     this.subType = 1;
                 }
+                if(!this.subType){
+                    let mes = '请选择请假类型';
+                    if(leaveType === 4){
+                        mes = '请选择临时安排类型';
+                    }
+                    this.$Message.warning(mes);
+                    return;
+                }
                 let data = {
-                    scheduleInfoId: this.scheduleInfoId,
-                    leaveType: this.leaveType,
+                    scheduleInfoId: scheduleInfoId,
+                    leaveType: leaveType,
                     subType: this.subType,
                     leaveCount: parseInt(this.leaveCount),
-                    content: this.content
                 }
-                console.log(data);
+                let instead = this.instead;
                 if(instead !== null){
-                    data.instead = this.instead;
+                    data.instead = instead;
                 }
-                //return;
+                if(this.content){
+                    data.content = this.content;
+                }
+                console.log(data)
                 // instead
                 let response = await askForLeave(data);
                 console.log(response);
