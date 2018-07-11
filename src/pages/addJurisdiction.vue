@@ -118,8 +118,17 @@ import {addRoler} from '@/api/commonAPI';
             checkBoxLevelThree: function (e) {
                 let targetNode = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
                 if(e.target.checked === false){
-                    targetNode[0].checked=false;
-                    targetNode[1].checked=false;
+                    if($(".level4").find(checked===true)){
+                        targetNode[0].checked=true;
+                        e.target.parentNode.parentNode.parentNode.getElementsByTagName('input')[0].checked=true;
+                    }else{
+                        targetNode[0].checked=false;
+                        e.target.parentNode.parentNode.parentNode.getElementsByTagName('input')[0].checked=false;
+                    }
+                   
+                }else{
+                        targetNode[0].checked=true;
+                        e.target.parentNode.parentNode.parentNode.getElementsByTagName('input')[0].checked=true;
                 }
             },
             callback:function(){
