@@ -35,26 +35,26 @@
                         <template slot="title">
                             系统设置
                         </template>
-                        <menu-item name="1-1" class="active">
+                        <menu-item name="1-1" class="active" v-if = 'Usermanage'>
                             <router-link :to="{name: 'Usermanage'}" id="indexRouter">
                                 <span class="icon-19"></span>
                                 人员管理
                             </router-link>
                         </menu-item>
-                        <menu-item name="1-2">
+                        <menu-item name="1-2"  v-if = 'setStationArea'>
                             <router-link :to="{name: 'setStationArea'}" >
                                 <span class="icon-18"></span>
                                 站区设置
                             </router-link>
                         </menu-item>
-                        <menu-item name="1-3">
+                        <menu-item name="1-3" v-if = 'Role'>
                             <router-link :to="{name: 'Role'}" >
                                 <span class="icon-17"></span>
                                 权限管理
                             </router-link>
                         </menu-item>
                     </submenu>
-                    <submenu name="3">
+                    <submenu name="3" v-if="scheduleSet">
                         <template slot="title">
                             排班设置
                         </template>
@@ -71,42 +71,42 @@
                             </router-link>
                         </menu-item>
                     </submenu>
-                    <submenu name="2">
+                    <submenu name="2" v-if = "scheduleManage">
                         <template slot="title">
                             排班管理
                         </template>
-                        <menu-item name="2-1">
+                        <menu-item name="2-1" v-if="ScheduleForm">
                             <router-link :to="{name: 'ScheduleForm'}" >
                                 <span class="icon-16"></span>
                                 排班表格
                             </router-link>
                         </menu-item>
-                        <menu-item name="2-2">
+                        <menu-item name="2-2" v-if="autoSchedule">
                             <router-link :to="{name: 'autoSchedule'}" >
                                 <span class="icon-6"></span>
                                 新增排班
                             </router-link>
                         </menu-item>
-                        <menu-item name="2-3">
+                        <menu-item name="2-3" v-if="candidateSchedule">
                             <router-link :to="{name: 'candidateSchedule'}" >
                                 <Icon  type="clipboard" class="iconsize"></Icon>
                                 备班排班
                             </router-link>
                         </menu-item>
-                        <menu-item name="2-4">
+                        <menu-item name="2-4" v-if="Workflow">
                             <router-link :to="{name: 'Workflow'}" >
                                 <Icon type="code-working" class="iconsize"></Icon>
                                 工作流程
                             </router-link>
                         </menu-item>
-                        <menu-item name="2-5">
+                        <menu-item name="2-5" v-if="schedulePlan">
                             <router-link :to="{name: 'schedulePlan'}" >
                                 <Icon  type="ios-paper" class="iconsize"></Icon>
                                 排班计划
                             </router-link>
                         </menu-item>
                     </submenu>
-                    <submenu name="4">
+                    <submenu name="4" v-if="reportForm">
                         <template slot="title">
                             统计报表
                         </template>
@@ -117,7 +117,7 @@
                             </router-link>
                         </menu-item>
                     </submenu>
-                    <menu-item name="1-1">
+                    <menu-item name="1-1" v-if="operationRecord">
                         <router-link :to="{name: 'operations'}">操作记录</router-link>
                     </menu-item>
                 </i-menu>
@@ -137,7 +137,29 @@ import {DISTRICTID, STATIONID, USERNAME, POSITIONID, SCHEDULE_IDENTIFY} from '@/
         data: function () {
             return {
                 userName: this.$store.get('userName'),
+                scheduleManage: false,
+                reportForm: false,
+                operationRecord: false,
+                scheduleSet:false,
+                ScheduleForm: false,
+                autoSchedule: false,
+                candidateSchedule: false,
+                Workflow: false,
+                schedulePlan: false,
+
+                Usermanage: false,
+                setStationArea: false,
+                Role: false,
+                // systemSet: true,
+                // scheduleSet: true,
+                // scheduleManage: true,
+                // reportForm: true,
+                // operationRecord: true,
+                role:this.$store.get('role'),
             }
+        },
+        mounted: function() {
+            this.request();
         },
         methods: {
             doLogout: async function () {
@@ -149,6 +171,27 @@ import {DISTRICTID, STATIONID, USERNAME, POSITIONID, SCHEDULE_IDENTIFY} from '@/
                 this.$store.remove(POSITIONID);
                 this.$store.remove(SCHEDULE_IDENTIFY);
             },
+            request: function(){
+                if(this.role===1){
+                    this.reportForm = true;
+                    this.Usermanage = true;
+                    this.setStationArea = true;
+                    this.Role = true;
+                }else if(this.role===3){
+                    this.scheduleManage = true;
+                    this.schedulePlan = true;
+                }else if(this.role===2){
+                    this.scheduleSet = true;
+                    this.reportForm = true;
+                    this.operationRecord = true;
+                    this.ScheduleForm = true;
+                    this.autoSchedule = true;
+                    this.candidateSchedule = true;
+                    this.Workflow = true;
+                    this.schedulePlan = true;
+                    this.Usermanage = true;
+                }
+            }
         }
     }
 </script>
