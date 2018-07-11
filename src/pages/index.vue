@@ -31,7 +31,7 @@
           <Row>
               <i-col span="3" style="position:fixed;left:0;top:60px;">
                 <i-menu class="main-menu">
-                    <submenu name="1">
+                    <submenu name="1" v-if = "systemSet">
                         <template slot="title">
                             系统设置
                         </template>
@@ -146,7 +146,7 @@ import {DISTRICTID, STATIONID, USERNAME, POSITIONID, SCHEDULE_IDENTIFY} from '@/
                 candidateSchedule: false,
                 Workflow: false,
                 schedulePlan: false,
-
+                systemSet:false,
                 Usermanage: false,
                 setStationArea: false,
                 Role: false,
@@ -173,6 +173,7 @@ import {DISTRICTID, STATIONID, USERNAME, POSITIONID, SCHEDULE_IDENTIFY} from '@/
             },
             request: function(){
                 if(this.role===1){
+                    this.systemSet = true;
                     this.reportForm = true;
                     this.Usermanage = true;
                     this.setStationArea = true;
@@ -181,6 +182,8 @@ import {DISTRICTID, STATIONID, USERNAME, POSITIONID, SCHEDULE_IDENTIFY} from '@/
                     this.scheduleManage = true;
                     this.schedulePlan = true;
                 }else if(this.role===2){
+                    this.systemSet = true;
+                    this.scheduleManage =true;
                     this.scheduleSet = true;
                     this.reportForm = true;
                     this.operationRecord = true;
