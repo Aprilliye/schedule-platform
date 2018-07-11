@@ -71,17 +71,18 @@
             id="usersModal"
             title="选择管理员" 
             width="600"
-            @on-ok="selectUser"
-            @on-cancel="cancel">
+            @on-ok="setDistrictAdmin"
+            @on-cancel="cancel"
+            :loading="true">
             <!-- <button type="button" class="btnDefault bgBlue" @click="handleCancel">重置</button> -->
             <div class="userList">
-                <span  v-for="(item,index) in users" :key="index" @click="clickUser" :id="item.id">{{item.name}}</span>
+                <span  v-for="item in users" :key="item.id" @click="clickUser" :code="item.id">{{item.userName}}</span>
             </div>
         </Modal>
     </div>
 </template>
 <script>
-    import {deleteDistrict, getStations, addStation, updateDistrict, deleteStation, updateStation} from "../api/commonAPI";
+    import {deleteDistrict, getStations, addStation, updateDistrict, deleteStation, updateStation, getUser, setDistrictAdmin} from "../api/commonAPI";
     export default {
         data:function(){
             return{ 
@@ -111,8 +112,16 @@
         props:['item'],
         created: function () {
             this.getStations(this.item.id);
+            this.getUser();
         },
         methods:{
+            //  获取用户
+            getUser: async function () {
+                let response = await getUser();
+                if(response.meta.code === 0){
+                    this.users = response.data;
+                }
+            },
             //  修改站区
             beforeUpdateDistrice: function () {
                 let item = this.item;
@@ -250,15 +259,9 @@
                 this.editStation = false;
             },
             // 设置管理员
-            cancel: function () {
-                $('.userList').find('.activeSpan').removeClass('activeSpan');
-                this.currentId ='';
-            },
             clickUser: function (e) {
-                $('.userList').find('.activeSpan').removeClass('activeSpan');
-                var id = e.target.id;
-                e.target.className = "activeSpan";
-                this.currentId = id;
+                let obj = $(e.target);
+                obj.toggleClass('activeSpan');
             },
             selectUser: function (name) {
                 if (this.currentId !==''){
@@ -278,6 +281,33 @@
                 this.lineNum = '';
                 this.districtName = '';
                 this.content = '';
+                $('.activeSpan').removeClass('activeSpan');
+                this.currentId ='';
+            },
+            //  设置站区管理员
+            setDistrictAdmin: async function () {
+                let arr = [];
+                if($('.activeSpan').length === 0){
+                    this.$Message.warning('请选择管理员');
+                    return;
+                }
+                $('.activeSpan').each(function () {
+                    let id = $(this).attr('code');
+                    arr.push(id);
+                })
+                let data = {
+                    "districtId": this.item.id,
+                    "userId": arr.join(',')
+                };
+                let response = await setDistrictAdmin(data);
+                let mesage = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(mesage);
+                    $('.activeSpan').removeClass('activeSpan');
+                    
+                    return;
+                }
+                this.$Message.success(mesage);
             }
         }
     }

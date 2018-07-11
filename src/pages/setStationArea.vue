@@ -14,7 +14,7 @@
         <Modal
             title="新增站区"
             v-model="addStationArea"
-            @on-ok="addStationAreaMethod"
+            @on-ok="addDistrict"
             :loading="true"
             @on-cancel='cancel'>
             <Form :label-width="80">
@@ -33,7 +33,7 @@
 </template>
 <script>
     import district from '../components/district.vue'
-    import {stationAreaList, addstationArea, getStations} from '@/api/commonAPI'
+    import {getDistricts, addDistrict, getStations} from '@/api/commonAPI'
     export default {
         data: function () {
             return {
@@ -45,7 +45,7 @@
             }
         },
         mounted: function () {
-            this.request();
+            this.getDistricts();
         },
         methods:{
             //  删除战区成功
@@ -53,8 +53,9 @@
                 this.districts = res;
             },
             //  获取站区列表
-            request: async function(){
-                let response = await stationAreaList();
+            getDistricts: async function(){
+                let response = await getDistricts();
+                console.log(response);
                 if (response.meta.code !== 0) {
                     this.$Loading.error();
                     this.$Message.error(response.meta.message);
@@ -64,7 +65,7 @@
                 }
             },
             //  新增站区
-            addStationAreaMethod: async function(){
+            addDistrict: async function(){
                 let districtName = this.districtName;
                 let lineNum = this.lineNum;
                 if( !districtName || !lineNum){
@@ -78,7 +79,7 @@
                 if(this.content){
                     data.content = this.content;
                 }
-                let response = await addstationArea(data);
+                let response = await addDistrict(data);
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);

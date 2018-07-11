@@ -10,10 +10,10 @@ export const signout = () => fetch('/sessions', {}, 'DELETE');
 /************************* 排班管理 *************************/
 /*************************站区设置**************************/
 /** 站区列表 */
-export const stationAreaList = () => fetch('/district', {},'GET');
+export const getDistricts = () => fetch('/district', {},'GET');
 
 /** 新增站区 */
-export const addstationArea = data => fetch('/district', data, 'POST');
+export const addDistrict = data => fetch('/district', data, 'POST');
 
 /** 删除站区 */
 export const deleteDistrict = id => fetch('/district/' + id, {}, 'DELETE');
@@ -31,7 +31,10 @@ export const addStation = data => fetch('/station', data, 'POST');
 export const deleteStation = id => fetch('/station/' + id, {}, 'DELETE');
 
 /** 修改站点 */
-export const updateStation = (id, data) => fetch('/station/' + id, data, 'PUT');
+export const updateStation = (id, data) => fetch('/station/' + id, data, 'PUT'); 
+
+/** 设置站区管理员 */
+export const setDistrictAdmin = data => fetch('/district/admin', data, 'POST');
 
 /***************************** 人员设置 *******************************/
 
