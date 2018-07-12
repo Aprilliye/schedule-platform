@@ -3,12 +3,12 @@
         <div class="page">
             <div class="content-header">
                 <div>
-                    <button class="btnDefault" :class="{'bgBlue': bgBlueClass }" @click="bgBlueClass=true">周表</button>
-                    <button class="btnDefault" :class="{'bgBlue': !bgBlueClass }" @click="getMonthData(new Date())">月表</button>
+                    <button class="btnDefault" :class="{'bgBlue': bgBlueClass }" @click="swichData('week', new Date())">周表</button>
+                    <button class="btnDefault" :class="{'bgBlue': !bgBlueClass }" @click="swichData('month', new Date())">月表</button>
                     <div class="tabItem" v-show="bgBlueClass">
                         <span>时间段：</span>
-                        <Select v-model="timeQuantum" style="width:200px" @on-change="changeForm">
-                            <Option v-for="item in timeQuantumList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        <Select v-model="dayNum" style="width:200px" @on-change="changeWeek">
+                            <Option v-for="item in dayNumList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
                         <DatePicker v-model="startDateStr" type="date" placeholder="请选择时间" style="width: 200px" @on-change="changeDate('start')"></DatePicker> 至
                         <DatePicker v-model="endDateStr" type="date" placeholder="请选择时间" style="width: 200px" @on-change="changeDate('end')"></DatePicker>
@@ -93,7 +93,7 @@
                     <div class="clear"></div>
                 </div>
                 <!--请假信息悬浮框-->
-                <div class="tdMessage" v-show="modal.showLeaveInfo">
+                <div class="tdMessage" v-show="modal.showLeaveInfo" @mouseleave="modal.showLeaveInfo = false">
                     <div v-for="item in currentSchedule.leaveList" :key="item.id">
                         <p>假期类型：{{item.leaveDesc || ''}}</p>
                         <p>替班员：--</p>
@@ -327,8 +327,8 @@
                 clicktr:'',
                 clicktd:'',
                 target:'',
-                timeQuantumList: [{value: 7, label: "一周"}, {value: 14, label: "两周"}],
-                timeQuantum: 7,
+                dayNumList: [{value: 7, label: "一周"}, {value: 14, label: "两周"}],
+                dayNum: 7,
                 station: null,
                 post: null,
                 userName: '',
@@ -381,18 +381,14 @@
                     [9, '#fffc00'],
                     [10, '#00d537']
                 ]),
-                currentSchedule: {
-                    leaveList: [
-                        
-                    ]
-                },          //  鼠标悬浮人员信息
+                currentSchedule: {},          //  鼠标悬浮人员信息
             };
         },
         created: function () {
             this.clickHide();
             this.getStations();
             this.getAllPost();
-            this.changeForm();
+            this.changeWeek();
             this.getBackupUser();
             this.endDateStr = new Date(this.startDateStr.getTime() + 6*24*60*60*1000);
         },
@@ -425,32 +421,43 @@
                 this.$Message.error('站务员请求失败');
             },
             //  周表月表切换
-            changeForm: function () {
+            changeWeek: function () {
                 this.dateArr = [];
                 this.weekArr = [];
                 if(this.startDateStr){
-                    for(let i=0;i<this.timeQuantum;i++){
+                    for(let i=0;i<this.dayNum;i++){
                         let date = new Date(this.startDateStr.getTime() + i*24*60*60*1000);
                         let weekDay = this.weekMap.get(date.getDay());
                         this.weekArr.push(weekDay);
                         this.dateArr.push(this.$conversion(date).substring(5));
                     }
                 }
-                
+                this.endDateStr = new Date(this.startDateStr.getTime() + this.dayNum*24*60*60*1000);
             },
             //  获取排班计划
             getScheduleInfo: async function () {
-                if(!this.startDateStr || !this.endDateStr){
+                let startDateStr = '';
+                let endDateStr = '';
+                if(this.bgBlueClass){
+                    startDateStr = this.$conversion(this.startDateStr);
+                    endDateStr = this.$conversion(this.endDateStr);
+                } else {
+                    let date = this.month;
+                    let year = date.getFullYear();
+                    let month = date.getMonth() + 1;
+                    let days = this.getMonthDays(year, month);
+                    let str = year + '-' + (month < 10 ? '0' + month : month) + '-';
+                    startDateStr = str + '01';
+                    endDateStr = str + days;
+                }
+                if(!startDateStr || !endDateStr){
                     this.$Message.warning('开始日期和结束日期不能为空');
                     return;
                 }
-                let startDateStr = this.$conversion(this.startDateStr);
-                let endDateStr = this.$conversion(this.endDateStr);
                 let data = {
                     startDateStr: startDateStr,
                     endDateStr: endDateStr
                 };
-
                 this.station && (data.stationId = this.station);
                 this.post && (data.positionId = this.post);
                 this.userName && (data.userName = this.userName);
@@ -459,7 +466,7 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    this.changeForm();
+                    this.changeWeek();
                     let data = response.data
                     this.data = data;
                     this.$nextTick(function () {
@@ -502,10 +509,10 @@
                     return;
                 }
                 if(str === 'start'){
-                    this.endDateStr = new Date(this.startDateStr.getTime() + (this.timeQuantum-1)*24*60*60*1000);
+                    this.endDateStr = new Date(this.startDateStr.getTime() + (this.dayNum-1)*24*60*60*1000);
                     return;
                 }
-                this.startDateStr = new Date(this.endDateStr.getTime() - (this.timeQuantum-1)*24*60*60*1000);
+                this.startDateStr = new Date(this.endDateStr.getTime() - (this.dayNum-1)*24*60*60*1000);
             },
             //  请假
             askForLeave: async function () {
@@ -626,27 +633,31 @@
                 this.content = '';
                 this.instead = null;
             },
-            //  查看月表
-            getMonthData: function (date) {
-                let year = date.getFullYear();
-                let month = date.getMonth() + 1;
-                
-                this.bgBlueClass = false;
-                let days = this.getMonthDays(year, month);
-                this.timeQuantum = days;
+            //  周表月表切换
+            swichData: function (type, date) {
                 this.dateArr = [];
                 this.weekArr = [];
-                for(let i=1;i<=days;i++){
-                    this.dateArr.push((month<10 ? '0' + month : month) + '-' + (i<10 ? '0' + i : i));
-                    this.weekArr.push(this.getWeekDay(year, month, i));
-                }
                 this.data = [];
+                let days = 0;
+                let year = date.getFullYear();
+                let month = date.getMonth() + 1;
+                if(type === 'month'){
+                    this.bgBlueClass = false;
+                    days = this.getMonthDays(year, month);
+                    for(let i=1;i<=days;i++){
+                        this.dateArr.push((month<10 ? '0' + month : month) + '-' + (i<10 ? '0' + i : i));
+                        this.weekArr.push(this.getWeekDay(year, month, i));
+                    }
+                    return;
+                } 
+                this.bgBlueClass = true;
+                this.changeWeek();
             },
             //  根据月份获取天数
             getMonthDays: function (year, month){
                 var stratDate = new Date(year,month-1,1),
                 endData = new Date(year,month,1);
-                var days = (endData -stratDate)/(1000*60*60*24);
+                var days = (endData - stratDate)/(1000*60*60*24);
                 return days;
             },
             //  根据日期获取周几
