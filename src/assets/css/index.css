@@ -368,9 +368,18 @@
     color: #3A6BCE;
 }
 /* 工时报表 */
+.workHourTable{
+    width: 100%;
+}
+.workHourTable th{
+    background: #D7E4FF;
+    border: none  !important; 
+}
 .workHourTable td,.workHourTable th{
-    border:1px solid black;
+    border:1px solid#e5e5e5;;
+    border-top:none !important;
     text-align: center;
+    box-sizing:border-box;
 }
 /*分页*/
 .paging{

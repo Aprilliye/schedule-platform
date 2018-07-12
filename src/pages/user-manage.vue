@@ -4,7 +4,7 @@
             <div class="content-header">
                 <div class="float-left">
                     <button class="btnDefault bgGreen mansgebutton" type="button" @click="addPersonModal = true">新增人员</button>
-                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="exportUser">导入</a>
+                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="userPort">导入</a>
                     <a class="btnDefault">模板</a>
                 </div>
                 <div class=" float-right">
@@ -237,13 +237,13 @@
                     <i-input v-model="editUser.password"></i-input>
                     <span class="orange">请记录此密码作为下次登录用</span>
                 </FormItem>
-                 <FormItem label="岗位" prop="positionId" class="userModal">
-                    <Select v-model="editUser.positionId">
+                 <FormItem label="岗位" prop="positionId" class="userModal" v-show="showStation">
+                    <Select v-model="editUser.positionId" @on-change="chosePost(editUser.positionId)">
                         <Option v-for="(item,index) in position" :value="item.id" :key="index">{{item.positionName}}</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="站点" prop="stationId" class="userModal" v-show="showediteStation">
-                    <Select v-model="editUser.stationId" @on-change="chosePost(editUser.positionId)">
+                <FormItem label="站点" prop="stationId" class="userModal">
+                    <Select v-model="editUser.stationId" >
                             <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                     </Select>
                 </FormItem>
@@ -336,7 +336,7 @@
 </template>
 <script>
     import {getAllPost} from '@/api/api';
-    import {stationAreaList, getStations, addUser, getRole, updateUser, getUser, deleteUser} from '@/api/commonAPI';
+    import {getDistricts, getStations, addUser, getRole, updateUser, getUser, deleteUser} from '@/api/commonAPI';
     export default {
         data: function () {
             return {
@@ -353,7 +353,7 @@
                 // 修改用户当前id
                 EditId:null,
                 // 导入按钮
-                exportUser: true,
+                userPort: true,
                 // 初始化信息总条数
                 dataCount: 0,
                 // 每页显示条数
@@ -361,7 +361,6 @@
                 // 获取userList
                 historyUserList:[],
                 showStation:true,
-                showediteStation:true,
                 fuzzyQueryModal:'',
                 showDistrict:false,
                 addPersonModal: false,
@@ -545,7 +544,7 @@
             request: async function(){
                 if(this.role === 1){
                     this.showDistrict = true;
-                    let response = await stationAreaList();
+                    let response = await getDistricts();
                     if (response.meta.code !== 0) {
                         this.$Loading.error();
                         this.$Message.error(response.meta.message);
@@ -576,9 +575,9 @@
                     this.roles = response.data;
                 }
                 if(this.role ===1){
-                    this.exportUser = true;
+                    this.userPort = true;
                 }else{
-                    this.exportUser = false;
+                    this.userPort = false;
                 }
             },
             // 判断是否显示站点
@@ -617,21 +616,6 @@
                     this.$Message.error(messagePost);
                 }
             },
-            //  获取所有岗位
-            // getAllPosts: async function (id) {
-            //     if(id){
-            //         this.addUserData.positionId = '';
-            //         this.editUser.positionId = '';
-            //         this.position = [];
-            //         let response = await getAllPost(id);
-            //         let message = response.meta.message;
-            //         if(response.meta.code === 0){
-            //             this.position = response.data;
-            //             return;
-            //         }
-            //         this.$Message.error(message);
-            //     }
-            // },
             // 站区长登录时获取岗位
             getPosts: async function(){
                 if(this.role===2){

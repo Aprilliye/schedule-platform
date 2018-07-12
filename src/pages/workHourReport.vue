@@ -1,13 +1,13 @@
 <template>
     <div class="container">
         <div class="content-header">
-            线别：
-            <Select style="width:200px" placeholder="请选择线别">
-                <Option v-for="(item,index) in lineList"  :key="item.index" :value="item.id">{{ item.name }}</Option>
-            </Select>
             站区：
             <Select style="width:200px" placeholder="请选择站区">
                 <Option v-for="(item,index) in district"  :key="item.index" :value="item.id">{{ item.name }}</Option>
+            </Select>
+            线别：
+            <Select style="width:200px" placeholder="请选择线别">
+                <Option v-for="(item,index) in lineList"  :key="item.index" :value="item.id">{{ item.name }}</Option>
             </Select>
             <Button type="primary"  size="large">查询</Button>
         </div> 
