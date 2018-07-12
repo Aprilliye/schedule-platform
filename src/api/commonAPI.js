@@ -34,7 +34,7 @@ export const deleteStation = id => fetch('/station/' + id, {}, 'DELETE');
 export const updateStation = (id, data) => fetch('/station/' + id, data, 'PUT'); 
 
 /** 设置站区管理员 */
-export const setDistrictAdmin = data => fetch('/district/admin', data, 'POST');
+export const setDistrictManagers = data => fetch('/district/managers', data, 'POST');
 
 /***************************** 人员设置 *******************************/
 

@@ -71,7 +71,7 @@
             id="usersModal"
             title="选择管理员" 
             width="600"
-            @on-ok="setDistrictAdmin"
+            @on-ok="setDistrictManagers"
             @on-cancel="cancel"
             :loading="true">
             <!-- <button type="button" class="btnDefault bgBlue" @click="handleCancel">重置</button> -->
@@ -82,7 +82,7 @@
     </div>
 </template>
 <script>
-    import {deleteDistrict, getStations, addStation, updateDistrict, deleteStation, updateStation, getUser, setDistrictAdmin} from "../api/commonAPI";
+    import {deleteDistrict, getStations, addStation, updateDistrict, deleteStation, updateStation, getUser, setDistrictManagers} from "../api/commonAPI";
     export default {
         data:function(){
             return{ 
@@ -285,7 +285,7 @@
                 this.currentId ='';
             },
             //  设置站区管理员
-            setDistrictAdmin: async function () {
+            setDistrictManagers: async function () {
                 let arr = [];
                 if($('.activeSpan').length === 0){
                     this.$Message.warning('请选择管理员');
@@ -299,7 +299,7 @@
                     "districtId": this.item.id,
                     "userId": arr.join(',')
                 };
-                let response = await setDistrictAdmin(data);
+                let response = await setDistrictManagers(data);
                 let mesage = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(mesage);

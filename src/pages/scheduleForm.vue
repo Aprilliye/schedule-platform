@@ -3,9 +3,9 @@
         <div class="page">
             <div class="content-header">
                 <div>
-                    <button class="btnDefault" :class="{'bgBlue': showTabItem }" @click="showTabItem=true,showTable=true">周表</button>
-                    <button class="btnDefault" :class="{'bgBlue': !showTabItem }" @click="showTabItem=false,showTable=false">月表</button>
-                    <div class="tabItem" v-show="showTabItem">
+                    <button class="btnDefault" :class="{'bgBlue': bgBlueClass }" @click="bgBlueClass=true">周表</button>
+                    <button class="btnDefault" :class="{'bgBlue': !bgBlueClass }" @click="getMonthData(new Date())">月表</button>
+                    <div class="tabItem" v-show="bgBlueClass">
                         <span>时间段：</span>
                         <Select v-model="timeQuantum" style="width:200px" @on-change="changeForm">
                             <Option v-for="item in timeQuantumList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -13,9 +13,9 @@
                         <DatePicker v-model="startDateStr" type="date" placeholder="请选择时间" style="width: 200px" @on-change="changeDate('start')"></DatePicker> 至
                         <DatePicker v-model="endDateStr" type="date" placeholder="请选择时间" style="width: 200px" @on-change="changeDate('end')"></DatePicker>
                     </div>
-                    <div class="tabItem" v-show="!showTabItem">
-                        <span>时间段：</span>
-                        <DatePicker type="month" placeholder="请选择时间" style="width: 200px"></DatePicker>
+                    <div class="tabItem" v-show="!bgBlueClass">
+                        <span>选择月份：</span>
+                        <DatePicker v-model="month" type="month" placeholder="请选择月份" style="width: 200px" @on-change="changeMonth"></DatePicker>
                     </div>
                 </div>
                 <div style="margin-top: 20px">
@@ -46,14 +46,14 @@
                     <span><i class="colori" style="background-color: #008121"></i>替班</span>
                 </div>
                 <div class="clear"></div>
-                <div class="postformtable" v-show="showTable">
+                <div class="postformtable">
                     <!--周表-->
                     <table>
                         <tr>
                             <th rowspan="2">姓名</th>
                             <th rowspan="2">岗位</th>
                             <th v-for="(item, index) in dateArr" :key="'th-0-'+ index">{{item}}</th>
-                            <th colspan="3">总计：{{timeQuantum}}天</th>
+                            <th colspan="3">总计：{{dateArr.length}}天</th>
                         </tr>
                         <tr>
                             <th v-for="(item, index) in weekArr" :key="'th-1-'+ index">{{item}}</th>
@@ -61,7 +61,7 @@
                             <th>实际工时</th>
                             <th>结余</th>
                         </tr>
-                        <tr v-for="item in weekdata" :key="item.id">
+                        <tr v-for="item in data" :key="item.id">
                             <td  :id="item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
                             <td>{{item.positionName}}</td>
                             <!--周表点击事件-->
@@ -69,89 +69,6 @@
                             <td class="planWorkHour">0</td>
                             <td class="actualWorkHour">0</td>
                             <td class="balance">0</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="postformtable" v-show="!showTabItem">
-                    <!--月表-->
-                    <table class="monthTable">
-                        <tr>
-                            <th rowspan="2">姓名</th>
-                            <th rowspan="2">岗位</th>
-                            <th>6.1</th>
-                            <th>6.2</th>
-                            <th>6.3</th>
-                            <th>6.4</th>
-                            <th>6.5</th>
-                            <th>6.6</th>
-                            <th>6.7</th>
-                            <th>6.8</th>
-                            <th>6.9</th>
-                            <th>6.10</th>
-                            <th>6.11</th>
-                            <th>6.12</th>
-                            <th>6.13</th>
-                            <th>6.14</th>
-                            <th>6.15</th>
-                            <th>6.16</th>
-                            <th>6.17</th>
-                            <th>6.18</th>
-                            <th>6.19</th>
-                            <th>6.20</th>
-                            <th>6.21</th>
-                            <th>6.22</th>
-                            <th>6.23</th>
-                            <th>6.24</th>
-                            <th>6.25</th>
-                            <th>6.26</th>
-                            <th>6.27</th>
-                            <th>6.28</th>
-                            <th>6.29</th>
-                            <th>6.30</th>
-                            <th colspan="3">总计：30天</th>
-                        </tr>
-                        <tr>
-                            <th>二</th>
-                            <th>三</th>
-                            <th>四</th>
-                            <th>五</th>
-                            <th>六</th>
-                            <th>日</th>
-                            <th>一</th>
-                            <th>二</th>
-                            <th>三</th>
-                            <th>四</th>
-                            <th>五</th>
-                            <th>六</th>
-                            <th>日</th>
-                            <th>一</th>
-                            <th>二</th>
-                            <th>三</th>
-                            <th>四</th>
-                            <th>五</th>
-                            <th>六</th>
-                            <th>日</th>
-                            <th>一</th>
-                            <th>二</th>
-                            <th>三</th>
-                            <th>四</th>
-                            <th>五</th>
-                            <th>六</th>
-                            <th>日</th>
-                            <th>一</th>
-                            <th>二</th>
-                            <th>三</th>
-                            <th>计划工时</th>
-                            <th>实际工时</th>
-                            <th>结余</th>
-                        </tr>
-                        <tr v-for="item in monthdata" :key="item.userId" :id="item.userId">
-                            <td class="scheduleName" @mouseenter="showUserInfo(item)" @mouseleave="showInfo = false">{{item.userName}}</td>
-                            <td>{{item.postName}}</td>
-                            <td v-for="(list, index) in item.schedule" :id="list.id" :key="'bb'+index" @click="clickTd"></td>
-                            <td>{{item.planWorkHour}}</td>
-                            <td>{{item.actualWorkHour}}</td>
-                            <td>{{item.balance}}</td>
                         </tr>
                     </table>
                 </div>
@@ -399,38 +316,20 @@
         data: function() {
             return {
                 districtId: this.$store.get('districtId'),
-                weekdata: [],
-                monthdata: [],
+                data: [],
                 startDateStr: new Date(),
                 endDateStr: null,
                 beginTime:'',
                 endTime:'',
                 showTable:true,
-                showTabItem: true,
+                bgBlueClass: true,
                 currentTd:'',
                 datatr:{},
                 datatd:[],
                 clicktr:'',
                 clicktd:'',
                 target:'',
-                targetModal:{
-                    targetVocation:'',
-                    targetShiftChange:'',
-                    targetArrange:'',
-                    targetAbsenteeism:'',
-                    targetOvertime:'',
-                    targetSubstitute:''
-                },
-                timeQuantumList: [
-                    {
-                        value: 7,
-                        label: "一周"
-                    },
-                    {
-                        value: 14,
-                        label: "两周"
-                    }
-                ],
+                timeQuantumList: [{value: 7, label: "一周"}, {value: 14, label: "两周"}],
                 timeQuantum: 7,
                 station: null,
                 post: null,
@@ -449,25 +348,6 @@
                 },
                 stationList: [],
                 postList: [],
-                substitutePerson:   {
-                    userName: '申毅',
-                    postName: '站务员',
-                    phoneName:"13873778520",
-                    address:'北京市海淀区复兴路32号院',
-                    planWorkHour:'46',
-                    balance:'0',
-                    actualWorkHour:'46'
-
-                },
-                substitutePeople:   {
-                    userName: '李珊珊',
-                    postName: '替班员',
-                    phoneName:"13873778520",
-                    address:'北京市门头沟区龙门新区B4-1号楼',
-                    planWorkHour:'5',
-                    balance:'0',
-                    actualWorkHour:'5'
-                },
                 dateArr: [],
                 weekArr: [],
                 weekMap: new Map([
@@ -490,6 +370,7 @@
                 content: '',
                 userList: [],
                 instead: null,
+                month: '',
             };
         },
         created: function () {
@@ -522,7 +403,6 @@
             // 获取站务员
             getBackupUser: async function () {
                 let response = await getBackupUser(this.districtId);
-                console.log(response);
                 if(response.meta.code === 0){
                     this.userList = response.data;
                     return;
@@ -566,7 +446,7 @@
                 if(response.meta.code === 0){
                     this.$Message.success(message);
                     let data = response.data
-                    this.weekdata = data;
+                    this.data = data;
                     this.$nextTick(function () {
                         for(let obj of data){
                             let list = obj.scheduleInfoList;
@@ -681,6 +561,42 @@
                 this.content = '';
                 this.instead = null;
             },
+            //  查看月表
+            getMonthData: function (date) {
+                let year = date.getFullYear();
+                let month = date.getMonth() + 1;
+                
+                this.bgBlueClass = false;
+                let days = this.getMonthDays(year, month);
+                this.timeQuantum = days;
+                this.dateArr = [];
+                this.weekArr = [];
+                for(let i=1;i<=days;i++){
+                    this.dateArr.push((month<10 ? '0' + month : month) + '-' + (i<10 ? '0' + i : i));
+                    this.weekArr.push(this.getWeekDay(year, month, i));
+                }
+                this.data = [];
+            },
+            //  根据月份获取天数
+            getMonthDays: function (year, month){
+                var stratDate = new Date(year,month-1,1),
+                endData = new Date(year,month,1);
+                var days = (endData -stratDate)/(1000*60*60*24);
+                return days;
+            },
+            //  根据日期获取周几
+            getWeekDay: function (year, month, day) {
+                let weekDay = new Date(year, month-1, day).getDay();
+                return this.weekMap.get(weekDay);
+            },
+            //  选择月份
+            changeMonth: function () {
+                if(this.month){
+                    this.getMonthData(this.month);
+                }
+                
+            }
+
         }
     };
 </script>
