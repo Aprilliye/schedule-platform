@@ -4,7 +4,7 @@
             <div class="content-header">
                 <div class="float-left">
                     <button class="btnDefault bgGreen mansgebutton" type="button" @click="addPersonModal = true">新增人员</button>
-                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="userPort">导入</a
+                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="userPort">导入</a>
                     <a class="btnDefault">模板</a>
                 </div>
                 <div class=" float-right">
@@ -513,6 +513,7 @@
                     this.$Message.error(response.meta.message);
                 }else{
                     this.$Loading.finish();
+                    // 获取分页
                     this.historyUserList = response.data;
                     this.dataCount = response.data.length;
                     if(this.historyUserList.length < this.pageSize){
@@ -659,10 +660,8 @@
                 let data = that.cloneObj(that.editUser);
                 if(that.role === 2){
                     data.districtId = that.districtId;
-                    //data.districtName = that.districtName;
                 }else if(that.role === 1){
                     data.districtId = that.editUser.districtId;
-                    //data.districtName = currentDistrict[1];
                 }
                 let response = await updateUser(data);
                 if (response.meta.code !== 0) {
@@ -681,7 +680,6 @@
                 }else{
                     this.showStation = true;
                 }
-                //this.editUser = item;
                 // 获取编辑id
                 this.EditId = item.id;
                 // 判断角色获取站点
@@ -690,7 +688,6 @@
                 }else if(this.role === 2){
                     this.getAllStations(item.districtId);
                 }
-                //this.getAllPosts(item.stationId);
                 this.editUser = item;
                 this.editUser.backup = item.backup.toString();
                 this.editPersonModal = true;
@@ -703,8 +700,7 @@
                 }
                 for (var key in obj) {
                     var val = obj[key];
-                    newObj[key] = typeof val === 'object' ? arguments.callee(val) : val; //arguments.callee 在哪一个函数中运行，它就代表哪个函数, 一般用在匿名函数中。
-                    //newObj[key] = typeof val === 'object' ? cloneObj(val): val;
+                    newObj[key] = typeof val === 'object' ? arguments.callee(val) : val;
                 }
                 return newObj;
             },
@@ -726,11 +722,8 @@
                 }
                 if(this.role === 2){
                     data.districtId = this.districtId;
-                    //data.backup = this.addUserData.backup === '0' ? 0:1,
-                    //data.districtName = this.districtName;
                 }else if(this.role === 1){
                     data.districtId = this.addUserData.districtId;
-                    //data.districtName = currentDistrict[1];
                 }
                 let response = await addUser(data);
                 let message = response.meta.message;
@@ -752,7 +745,6 @@
                 this.stations = [];
             }
         }
-       
 }
 </script>
 <style scoped>
