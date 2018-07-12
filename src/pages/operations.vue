@@ -8,6 +8,7 @@
         </div>
         <div class="panel-body">
             <Table border :columns="columns" :data="data"></Table>
+            <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage"></Page>
         </div>
     </div>
 </template>
@@ -15,6 +16,12 @@
 export default {
     data: function () {
         return {
+            // 操作记录总条数
+            dataCount:0,
+            // 每页显示记录条数
+            pageSize:10,
+            // 获取数据
+            hostoryData:[],
             columns: [
                 {
                     title: '操作时间',
@@ -47,7 +54,26 @@ export default {
                 }  
             ]
         }
+    },
+    mounted: function(){
+        this.hostoryData = this.data;
+        this.dataCount = this.data.length;
+        if(this.dataCount < this.pageSize){
+            this.data = this.hostoryData;
+        }else{
+            this.data = this.hostoryData.slice(0,this.pageSize);
+        }
+    },
+    methods: {
+        changepage: function(index){
+            let start = ( index - 1 ) * this.pageSize;
+            let end = index * this.pageSize;
+            this.data = this.hostoryData.slice(start,end);
+        }
     }
 }
 </script>
+<style scoped>
+    @import '../assets/css/index.css';
+</style>
 
