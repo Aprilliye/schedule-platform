@@ -4,7 +4,7 @@
             <div class="content-header">
                 <div class="float-left">
                     <button class="btnDefault bgGreen mansgebutton" type="button" @click="addPersonModal = true">新增人员</button>
-                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="userPort">导入</a>
+                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="userPort">导入</a
                     <a class="btnDefault">模板</a>
                 </div>
                 <div class=" float-right">
@@ -216,6 +216,7 @@
                v-model="editPersonModal"
                width="800"
                @on-ok="editPersonModalMethod('editUser')"
+               @on-cancel="beforeCancel('editUser')"
                :loading="true"
                :mask-closable="false">
             <Form ref="editUser" :model="editUser" :label-width="120" :rules="rule">
@@ -237,12 +238,12 @@
                     <i-input v-model="editUser.password"></i-input>
                     <span class="orange">请记录此密码作为下次登录用</span>
                 </FormItem>
-                 <FormItem label="岗位" prop="positionId" class="userModal" v-show="showStation">
+                 <FormItem label="岗位" prop="positionId" class="userModal">
                     <Select v-model="editUser.positionId" @on-change="chosePost(editUser.positionId)">
                         <Option v-for="(item,index) in position" :value="item.id" :key="index">{{item.positionName}}</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="站点" prop="stationId" class="userModal">
+                <FormItem label="站点" prop="stationId" class="userModal"v-show="showStation">
                     <Select v-model="editUser.stationId" >
                             <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                     </Select>
@@ -448,7 +449,6 @@
                    beginWorkDate:[{required: true, message: '参加工作时间不能为空', trigger: 'blur' }],
                    homeAddress: [{required: true, message: '住址不能为空', trigger: 'blur' }],
                    backup: [{required: true, message: '是否备班不能为空', trigger: 'change' }],
-                   
                 },
                 userList:[],
                 selectedItmes: [],
@@ -677,7 +677,9 @@
             // 编辑人员
             editPersonMethod: function (item) {
                 if(item.positionName==="替班员"){
-                    this.showediteStation = false;
+                    this.showStation = false;
+                }else{
+                    this.showStation = true;
                 }
                 //this.editUser = item;
                 // 获取编辑id
@@ -724,7 +726,6 @@
                 }
                 if(this.role === 2){
                     data.districtId = this.districtId;
-                    
                     //data.backup = this.addUserData.backup === '0' ? 0:1,
                     //data.districtName = this.districtName;
                 }else if(this.role === 1){
