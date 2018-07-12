@@ -27,34 +27,6 @@ export default {
                 {
                     title: '年假限额',
                     key: 'content'
-                },
-                {
-                    title: '操作',
-                    key: 'action',
-                    width: 150,
-                    align: 'center',
-                    render: (h, params) => {
-                        return h('div', [
-                            h('a', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: () => {
-                                        let obj = params.row;
-                                        this.currentId = obj.id;
-                                        this.editItem.positionName = obj.positionName;
-                                        this.editItem.backupPosition = obj.backupPosition ? true : false;
-                                        this.modal.editPost = true;
-                                    }
-                                }
-                            }, '编辑')
-                        ]);
-                    }
                 }
             ],
             data: []
