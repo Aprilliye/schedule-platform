@@ -372,3 +372,8 @@
     border:1px solid black;
     text-align: center;
 }
+/*分页*/
+.paging{
+    float: right;
+    margin-top:10px;
+}

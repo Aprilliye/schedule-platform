@@ -4,7 +4,7 @@
             <div class="content-header">
                 <div class="float-left">
                     <button class="btnDefault bgGreen mansgebutton" type="button" @click="addPersonModal = true">新增人员</button>
-                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export">导入</a>
+                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="exportUser">导入</a>
                     <a class="btnDefault">模板</a>
                 </div>
                 <div class=" float-right">
@@ -84,6 +84,7 @@
                     </table>
                 </div>
             </div>
+            <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage"></Page>
             <!-- 表格 end -->
         </form>
         <!--新增人员-->
@@ -147,9 +148,9 @@
                     <FormItem label="入职时间" prop="entryDate" class="userModal">
                         <i-input placeholder="例2015-03-06" v-model="addUserData.entryDate"></i-input>
                     </FormItem>
-                    <!-- <FormItem label="参加工作时间" prop="workDate" class="userModal">
-                        <i-input placeholder="例2015-03-06" v-model="addUserData.workDate"></i-input>
-                    </FormItem> -->
+                    <FormItem label="参加工作时间" prop="beginWorkDate" class="userModal">
+                        <i-input placeholder="例2015-03-06" v-model="addUserData.beginWorkDate"></i-input>
+                    </FormItem>
                     <FormItem label="婚否" prop="isMarried" class="userModal">
                         <Select  v-model="addUserData.isMarried">
                             <Option value="1">已婚</Option>
@@ -269,9 +270,9 @@
                 <FormItem label="入职时间" prop="entryDate" class="userModal">
                     <i-input placeholder="例2015-03-06" v-model="editUser.entryDate"></i-input>
                 </FormItem>
-                <!-- <FormItem label="参加工作时间" prop="workDate" class="userModal">
-                        <i-input placeholder="例2015-03-06" v-model="addUserData.workDate"></i-input>
-                    </FormItem> -->
+                <FormItem label="参加工作时间" prop="beginWorkDate" class="userModal">
+                        <i-input placeholder="例2015-03-06" v-model="addUserData.beginWorkDate"></i-input>
+                </FormItem>
                 <FormItem label="婚否" prop="isMarried" class="userModal">
                     <Select  v-model="editUser.isMarried">
                         <Option value="1">已婚</Option>
@@ -351,6 +352,14 @@
                 role:this.$store.get('role'),
                 // 修改用户当前id
                 EditId:null,
+                // 导入按钮
+                exportUser: true,
+                // 初始化信息总条数
+                dataCount: 0,
+                // 每页显示条数
+                pageSize:10,
+                // 获取userList
+                historyUserList:[],
                 showStation:true,
                 showediteStation:true,
                 fuzzyQueryModal:'',
@@ -437,6 +446,7 @@
                    eduBackGround: [{required: true, message: '学历不能为空', trigger: 'change' }],
                    partyMember: [{required: true, message: '政治面貌不能为空', trigger: 'change' }],
                    entryDate: [{required: true, message: '入职时间不能为空', trigger: 'blur' }],
+                   beginWorkDate:[{required: true, message: '参加工作时间不能为空', trigger: 'blur' }],
                    homeAddress: [{required: true, message: '住址不能为空', trigger: 'blur' }],
                    backup: [{required: true, message: '是否备班不能为空', trigger: 'change' }],
                    
@@ -457,7 +467,7 @@
                     birthday: '',
                     idCardNumber: '',
                     entryDate: '',
-                    //workDate:'',
+                    beginWorkDate:'',
                     isMarried: null,
                     hasChild: null,
                     eduBackGround: '',
@@ -485,6 +495,12 @@
             this.getPosts();
         },
         methods:{
+            // 改变页数
+            changepage:function(index){
+                var _start = ( index - 1 ) * this.pageSize;
+                var _end = index * this.pageSize;
+                this.userList = this.historyUserList.slice(_start,_end);
+            },
             //  获取用户列表
             getUserList: async function () {
                 let data = {
@@ -498,7 +514,13 @@
                     this.$Message.error(response.meta.message);
                 }else{
                     this.$Loading.finish();
-                    this.userList = response.data;
+                    this.historyUserList = response.data;
+                    this.dataCount = response.data.length;
+                    if(this.historyUserList.length < this.pageSize){
+                        this.userList = this.historyUserList;
+                    }else{
+                        this.userList = this.historyUserList.slice(0,this.pageSize);
+                    }
                 }
             },
             // 模糊查询
@@ -547,11 +569,16 @@
             getRole: async function (){
                 let response = await getRole();
                 if (response.meta.code !== 0) {
-                this.$Loading.error();
-                this.$Message.error(response.meta.message);
+                    this.$Loading.error();
+                    this.$Message.error(response.meta.message);
                 }else{
-                this.$Loading.finish();
-                this.roles = response.data;
+                    this.$Loading.finish();
+                    this.roles = response.data;
+                }
+                if(this.role ===1){
+                    this.exportUser = true;
+                }else{
+                    this.exportUser = false;
                 }
             },
             // 判断是否显示站点

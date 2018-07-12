@@ -88,6 +88,7 @@
                     }
                 }
             },
+            // 选中level2//反选level2
             checkBoxLevelTwo: function (e) {
                 let targetNode = e.target.parentNode.parentNode.getElementsByTagName('input');
                 if(e.target.checked === true){
@@ -100,11 +101,37 @@
                     }
                 }
             },
+            // level3反选
             checkBoxLevelThree: function (e) {
                 let targetNode = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
+                let targetNodeLevelTwo = e.target.parentNode.parentNode.parentNode.getElementsByTagName('input');
+                let targetNOdeLevel4 = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('level4'); 
+                let checkboxLevel1Arry = [];
+                let checkboxLevel2Arry = [];
+                for(let i = 0; i<targetNOdeLevel4.length; i++){
+                    if(targetNOdeLevel4[i].checked){
+                        checkboxLevel1Arry.push(targetNOdeLevel4[i]);
+                    }
+                }
+                for(let i =1; i<targetNodeLevelTwo.length; i++){
+                     if(targetNodeLevelTwo[i].checked){
+                        checkboxLevel2Arry.push(targetNodeLevelTwo[i]);
+                    }
+                }
                 if(e.target.checked === false){
-                    targetNode[0].checked=false;
-                    targetNode[1].checked=false;
+                    if(checkboxLevel2Arry.length>0){
+                        targetNode[0].checked=true;
+                        targetNodeLevelTwo[0].checked=true;
+                    }else if (checkboxLevel2Arry.length==0 && checkboxLevel1Arry.length>0){
+                        targetNode[0].checked=true;
+                        targetNodeLevelTwo[0].checked=false;
+                    }else if (checkboxLevel2Arry.length==0 && checkboxLevel1Arry.length==0){
+                        targetNode[0].checked=false;
+                        targetNodeLevelTwo[0].checked=false;
+                    }
+                }else{
+                        targetNode[0].checked=true;
+                        targetNodeLevelTwo[0].checked=true;
                 }
             },
             callback:function(){
