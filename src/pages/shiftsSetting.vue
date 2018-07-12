@@ -10,7 +10,7 @@
             <TabPane :label="item.dutyName"  v-for="(item,index) in suites" :key="index" :id="item.id">
             </TabPane>
         </Tabs>
-        <div class="panel-body">
+        <div class="panel-body" v-show = "suitBody">
             <div class="buttonblock"></div>
             <div class="shifts-content">
                 <!--班制表-->
@@ -308,15 +308,17 @@ export default {
             dutyData: [],           //  班次
             onDutyData:[],          // 时间段
             showEchart:false,           //图标显示
-            tabModel:null,
+            tabModel:0,
             // 当前站区id
             suiteId:null,
             //  岗位
             position: {
                 data: [],
                 id: null,
-                current: '2-1-站务员'
+                current: ''
             },
+            // 切换tab显示班制内容
+            suitBody:true,
         //     // 当前站区id
         //     dutyDistrictId:null,
         //     // 当前站区名
@@ -629,19 +631,27 @@ export default {
         },
         //  获取所有岗位
         getAllPost: async function () {
-            let response = await getAllPost(this.districtId);
+            let response = await getAllPost(this.stationId);
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.position.data = response.data;
+                if(response.data.length >0){
+                    this.position.current = this.position.data[0].id+'-'+this.position.data[0].backupPosition+'-'+this.position.data[0].positionName;
+                }
                 return;
             }
+           
             this.$Message.error(message);
         },
         //  切换岗位获取班制
         getChangeSuite: async function () {
+            this.tabModel = -1;
             // 方案验算清空
             this.showEchart = false;
             this.suites =[];
+            this.dutyData = [],
+            this.onDutyData =[],
+            this.info = {};
             let that = this;
             let currentPosition = this.position.current.split('-');
             let data = {
@@ -653,6 +663,11 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.suites = response.data;
+                if(response.data.length > 0){
+                    this.suitBody = true;
+                }else{
+                    this.suitBody = false;
+                }
                 if(response.data.length>0){
                     this.suiteId = response.data[0].id;
                 }else{
@@ -908,27 +923,27 @@ export default {
             })
         },
         beforeEditShifyClassMethods: async function (that) {
-            let data = {
-                dutyName:that.editFormValidateClass.dutyName,
-                dutyCode:that.editFormValidateClass.dutyCode,
-                comment:that.editFormValidateClass.comment,
-                restMinutes:that.editFormValidateClass.restMinutes*60,
-                relevantClassId:that.editFormValidateClass.relevantDuty,
-                userCount:that.editFormValidateClass.userCount,
-                startTimeStr:that.editFormValidateClass.startTimeStr,
-                endTimeStr:that.editFormValidateClass.endTimeStr,
-            }
-            data.id = that.classId;
-            data.classColor = $(".shiftColor").css('background-color');
-            let response = await updateClass(data);
-            let message = response.meta.message;
-            if(response.meta.code === 0){
-            that.$Message.success("编辑班次成功");
-            that.getClass(that);
-            return;
-            }else{
-                that.$Message.error(message);
-            }
+                let data = {
+                    dutyName:that.editFormValidateClass.dutyName,
+                    dutyCode:that.editFormValidateClass.dutyCode,
+                    comment:that.editFormValidateClass.comment,
+                    restMinutes:that.editFormValidateClass.restMinutes*60,
+                    relevantClassId:that.editFormValidateClass.relevantDuty,
+                    userCount:that.editFormValidateClass.userCount,
+                    startTimeStr:that.editFormValidateClass.startTimeStr,
+                    endTimeStr:that.editFormValidateClass.endTimeStr,
+                }
+                data.id = that.classId;
+                data.classColor = $(".shiftColor").css('background-color');
+                let response = await updateClass(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                that.$Message.success("编辑班次成功");
+                that.getClass(that);
+                return;
+                }else{
+                    that.$Message.error(message);
+                }
         },
         //  编辑班次
         edite: function(index){

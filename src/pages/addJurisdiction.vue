@@ -106,14 +106,26 @@ import {addRoler} from '@/api/commonAPI';
             // 选中level2//反选level2
             checkBoxLevelTwo: function (e) {
                 let targetNode = e.target.parentNode.parentNode.getElementsByTagName('input');
-                
+                let targetNodeArry = [];
+                let targetLevelOne = e.target.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
                 if(e.target.checked === true){
                     for(var i=1;i<targetNode.length;i++){
                         targetNode[i].checked = true;
+                        targetLevelOne[0].checked = true;
                     }
                 }else{
                     for(var i=1;i<targetNode.length;i++){
                         targetNode[i].checked = false;
+                    }
+                    for(var k=1; k<targetLevelOne.length;k++){
+                        if(targetLevelOne[i].checked===true){
+                        targetNodeArry.push(targetLevelOne[i]);
+                        }
+                    }
+                    if(targetNodeArry.length>0){
+                        targetLevelOne[0].checked = true;
+                    }else{
+                        targetLevelOne[0].checked = false;
                     }
                 }
             },
