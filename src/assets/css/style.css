@@ -206,6 +206,8 @@ select {
 /* 排班表格 */
 .postformtable {
   margin-top: 20px;
+  width: 100%;
+  overflow-x: auto;
 }
 .postformtable table {
   width: 100%;
@@ -218,6 +220,7 @@ select {
 .postformtable table th {
   color: #fff;
   background: #767C85;
+  min-width: 70px;
 }
 .postformtable table td {
   background: #DCDEE0;
