@@ -212,13 +212,13 @@
         </Modal>
         <!--编辑人员-->
         <Modal class="usermanage-model"
-               title="编辑人员"
-               v-model="editPersonModal"
-               width="800"
-               @on-ok="editPersonModalMethod('editUser')"
-               @on-cancel="beforeCancel('editUser')"
-               :loading="true"
-               :mask-closable="false">
+            title="编辑人员"
+            v-model="editPersonModal"
+            width="800"
+            @on-ok="editPersonModalMethod('editUser')"
+            @on-cancel="beforeCancel('editUser')"
+            :loading="true"
+            :mask-closable="false">
             <Form ref="editUser" :model="editUser" :label-width="120" :rules="rule">
                 <FormItem label="员工卡号" prop="employeeCard" class="userModal">
                     <i-input v-model="editUser.employeeCard"></i-input>
@@ -243,7 +243,7 @@
                         <Option v-for="(item,index) in position" :value="item.id" :key="index">{{item.positionName}}</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="站点" prop="stationId" class="userModal"v-show="showStation">
+                <FormItem label="站点" prop="stationId" class="userModal" v-show="showStation">
                     <Select v-model="editUser.stationId" >
                             <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                     </Select>
