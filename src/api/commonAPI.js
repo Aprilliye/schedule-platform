@@ -7,8 +7,8 @@ export const login = data => fetch('/login', data, 'POST');
 /* 退出登录 */
 export const signout = () => fetch('/sessions', {}, 'DELETE');
 
-/************************* 排班管理 *************************/
 /*************************站区设置**************************/
+
 /** 站区列表 */
 export const getDistricts = () => fetch('/district', {},'GET');
 

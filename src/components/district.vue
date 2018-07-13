@@ -5,9 +5,6 @@
                 <span class="listBlockSpan changeStationName">
                     {{item.districtName}}
                 </span>
-                <span class="listBlockSpan">
-                    管理员：{{managerName}}
-                </span>
                 <div class="rgbutton">
                     <Dropdown>
                         <a>
@@ -16,7 +13,6 @@
                         </a>
                         <DropdownMenu slot="list">
                             <DropdownItem><a @click="beforeUpdateDistrice">修改站区</a></DropdownItem>
-                            <DropdownItem><a @click="beforeSetManager">设置管理员</a></DropdownItem>
                             <DropdownItem><a @click="modal.addStation = true">添加站点</a></DropdownItem>
                             <DropdownItem><a class="red" @click="beforeDeleteDistrict">删除站区</a></DropdownItem>
                         </DropdownMenu>
@@ -66,23 +62,10 @@
                 </FormItem>
             </Form>
         </Modal>
-        <!--设置管理员-->
-        <Modal v-model="modal.setUserManager"
-            id="usersModal"
-            title="选择管理员" 
-            width="600"
-            @on-ok="setDistrictManagers"
-            @on-cancel="cancel"
-            :loading="true">
-            <!-- <button type="button" class="btnDefault bgBlue" @click="handleCancel">重置</button> -->
-            <div class="userList">
-                <span  v-for="item in users" :key="item.id" @click="clickUser" :code="item.id">{{item.userName}}</span>
-            </div>
-        </Modal>
     </div>
 </template>
 <script>
-    import {deleteDistrict, getStations, addStation, updateDistrict, deleteStation, updateStation, getUser, setDistrictManagers} from "../api/commonAPI";
+    import {deleteDistrict, getStations, addStation, updateDistrict, deleteStation, updateStation, getUser} from "../api/commonAPI";
     export default {
         data:function(){
             return{ 
@@ -98,7 +81,6 @@
                     districtId: null,
                     stationName: ''
                 },
-                managerName:'',
                 blockSpanList:[],
                 addStationName:'',
                 editStationName: '',
@@ -254,31 +236,6 @@
                 }
                 this.editStation = false;
             },
-            // 设置管理员
-            beforeSetManager: async function () {
-                let response = await getUser();
-                if(response.meta.code === 0){
-                    this.users = response.data;
-                    this.modal.setUserManager = true;
-                    return;
-                }
-                this.$Message.error(response.meta.message);
-            },
-            clickUser: function (e) {
-                let obj = $(e.target);
-                obj.toggleClass('activeSpan');
-            },
-            selectUser: function (name) {
-                if (this.currentId !==''){
-                    this.managerName=this.users[this.currentId-1].name;
-                    this.$Message.success('设置成功');
-                }else{
-                    this.managerName='';
-                    this.$Message.error('修改失败请选择管理员');
-                }
-                $('.userList').find('.activeSpan').removeClass('activeSpan');
-                this.currentId ='';
-            },
             // 取消设置
             cancel: function () {
                 this.addStationName = '';
@@ -288,31 +245,6 @@
                 this.content = '';
                 $('.activeSpan').removeClass('activeSpan');
                 this.currentId ='';
-            },
-            //  设置站区管理员
-            setDistrictManagers: async function () {
-                let arr = [];
-                if($('.activeSpan').length === 0){
-                    this.$Message.warning('请选择管理员');
-                    return;
-                }
-                $('.activeSpan').each(function () {
-                    let id = $(this).attr('code');
-                    arr.push(id);
-                })
-                let data = {
-                    "districtId": this.item.id,
-                    "userId": arr.join(',')
-                };
-                let response = await setDistrictManagers(data);
-                let mesage = response.meta.message;
-                if(response.meta.code === 0){
-                    this.$Message.success(mesage);
-                    $('.activeSpan').removeClass('activeSpan');
-                    
-                    return;
-                }
-                this.$Message.success(mesage);
             }
         }
     }

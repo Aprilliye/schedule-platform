@@ -1,13 +1,20 @@
 <template>
     <div class="container">
         <div class="content-header">
-            站区：
-            <Select style="width:200px" placeholder="请选择站区">
-                <Option v-for="(item,index) in district"  :key="item.index" :value="item.id">{{ item.name }}</Option>
+            <span>选择年份：</span>
+            <DatePicker v-model="year" type="year" placeholder="请选择日期" style="width: 200px" clearable></DatePicker>
+            <span>选择季度：</span>
+            <Select style="width:200px" placeholder="请选择季度" v-model="quarter" clearable>
+                <Option :value="1">第一季度</Option>
+                <Option :value="2">第二季度</Option>
+                <Option :value="3">第三季度</Option>
+                <Option :value="4">第四季度</Option>
             </Select>
-            线别：
-            <Select style="width:200px" placeholder="请选择线别">
-                <Option v-for="(item,index) in lineList"  :key="item.index" :value="item.id">{{ item.name }}</Option>
+            <span>选择月份：</span>
+            <DatePicker v-model="month" type="month" placeholder="请选择月份" style="width: 200px" clearable></DatePicker>
+            <span>站区：</span>
+            <Select style="width:200px" placeholder="请选择站区">
+                <Option v-for="(item, index) in lineList"  :key="index" :value="item.id">{{ item.name }}</Option>
             </Select>
             <Button type="primary"  size="large">查询</Button>
         </div> 
@@ -16,12 +23,14 @@
                 <tr>
                     <th v-for="(item,index) in titleList" :key="index">{{item}}</th>
                 </tr>
-                <template v-for="(list,index) in linesTable">
+                <template v-for="list in linesTable">
                     <tr>
-                        <td rowspan="4">{{list.name}}</td><td>{{list.title}}</td><td v-for="n in 6"> </td>
+                        <td rowspan="4">{{list.name}}</td><td>{{list.title}}</td>
+                        <td v-for="n in 6"> </td>
                     </tr>
-                    <tr v-for="(item,index) in linesStation">
-                        <td>{{item}}</td><td v-for="n in 6"> </td>
+                    <tr v-for="item in linesStation">
+                        <td>{{item}}</td>
+                        <td v-for="n in 6"> </td>
                     </tr>
                 </template>
             </table>
@@ -32,6 +41,9 @@
     export default{
         data: function () {
             return {
+                year: null,
+                quarter: null,
+                month: null,
                 lines:'',
                 lineList:[
                     {
