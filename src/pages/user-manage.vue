@@ -127,7 +127,7 @@
                     </FormItem>
                     <FormItem label="角色" prop="roleId" class="userModal">
                         <Select v-model="addUserData.roleId">
-                        <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
+                            <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
@@ -350,7 +350,7 @@
                 // 角色列表
                 roles:[],
                 // 当前角色
-                role:this.$store.get('role'),
+                role: this.$store.get('role'),
                 // 修改用户当前id
                 EditId:null,
                 // 导入按钮
@@ -573,21 +573,31 @@
                     this.$Message.error(response.meta.message);
                 }else{
                     this.$Loading.finish();
-                    this.roles = response.data;
+                    let data = response.data;
+                    this.roles = [];
+                    for(let obj of data) {
+                        if(obj.id === 1){
+                            this.role === 1 && this.roles.push(obj);
+                        } else {
+                            this.roles.push(obj);
+                        }
+                    }
                 }
-                if(this.role ===1){
-                    this.userPort = true;
-                }else{
-                    this.userPort = false;
-                }
+                this.userPort = (this.role === 1 ? true : false);
+                // if(this.role === 1){
+                //     this.userPort = true;
+                // }else{
+                //     this.userPort = false;
+                // }
             },
             // 判断是否显示站点
             chosePost: function(id){
-                if(id === 1){
-                    this.showStation = false;
-                }else{
-                    this.showStation = true;
-                }
+                this.showStation = (id === 1 ? false : true);
+                // if(id === 1){
+                //     this.showStation = false;
+                // }else{
+                //     this.showStation = true;
+                // }
             },
             // 获取站点和岗位
             getAllStations: async function (id) {
@@ -675,11 +685,12 @@
             },
             // 编辑人员
             editPersonMethod: function (item) {
-                if(item.positionName==="替班员"){
-                    this.showStation = false;
-                }else{
-                    this.showStation = true;
-                }
+                this.showStation = (item.positionName === "替班员" ? false : true);
+                // if(item.positionName==="替班员"){
+                //     this.showStation = false;
+                // }else{
+                //     this.showStation = true;
+                // }
                 // 获取编辑id
                 this.EditId = item.id;
                 // 判断角色获取站点
