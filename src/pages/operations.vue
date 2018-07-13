@@ -6,7 +6,7 @@
             <Input v-model="phoneNumber" placeholder="请输入手机号" clearable style="width: 200px"/>
             <span>选择日期：</span>
             <DatePicker v-model="date" placeholder="请选择日期" style="width: 200px" clearable></DatePicker>
-            <button class="btnDefault bgBlue queryBtn" type="button" @click="getOperations">查询</button>
+            <button class="btnDefault bgBlue" type="button" @click="getOperations">查询</button>
         </div>
         <div class="panel-body">
             <Table border :columns="columns" :data="data"></Table>

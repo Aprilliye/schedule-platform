@@ -82,3 +82,6 @@ export const importHoliday = data => fetch('/holiday', data, 'POST');
 
 /** 操作记录 */
 export const getOperations = data => fetch('/log/operation', data, 'GET');
+
+/** 工时报表 */
+export const getWorkload = data => fetch('/log/workload', data, 'GET');
