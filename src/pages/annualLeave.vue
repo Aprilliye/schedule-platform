@@ -1,8 +1,12 @@
 <template>
     <div class="container">
         <div class="content-header">
-            <span>员工卡号：</span>
-            <input type="text" name="roleName">
+            <span>年份：</span>
+            <DatePicker v-model="year" type="year" placeholder="请选择年份" style="width: 200px" clearable></DatePicker>
+            <span>站区：</span>
+            <Select v-model="district" style="width:200px" clearable>
+                <Option v-for="item in districtList" :value="item.id" :key="item.id">{{ item.stationName }}</Option>
+            </Select>
             <a class="btnDefault bgBlue queryBtn" href="javascript:;" onclick="getTableData()">查询</a>
             <button class="btnDefault bgGreen" type="button">导入年假</button>
         </div>
@@ -22,14 +26,24 @@ export default {
                 },
                 {
                     title: '员工卡号',
-                    key: 'employeeCard'
+                    key: 'emploityeeCard'
                 },
                 {
-                    title: '年假限额',
+                    title: '年份',
+                    key: 'year'
+                },
+                {
+                    title: '站区',
+                    key: 'district'
+                },
+                {
+                    title: '年假额度',
                     key: 'content'
                 }
             ],
-            data: []
+            data: [],
+            districtList: [],
+            district: ''
         }
     }
 }

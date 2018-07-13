@@ -9,7 +9,7 @@
                     <Alert id="errorMsg" type="error" style="display:none" v-show="showMsg">{{ errorMsg }}</Alert>
                     <div class="inputBox">
                         <span class="icon-3"></span>
-                        <input type="text" v-model.trim="userName" name="userCode" placeholder="用户名" id="userCode">
+                        <input type="text" v-model.trim="phoneNumber" name="phoneNumber" placeholder="手机号" id="phoneNumber">
                     </div>
                     <div class="inputBox">
                         <span class="icon-2"></span>
@@ -27,7 +27,7 @@
     export default{
         data: function () {
             return {
-                userName: '',
+                phoneNumber: '',
                 userPasswd: '',
                 errorMsg: '',
                 showMsg:false
@@ -35,53 +35,36 @@
         },
         methods: {
             doLogin: async function (){
-                if(this.userName=='' && this.userPasswd==''){
-                    this.errorMsg = '账号和密码不能为空';
-                    this.showMsg=true;
+                if(this.phoneNumber == '' || this.userPasswd == ''){
+                    this.errorMsg = '账号或者密码不能为空';
+                    this.showMsg = true;
                     return;
+                }     
+                // this.$router.push({ path: "/home" });
+                let params = {
+                    phoneNumber: this.phoneNumber,
+                    password: this.userPasswd
+                };
+                this.$Loading.start();
+                let response = await login(params);
+                if (response.meta.code !== 0) {
+                    this.$Message.error(response.meta.message);
+                }else{
+                    let user = response.data.user;
+                    let role = user.roles[0].id;
+                    this.$store.set(DISTRICTID, user.districtId);
+                    this.$store.set(STATIONID, user.stationId);
+                    this.$store.set(USERNAME, user.userName);
+                    this.$store.set(POSITIONID, user.positionId);
+                    this.$store.set(SCHEDULE_IDENTIFY, response.data.token);
+                    this.$store.set(ROLEID, role);
+                    this.$store.set(DISTRICTID_NAME, user.districtName);
+                    if(role === 3){
+                        this.$router.push({ path: "/schedulePlan" });
+                    }else{
+                        this.$router.push({ path: "/home" });
+                    }
                 }
-                if(this.userName=='' && !this.userPasswd==''){
-                    this.errorMsg = '账号不能为空';
-                    this.showMsg=true;
-                    return;
-                }
-                if(!this.userName=='' && this.userPasswd==''){
-                    this.errorMsg = '密码不能为空';
-                    this.showMsg=true;
-                    return;
-                }
-                // 若用户名为admin密码为123456则允许登录
-                //  if(this.userName === 'admin' && this.userPasswd === '123456'){
-                //      this.$router.push({ path: "/home" });
-                   let params = {
-                       userName: this.userName,
-                       password: this.userPasswd
-                   };
-                   this.$Loading.start();
-                   let response = await login(params);
-                   if (response.meta.code !== 0) {
-                       this.$Message.error(response.meta.message);
-                   }else{
-                       let user = response.data.user;
-                       let role = user.roles[0].id;
-                       this.$store.set(DISTRICTID, user.districtId);
-                       this.$store.set(STATIONID, user.stationId);
-                       this.$store.set(USERNAME, user.userName);
-                       this.$store.set(POSITIONID, user.positionId);
-                       this.$store.set(SCHEDULE_IDENTIFY, response.data.token);
-                       this.$store.set(ROLEID, role);
-                       this.$store.set(DISTRICTID_NAME, user.districtName);
-                       if(role === 3){
-                           this.$router.push({ path: "/schedulePlan" });
-                       }else{
-                           this.$router.push({ path: "/home" });
-                       }
-                       
-                   }
-                //  }else{
-                //      this.errorMsg = '账号或密码错误';
-                //      $('#errorMsg').css('display','block');
-                //  }
             }
         }
     }

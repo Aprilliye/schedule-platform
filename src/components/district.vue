@@ -16,7 +16,7 @@
                         </a>
                         <DropdownMenu slot="list">
                             <DropdownItem><a @click="beforeUpdateDistrice">修改站区</a></DropdownItem>
-                            <DropdownItem><a @click="modal.setUserManager = true">设置管理员</a></DropdownItem>
+                            <DropdownItem><a @click="beforeSetManager">设置管理员</a></DropdownItem>
                             <DropdownItem><a @click="modal.addStation = true">添加站点</a></DropdownItem>
                             <DropdownItem><a class="red" @click="beforeDeleteDistrict">删除站区</a></DropdownItem>
                         </DropdownMenu>
@@ -112,15 +112,11 @@
         props:['item'],
         created: function () {
             this.getStations(this.item.id);
-            this.getUser();
         },
         methods:{
             //  获取用户
             getUser: async function () {
-                let response = await getUser();
-                if(response.meta.code === 0){
-                    this.users = response.data;
-                }
+                
             },
             //  修改站区
             beforeUpdateDistrice: function () {
@@ -259,6 +255,15 @@
                 this.editStation = false;
             },
             // 设置管理员
+            beforeSetManager: async function () {
+                let response = await getUser();
+                if(response.meta.code === 0){
+                    this.users = response.data;
+                    this.modal.setUserManager = true;
+                    return;
+                }
+                this.$Message.error(response.meta.message);
+            },
             clickUser: function (e) {
                 let obj = $(e.target);
                 obj.toggleClass('activeSpan');

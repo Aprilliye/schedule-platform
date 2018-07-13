@@ -9,17 +9,6 @@
               </i-col>
               <i-col span="21">
                 <p>运三公司新班制辅助管理系统</p>
-                <!-- <div class="dropdown">
-                    <Dropdown class="btn float-right">
-                        <a href="">
-                            <span class="caret">admin</span>
-                            <Icon type="arrow-down-b"></Icon>
-                        </a>
-                        <DropdownMenu slot="list">
-                            <DropdownItem><a href="">退出</a></DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                </div> -->
                   <div class="right">
                       <span class="username">{{userName}}</span>
                       <a class="logout" @click="doLogout">退出</a>
