@@ -456,3 +456,16 @@ select {
   line-height: 20px;
   border-radius: 4px;
 }
+#selectFile {
+  position: relative;
+}
+#selectFile span {
+  margin-left: 10px;
+}
+#holidayFile {
+  position: absolute;
+  left: 0;
+  width: 80px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+}

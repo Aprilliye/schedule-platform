@@ -50,6 +50,8 @@ export const updatePeriod = data => fetch('/duty/period' , data, 'PUT');
 /** 删除时间段 */
 export const detelePeriod = id => fetch('/duty/period/' + id, {}, 'DELETE');
 
+/*************************** 工作流程 *******************************/
+
 /** 获取工作流程 */
 export const getWorkFlow = id => fetch('/workflow/'+ id, {}, 'GET');
 
@@ -94,11 +96,6 @@ export const setTemplateClass = data => fetch('/schedule/settemplateclass', data
 
 /** 手动排班删除班次 */
 export const deleteTemplateClass = id => fetch('/schedule/template/' + id, {}, 'DELETE');
-
-/******************  权限管理  ******************/
-
-/** 获取所有权限 */
-export const getAllPermissions = () => fetch('/permissions', {}, 'GET');
 
 /**************************** 排班表格 ****************************/
 /** 查询排班计划 */

@@ -56,6 +56,7 @@ export const updateUser = data => fetch('/user', data, 'PUT');
 /** 删除用户 */
 export const deleteUser = id => fetch('/user/' + id, {}, 'DELETE');
 
+
 /***************************** 权限设置*********************************/
 
 /** 新增角色 */
@@ -66,3 +67,15 @@ export const getCurrentRole = id => fetch('/role/' + id , {}, 'GET');
 
 /** 更新当前角色权限 */
 export const updateCurrentRole = (id, data) => fetch('/role/' + id , data, 'PUT');
+
+/** 获取所有权限 */
+export const getAllPermissions = () => fetch('/permissions', {}, 'GET');
+
+
+/***************************** 年假管理  *********************************/
+
+/** 获取年假额度 */
+export const getHoliday = data => fetch('/holiday', data, 'GET');
+
+/** 导入年假 */
+export const importHoliday = data => fetch('/holiday', data, 'POST');
