@@ -28,7 +28,7 @@ export default {
             columns: [
                 {
                     title: '操作人',
-                    key: 'operationName'
+                    key: 'operatorName'
                 },
                 {
                     title: '操作时间',

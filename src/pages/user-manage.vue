@@ -55,7 +55,10 @@
                         </thead>
                         <tbody id="userDataTable">
                             <tr v-for="(item,index) in userList" :key='index' :id="index+'-'+item.id">
-                                <td><a style="margin-right: 5px; color: #0000FF" @click="removeLine(item)">删除</a><a style="color: #0000FF" @click="editPersonMethod(item)">修改</a></td>
+                                <td>
+                                    <a style="margin-right: 5px; color: #0000FF" @click="removeLine(item)">删除</a>
+                                    <a style="color: #0000FF" @click="editPersonMethod(item)">修改</a>
+                                </td>
                                 <td>{{item.employeeCard}}</td>
                                 <td>{{item.userName}}</td>
                                 <td>{{item.gender === '1' ? '男' : '女'}}</td>
@@ -84,7 +87,7 @@
                     </table>
                 </div>
             </div>
-            <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage"></Page>
+            <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
             <!-- 表格 end -->
         </form>
         <!--新增人员-->
@@ -94,7 +97,7 @@
                 width="800"
                 :loading="true"
                 @on-ok="addUser('addUserData')"
-                @on-cancel="beforeCancel('addUserData')"
+                @on-cancel="cancel('addUserData')"
                 :mask-closable="false">
                 <Form ref="addUserData" :model="addUserData" :label-width="120" :rules="rule">
                     <FormItem label="员工卡号" prop="employeeCard" class="userModal">
@@ -216,7 +219,7 @@
             v-model="editPersonModal"
             width="800"
             @on-ok="editPersonModalMethod('editUser')"
-            @on-cancel="beforeCancel('editUser')"
+            @on-cancel="cancel('editUser')"
             :loading="true"
             :mask-closable="false">
             <Form ref="editUser" :model="editUser" :label-width="120" :rules="rule">
@@ -495,7 +498,7 @@
         },
         methods:{
             // 改变页数
-            changepage:function(index){
+            changePage:function(index){
                 var _start = ( index - 1 ) * this.pageSize;
                 var _end = index * this.pageSize;
                 this.userList = this.historyUserList.slice(_start,_end);
@@ -695,11 +698,14 @@
                 this.EditId = item.id;
                 // 判断角色获取站点
                 if(this.role === 1){
-                   this.getAllStations(this.districtId);
+                    this.getAllStations(this.districtId);
                 }else if(this.role === 2){
                     this.getAllStations(item.districtId);
                 }
-                this.editUser = item;
+                //this.editUser = item;
+                for (let key in item) {
+                    this.editUser[key] = item[key];
+                }
                 this.editUser.backup = item.backup.toString();
                 this.editPersonModal = true;
             },
@@ -750,7 +756,7 @@
                 this.$Message.error(message);
             },
             // 取消提交清空验证信息
-            beforeCancel:function (name){
+            cancel:function (name){
                 this.$refs[name].resetFields();
                 console.log(this.userList);
                 //this.position = [];
