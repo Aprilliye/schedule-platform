@@ -90,8 +90,7 @@
             v-model="modal.addClass"
             @on-ok="addClassMethods('addFormValidateClass')"
             @on-cancel="handleCancel('addFormValidateClass')"
-            :loading="true"
-            >
+            :loading="true">
             <Form ref="addFormValidateClass" :model="addFormValidateClass" :rules="ruleValidate1" :label-width="80">
                 <FormItem label="班次名称" prop="dutyName">
                     <Input v-model="addFormValidateClass.dutyName" placeholder=""/>
@@ -145,8 +144,7 @@
                v-model="modal.editShifyClass"
                :loading="true"
                @on-ok="editShifyClassMethods('editFormValidateClass')"
-               @on-cancel="handleCancel('editFormValidateClass')"
-                >
+               @on-cancel="handleCancel('editFormValidateClass')">
             <Form ref="editFormValidateClass" :model="editFormValidateClass" :rules="ruleValidate1" :label-width="80">
                 <FormItem label="班次名称" prop="dutyName">
                     <Input v-model="editFormValidateClass.dutyName" placeholder=""/>
@@ -175,7 +173,6 @@
                     </Poptip>
                 </FormItem>
                 <FormItem label="起止时间" prop="timeSlot" element-id="timeSlot" >
-                    <!-- <TimePicker  v-model="editFormValidateClass.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm"  @on-change="getsectionTime" :value='editShiftValue'></TimePicker> -->
                     <TimePicker  v-model="editFormValidateClass.startTimeStr" placeholder="选择开始时间" format="HH:mm" ></TimePicker>至
                     <TimePicker  v-model="editFormValidateClass.endTimeStr" placeholder="选择结束时间" format="HH:mm" ></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="editFormValidateClass.ifTimeSlot">时间段不能为空</div>
@@ -319,14 +316,6 @@ export default {
             },
             // 切换tab显示班制内容
             suitBody:true,
-        //     // 当前站区id
-        //     dutyDistrictId:null,
-        //     // 当前站区名
-        //     dutyDistrictName:'',
-        //    // 当前站点id
-        //     dutyStationId:null,
-        //     // 当前站点名
-        //     dutyStationName:'',
             districtId: this.$store.get('districtId'),
             stationId: this.$store.get('stationId'),
             // 当前班次id
@@ -335,13 +324,8 @@ export default {
             currentPeriod: null,
             //  班制
             suites: [],
-            //  站区
-            //districts: [],
             //  站点
             stations: [],
-            // 当前关联班次
-            //CurrentRelevantClassId:null,
-            //modal3:false,
             editTime:[],
             addTime:[],
             modal: {
@@ -702,7 +686,7 @@ export default {
             let response = await getStations(id);
             let message = response.meta.message;
             if(response.meta.code === 0){
-                 this.stations = response.data;
+                this.stations = response.data;
                 return;
             }
             this.$Message.error(message);

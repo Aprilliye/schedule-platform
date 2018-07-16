@@ -39,18 +39,19 @@
                                 <th width="80">是否备班人员</th>
                                 <th width="80" v-show="tableItem[0].ifShow">身份证</th>
                                 <th width="120" v-show="tableItem[1].ifShow">入职时间</th>
-                                <th width="80" v-show="tableItem[2].ifShow">婚姻状况</th>
-                                <th width="80" v-show="tableItem[3].ifShow">有无子女</th>
-                                <th width="80" v-show="tableItem[4].ifShow">学历</th>
-                                <th width="80" v-show="tableItem[5].ifShow">政治面貌</th>
-                                <th width="120" v-show="tableItem[6].ifShow">入党时间</th>
-                                <th width="200" v-show="tableItem[7].ifShow">住址</th>
-                                <th width="80" v-show="tableItem[8].ifShow">站务员证书编号</th>
-                                <th width="80" v-show="tableItem[9].ifShow">站务员证书等级</th>
-                                <th width="80" v-show="tableItem[10].ifShow">人员编码</th>
-                                <th width="80" v-show="tableItem[11].ifShow">消防证书编号</th>
-                                <th width="80" v-show="tableItem[12].ifShow">综控员证书编号</th>
-                                <th width="80" v-show="tableItem[13].ifShow">综控员证书级别</th>
+                                <th width="120" v-show="tableItem[2].ifShow">参加工作时间</th>
+                                <th width="80" v-show="tableItem[3].ifShow">婚姻状况</th>
+                                <th width="80" v-show="tableItem[4].ifShow">有无子女</th>
+                                <th width="80" v-show="tableItem[5].ifShow">学历</th>
+                                <th width="80" v-show="tableItem[6].ifShow">政治面貌</th>
+                                <th width="120" v-show="tableItem[7].ifShow">入党时间</th>
+                                <th width="200" v-show="tableItem[8].ifShow">住址</th>
+                                <th width="80" v-show="tableItem[9].ifShow">站务员证书编号</th>
+                                <th width="80" v-show="tableItem[10].ifShow">站务员证书等级</th>
+                                <th width="80" v-show="tableItem[11].ifShow">人员编码</th>
+                                <th width="80" v-show="tableItem[12].ifShow">消防证书编号</th>
+                                <th width="80" v-show="tableItem[13].ifShow">综控员证书编号</th>
+                                <th width="80" v-show="tableItem[14].ifShow">综控员证书级别</th>
                             </tr>
                         </thead>
                         <tbody id="userDataTable">
@@ -70,24 +71,25 @@
                                 <td>{{item.backup === 1 ? '是' : '否'}}</td>
                                 <td v-show="tableItem[0].ifShow">{{item.idCardNumber}}</td>
                                 <td v-show="tableItem[1].ifShow">{{item.entryDate}}</td>
-                                <td v-show="tableItem[2].ifShow">{{item.isMarried === '1' ? '已婚' : '未婚'}}</td>
-                                <td v-show="tableItem[3].ifShow">{{item.hasChild === '1' ? '已育' : '未育'}}</td>
-                                <td v-show="tableItem[4].ifShow">{{item.eduBackGround}}</td>
-                                <td v-show="tableItem[5].ifShow">{{item.partyMember}}</td>
-                                <td v-show="tableItem[6].ifShow">{{item.joinDate}}</td>
-                                <td v-show="tableItem[7].ifShow">{{item.homeAddress}}</td>
-                                <td v-show="tableItem[8].ifShow">{{item.certNo}}</td>
-                                <td v-show="tableItem[9].ifShow">{{item.certLevel}}</td>
-                                <td v-show="tableItem[10].ifShow">{{item.employeeCode}}</td>
-                                <td v-show="tableItem[11].ifShow">{{item.xfzNo}}</td>
-                                <td v-show="tableItem[12].ifShow">{{item.zwyNo}}</td>
-                                <td v-show="tableItem[13].ifShow">{{item.zwyLevel}}</td>
+                                <td v-show="tableItem[2].ifShow">{{item.beginWorkDate}}</td>
+                                <td v-show="tableItem[3].ifShow">{{item.isMarried === '1' ? '已婚' : '未婚'}}</td>
+                                <td v-show="tableItem[4].ifShow">{{item.hasChild === '1' ? '已育' : '未育'}}</td>
+                                <td v-show="tableItem[5].ifShow">{{item.eduBackGround}}</td>
+                                <td v-show="tableItem[6].ifShow">{{item.partyMember}}</td>
+                                <td v-show="tableItem[7].ifShow">{{item.joinDate}}</td>
+                                <td v-show="tableItem[8].ifShow">{{item.homeAddress}}</td>
+                                <td v-show="tableItem[9].ifShow">{{item.certNo}}</td>
+                                <td v-show="tableItem[10].ifShow">{{item.certLevel}}</td>
+                                <td v-show="tableItem[11].ifShow">{{item.employeeCode}}</td>
+                                <td v-show="tableItem[12].ifShow">{{item.xfzNo}}</td>
+                                <td v-show="tableItem[13].ifShow">{{item.zwyNo}}</td>
+                                <td v-show="tableItem[14].ifShow">{{item.zwyLevel}}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
+            <Page :total="dataCount" :current='currentPage' :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
             <!-- 表格 end -->
         </form>
         <!--新增人员-->
@@ -248,7 +250,7 @@
                 </FormItem>
                 <FormItem label="站点" prop="stationId" class="userModal" v-show="showStation">
                     <Select v-model="editUser.stationId" >
-                            <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
+                        <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="角色" prop="roleId" class="userModal">
@@ -275,7 +277,7 @@
                     <i-input placeholder="例2015-03-06" v-model="editUser.entryDate"></i-input>
                 </FormItem>
                 <FormItem label="参加工作时间" prop="beginWorkDate" class="userModal">
-                        <i-input placeholder="例2015-03-06" v-model="addUserData.beginWorkDate"></i-input>
+                        <i-input placeholder="例2015-03-06" v-model="editUser.beginWorkDate"></i-input>
                 </FormItem>
                 <FormItem label="婚否" prop="isMarried" class="userModal">
                     <Select  v-model="editUser.isMarried">
@@ -364,6 +366,8 @@
                 pageSize:10,
                 // 获取userList
                 historyUserList:[],
+                // 当前显示页数
+                currentPage:1,
                 showStation:true,
                 fuzzyQueryModal:'',
                 showDistrict:false,
@@ -381,6 +385,10 @@
                     },
                     {
                         name: '入职时间',
+                        ifShow: false
+                    },
+                     {
+                        name: '参加工作时间',
                         ifShow: false
                     },
                     {
@@ -502,6 +510,7 @@
                 var _start = ( index - 1 ) * this.pageSize;
                 var _end = index * this.pageSize;
                 this.userList = this.historyUserList.slice(_start,_end);
+                this.currentPage = index;
             },
             //  获取用户列表
             getUserList: async function () {
@@ -587,20 +596,10 @@
                     }
                 }
                 this.userPort = (this.role === 1 ? true : false);
-                // if(this.role === 1){
-                //     this.userPort = true;
-                // }else{
-                //     this.userPort = false;
-                // }
             },
             // 判断是否显示站点
             chosePost: function(id){
                 this.showStation = (id === 1 ? false : true);
-                // if(id === 1){
-                //     this.showStation = false;
-                // }else{
-                //     this.showStation = true;
-                // }
             },
             // 获取站点和岗位
             getAllStations: async function (id) {
@@ -653,7 +652,7 @@
                 }else{
                     this.$Loading.finish();
                     this.userList = response.data;
-                    this.$Message.success("删除人员成功")
+                    this.$Message.success("删除人员成功");
                 } 
             },
              //编辑人员提交验证
@@ -670,7 +669,10 @@
                 })
             },
             beforeEditPersonModalMethod: async function (that) {
-                let data = that.cloneObj(that.editUser);
+                let data ={};
+                 for (let key in that.editUser) {
+                    data[key] = that.editUser[key];
+                }
                 if(that.role === 2){
                     data.districtId = that.districtId;
                 }else if(that.role === 1){
@@ -682,18 +684,24 @@
                     that.$Message.error(response.meta.message);
                 }else{
                     that.$Loading.finish();
-                    that.userList = response.data;
-                    that.$Message.success("修改人员成功")
+                     // 获取分页
+                    that.userList = [];
+                    that.historyUserList = response.data;
+                    that.dataCount = response.data.length;
+                    if(that.historyUserList.length < that.pageSize){
+                        that.userList = that.historyUserList;
+                    }else{
+                        that.userList = that.historyUserList.slice(0,that.pageSize);
+                    }
+                    that.currentPage = 1;
+                    that.$Message.success("修改人员成功");
                 } 
             },
             // 编辑人员
             editPersonMethod: function (item) {
+                console.log(this.position);
+                console.log(this.stations);
                 this.showStation = (item.positionName === "替班员" ? false : true);
-                // if(item.positionName==="替班员"){
-                //     this.showStation = false;
-                // }else{
-                //     this.showStation = true;
-                // }
                 // 获取编辑id
                 this.EditId = item.id;
                 // 判断角色获取站点
@@ -706,21 +714,23 @@
                 for (let key in item) {
                     this.editUser[key] = item[key];
                 }
+                console.log(this.editUser.positionId);
+                console.log(this.editUser.stationId);
                 this.editUser.backup = item.backup.toString();
                 this.editPersonModal = true;
             },
-            // 对象深度拷贝
-            cloneObj:function(obj){
-                var newObj = {};
-                if (obj instanceof Array) {
-                    newObj = [];
-                }
-                for (var key in obj) {
-                    var val = obj[key];
-                    newObj[key] = typeof val === 'object' ? arguments.callee(val) : val;
-                }
-                return newObj;
-            },
+            // // 对象深度拷贝
+            // cloneObj:function(obj){
+            //     var newObj = {};
+            //     if (obj instanceof Array) {
+            //         newObj = [];
+            //     }
+            //     for (var key in obj) {
+            //         var val = obj[key];
+            //         newObj[key] = typeof val === 'object' ? arguments.callee(val) : val;
+            //     }
+            //     return newObj;
+            // },
             // 新增人员
             addUser: function (name) {
                 let self = this;
@@ -758,9 +768,8 @@
             // 取消提交清空验证信息
             cancel:function (name){
                 this.$refs[name].resetFields();
-                console.log(this.userList);
-                //this.position = [];
-                //this.stations = [];
+                this.position = [];
+                this.stations = [];
             }
         }
 }
