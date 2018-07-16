@@ -116,16 +116,6 @@
                 post: null,
                 userName: '',
                 modal:{
-                    editVocation:false,
-                    shiftChange:false,
-                    provisionalDisposition:false,
-                    absenteeism:false,
-                    overtime:false,
-                    substitute:false,
-                    transfer:false,
-                    smallVocation:false,
-                    other:false,
-                    annualLeave:false,
                     showLeaveInfo: false
                 },
                 stationList: [],
@@ -152,7 +142,7 @@
                 content: '',
                 userList: [],
                 instead: null,
-                month: '',
+                month: new Date(),
                 colorMap: new Map([
                     [1, '#fffc00'],
                     [2, '#fffc00'],
@@ -222,10 +212,18 @@
                 let startDateStr = '';
                 let endDateStr = '';
                 if(this.bgBlueClass){
+                    if(!startDateStr || !endDateStr){
+                        this.$Message.warning('开始日期和结束日期不能为空');
+                        return;
+                    }
                     startDateStr = this.$conversion(this.startDateStr);
                     endDateStr = this.$conversion(this.endDateStr);
                 } else {
                     let date = this.month;
+                    if(!date){
+                        this.$Message.warning('请选择月份');
+                        return;
+                    }
                     let year = date.getFullYear();
                     let month = date.getMonth() + 1;
                     let days = this.getMonthDays(year, month);
@@ -233,10 +231,7 @@
                     startDateStr = str + '01';
                     endDateStr = str + days;
                 }
-                if(!startDateStr || !endDateStr){
-                    this.$Message.warning('开始日期和结束日期不能为空');
-                    return;
-                }
+                
                 let data = {
                     startDateStr: startDateStr,
                     endDateStr: endDateStr
@@ -377,7 +372,6 @@
                 if(this.month){
                     this.getMonthData(this.month);
                 }
-                
             },
             //  显示请假信息
             showLeaveInfo: function (e) {
