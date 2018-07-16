@@ -23,26 +23,27 @@
         <div class="panel-body">
             <table cellpadding=0 cellspacing=0 class="workHourTable">
                 <tr>
-                    <th v-for="(item,index) in titleList" :key="index">{{item}}</th>
+                    <th v-for="(item,index) in tableTitle" :key="index">{{item}}</th>
                 </tr>
                 <template v-for="list in data">
-                    <tr>
-                        <td :rowspan="list[1].length">{{list[0]}}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr :key="list.name">
+                        <td :rowspan="list.other.length+1">{{list.name}}</td>
+                        <td>{{list.first.districtName}}</td>
+                        <td>{{list.first.averWorkerCount}}</td>
+                        <td>{{list.first.plannedHours}}</td>
+                        <td>{{list.first.actualHours}}</td>
+                        <td>{{list.first.workedRate}}</td>
+                        <td>{{list.first.extraHours}}</td>
+                        <td>{{list.first.offWorkRate}}</td>
                     </tr>
-                    <tr v-for="item in list[1]" :key="item.id">
+                    <tr v-for="item in list.other" :key="item.id">
                         <td>{{item.districtName}}</td>
                         <td>{{item.averWorkerCount}}</td>
                         <td>{{item.plannedHours}}</td>
                         <td>{{item.actualHours}}</td>
-                        <td>{{item.workedRate}}</td>
+                        <td>{{item.workedRate + '%'}}</td>
                         <td>{{item.extraHours}}</td>
-                        <td>{{item.offWorkRate}}</td>
+                        <td>{{item.offWorkRate + '%'}}</td>
                     </tr>
                 </template>
             </table>
@@ -62,7 +63,7 @@ import {getDistricts, getWorkload} from '@/api/commonAPI';
                 districtId: null,
                 districtList:[],
                 //  工时兑现：实际工时/计划工时，平均人数：每月在册人数
-                titleList:['线别','部门','平均人数','计划工时','实际工时','工时兑现','加班工时','缺勤率'],
+                tableTitle:['线别','站区','平均人数','计划工时','实际工时','工时兑现','加班工时','缺勤率'],
                 linesStation:['---','---','总结'],
                 linesTable:[
                     {
@@ -129,8 +130,15 @@ import {getDistricts, getWorkload} from '@/api/commonAPI';
                 if(response.meta.code === 0){
                     this.$Message.success(message);
                     let data = response.data;
+                    this.data = [];
                     for (let key in data) {
-                        this.data.push([key, data[key]]);
+                        let other = data[key];
+                        let first = data[key].splice(0, 1);
+                        this.data.push({
+                            name: key,
+                            first: first[0],
+                            other: other
+                        });
                     }
                     return;
                 }
