@@ -216,6 +216,7 @@
             v-model="editPersonModal"
             width="800"
             @on-ok="editPersonModalMethod('editUser')"
+            @on-cancel="beforeCancel('editUser')"
             :loading="true"
             :mask-closable="false">
             <Form ref="editUser" :model="editUser" :label-width="120" :rules="rule">
@@ -751,8 +752,9 @@
             // 取消提交清空验证信息
             beforeCancel:function (name){
                 this.$refs[name].resetFields();
-                this.position = [];
-                this.stations = [];
+                console.log(this.userList);
+                //this.position = [];
+                //this.stations = [];
             }
         }
 }
