@@ -439,7 +439,7 @@
                 let startDateStr = '';
                 let endDateStr = '';
                 if(this.bgBlueClass){
-                    if(!startDateStr || !endDateStr){
+                    if(!this.startDateStr || !this.endDateStr){
                         this.$Message.warning('开始日期和结束日期不能为空');
                         return;
                     }
