@@ -32,8 +32,6 @@
                         <input type="text" v-model.trim="userName" placeholder="姓名/编号" style="border: 0">
                     </p>
                     <button type="button" class="btnDefault bgBlue" @click="getScheduleInfo">查询</button>
-                    <button type="button" class="btnDefault">导出</button>
-                    <button type="button" class="btnDefault">导出个人</button>
                 </div>
             </div>
             <div class="panel-body">
@@ -261,7 +259,7 @@
                                 if(leaveList.length>0){
                                     leavehours = leaveList[0].leaveHours;
                                     leavehours = leaveList[0].leaveHours;
-                                    color = this.colorMap.get(leaveList[0].type);
+                                    color = this.colorMap.get(leaveList[0].leaveType);
                                     countOriginal = leaveList[0].countOriginal;
                                     if(leaveList.length>1){
                                         leavehours = 0;

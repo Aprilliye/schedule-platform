@@ -33,7 +33,7 @@
                     </p>
                     <button type="button" class="btnDefault bgBlue" @click="getScheduleInfo">查询</button>
                     <button type="button" class="btnDefault">导出</button>
-                    <button type="button" class="btnDefault">导出个人</button>
+                    <button type="button" class="btnDefault" @click="exportImg">导出个人</button>
                 </div>
             </div>
             <div class="panel-body">
@@ -61,7 +61,7 @@
                             <th>实际工时</th>
                             <th>结余</th>
                         </tr>
-                        <tr v-for="item in data" :key="item.id">
+                        <tr v-for="item in data" :key="item.id" :backup="item.backup">
                             <td  :id="item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
                             <td>{{item.positionName}}</td>
                             <!--周表点击事件-->
@@ -96,9 +96,8 @@
                 <div class="tdMessage" v-show="modal.showLeaveInfo" @mouseleave="modal.showLeaveInfo = false">
                     <div v-for="item in currentSchedule.leaveList" :key="item.id">
                         <p>假期类型：{{item.leaveDesc || ''}}</p>
-                        <p>替班员：--</p>
-                        <p>备注：{{item.content || ''}}</p>
-                        <!-- <p>创建时间：{{item.leaveDesc || ''}}</p> -->
+                        <p>替班员：{{item.exchangeUserName}}</p>
+                        <p>备注：{{item.comment || ''}}</p>
                     </div>
                 </div>
             </div>
@@ -311,7 +310,7 @@
     </div>
 </template>
 <script>
-    import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft} from '@/api/api';
+    import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft, exportImg} from '@/api/api';
     import {getStations, getBackupUser} from '@/api/commonAPI';
     export default {
         data: function() {
@@ -441,32 +440,10 @@
             },
             //  获取排班计划
             getScheduleInfo: async function () {
-                let startDateStr = '';
-                let endDateStr = '';
-                if(this.bgBlueClass){
-                    if(!this.startDateStr || !this.endDateStr){
-                        this.$Message.warning('开始日期和结束日期不能为空');
-                        return;
-                    }
-                    startDateStr = this.$conversion(this.startDateStr);
-                    endDateStr = this.$conversion(this.endDateStr);
-                } else {
-                    let date = this.month;
-                    if(!date){
-                        this.$Message.warning('请选择月份');
-                        return;
-                    }
-                    let year = date.getFullYear();
-                    let month = date.getMonth() + 1;
-                    let days = this.getMonthDays(year, month);
-                    let str = year + '-' + (month < 10 ? '0' + month : month) + '-';
-                    startDateStr = str + '01';
-                    endDateStr = str + days;
+                let data = this.getQueryDate();
+                if(!data){
+                    return;
                 }
-                let data = {
-                    startDateStr: startDateStr,
-                    endDateStr: endDateStr
-                };
                 this.station && (data.stationId = this.station);
                 this.post && (data.positionId = this.post);
                 this.userName && (data.userName = this.userName);
@@ -475,7 +452,6 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    this.changeWeek();
                     let data = response.data
                     this.data = data;
                     this.$nextTick(function () {
@@ -503,7 +479,6 @@
                                 }
                                 let target = $('#'+obj.id).siblings().filter('[code="'+ date +'"]');
                                 target.html(dutyName).attr('id', schedule.id).attr('hours', hours).attr('leavehours', leavehours).attr('countoriginal', countOriginal);
-                                console.log(color)
                                 color && target.css('background-color', color);
                             }
                         }
@@ -696,7 +671,9 @@
                     }
                     
                 }
-                if(obj.attr('style')){
+                let backup = obj.parent().attr('backup');
+
+                if(obj.attr('style') && backup == '0'){
                     let scrollTop = $(window).scrollTop();
                     let left = obj.offset().left;
                     let top = obj.offset().top - scrollTop + 40;
@@ -728,6 +705,44 @@
                         this.$Message.error('获取年假余量失败');
                     }
                 }
+            },
+            //  导出个人
+            exportImg: async function () {
+                let data = this.getQueryDate();
+                if(!data){
+                    return;
+                }
+                let response = await exportImg(data);
+            },
+            //  获取日期
+            getQueryDate: function () {
+                let startDateStr = '';
+                let endDateStr = '';
+                if(this.bgBlueClass){
+                    if(!this.startDateStr || !this.endDateStr){
+                        this.$Message.warning('开始日期和结束日期不能为空');
+                        return;
+                    }
+                    startDateStr = this.$conversion(this.startDateStr);
+                    endDateStr = this.$conversion(this.endDateStr);
+                } else {
+                    let date = this.month;
+                    if(!date){
+                        this.$Message.warning('请选择月份');
+                        return;
+                    }
+                    let year = date.getFullYear();
+                    let month = date.getMonth() + 1;
+                    let days = this.getMonthDays(year, month);
+                    let str = year + '-' + (month < 10 ? '0' + month : month) + '-';
+                    startDateStr = str + '01';
+                    endDateStr = str + days;
+                }
+                let data = {
+                    startDateStr: startDateStr,
+                    endDateStr: endDateStr
+                };
+                return data;
             }
         }
     };

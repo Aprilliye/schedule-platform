@@ -109,3 +109,6 @@ export const getAnnualHoliday = userId => fetch('/holiday/annual/' + userId, {},
 
 /** 剩余病假 */ 
 export const getSickleft = id => fetch('/holiday/sickleft?scheduleInfoId=' + id, {}, 'GET');
+
+/** 导出个人排班表格 */
+export const exportImg = data => fetch('/schedule/scheduleinfo/export/img', data, 'GET');
