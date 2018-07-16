@@ -74,8 +74,8 @@
                 </div>
                 <!--假期悬浮框-->
                 <div class="vocationDiv" v-show="showMenu">
-                    <div @click="modal.annualLeave = true; leaveType = 1" code="1">年假</div>
-                    <div @click="modal.editVocation = true; leaveType = 2" code="2">假期编辑</div>
+                    <div @click="getAnnualHoliday" code="1">年假</div>
+                    <div @click="modal.editVocation = true; leaveType = 2;" code="2">假期编辑</div>
                     <div @click="modal.shiftChange; leaveType = 3" code="3">班次变更</div>
                     <div @click="modal.provisionalDisposition = true; leaveType = 4" code="4">临时安排</div>
                     <div @click="modal.absenteeism = true; leaveType = 5" code="5">旷工缺勤</div>
@@ -112,6 +112,7 @@
                 <Form :label-width="80">
                     <FormItem label="年假天数">
                         <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
+                        <p>年假剩余{{annualHoliday}}天</p>
                     </FormItem>
                     <FormItem label="替班人">
                         <Select v-model="instead">
@@ -132,22 +133,23 @@
                 :loading="true">
                 <Form :label-width="80">
                     <FormItem label="假期类型">
-                        <Select v-model="subType">
-                            <Option value="1">病假/病</Option>
-                            <Option value="2">事假/事</Option>
-                            <Option value="3">婚假/婚</Option>
-                            <Option value="4">丧假/丧</Option>
-                            <Option value="5">探亲假/探</Option>
-                            <Option value="6">生育津贴假/产1</Option>
-                            <Option value="7">企业延长产假/产2</Option>
-                            <Option value="8">男方陪产假/产陪</Option>
-                            <Option value="9">计生假/计</Option>
-                            <Option value="10">工伤假/工</Option>
-                            <Option value="11">旷工假/旷</Option>
-                            <Option value="12">搬家假/搬</Option>
-                            <Option value="13">出差假/差</Option>
-                            <Option value="14">调休/调</Option>
+                        <Select v-model="subType" @on-change="getSickleft">
+                            <Option :value="1">病假/病</Option>
+                            <Option :value="2">事假/事</Option>
+                            <Option :value="3">婚假/婚</Option>
+                            <Option :value="4">丧假/丧</Option>
+                            <Option :value="5">探亲假/探</Option>
+                            <Option :value="6">生育津贴假/产1</Option>
+                            <Option :value="7">企业延长产假/产2</Option>
+                            <Option :value="8">男方陪产假/产陪</Option>
+                            <Option :value="9">计生假/计</Option>
+                            <Option :value="10">工伤假/工</Option>
+                            <Option :value="11">旷工假/旷</Option>
+                            <Option :value="12">搬家假/搬</Option>
+                            <Option :value="13">出差假/差</Option>
+                            <Option :value="14">调休/调</Option>
                         </Select>
+                        <p v-show="subType === 1">{{sickleft.limit || ''}}，已使用{{sickleft.consumed || 0}}天</p>
                     </FormItem>
                     <FormItem label="请假天数">
                         <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
@@ -189,12 +191,12 @@
                 :loading="true">
                 <Form :label-width="100">
                     <FormItem label="临时安排类型">
-                        <Select>
-                            <Option value="培训">培训</Option>
-                            <Option value="演练">演练</Option>
-                            <Option value="会议">会议</Option>
-                            <Option value="活动">活动</Option>
-                            <Option value="考试">考试</Option>
+                        <Select v-model="subType">
+                            <Option :value="1">培训</Option>
+                            <Option :value="2">演练</Option>
+                            <Option :value="3">会议</Option>
+                            <Option :value="4">活动</Option>
+                            <Option :value="5">考试</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="额外占用工时">
@@ -309,7 +311,7 @@
     </div>
 </template>
 <script>
-    import {getScheduleInfo, getAllPost, askForLeave} from '@/api/api';
+    import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft} from '@/api/api';
     import {getStations, getBackupUser} from '@/api/commonAPI';
     export default {
         data: function() {
@@ -382,6 +384,9 @@
                     [10, '#00d537']
                 ]),
                 currentSchedule: {},          //  鼠标悬浮人员信息
+                currentId: null,
+                annualHoliday: 0,
+                sickleft: 0
             };
         },
         created: function () {
@@ -487,7 +492,7 @@
                                 if(leaveList.length>0){
                                     leavehours = leaveList[0].leaveHours;
                                     leavehours = leaveList[0].leaveHours;
-                                    color = this.colorMap.get(leaveList[0].type);
+                                    color = this.colorMap.get(leaveList[0].leaveType);
                                     countOriginal = leaveList[0].countOriginal;
                                     if(leaveList.length>1){
                                         leavehours = 0;
@@ -498,6 +503,7 @@
                                 }
                                 let target = $('#'+obj.id).siblings().filter('[code="'+ date +'"]');
                                 target.html(dutyName).attr('id', schedule.id).attr('hours', hours).attr('leavehours', leavehours).attr('countoriginal', countOriginal);
+                                console.log(color)
                                 color && target.css('background-color', color);
                             }
                         }
@@ -549,7 +555,6 @@
                 if(this.content){
                     data.content = this.content;
                 }
-                console.log(data)
                 // instead
                 let response = await askForLeave(data);
                 let message = response.meta.message;
@@ -557,11 +562,13 @@
                     let data = response.data;
                     for(let obj of data){
                         let target = $('#' + obj.scheduleInfoId);
-                        let color = this.colorMap.get(obj.type);
+                        let color = this.colorMap.get(obj.leaveType);
                         if(target.length>0){
                             target.attr('leavehours', obj.leaveHours).attr('hours', obj.countOriginal).css('background-color', color);
                         }
-                        
+                    }
+                    for(let key in this.modal){
+                        this.modal[key] = false;
                     }
                     this.countHours();
                 }
@@ -614,6 +621,7 @@
                 //防止点击自己弹框消失
                 e.stopPropagation();
                 this.showMenu = true;
+                this.currentId = parseInt(obj.siblings('.scheduleName').attr('id'));
             },
             //  显示站务员信息
             showUserInfo: function (item) {
@@ -674,7 +682,6 @@
                 if(this.month){
                     this.getMonthData(this.month);
                 }
-                
             },
             //  显示请假信息
             showLeaveInfo: function (e) {
@@ -696,8 +703,32 @@
                     $('.tdMessage').css({'left': left + 'px', 'top': top + 'px'});
                     this.modal.showLeaveInfo = true;
                 }
+            },
+            //  获取年假余量
+            getAnnualHoliday: async function () {
+                this.modal.annualLeave = true; 
+                this.leaveType = 1;
+                let response = await getAnnualHoliday(this.currentId);
+                if(response.meta.code === 0){
+                    let data = response.data;
+                    this.annualHoliday = data.limit - data.consumed;
+                } else {
+                    this.$Message.error('获取年假余量失败');
+                }
+                this.currentId = null;
+            },
+            //  获取病假余量
+            getSickleft: async function () {
+                if(this.subType == 1){
+                    let response = await getSickleft(this.scheduleInfoId);
+                    if(response.meta.code === 0){
+                        let data = response.data;
+                        this.sickleft = response.data;
+                    } else {
+                        this.$Message.error('获取年假余量失败');
+                    }
+                }
             }
-
         }
     };
 </script>
