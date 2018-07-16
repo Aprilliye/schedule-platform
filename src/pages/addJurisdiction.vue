@@ -53,8 +53,8 @@
     </div>
 </template>
 <script>
-import {getAllPermissions} from '@/api/api';
-import {addRoler} from '@/api/commonAPI';
+import {} from '@/api/api';
+import {addRoler, getAllPermissions} from '@/api/commonAPI';
     export default {
         data:function () {
             return {

@@ -54,8 +54,8 @@
     </div>
 </template>
 <script>
-    import {getAllPermissions} from '@/api/api';
-    import {getCurrentRole, updateCurrentRole} from '@/api/commonAPI';
+    import {} from '@/api/api';
+    import {getCurrentRole, updateCurrentRole, getAllPermissions} from '@/api/commonAPI';
     export default {
         data:function () {
             return {

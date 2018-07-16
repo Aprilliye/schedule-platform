@@ -216,7 +216,6 @@
             v-model="editPersonModal"
             width="800"
             @on-ok="editPersonModalMethod('editUser')"
-            @on-cancel="beforeCancel('editUser')"
             :loading="true"
             :mask-closable="false">
             <Form ref="editUser" :model="editUser" :label-width="120" :rules="rule">
