@@ -1,4 +1,3 @@
-
 <template>
     <div class="container" >
         <div class="page">
@@ -72,20 +71,6 @@
                             <td class="balance">0</td>
                         </tr>
                     </table>
-                </div>
-                <!--假期悬浮框-->
-                <div class="vocationDiv" v-show="showMenu">
-                    <div @click="modal.annualLeave = true; leaveType = 1" code="1">年假</div>
-                    <div @click="modal.editVocation = true; leaveType = 2" code="2">假期编辑</div>
-                    <div @click="modal.shiftChange; leaveType = 3" code="3">班次变更</div>
-                    <div @click="modal.provisionalDisposition = true; leaveType = 4" code="4">临时安排</div>
-                    <div @click="modal.absenteeism = true; leaveType = 5" code="5">旷工缺勤</div>
-                    <div @click="modal.overtime = true; leaveType = 6" code="6">加班补班</div>
-                    <div @click="modal.substitute; leaveType = 7" code="7">替班</div>
-                    <div @click="modal.transfer = true; leaveType = 8" code="8">调离</div>
-                    <div @click="modal.smallVocation = true; leaveType = 9" code="9">零星假</div>
-                    <div @click="modal.other = true; leaveType = 10" code="10">其它</div>
-                    <div code="11">撤销</div>
                 </div>
                 <!--个人信息悬浮框-->
                 <div class="peopleMessage" v-show="showInfo">
@@ -312,61 +297,7 @@
                 }
                 this.startDateStr = new Date(this.endDateStr.getTime() - (this.dayNum-1)*24*60*60*1000);
             },
-            //  请假
-            // askForLeave: async function () {
-            //     let scheduleInfoId = this.scheduleInfoId;
-            //     let leaveType = this.leaveType;
-            //     if(!scheduleInfoId){
-            //         return;
-            //     }
-            //     if(leaveType !== 2 || leaveType !== 4){
-            //         this.subType = 1;
-            //     }
-            //     if(!this.subType){
-            //         let mes = '请选择请假类型';
-            //         if(leaveType === 4){
-            //             mes = '请选择临时安排类型';
-            //         }
-            //         this.$Message.warning(mes);
-            //         return;
-            //     }
-            //     let data = {
-            //         scheduleInfoId: scheduleInfoId,
-            //         leaveType: leaveType,
-            //         subType: this.subType,
-            //         leaveCount: parseInt(this.leaveCount),
-            //     }
-            //     let instead = this.instead;
-            //     if(instead !== null){
-            //         data.instead = instead;
-            //     }
-            //     if(this.content){
-            //         data.content = this.content;
-            //     }
-            //     console.log(data)
-            //     // instead
-            //     let response = await askForLeave(data);
-            //     let message = response.meta.message;
-            //     if(response.meta.code === 0){
-            //         let data = response.data;
-            //         for(let obj of data){
-            //             let target = $('#' + obj.scheduleInfoId);
-            //             let color = this.colorMap.get(obj.type);
-            //             if(target.length>0){
-            //                 target.attr('leavehours', obj.leaveHours).attr('hours', obj.countOriginal).css('background-color', color);
-            //             }
-                        
-            //         }
-            //         this.countHours();
-            //     }
-                
-            //     this.scheduleInfoId = null;
-            //     this.substring = null;
-            //     this.subType = null;
-            //     this.leaveCount = 0;
-            //     this.content = '';
-            //     this.instead = null;
-            // },
+           
             //  统计工时
             countHours: function () {
                 $('.planWorkHour').each(function () {
@@ -387,28 +318,6 @@
                     }
                 })
             },
-            // clickHide: function(){
-            //     let self = this;
-            //     $(document).click(function(e){
-            //         self.showMenu = false;
-            //     });
-            // },
-            //  点击排班表格
-            // clickTd: function(e){
-            //     let obj = $(e.target);
-            //     let id = parseInt(obj.attr('id'));
-            //     if(!id){
-            //         return;
-            //     }
-            //     let scrollTop = $(window).scrollTop();
-            //     this.scheduleInfoId = id;
-            //     let left = obj.offset().left + 15;
-            //     let top = obj.offset().top - scrollTop + 40;
-            //     $('.vocationDiv').css({'left': left + 'px', 'top': top + 'px'});                
-            //     //防止点击自己弹框消失
-            //     e.stopPropagation();
-            //     this.showMenu = true;
-            // },
             //  显示站务员信息
             showUserInfo: function (item) {
                 let obj = $(window.event.target);
