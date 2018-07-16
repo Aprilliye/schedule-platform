@@ -341,3 +341,502 @@ export default {
 <style scoped>
     @import "../assets/css/index.css";
 </style>
+<template>
+    <div class="container" >
+        <div class="page">
+            <div class="content-header">
+                <div>
+                    <button class="btnDefault" :class="{'bgBlue': bgBlueClass }" @click="swichData('week', new Date())">周表</button>
+                    <button class="btnDefault" :class="{'bgBlue': !bgBlueClass }" @click="swichData('month', new Date())">月表</button>
+                    <div class="tabItem" v-show="bgBlueClass">
+                        <span>时间段：</span>
+                        <Select v-model="dayNum" style="width:200px" @on-change="changeWeek">
+                            <Option v-for="item in dayNumList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        </Select>
+                        <DatePicker v-model="startDateStr" type="date" placeholder="请选择时间" style="width: 200px" @on-change="changeDate('start')"></DatePicker> 至
+                        <DatePicker v-model="endDateStr" type="date" placeholder="请选择时间" style="width: 200px" @on-change="changeDate('end')"></DatePicker>
+                    </div>
+                    <div class="tabItem" v-show="!bgBlueClass">
+                        <span>选择月份：</span>
+                        <DatePicker v-model="month" type="month" placeholder="请选择月份" style="width: 200px" @on-change="changeMonth"></DatePicker>
+                    </div>
+                </div>
+                <div style="margin-top: 20px">
+                    <span>站点：</span>
+                    <Select v-model="station" style="width:200px" clearable>
+                        <Option v-for="item in stationList" :value="item.id" :key="item.id">{{ item.stationName }}</Option>
+                    </Select>
+                    <span>岗位：</span>
+                    <Select v-model="post" style="width:200px" clearable>
+                        <Option v-for="item in postList" :value="item.id" :key="item.id">{{ item.positionName }}</Option>
+                    </Select>
+                    <p class="selectbutton">
+                        <span class="icon-5" ></span>
+                        <input type="text" v-model.trim="userName" placeholder="姓名/编号" style="border: 0">
+                    </p>
+                    <button type="button" class="btnDefault bgBlue" @click="getScheduleInfo">查询</button>
+                    <button type="button" class="btnDefault">导出</button>
+                    <button type="button" class="btnDefault">导出个人</button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="float-right" style="margin-top: 20px">
+                    <span><i class="colori" style="background-color: #fffc00;"></i>假期</span>
+                    <span><i class="colori" style="background-color: #ff9191"></i>班次变更</span>
+                    <span><i class="colori" style="background-color: #3A6BCE"></i>临时安排</span>
+                    <span><i class="colori" style="background-color: #b10000"></i>旷工缺勤</span>
+                    <span><i class="colori" style="background-color: #00d537"></i>补班加班</span>
+                    <span><i class="colori" style="background-color: #008121"></i>替班</span>
+                </div>
+                <div class="clear"></div>
+                <div class="postformtable">
+                    <!--周表-->
+                    <table>
+                        <tr>
+                            <th rowspan="2">姓名</th>
+                            <th rowspan="2">岗位</th>
+                            <th v-for="(item, index) in dateArr" :key="'th-0-'+ index">{{item}}</th>
+                            <th colspan="3">总计：{{dateArr.length}}天</th>
+                        </tr>
+                        <tr>
+                            <th v-for="(item, index) in weekArr" :key="'th-1-'+ index">{{item}}</th>
+                            <th>计划工时</th>
+                            <th>实际工时</th>
+                            <th>结余</th>
+                        </tr>
+                        <tr v-for="item in data" :key="item.id">
+                            <td  :id="item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
+                            <td>{{item.positionName}}</td>
+                            <!--周表点击事件-->
+                            <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index"  @mouseover="showLeaveInfo">--</td>
+                            <td class="planWorkHour">0</td>
+                            <td class="actualWorkHour">0</td>
+                            <td class="balance">0</td>
+                        </tr>
+                    </table>
+                </div>
+                <!--假期悬浮框-->
+                <div class="vocationDiv" v-show="showMenu">
+                    <div @click="modal.annualLeave = true; leaveType = 1" code="1">年假</div>
+                    <div @click="modal.editVocation = true; leaveType = 2" code="2">假期编辑</div>
+                    <div @click="modal.shiftChange; leaveType = 3" code="3">班次变更</div>
+                    <div @click="modal.provisionalDisposition = true; leaveType = 4" code="4">临时安排</div>
+                    <div @click="modal.absenteeism = true; leaveType = 5" code="5">旷工缺勤</div>
+                    <div @click="modal.overtime = true; leaveType = 6" code="6">加班补班</div>
+                    <div @click="modal.substitute; leaveType = 7" code="7">替班</div>
+                    <div @click="modal.transfer = true; leaveType = 8" code="8">调离</div>
+                    <div @click="modal.smallVocation = true; leaveType = 9" code="9">零星假</div>
+                    <div @click="modal.other = true; leaveType = 10" code="10">其它</div>
+                    <div code="11">撤销</div>
+                </div>
+                <!--个人信息悬浮框-->
+                <div class="peopleMessage" v-show="showInfo">
+                    <span>电话</span><span>住址</span>
+                    <span>{{phoneNumber}}</span><span>{{homeAddress}}</span>
+                    <div class="clear"></div>
+                </div>
+                <!--请假信息悬浮框-->
+                <div class="tdMessage" v-show="modal.showLeaveInfo" @mouseleave="modal.showLeaveInfo = false">
+                    <div v-for="item in currentSchedule.leaveList" :key="item.id">
+                        <p>假期类型：{{item.leaveDesc || ''}}</p>
+                        <p>替班员：--</p>
+                        <p>备注：{{item.content || ''}}</p>
+                        <!-- <p>创建时间：{{item.leaveDesc || ''}}</p> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    import {getScheduleInfo, getAllPost, askForLeave} from '@/api/api';
+    import {getStations, getBackupUser} from '@/api/commonAPI';
+    export default {
+        data: function() {
+            return {
+                districtId: this.$store.get('districtId'),
+                data: [],
+                startDateStr: new Date(),
+                endDateStr: null,
+                beginTime:'',
+                endTime:'',
+                showTable:true,
+                bgBlueClass: true,
+                currentTd:'',
+                datatr:{},
+                clicktr:'',
+               // clicktd:'',
+                target:'',
+                dayNumList: [{value: 7, label: "一周"}, {value: 14, label: "两周"}],
+                dayNum: 7,
+                station: null,
+                post: null,
+                userName: '',
+                modal:{
+                    editVocation:false,
+                    shiftChange:false,
+                    provisionalDisposition:false,
+                    absenteeism:false,
+                    overtime:false,
+                    substitute:false,
+                    transfer:false,
+                    smallVocation:false,
+                    other:false,
+                    annualLeave:false,
+                    showLeaveInfo: false
+                },
+                stationList: [],
+                postList: [],
+                dateArr: [],
+                weekArr: [],
+                weekMap: new Map([
+                    [0, '日'],
+                    [1, '一'],
+                    [2, '二'],
+                    [3, '三'],
+                    [4, '四'],
+                    [5, '五'],
+                    [6, '六'],
+                ]),
+                phoneNumber: '',
+                homeAddress: '',
+                showInfo: false,
+                scheduleInfoId: null,
+                leaveType: null,
+                showMenu: false,
+                subType: null,
+                leaveCount: 0,
+                content: '',
+                userList: [],
+                instead: null,
+                month: '',
+                colorMap: new Map([
+                    [1, '#fffc00'],
+                    [2, '#fffc00'],
+                    [3, '#ff9191'],
+                    [4, '#3A6BCE'],
+                    [5, '#b10000'],
+                    [6, '#00d537'],
+                    [7, '#008121'],
+                    [9, '#fffc00'],
+                    [10, '#00d537']
+                ]),
+                currentSchedule: {},          //  鼠标悬浮人员信息
+            };
+        },
+        created: function () {
+            //this.clickHide();
+            this.getStations();
+            this.getAllPost();
+            this.changeWeek();
+            this.getBackupUser();
+            this.endDateStr = new Date(this.startDateStr.getTime() + 6*24*60*60*1000);
+        },
+        methods: {
+            //  获取站点
+            getStations: async function () {
+                let response = await getStations(this.districtId);
+                if(response.meta.code === 0){
+                    this.stationList = response.data;
+                    return;
+                }
+                this.$Message.error(response.meta.message);
+            },
+            //  获取岗位
+            getAllPost: async function () {
+                let response = await getAllPost(this.districtId);
+                if(response.meta.code === 0){
+                    this.postList = response.data;
+                    return;
+                }
+                this.$Message.error(response.meta.message);
+            },
+            //  获取站务员
+            getBackupUser: async function () {
+                let response = await getBackupUser(this.districtId);
+                if(response.meta.code === 0){
+                    this.userList = response.data;
+                    return;
+                }
+                this.$Message.error('站务员请求失败');
+            },
+            //  周表月表切换
+            changeWeek: function () {
+                this.dateArr = [];
+                this.weekArr = [];
+                if(this.startDateStr){
+                    for(let i=0;i<this.dayNum;i++){
+                        let date = new Date(this.startDateStr.getTime() + i*24*60*60*1000);
+                        let weekDay = this.weekMap.get(date.getDay());
+                        this.weekArr.push(weekDay);
+                        this.dateArr.push(this.$conversion(date).substring(5));
+                    }
+                }
+                this.endDateStr = new Date(this.startDateStr.getTime() + this.dayNum*24*60*60*1000);
+            },
+            //  获取排班计划
+            getScheduleInfo: async function () {
+                let startDateStr = '';
+                let endDateStr = '';
+                if(this.bgBlueClass){
+                    startDateStr = this.$conversion(this.startDateStr);
+                    endDateStr = this.$conversion(this.endDateStr);
+                } else {
+                    let date = this.month;
+                    let year = date.getFullYear();
+                    let month = date.getMonth() + 1;
+                    let days = this.getMonthDays(year, month);
+                    let str = year + '-' + (month < 10 ? '0' + month : month) + '-';
+                    startDateStr = str + '01';
+                    endDateStr = str + days;
+                }
+                if(!startDateStr || !endDateStr){
+                    this.$Message.warning('开始日期和结束日期不能为空');
+                    return;
+                }
+                let data = {
+                    startDateStr: startDateStr,
+                    endDateStr: endDateStr
+                };
+                this.station && (data.stationId = this.station);
+                this.post && (data.positionId = this.post);
+                this.userName && (data.userName = this.userName);
+
+                let response = await getScheduleInfo(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.changeWeek();
+                    let data = response.data
+                    this.data = data;
+                    this.$nextTick(function () {
+                        for(let obj of data){
+                            let list = obj.scheduleInfoList;
+                            for(let schedule of list){
+                                let date = schedule.dateStr.substring(5);
+                                let hours = schedule.workingHours;
+                                let dutyName = schedule.dutyName || '--';
+                                let leaveList = schedule.leaveList || [];
+                                let leavehours = 0;
+                                let color = '';
+                                let countOriginal = 1;
+                                if(leaveList.length>0){
+                                    leavehours = leaveList[0].leaveHours;
+                                    leavehours = leaveList[0].leaveHours;
+                                    color = this.colorMap.get(leaveList[0].type);
+                                    countOriginal = leaveList[0].countOriginal;
+                                    if(leaveList.length>1){
+                                        leavehours = 0;
+                                        for(let obj of leaveList){
+                                            leavehours += obj.leaveHours;
+                                        }
+                                    }
+                                }
+                                let target = $('#'+obj.id).siblings().filter('[code="'+ date +'"]');
+                                target.html(dutyName).attr('id', schedule.id).attr('hours', hours).attr('leavehours', leavehours).attr('countoriginal', countOriginal);
+                                color && target.css('background-color', color);
+                            }
+                        }
+                        this.countHours();
+                    })
+                    return;
+                } 
+                this.$Message.error(message);
+            },
+            //  选择日期
+            changeDate: function (str) {
+                if(!this.startDateStr || !this.endDateStr){
+                    return;
+                }
+                if(str === 'start'){
+                    this.endDateStr = new Date(this.startDateStr.getTime() + (this.dayNum-1)*24*60*60*1000);
+                    return;
+                }
+                this.startDateStr = new Date(this.endDateStr.getTime() - (this.dayNum-1)*24*60*60*1000);
+            },
+            //  请假
+            // askForLeave: async function () {
+            //     let scheduleInfoId = this.scheduleInfoId;
+            //     let leaveType = this.leaveType;
+            //     if(!scheduleInfoId){
+            //         return;
+            //     }
+            //     if(leaveType !== 2 || leaveType !== 4){
+            //         this.subType = 1;
+            //     }
+            //     if(!this.subType){
+            //         let mes = '请选择请假类型';
+            //         if(leaveType === 4){
+            //             mes = '请选择临时安排类型';
+            //         }
+            //         this.$Message.warning(mes);
+            //         return;
+            //     }
+            //     let data = {
+            //         scheduleInfoId: scheduleInfoId,
+            //         leaveType: leaveType,
+            //         subType: this.subType,
+            //         leaveCount: parseInt(this.leaveCount),
+            //     }
+            //     let instead = this.instead;
+            //     if(instead !== null){
+            //         data.instead = instead;
+            //     }
+            //     if(this.content){
+            //         data.content = this.content;
+            //     }
+            //     console.log(data)
+            //     // instead
+            //     let response = await askForLeave(data);
+            //     let message = response.meta.message;
+            //     if(response.meta.code === 0){
+            //         let data = response.data;
+            //         for(let obj of data){
+            //             let target = $('#' + obj.scheduleInfoId);
+            //             let color = this.colorMap.get(obj.type);
+            //             if(target.length>0){
+            //                 target.attr('leavehours', obj.leaveHours).attr('hours', obj.countOriginal).css('background-color', color);
+            //             }
+                        
+            //         }
+            //         this.countHours();
+            //     }
+                
+            //     this.scheduleInfoId = null;
+            //     this.substring = null;
+            //     this.subType = null;
+            //     this.leaveCount = 0;
+            //     this.content = '';
+            //     this.instead = null;
+            // },
+            //  统计工时
+            countHours: function () {
+                $('.planWorkHour').each(function () {
+                    let planTotal = 0;
+                    let actualTotal = 0;
+                    $(this).siblings('[hours]').each(function () {
+                        planTotal += parseInt($(this).attr('hours'));
+                        actualTotal += parseInt($(this).attr('leavehours'));
+                        parseInt($(this).attr('countoriginal')) && (actualTotal += parseInt($(this).attr('hours')));
+                    })
+                    let balance = actualTotal-planTotal;
+                    $(this).html(planTotal);
+                    let balanceObj = $(this).next().next();
+                    $(this).next().html(actualTotal);
+                    balanceObj.html(balance);
+                    if(balance < 0){
+                        balanceObj.addClass('red');
+                    }
+                })
+            },
+            // clickHide: function(){
+            //     let self = this;
+            //     $(document).click(function(e){
+            //         self.showMenu = false;
+            //     });
+            // },
+            //  点击排班表格
+            // clickTd: function(e){
+            //     let obj = $(e.target);
+            //     let id = parseInt(obj.attr('id'));
+            //     if(!id){
+            //         return;
+            //     }
+            //     let scrollTop = $(window).scrollTop();
+            //     this.scheduleInfoId = id;
+            //     let left = obj.offset().left + 15;
+            //     let top = obj.offset().top - scrollTop + 40;
+            //     $('.vocationDiv').css({'left': left + 'px', 'top': top + 'px'});                
+            //     //防止点击自己弹框消失
+            //     e.stopPropagation();
+            //     this.showMenu = true;
+            // },
+            //  显示站务员信息
+            showUserInfo: function (item) {
+                let obj = $(window.event.target);
+                let scrollTop = $(window).scrollTop();
+                let left = obj.offset().left + 100;
+                let top = obj.offset().top - scrollTop + 30;
+                
+                $('.peopleMessage').css({'left': left + 'px', 'top': top + 'px'});
+
+                this.phoneNumber = item.phoneNumber;
+                this.homeAddress = item.homeAddress;
+                this.showInfo = true;
+            },
+            //  模态框取消事件
+            cancel: function () {
+                this.scheduleInfoId = null;
+                this.substring = null;
+                this.subType = null;
+                this.leaveCount = 0;
+                this.content = '';
+                this.instead = null;
+            },
+            //  周表月表切换
+            swichData: function (type, date) {
+                this.dateArr = [];
+                this.weekArr = [];
+                this.data = [];
+                let days = 0;
+                let year = date.getFullYear();
+                let month = date.getMonth() + 1;
+                if(type === 'month'){
+                    this.bgBlueClass = false;
+                    days = this.getMonthDays(year, month);
+                    for(let i=1;i<=days;i++){
+                        this.dateArr.push((month<10 ? '0' + month : month) + '-' + (i<10 ? '0' + i : i));
+                        this.weekArr.push(this.getWeekDay(year, month, i));
+                    }
+                    return;
+                } 
+                this.bgBlueClass = true;
+                this.changeWeek();
+            },
+            //  根据月份获取天数
+            getMonthDays: function (year, month){
+                var stratDate = new Date(year,month-1,1),
+                endData = new Date(year,month,1);
+                var days = (endData - stratDate)/(1000*60*60*24);
+                return days;
+            },
+            //  根据日期获取周几
+            getWeekDay: function (year, month, day) {
+                let weekDay = new Date(year, month-1, day).getDay();
+                return this.weekMap.get(weekDay);
+            },
+            //  选择月份
+            changeMonth: function () {
+                if(this.month){
+                    this.getMonthData(this.month);
+                }
+                
+            },
+            //  显示请假信息
+            showLeaveInfo: function (e) {
+                let obj = $(e.target);
+                let id = parseInt(obj.attr('id'));
+                let index = obj.parent().index() - 2;
+                let schedules = this.data[index].scheduleInfoList;
+                for(let obj of schedules){
+                    if(obj.id === id){
+                        this.currentSchedule = obj;
+                        break;
+                    }
+                    
+                }
+                if(obj.attr('style')){
+                    let scrollTop = $(window).scrollTop();
+                    let left = obj.offset().left;
+                    let top = obj.offset().top - scrollTop + 40;
+                    $('.tdMessage').css({'left': left + 'px', 'top': top + 'px'});
+                    this.modal.showLeaveInfo = true;
+                }
+            }
+
+        }
+    };
+</script>
+<style scoped>
+    @import "../assets/css/index.css";
+</style>
