@@ -56,6 +56,9 @@ export const updateUser = data => fetch('/user', data, 'PUT');
 /** 删除用户 */
 export const deleteUser = id => fetch('/user/' + id, {}, 'DELETE');
 
+/** 导入用户 */
+export const importUsers = data => fetch('/user/import', data, 'POST');
+
 
 /***************************** 权限设置*********************************/
 

@@ -462,7 +462,8 @@ select {
 #selectFile span {
   margin-left: 10px;
 }
-#holidayFile {
+#holidayFile,
+#userFile {
   position: absolute;
   left: 0;
   width: 80px;

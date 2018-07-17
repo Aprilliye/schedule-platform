@@ -455,7 +455,6 @@ export default {
                 restMinutes: [
                     { required: true, message: '班次间隔不能为空', trigger: 'blur' }
                 ],
-                comment: [{required: true, message: '注意事项不能为空', trigger: 'blur'}],
                 userCount: [
                     { required: true, message: '值班人数不能为空', trigger: 'blur' }
                 ]
@@ -615,7 +614,7 @@ export default {
         },
         //  获取所有岗位
         getAllPost: async function () {
-            let response = await getAllPost(this.stationId);
+            let response = await getAllPost(this.districtId);
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.position.data = response.data;
@@ -640,9 +639,10 @@ export default {
             let currentPosition = this.position.current.split('-');
             let data = {
                 districtId: this.districtId,
-                stationId: this.stationId,
                 positionId: parseInt(currentPosition[0]),
             }
+            let stationId = this.stationId;
+            stationId && (data.stationId = stationId);
             let response = await getSuites(data);
             let message = response.meta.message;
             if(response.meta.code === 0){
@@ -736,7 +736,7 @@ export default {
             })
         },
         beforeAddTimeSlotMethods: async function (that) {
-            let data={
+            let data = {
                 suiteId: that.suiteId,
                 startTimeStr: that.addTimeValidate.timeSlot[0],
                 endTimeStr: that.addTimeValidate.timeSlot[1],
@@ -853,15 +853,20 @@ export default {
         },
         beforeAddClassMethods: async function  (that) {
             //  let data = that.cloneObj(that.addFormValidateClass);
+            let endTime = that.addFormValidateClass.endTimeStr;
+            let startTime = that.addFormValidateClass.startTimeStr;
+            if(endTime === '00:00' && parseInt(endTime) < parseInt(startTime)){
+                endTime = '24:00';
+            }
              let data = {
-                dutyName:that.addFormValidateClass.dutyName,
-                dutyCode:that.addFormValidateClass.dutyCode,
-                comment:that.addFormValidateClass.comment,
-                restMinutes:that.addFormValidateClass.restMinutes*60,
-                relevantClassId:that.addFormValidateClass.relevantDuty,
-                userCount:that.addFormValidateClass.userCount,
-                startTimeStr:that.addFormValidateClass.startTimeStr,
-                endTimeStr:that.addFormValidateClass.endTimeStr,
+                dutyName: that.addFormValidateClass.dutyName,
+                dutyCode: that.addFormValidateClass.dutyCode,
+                comment: that.addFormValidateClass.comment,
+                restMinutes: that.addFormValidateClass.restMinutes*60,
+                relevantClassId: that.addFormValidateClass.relevantDuty,
+                userCount: that.addFormValidateClass.userCount,
+                startTimeStr: startTime,
+                endTimeStr: endTime,
              }
              data.suiteId = that.suiteId;
              data.classColor = $(".shiftColor").css('background-color');
@@ -907,27 +912,32 @@ export default {
             })
         },
         beforeEditShifyClassMethods: async function (that) {
-                let data = {
-                    dutyName:that.editFormValidateClass.dutyName,
-                    dutyCode:that.editFormValidateClass.dutyCode,
-                    comment:that.editFormValidateClass.comment,
-                    restMinutes:that.editFormValidateClass.restMinutes*60,
-                    relevantClassId:that.editFormValidateClass.relevantDuty,
-                    userCount:that.editFormValidateClass.userCount,
-                    startTimeStr:that.editFormValidateClass.startTimeStr,
-                    endTimeStr:that.editFormValidateClass.endTimeStr,
-                }
-                data.id = that.classId;
-                data.classColor = $(".shiftColor").css('background-color');
-                let response = await updateClass(data);
-                let message = response.meta.message;
-                if(response.meta.code === 0){
-                that.$Message.success("编辑班次成功");
-                that.getClass(that);
-                return;
-                }else{
-                    that.$Message.error(message);
-                }
+            let endTime = that.editFormValidateClass.endTimeStr;
+            let startTime = that.editFormValidateClass.startTimeStr;
+            if(endTime === '00:00' && parseInt(endTime) < parseInt(startTime)){
+                endTime = '24:00';
+            }
+            let data = {
+                dutyName: that.editFormValidateClass.dutyName,
+                dutyCode: that.editFormValidateClass.dutyCode,
+                comment: that.editFormValidateClass.comment,
+                restMinutes: that.editFormValidateClass.restMinutes*60,
+                relevantClassId: that.editFormValidateClass.relevantDuty,
+                userCount: that.editFormValidateClass.userCount,
+                startTimeStr: startTime,
+                endTimeStr: endTime,
+            }
+            data.id = that.classId;
+            data.classColor = $(".shiftColor").css('background-color');
+            let response = await updateClass(data);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+            that.$Message.success("编辑班次成功");
+            that.getClass(that);
+            return;
+            }else{
+                that.$Message.error(message);
+            }
         },
         //  编辑班次
         edite: function(index){

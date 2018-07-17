@@ -12,6 +12,7 @@
         </div>
         <div class="panel-body">
             <Table border :columns="columns" :data="data"></Table>
+            <Page :total="dataCount" :current='currentPage' :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
         </div>
         <!--导入年假-->
         <Modal
@@ -35,7 +36,14 @@ import {getDistricts, getHoliday, importHoliday} from '@/api/commonAPI';
 export default {
     data: function () {
         return {
-            year: '',
+            dataCount: 0,
+            currentPage: 1,
+            historyUserList: [],
+            // 每页显示记录条数
+            pageSize: 10,
+            // 获取数据
+            hostoryData:[],
+            year: new Date(),
             lineNumber: '',
             columns: [
                 {
@@ -52,7 +60,7 @@ export default {
                 },
                 {
                     title: '年假额度',
-                    key: 'yearyLimit'
+                    key: 'yearlyLimit'
                 }
             ],
             data: [],
@@ -94,10 +102,22 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.$Message.success(message);
-                this.data = response.data;
+                this.hostoryData = response.data;
+                this.dataCount = response.data.length;
+                if(this.hostoryData.length < this.pageSize){
+                    this.data = this.hostoryData;
+                }else{
+                    this.data = this.hostoryData.slice(0,this.pageSize);
+                }
                 return;
             }
             this.$Message.error(message);
+        },
+        //  分页
+        changePage: function(index){
+            let start = ( index - 1 ) * this.pageSize;
+            let end = index * this.pageSize;
+            this.data = this.hostoryData.slice(start,end);
         },
         //  选择文件
         selectFile: function () {

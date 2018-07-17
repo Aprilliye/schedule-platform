@@ -174,7 +174,7 @@
                     return;
                 }
                 let data = {
-                    districtId: this.districtId,
+                    districtId: this.item.id,
                     stationName: name
                 }
                 let response = await addStation(data);

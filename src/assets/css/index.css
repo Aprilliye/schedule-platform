@@ -385,3 +385,9 @@
     float: right;
     margin-top:10px;
 }
+.ivu-form-item-content .orange{
+    position: absolute;
+    font-size: 12px;
+    line-height: 30px;
+    top: 30px;
+}

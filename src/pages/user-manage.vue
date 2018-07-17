@@ -4,7 +4,7 @@
             <div class="content-header">
                 <div class="float-left">
                     <button class="btnDefault bgGreen mansgebutton" type="button" @click="addPersonModal = true">新增人员</button>
-                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="userPort">导入</a>
+                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="userPort" @click="importUserModal = true">导入</a>
                     <a class="btnDefault">模板</a>
                 </div>
                 <div class=" float-right">
@@ -62,7 +62,7 @@
                                 </td>
                                 <td>{{item.employeeCard}}</td>
                                 <td>{{item.userName}}</td>
-                                <td>{{item.gender === '1' ? '男' : '女'}}</td>
+                                <td>{{item.gender}}</td>
                                 <td>{{item.phoneNumber}}</td>
                                 <td>{{item.birthday}}</td>
                                 <td>{{item.positionName}}</td>
@@ -72,8 +72,8 @@
                                 <td v-show="tableItem[0].ifShow">{{item.idCardNumber}}</td>
                                 <td v-show="tableItem[1].ifShow">{{item.entryDate}}</td>
                                 <td v-show="tableItem[2].ifShow">{{item.beginWorkDate}}</td>
-                                <td v-show="tableItem[3].ifShow">{{item.isMarried === '1' ? '已婚' : '未婚'}}</td>
-                                <td v-show="tableItem[4].ifShow">{{item.hasChild === '1' ? '已育' : '未育'}}</td>
+                                <td v-show="tableItem[3].ifShow">{{item.isMarried}}</td>
+                                <td v-show="tableItem[4].ifShow">{{(item.hasChild || 0) + '个'}}</td>
                                 <td v-show="tableItem[5].ifShow">{{item.eduBackGround}}</td>
                                 <td v-show="tableItem[6].ifShow">{{item.partyMember}}</td>
                                 <td v-show="tableItem[7].ifShow">{{item.joinDate}}</td>
@@ -111,14 +111,14 @@
                     <FormItem label="姓名" prop="userName" class="userModal">
                         <i-input v-model="addUserData.userName"></i-input>
                     </FormItem>
+                    <FormItem label="密码" prop="password" class="userModal">
+                        <i-input v-model="addUserData.password"></i-input>
+                        <span class="orange">请记录此密码作为下次登录用</span>
+                    </FormItem>
                      <FormItem label="站区" prop="districtId" class="userModal"  v-show="showDistrict">
                         <Select v-model="addUserData.districtId" @on-change="getAllStations(addUserData.districtId)">
                             <Option v-for="(item,index) in districts" :value="item.id" :key="index">{{item.districtName}}</Option>
                         </Select>
-                    </FormItem>
-                    <FormItem label="密码" prop="password" class="userModal">
-                        <i-input v-model="addUserData.password"></i-input>
-                        <span class="orange">请记录此密码作为下次登录用</span>
                     </FormItem>
                     <FormItem label="岗位" prop="positionId" class="userModal">
                         <Select v-model="addUserData.positionId" @on-change="chosePost(addUserData.positionId)">
@@ -126,7 +126,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="站点" prop="stationId" class="userModal"  v-show="showStation">
-                        <Select v-model="addUserData.stationId">
+                        <Select v-model="addUserData.stationId" clearable>
                              <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                         </Select>
                     </FormItem>
@@ -137,35 +137,37 @@
                     </FormItem>
                     <FormItem label="性别" prop="gender" class="userModal">
                         <Select v-model="addUserData.gender">
-                            <Option value="1">男</Option>
-                            <Option value="0">女</Option>
+                            <Option value="男">男</Option>
+                            <Option value="女">女</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="手机号" prop="phoneNumber" class="userModal">
                         <i-input v-model="addUserData.phoneNumber"></i-input>
                     </FormItem>
                     <FormItem label="生日" prop="birthday" class="userModal">
-                        <i-input v-model="addUserData.birthday"></i-input>
+                        <DatePicker v-model="addUserData.birthday" type="date" placeholder="请选择生日" clearable></DatePicker>
                     </FormItem>
                     <FormItem label="身份证" prop="idCardNumber" class="userModal">
                         <i-input  v-model="addUserData.idCardNumber"></i-input>
                     </FormItem>
                     <FormItem label="入职时间" prop="entryDate" class="userModal">
-                        <i-input placeholder="例2015-03-06" v-model="addUserData.entryDate"></i-input>
+                        <DatePicker v-model="addUserData.entryDate" type="date" placeholder="请选择入职时间" clearable></DatePicker>
                     </FormItem>
                     <FormItem label="参加工作时间" prop="beginWorkDate" class="userModal">
-                        <i-input placeholder="例2015-03-06" v-model="addUserData.beginWorkDate"></i-input>
+                        <DatePicker v-model="addUserData.beginWorkDate" type="date" placeholder="请选择参加工作时间" clearable></DatePicker>
                     </FormItem>
                     <FormItem label="婚否" prop="isMarried" class="userModal">
                         <Select  v-model="addUserData.isMarried">
-                            <Option value="1">已婚</Option>
-                            <Option value="0">未婚</Option>
+                            <Option value="已婚">已婚</Option>
+                            <Option value="未婚">未婚</Option>
                         </Select>
                     </FormItem>
-                    <FormItem label="生育" prop="hasChild" class="userModal">
+                    <FormItem label="子女个数" prop="hasChild" class="userModal">
                         <Select v-model="addUserData.hasChild">
-                            <Option value="1">已育</Option>
-                            <Option value="0">未育</Option>
+                            <Option value="0">0个</Option>
+                            <Option value="1">1个</Option>
+                            <Option value="2">2个</Option>
+                            <Option value="3">3个</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="学历" prop="eduBackGround" class="userModal">
@@ -186,7 +188,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="入党时间" prop="joinDate" class="userModal">
-                        <i-input  v-model="addUserData.joinDate"></i-input>
+                        <DatePicker v-model="addUserData.joinDate" type="date" placeholder="请选择入党时间" clearable></DatePicker>
                     </FormItem>
                     <FormItem label="站务员证书编号" prop="certNo" class="userModal">
                         <i-input v-model="addUserData.certNo"></i-input>
@@ -206,22 +208,15 @@
                     <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
                         <i-input v-model="addUserData.zwyLevel"></i-input>
                     </FormItem>
-                    <FormItem label="是否为备班人员" prop="backup" class="userModal">
-                        <Select  v-model ="addUserData.backup" placeholder="请选择">
-                            <Option value = 1>是</Option>
-                            <Option value = 0>否</Option>
-                        </Select>
-                    </FormItem>
                     <div class="clear"></div>
                 </Form>
         </Modal>
-        <!--编辑人员-->
+        <!--编辑人员 @on-cancel="cancel('editUser')"-->
         <Modal class="usermanage-model"
             title="编辑人员"
             v-model="editPersonModal"
             width="800"
             @on-ok="editPersonModalMethod('editUser')"
-            @on-cancel="cancel('editUser')"
             :loading="true"
             :mask-closable="false">
             <Form ref="editUser" :model="editUser" :label-width="120" :rules="rule">
@@ -234,22 +229,22 @@
                 <FormItem label="姓名" prop="userName" class="userModal">
                     <i-input v-model="editUser.userName"></i-input>
                 </FormItem>
-                    <FormItem label="站区" prop="districtId" class="userModal" v-show="showDistrict">
+                <FormItem label="密码" prop="password" class="userModal">
+                    <i-input v-model="editUser.password"></i-input>
+                    <span class="orange">请记录此密码作为下次登录用</span>
+                </FormItem>
+                <FormItem label="站区" prop="districtId" class="userModal" v-show="showDistrict">
                     <Select v-model="editUser.districtId" @on-change="getAllStations(editUser.districtId)">
                         <Option v-for="(item,index) in districts" :value="item.id" :key="index">{{item.districtName}}</Option>
                     </Select>
                 </FormItem>
-                    <FormItem label="密码" prop="password" class="userModal">
-                    <i-input v-model="editUser.password"></i-input>
-                    <span class="orange">请记录此密码作为下次登录用</span>
-                </FormItem>
-                 <FormItem label="岗位" prop="positionId" class="userModal">
+                <FormItem label="岗位" prop="positionId" class="userModal">
                     <Select v-model="editUser.positionId" @on-change="chosePost(editUser.positionId)">
                         <Option v-for="(item,index) in position" :value="item.id" :key="index">{{item.positionName}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="站点" prop="stationId" class="userModal" v-show="showStation">
-                    <Select v-model="editUser.stationId" >
+                    <Select v-model="editUser.stationId" clearable>
                         <Option v-for="(item,index) in stations " :value="item.id" :key="index">{{item.stationName}}</Option>
                     </Select>
                 </FormItem>
@@ -260,24 +255,24 @@
                 </FormItem>
                 <FormItem label="性别" prop="gender" class="userModal">
                     <Select v-model="editUser.gender">
-                        <Option value="1">男</Option>
-                        <Option value="0">女</Option>
+                        <Option value="男">男</Option>
+                        <Option value="女">女</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="手机号" prop="phoneNumber" class="userModal">
                     <i-input v-model="editUser.phoneNumber"></i-input>
                 </FormItem>
                 <FormItem label="生日" prop="birthday" class="userModal">
-                    <i-input v-model="editUser.birthday"></i-input>
+                    <DatePicker v-model="editUser.birthday" type="date" placeholder="请选择生日" clearable></DatePicker>
                 </FormItem>
                 <FormItem label="身份证" prop="idCardNumber" class="userModal">
                     <i-input  v-model="editUser.idCardNumber"></i-input>
                 </FormItem>
                 <FormItem label="入职时间" prop="entryDate" class="userModal">
-                    <i-input placeholder="例2015-03-06" v-model="editUser.entryDate"></i-input>
+                    <DatePicker v-model="editUser.entryDate" type="date" placeholder="请选择入职时间" clearable></DatePicker>
                 </FormItem>
                 <FormItem label="参加工作时间" prop="beginWorkDate" class="userModal">
-                        <i-input placeholder="例2015-03-06" v-model="editUser.beginWorkDate"></i-input>
+                    <DatePicker v-model="editUser.beginWorkDate" type="date" placeholder="请选择参加工作时间" clearable></DatePicker>
                 </FormItem>
                 <FormItem label="婚否" prop="isMarried" class="userModal">
                     <Select  v-model="editUser.isMarried">
@@ -285,10 +280,12 @@
                         <Option value="0">未婚</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="生育" prop="hasChild" class="userModal">
+                <FormItem label="子女个数" prop="hasChild" class="userModal">
                     <Select v-model="editUser.hasChild">
-                        <Option value="1">已育</Option>
-                        <Option value="0">未育</Option>
+                        <Option value="0">0个</Option>
+                        <Option value="1">1个</Option>
+                        <Option value="2">2个</Option>
+                        <Option value="3">3个</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="学历" prop="eduBackGround" class="userModal">
@@ -309,7 +306,7 @@
                     </Select>
                 </FormItem>
                 <FormItem label="入党时间" prop="joinDate" class="userModal">
-                    <i-input  v-model="editUser.joinDate"></i-input>
+                    <DatePicker v-model="editUser.joinDate" type="date" placeholder="请选择入党时间" clearable></DatePicker>
                 </FormItem>
                 <FormItem label="站务员证书编号" prop="certNo" class="userModal">
                     <i-input v-model="editUser.certNo"></i-input>
@@ -329,23 +326,34 @@
                 <FormItem label="综控员证书级别" prop="zwyLevel" class="userModal">
                     <i-input v-model="editUser.zwyLevel"></i-input>
                 </FormItem>
-                <FormItem label="是否备班人员" prop="backup" class="userModal">
-                    <Select  v-model="editUser.backup" placeholder="请选择">
-                        <Option value = 1>是</Option>
-                        <Option value = 0>否</Option>
-                    </Select>
-                </FormItem>
                 <div class="clear"></div>
+            </Form>
+        </Modal>
+        <!--导入人员-->
+        <Modal
+            v-model="importUserModal"
+            title="导入人员"
+            @on-ok="handleImportUsers"
+            @on-cancel="cancelImport"
+            :loading="true">
+            <Form :label-width="80" id="form">
+                <FormItem label="选择文件：" id="selectFile">
+                    <button type="button" class="btnDefault">选择文件</button>
+                    <input type="file" id="userFile" name="file" @change="selectFile">
+                    <span>{{fileName}}</span>
+                </FormItem>
             </Form>
         </Modal>
     </div>
 </template>
 <script>
     import {getAllPost} from '@/api/api';
-    import {getDistricts, getStations, addUser, getRole, updateUser, getUser, deleteUser} from '@/api/commonAPI';
+    import {getDistricts, getStations, addUser, getRole, updateUser, getUser, deleteUser, importUsers} from '@/api/commonAPI';
     export default {
         data: function () {
             return {
+                fileName: '',
+                importUserModal: false,
                 // 站区
                 districts:[],
                 // 岗位
@@ -444,22 +452,13 @@
                    employeeCard: [{required: true, message: '员工卡号不能为空', trigger: 'blur' }],
                    employeeCode: [{required: true, message: '人员编码不能为空', trigger: 'blur' }],
                    userName: [{required: true, message: '姓名不能为空', trigger: 'blur' }],
-                   positionId: [{required: true, type: 'integer', message: '岗位不能为空', trigger: 'change' }],
                    roleId: [{required: true, type: 'integer', message: '角色不能为空', trigger: 'change' }],
+                   districtId: [{required: true, type: 'integer', message: '站区不能为空', trigger: 'change' }],
                    password: [{required: true, message: '密码不能为空', trigger: 'blur' }],
-                   plan: [{required: true, message: '权限方案不能为空', trigger: 'change' }],
-                   gender: [{required: true, message: '性别不能为空', trigger: 'change' }],
                    phoneNumber: [{required: true, message: '手机号不能为空', trigger: 'blur' }],
-                   birthday: [{required: true, message: '生日不能为空', trigger: 'blur' }],
                    idCardNumber: [{required: true, message: '身份证不能为空', trigger: 'blur' }],
-                   isMarried: [{required: true, message: '婚否不能为空', trigger: 'change' }],
-                   hasChild: [{required: true, message: '生育不能为空', trigger: 'change' }],
-                   eduBackGround: [{required: true, message: '学历不能为空', trigger: 'change' }],
-                   partyMember: [{required: true, message: '政治面貌不能为空', trigger: 'change' }],
-                   entryDate: [{required: true, message: '入职时间不能为空', trigger: 'blur' }],
-                   beginWorkDate:[{required: true, message: '参加工作时间不能为空', trigger: 'blur' }],
                    homeAddress: [{required: true, message: '住址不能为空', trigger: 'blur' }],
-                   backup: [{required: true, message: '是否备班不能为空', trigger: 'change' }],
+                   gender: [{required: true, message: '性别不能为空', trigger: 'change' }]
                 },
                 userList:[],
                 selectedItmes: [],
@@ -472,14 +471,14 @@
                     positionId: null,
                     password: '',
                     roleId: null,
-                    gender: null,
+                    gender: '',
                     phoneNumber: '',
                     birthday: '',
                     idCardNumber: '',
                     entryDate: '',
                     beginWorkDate:'',
-                    isMarried: null,
-                    hasChild: null,
+                    isMarried: '',
+                    hasChild: '',
                     eduBackGround: '',
                     partyMember: '',
                     joinDate: '',
@@ -488,8 +487,7 @@
                     homeAddress: '',
                     xfzNo: '',
                     zwyNo: '',
-                    zwyLevel: '',
-                    backup: null
+                    zwyLevel: ''
                 },
                 editUser: {},
             }
@@ -512,7 +510,7 @@
                 this.userList = this.historyUserList.slice(_start,_end);
                 this.currentPage = index;
             },
-            //  获取用户列表
+            // 获取用户列表
             getUserList: async function () {
                 let data = {
                    districtId: this.districtId,
@@ -553,7 +551,7 @@
                 }
                 this.fuzzyQueryModal='';
             },
-            //  获取站区/站点
+            // 获取站区/站点
             request: async function(){
                 if(this.role === 1){
                     this.showDistrict = true;
@@ -678,6 +676,13 @@
                 }else if(that.role === 1){
                     data.districtId = that.editUser.districtId;
                 }
+                
+                // 日期类型格式转换
+                data.birthday && (data.birthday = that.$conversion(data.birthday));
+                data.entryDate && (data.entryDate = that.$conversion(data.entryDate));
+                data.beginWorkDate && (data.beginWorkDate = that.$conversion(data.beginWorkDate));
+                data.joinDate && (data.joinDate = that.$conversion(data.joinDate));
+                
                 let response = await updateUser(data);
                 if (response.meta.code !== 0) {
                     that.$Loading.error();
@@ -699,8 +704,6 @@
             },
             // 编辑人员
             editPersonMethod: function (item) {
-                console.log(this.position);
-                console.log(this.stations);
                 this.showStation = (item.positionName === "替班员" ? false : true);
                 // 获取编辑id
                 this.EditId = item.id;
@@ -714,9 +717,7 @@
                 for (let key in item) {
                     this.editUser[key] = item[key];
                 }
-                console.log(this.editUser.positionId);
-                console.log(this.editUser.stationId);
-                this.editUser.backup = item.backup.toString();
+                // this.editUser.backup = item.backup.toString();
                 this.editPersonModal = true;
             },
             // // 对象深度拷贝
@@ -752,6 +753,12 @@
                 }else if(this.role === 1){
                     data.districtId = this.addUserData.districtId;
                 }
+                // 日期类型格式转换
+                data.birthday && (data.birthday = this.$conversion(data.birthday));
+                data.entryDate && (data.entryDate = this.$conversion(data.entryDate));
+                data.beginWorkDate && (data.beginWorkDate = this.$conversion(data.beginWorkDate));
+                data.joinDate && (data.joinDate = this.$conversion(data.joinDate));
+
                 let response = await addUser(data);
                 let message = response.meta.message;
                 if (response.meta.code === 0) {
@@ -770,9 +777,40 @@
                 this.$refs[name].resetFields();
                 this.position = [];
                 this.stations = [];
+            },
+            // 导入人员
+            handleImportUsers: async function () {
+                let formData = new FormData('form');
+                let file = $('#userFile').get(0).files[0];
+                if(!file){
+                    this.$Message.warning('请先选择文件');
+                    return;
+                }
+                formData.append('file', file);
+                this.fileName = file.name;
+                let response = await importUsers(formData);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                } else {
+                    this.$Message.error(message);
+                }
+                this.importUserModal = false;
+                $('#userFile').val('');
+                this.fileName = '';
+            },
+            //  选择文件
+            selectFile: function () {
+                let file = $('#userFile').get(0).files[0];
+                this.fileName = file.name;
+            },
+            // 取消导入人员
+            cancelImport: function () {
+                $('#userFile').val('');
+                this.fileName = '';
             }
         }
-}
+    }
 </script>
 <style scoped>
     @import '../assets/css/index.css';

@@ -24,22 +24,22 @@
                         <template slot="title">
                             系统设置
                         </template>
-                        <menu-item name="1-1" class="active" v-if = 'Usermanage'>
+                        <menu-item name="1-2"  v-if='setStationArea'>
+                            <router-link :to="{name: 'setStationArea'}" >
+                                <span class="icon-18"></span>
+                                站区设置
+                            </router-link>
+                        </menu-item>
+                        <menu-item name="1-1" class="active" v-if='Usermanage'>
                             <router-link :to="{name: 'Usermanage'}" id="indexRouter">
                                 <span class="icon-19"></span>
                                 人员管理
                             </router-link>
                         </menu-item>
-                        <menu-item name="1-4"  v-if='setStationArea'>
+                        <menu-item name="1-4"  v-if='Usermanage'>
                             <router-link :to="{name: 'annualLeave'}" >
-                                <span class="icon-18"></span>
+                                <span class="icon-16"></span>
                                 年假管理
-                            </router-link>
-                        </menu-item>
-                        <menu-item name="1-2"  v-if='setStationArea'>
-                            <router-link :to="{name: 'setStationArea'}" >
-                                <span class="icon-18"></span>
-                                站区设置
                             </router-link>
                         </menu-item>
                         <menu-item name="1-3" v-if = 'Role'>
