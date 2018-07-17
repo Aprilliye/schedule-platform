@@ -12,13 +12,13 @@
             <table class="scheduleForm" >
                 <tr>
                     <th>站务员</th>
-                    <th>星期一</th>
-                    <th>星期二</th>
-                    <th>星期三</th>
-                    <th>星期四</th>
-                    <th>星期五</th>
-                    <th>星期六</th>
-                    <th>星期日</th>
+                    <th>一</th>
+                    <th>二</th>
+                    <th>三</th>
+                    <th>四</th>
+                    <th>五</th>
+                    <th>六</th>
+                    <th>日</th>
                     <th>总工时</th>
                 </tr>
                 <tr v-for="n in userList.length" :key="n">

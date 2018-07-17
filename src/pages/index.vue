@@ -36,7 +36,7 @@
                                 人员管理
                             </router-link>
                         </menu-item>
-                        <menu-item name="1-4"  v-if='Usermanage'>
+                        <menu-item name="1-4"  v-if='setStationArea'>
                             <router-link :to="{name: 'annualLeave'}" >
                                 <span class="icon-16"></span>
                                 年假管理

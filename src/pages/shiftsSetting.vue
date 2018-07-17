@@ -6,8 +6,8 @@
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true">新增班制</a>
         </div>
-        <Tabs type="card" :animated="false" v-model="tabModel"  @on-click="choseTab">
-            <TabPane :label="item.dutyName"  v-for="(item,index) in suites" :key="index" :id="item.id">
+        <Tabs type="card" :value="currentSuiteId" :animated="false" v-model="tabModel"  @on-click="choseTab">
+            <TabPane :label="item.dutyName" v-for="(item,index) in suites" :key="index" :id="item.id">
             </TabPane>
         </Tabs>
         <div class="panel-body" v-show = "suitBody">
@@ -304,10 +304,11 @@ let echarts = require('echarts');
 export default {
     data:function () {
         return {
+            currentSuiteId: null,
             dutyData: [],           //  班次
             onDutyData:[],          // 时间段
             showEchart:false,           //图标显示
-            tabModel:0,
+            tabModel: 0,
             // 当前站区id
             suiteId:null,
             //  岗位
@@ -650,6 +651,8 @@ export default {
                 this.suites = response.data;
                 if(response.data.length > 0){
                     this.suitBody = true;
+                    // console.log(response.data)
+                    this.currentSuiteId = response.data[0].id;
                 }else{
                     this.suitBody = false;
                 }
@@ -669,7 +672,8 @@ export default {
             this.$Message.error(message);
         },
         //  切换tab
-        choseTab: async function (name) {
+        choseTab: function (name) {
+            console.log(name)
             this.showEchart = false;
             let that = this;
             if (this.suites.length>0){

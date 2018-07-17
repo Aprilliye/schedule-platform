@@ -93,10 +93,11 @@
                     <div class="clear"></div>
                 </div>
                 <!--请假信息悬浮框-->
-                <div class="tdMessage" v-show="modal.showLeaveInfo" @mouseleave="modal.showLeaveInfo = false">
+                <div class="tdMessage" @mouseleave="modal.showLeaveInfo = false">
                     <div v-for="item in currentSchedule.leaveList" :key="item.id">
                         <p>假期类型：{{item.leaveDesc || ''}}</p>
                         <p>替班员：{{item.exchangeUserName}}</p>
+                        <p>时长：{{item.leaveHours}} 小时</p>
                         <p>备注：{{item.comment || ''}}</p>
                     </div>
                 </div>
@@ -463,7 +464,7 @@
                             for(let schedule of list){
                                 let date = schedule.dateStr.substring(5);
                                 let hours = schedule.workingHours;
-                                let dutyName = schedule.dutyName || '--';
+                                let dutyName = schedule.workflowCode ? schedule.dutyCode + schedule.workflowCode : schedule.dutyName;
                                 let leaveList = schedule.leaveList || [];
                                 let leavehours = 0;
                                 let color = '';

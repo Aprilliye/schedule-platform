@@ -443,6 +443,7 @@
                 if(response.meta.code === 0){
                     this.$Message.success('生成模版成功');
                     let data = response.data;
+                    this.weeks = 0;
                     this.weeks = response.data.weeks + 1;
                     this.dutyClass = data.dutyclass;
                     this.userList = [];
@@ -475,7 +476,8 @@
                         let m = obj.dayNum;
                         let hours = obj.workingLength/60;
                         this.totalHours += hours;
-                        $('[weeknum="'+ n +'"][daynum="'+ m +'"]').html(obj.dutyName).css('background-color', obj.cellColor).attr({'data-hours': hours,'code': i});
+                        let dutyName = obj.workflowCode ? obj.dutyCode + obj.workflowCode : obj.dutyName;
+                        $('[weeknum="'+ n +'"][daynum="'+ m +'"]').html(dutyName).css('background-color', obj.cellColor).attr({'data-hours': hours,'code': i});
                         let classId = obj.classId;
                         let span = $('#weekDay'+ m).find('[code="'+ classId +'"]').find('span');
                         let num = parseInt(span.html());
