@@ -33,7 +33,7 @@
                                     <th>站务员</th>
                                     <th v-for="i in 7" :key="'th'+i">
                                         <div :id="'weekDay'+(i-1)">
-                                            <p v-for="item in dutyClass" :key="item.id" :code="item.id" :shiftNum="item.workingLength/60"><em>{{item.dutyName}}：</em><span>0</span></p>
+                                            <p v-for="item in dutyClass" :key="item.id" :code="item.id" :shiftNum="item.userCount"><em>{{item.dutyName}}：</em><span>0</span></p>
                                         </div>
                                     </th>
                                     <th>周工时</th>

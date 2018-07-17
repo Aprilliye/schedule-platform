@@ -269,7 +269,8 @@
             @on-cancel="handleCancelTime('addTimeValidate')">
             <Form ref="addTimeValidate" :model="addTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
                 <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
-                    <TimePicker  v-model="addTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='addTime'></TimePicker>
+                    <TimePicker  v-model="addTimeValidate.startTimeStr" placeholder="选择开始时间" format="HH:mm" ></TimePicker> 至
+                    <TimePicker  v-model="addTimeValidate.endTimeStr" placeholder="选择结束时间" format="HH:mm" ></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="addTimeValidate.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
                 <FormItem label="值班人数" prop="userCount">
@@ -285,7 +286,8 @@
                @on-cancel="handleCancel('editTimeValidate')">
             <Form ref="editTimeValidate" :model="editTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
                 <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
-                    <TimePicker  v-model="editTimeValidate.timeSlot" type="timerange" placeholder="选择时间段" format="HH:mm" :value='editTime'></TimePicker>
+                    <TimePicker  v-model="editTimeValidate.startTimeStr" placeholder="选择开始时间" format="HH:mm" ></TimePicker> 至
+                    <TimePicker  v-model="editTimeValidate.endTimeStr" placeholder="选择结束时间" format="HH:mm" ></TimePicker>
                     <div class="ivu-form-item-error-tip" v-if="editTimeValidate.ifTimeSlot">时间段不能为空</div>
                 </FormItem>
                 <FormItem label="值班人数" prop="userCount">
@@ -362,12 +364,14 @@ export default {
                 yearlyWorkingHourLimit: ''   
             },
             addTimeValidate:{
-                timeSlot: [],
+                startTimeStr: '',
+                endTimeStr: '',
                 userCount: null,
                 ifTimeSlot: false
             },
             editTimeValidate: {
-                timeSlot: [],
+                startTimeStr: '',
+                endTimeStr: '',
                 userCount: null,
                 ifTimeSlot: false
             },
@@ -437,11 +441,8 @@ export default {
             },
             //  新增时间段弹框
             ruleAddTimeValidate: {
-                timeSlot: [
-                    { required: true, type: 'array', min: 1, message: '时间段不能为空', trigger: 'blur' },
-                ],
                 userCount: [
-                    { required: true, message: '值班人数不能为空', trigger: 'blur' }
+                    { required: true, message: '值班人数不能为空', trigger: 'blur' },
                 ]
             },
             //  新增班次弹框
@@ -711,16 +712,15 @@ export default {
         },
         //  新增时间段验证
         addTimeSlotMethods: function (name) {
-            let arr = this.addTimeValidate.timeSlot;
-            for(let i=0;i<arr.length;i++){
-                if(arr[i] === ''){
-                    this.addTimeValidate.ifTimeSlot = true;
-                    $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
-                    return;
-                } else {
-                    $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
-                    this.addTimeValidate.ifTimeSlot = false;
-                }
+            
+            let startTime = this.addTimeValidate.startTimeStr;
+            let endTime = this.addTimeValidate.endTimeStr;
+            if(startTime === '' || endTime === ''){
+                this.addTimeValidate.ifTimeSlot = true;
+                return;
+            } else {
+                $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
+                this.addTimeValidate.ifTimeSlot = false;
             }
             this.$refs[name].validate((valid) => {
                 if (valid) {
@@ -736,10 +736,15 @@ export default {
             })
         },
         beforeAddTimeSlotMethods: async function (that) {
+            let startTime = that.addTimeValidate.startTimeStr;
+            let endTime = that.addTimeValidate.endTimeStr;
+            if(endTime === '00:00' && parseInt(endTime.substring(0,2)) < parseInt(startTime.substring(0,2))){
+                endTime = '24:00';
+            }
             let data = {
                 suiteId: that.suiteId,
-                startTimeStr: that.addTimeValidate.timeSlot[0],
-                endTimeStr: that.addTimeValidate.timeSlot[1],
+                startTimeStr: startTime,
+                endTimeStr: endTime,
                 userCount: that.addTimeValidate.userCount,
             }
             let response = await addPeriod(data);
@@ -754,16 +759,14 @@ export default {
         },
         //  编辑时间段验证
         editTimeSlotMethods:function(name){
-            let arr = this.editTimeValidate.timeSlot;
-            for(let i=0;i<arr.length;i++){
-                if(arr[i] === ''){
-                    this.editTimeValidate.ifTimeSlot = true;
-                    $('[element-id="timeSlot"]').addClass('ivu-form-item-error');
-                    return;
-                } else {
-                    $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
-                    this.editTimeValidate.ifTimeSlot = false;
-                }
+            let startTime = this.editTimeValidate.startTimeStr;
+            let endTime = this.editTimeValidate.endTimeStr;
+            if(startTime === '' || endTime === ''){
+                this.editTimeValidate.ifTimeSlot = true;
+                return;
+            } else {
+                $('[element-id="timeSlot"]').removeClass('ivu-form-item-error');
+                this.editTimeValidate.ifTimeSlot = false;
             }
             this.$refs[name].validate((valid) => {
                 if (valid) {
@@ -771,7 +774,8 @@ export default {
                     this.$options.methods.beforeEditTimeSlotMethods(that);
                     this.modal.editTimeSlot = false;
                     this.$refs[name].resetFields();
-                    this.editTimeValidate.timeSlot = [];
+                    this.editTimeValidate.startTimeStr = '';
+                    this.editTimeValidate.endTimeStr = '';
                     this.editTimeValidate.ifTimeSlot = false;
                 } else {
                     this.$Message.error('修改失败');
@@ -780,11 +784,16 @@ export default {
             })
         },
         beforeEditTimeSlotMethods: async function (that) {
-            let data={
+            let startTime = that.editTimeValidate.startTimeStr;
+            let endTime = that.editTimeValidate.endTimeStr;
+            if(endTime === '00:00' && parseInt(endTime.substring(0,2)) < parseInt(startTime.substring(0,2))){
+                endTime = '24:00';
+            }
+            let data = {
                 id: that.currentPeriod,
-                startTimeStr: that.editTimeValidate.timeSlot[0],
-                endTimeStr: that.editTimeValidate.timeSlot[1],
-                userCount: that.editTimeValidate.userCount,
+                startTimeStr: startTime,
+                endTimeStr: endTime,
+                userCount: that.editTimeValidate.userCount
             }
             let response = await updatePeriod(data);
             let message = response.meta.message;
@@ -798,14 +807,12 @@ export default {
         },
         //  编辑时间段
         editpeoplenumber:function(index){
-            let arry = [];
+            let obj = this.onDutyData[index];
             this.currentPeriod = this.onDutyData[index].id;
-            arry.push(this.onDutyData[index].startTimeStr);
-            arry.push(this.onDutyData[index].endTimeStr);
-            this.modal.editTimeSlot=true;
-            this.editTimeValidate.timeSlot=arry;
-            this.editTime=this.onDutyData[index].timeSlot;
-            this.editTimeValidate.userCount=this.onDutyData[index].userCount.toString();
+            this.modal.editTimeSlot = true;
+            this.editTimeValidate.startTimeStr = obj.startTimeStr;
+            this.editTimeValidate.endTimeStr = obj.endTimeStr;
+            this.editTimeValidate.userCount = obj.userCount.toString();
         },
         //  删除时间段
         remove2: async function (index) {
@@ -855,7 +862,7 @@ export default {
             //  let data = that.cloneObj(that.addFormValidateClass);
             let endTime = that.addFormValidateClass.endTimeStr;
             let startTime = that.addFormValidateClass.startTimeStr;
-            if(endTime === '00:00' && parseInt(endTime) < parseInt(startTime)){
+            if(endTime === '00:00' && parseInt(endTime.substring(0,2)) < parseInt(startTime.substring(0,2))){
                 endTime = '24:00';
             }
              let data = {
@@ -914,7 +921,7 @@ export default {
         beforeEditShifyClassMethods: async function (that) {
             let endTime = that.editFormValidateClass.endTimeStr;
             let startTime = that.editFormValidateClass.startTimeStr;
-            if(endTime === '00:00' && parseInt(endTime) < parseInt(startTime)){
+            if(endTime === '00:00' && parseInt(endTime.substring(0,2)) < parseInt(startTime.substring(0,2))){
                 endTime = '24:00';
             }
             let data = {

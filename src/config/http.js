@@ -5,7 +5,7 @@ import {Alert} from 'iview';
 
 /* axios全局设置 */
 const http = axios.create({
-    timeout: 10000,
+    timeout: 30000,
     responseType: "json",
     withCredentials: false,
     headers: {
