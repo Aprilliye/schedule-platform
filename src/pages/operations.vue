@@ -10,7 +10,7 @@
         </div>
         <div class="panel-body">
             <Table border :columns="columns" :data="data"></Table>
-            <Page :total="data.length" :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
+            <Page :total="dataCount" :current='currentPage' :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
         </div>
     </div>
 </template>
@@ -19,6 +19,9 @@ import {getOperations} from '@/api/commonAPI';
 export default {
     data: function () {
         return {
+            dataCount: 0,
+            currentPage:1,
+            historyUserList: [],
             // 每页显示记录条数
             pageSize:10,
             // 获取数据
@@ -65,7 +68,15 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.$Message.success(message);
-                this.data = response.data;
+                this.dataCount = this.data.length;
+                // 获取分页
+                this.hostoryData = response.data;
+                this.dataCount = response.data.length;
+                if(this.hostoryData.length < this.pageSize){
+                    this.data = this.hostoryData;
+                }else{
+                    this.data = this.hostoryData.slice(0,this.pageSize);
+                }
                 return;
             }
             this.$Message.error(message);

@@ -310,6 +310,9 @@
     </div>
 </template>
 <script>
+    import axios from 'axios';
+    import JSzio from 'jszip';
+    import FileSaver from 'file-saver';
     import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft, exportImg} from '@/api/api';
     import {getStations, getBackupUser} from '@/api/commonAPI';
     export default {
@@ -712,7 +715,7 @@
                 if(!data){
                     return;
                 }
-                let response = await exportImg(data);
+                await exportImg(data);
             },
             //  获取日期
             getQueryDate: function () {
