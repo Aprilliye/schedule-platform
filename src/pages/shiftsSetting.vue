@@ -6,10 +6,10 @@
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true">新增班制</a>
         </div>
-        <Tabs type="card" :value="currentSuiteId" :animated="false" v-model="tabModel"  @on-click="choseTab">
-            <TabPane :label="item.dutyName" v-for="(item,index) in suites" :key="index" :id="item.id">
-            </TabPane>
-        </Tabs>
+        <div class="myTab">
+            <span :class="{'active': suiteId === item.id}" v-for="(item,index) in suites" :key="'tab'+index" @click="swichTab(index)">{{item.dutyName}}</span>
+            <div class="line"></div>
+        </div>
         <div class="panel-body" v-show = "suitBody">
             <div class="buttonblock"></div>
             <div class="shifts-content">
@@ -304,7 +304,6 @@ let echarts = require('echarts');
 export default {
     data:function () {
         return {
-            currentSuiteId: null,
             dutyData: [],           //  班次
             onDutyData:[],          // 时间段
             showEchart:false,           //图标显示
@@ -651,8 +650,7 @@ export default {
                 this.suites = response.data;
                 if(response.data.length > 0){
                     this.suitBody = true;
-                    // console.log(response.data)
-                    this.currentSuiteId = response.data[0].id;
+                    this.suiteId = response.data[0].id;
                 }else{
                     this.suitBody = false;
                 }
@@ -664,25 +662,23 @@ export default {
                 // 显示班制内容
                 let obj = this.suites[0]; 
                 for(let key in obj){
-                this.info[key] = obj[key];
+                    this.info[key] = obj[key];
                 }
-                this.$options.methods.getClass(that);
+                this.getClass(this.suiteId);
                 return;
             }
             this.$Message.error(message);
         },
         //  切换tab
-        choseTab: function (name) {
-            console.log(name)
+        swichTab: function (index) {
             this.showEchart = false;
-            let that = this;
             if (this.suites.length>0){
-                let obj = this.suites[name]; 
+                let obj = this.suites[index]; 
                 for(let key in obj){
-                this.info[key] = obj[key];
+                    this.info[key] = obj[key];
                 }
-                this.suiteId = this.suites[name].id;
-                this.$options.methods.getClass(that);
+                this.suiteId = obj.id;
+                this.getClass();
             }
         },
         //  获取站点
@@ -696,27 +692,28 @@ export default {
             }
             this.$Message.error(message);
         },
-        getClass: async function (that) {
-            if ( that.suiteId){
-                let suiteId = that.suiteId;
+        // 获取班次
+        getClass: async function () {
+            let suiteId = this.suiteId;
+            if (suiteId){
                 let response = await getClass(suiteId);
                 if (response.meta.code !== 0) {
-                    that.$Loading.error();
-                    that.$Message.error(response.meta.message);
+                    this.$Message.error(response.meta.message);
                 }else{
-                    that.dutyData = response.data.dutyclass;
+                    this.dutyData = response.data.dutyclass;
                     for(var i = 0;i<response.data.dutyclass.length;i++){
-                        if(response.data.dutyclass[i].relevant!=null){
-                        that.dutyData[i].relevantClassName = response.data.dutyclass[i].relevant.dutyName;
+                        let obj = response.data.dutyclass[i].relevant;
+                        if(obj != null){
+                            this.dutyData[i].relevantClassName = obj.dutyName;
                         }
                     }
-                    that.onDutyData = response.data.dutyperiodchecking;
+                    this.onDutyData = response.data.dutyperiodchecking;
+                    // this.getChangeSuite();
                 }
             }
         },
         //  新增时间段验证
         addTimeSlotMethods: function (name) {
-            
             let startTime = this.addTimeValidate.startTimeStr;
             let endTime = this.addTimeValidate.endTimeStr;
             if(startTime === '' || endTime === ''){
@@ -729,7 +726,7 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     let that = this;
-                   this.$options.methods.beforeAddTimeSlotMethods(that);
+                    this.beforeAddTimeSlotMethods();
                     this.modal.addTimeSlot = false;
                     this.$refs[name].resetFields();
                 } else {
@@ -742,7 +739,13 @@ export default {
         beforeAddTimeSlotMethods: async function (that) {
             let startTime = that.addTimeValidate.startTimeStr;
             let endTime = that.addTimeValidate.endTimeStr;
-            if(endTime === '00:00' && parseInt(endTime.substring(0,2)) < parseInt(startTime.substring(0,2))){
+            let startTimeInt  = parseInt(startTime.substring(0,2));
+            let endTimeInt = parseInt(endTime.substring(0,2));
+            if(startInt > endTimeInt){
+                this.$Message.warning('开始时间不能大于结束时间');
+                return;
+            }
+            if(endTime === '00:00' &&  endTimeInt < startTimeInt){
                 endTime = '24:00';
             }
             let data = {
@@ -790,7 +793,13 @@ export default {
         beforeEditTimeSlotMethods: async function (that) {
             let startTime = that.editTimeValidate.startTimeStr;
             let endTime = that.editTimeValidate.endTimeStr;
-            if(endTime === '00:00' && parseInt(endTime.substring(0,2)) < parseInt(startTime.substring(0,2))){
+            let startTimeInt  = parseInt(startTime.substring(0,2));
+            let endTimeInt = parseInt(endTime.substring(0,2));
+            if(startInt > endTimeInt){
+                this.$Message.warning('开始时间不能大于结束时间');
+                return;
+            }
+            if(endTime === '00:00' &&  endTimeInt < startTimeInt){
                 endTime = '24:00';
             }
             let data = {
@@ -866,7 +875,13 @@ export default {
             //  let data = that.cloneObj(that.addFormValidateClass);
             let endTime = that.addFormValidateClass.endTimeStr;
             let startTime = that.addFormValidateClass.startTimeStr;
-            if(endTime === '00:00' && parseInt(endTime.substring(0,2)) < parseInt(startTime.substring(0,2))){
+            let startTimeInt  = parseInt(startTime.substring(0,2));
+            let endTimeInt = parseInt(endTime.substring(0,2));
+            if(startInt > endTimeInt){
+                this.$Message.warning('开始时间不能大于结束时间');
+                return;
+            }
+            if(endTime === '00:00' &&  endTimeInt < startTimeInt){
                 endTime = '24:00';
             }
              let data = {
@@ -925,7 +940,13 @@ export default {
         beforeEditShifyClassMethods: async function (that) {
             let endTime = that.editFormValidateClass.endTimeStr;
             let startTime = that.editFormValidateClass.startTimeStr;
-            if(endTime === '00:00' && parseInt(endTime.substring(0,2)) < parseInt(startTime.substring(0,2))){
+            let startTimeInt  = parseInt(startTime.substring(0,2));
+            let endTimeInt = parseInt(endTime.substring(0,2));
+            if(startInt > endTimeInt){
+                this.$Message.warning('开始时间不能大于结束时间');
+                return;
+            }
+            if(endTime === '00:00' &&  endTimeInt < startTimeInt){
                 endTime = '24:00';
             }
             let data = {
@@ -943,9 +964,9 @@ export default {
             let response = await updateClass(data);
             let message = response.meta.message;
             if(response.meta.code === 0){
-            that.$Message.success("编辑班次成功");
-            that.getClass(that);
-            return;
+                that.$Message.success("编辑班次成功");
+                that.getClass(that);
+                return;
             }else{
                 that.$Message.error(message);
             }
