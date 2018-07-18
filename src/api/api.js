@@ -104,6 +104,9 @@ export const getScheduleInfo = data => fetch('/schedule/scheduleinfo', data, 'GE
 /** 请假 */
 export const askForLeave = data => fetch('/leave', data, 'POST');
 
+/** 取消离岗 */
+export const cancelLeave = data => fetch('/leave', data, 'PUT');
+
 /** 剩余年假 */
 export const getAnnualHoliday = userId => fetch('/holiday/annual/' + userId, {}, 'GET');
 

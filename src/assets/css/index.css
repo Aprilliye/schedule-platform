@@ -79,6 +79,7 @@
 .userModal {
     float:left;
     width:320px;
+    height: 34px;
 }
 
 /*站区设置*/
@@ -390,4 +391,7 @@
     font-size: 12px;
     line-height: 30px;
     top: 30px;
+}
+.ivu-date-picker{
+    width: 100%;
 }

@@ -62,15 +62,19 @@ button{
 }
 .ivu-btn{
     line-height: 1 !important;
-}
-.ivu-btn-loading{
-    pointer-events: painted !important;
     &:before,i{
         display:  none !important;
     }
     span{
         margin-left: 0 !important;
     }
+}
+.ivu-btn-loading{
+    pointer-events: painted !important;
+}
+.ivu-btn:disabled,.ivu-btn:disabled:hover{
+    background-color: #888;
+    cursor: not-allowed;
 }
 /* 人员管理 */
 .clear{

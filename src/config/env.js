@@ -11,7 +11,7 @@ let routerMode = 'history';
 
 if (process.env.NODE_ENV === 'development') {
     //baseURL = 'http://47.100.181.56/api';
-    baseURL = 'http://192.168.2.246:8765';
+    baseURL = 'http://localhost:8765';
     //baseURL = 'http://192.168.2.233:8765';
     //baseURL = 'http://suspnp.com/schedule/api/';
 } else {

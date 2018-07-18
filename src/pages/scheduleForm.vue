@@ -32,7 +32,7 @@
                         <input type="text" v-model.trim="userName" placeholder="姓名/编号" style="border: 0">
                     </p>
                     <button type="button" class="btnDefault bgBlue" @click="getScheduleInfo">查询</button>
-                    <button type="button" class="btnDefault">导出</button>
+                    <!-- <button type="button" class="btnDefault">导出</button> -->
                     <button type="button" class="btnDefault" @click="exportImg">导出个人</button>
                 </div>
             </div>
@@ -84,7 +84,7 @@
                     <div @click="modal.transfer = true; leaveType = 8" code="8">调离</div>
                     <div @click="modal.smallVocation = true; leaveType = 9" code="9">零星假</div>
                     <div @click="modal.other = true; leaveType = 10" code="10">其它</div>
-                    <div code="11">撤销</div>
+                    <div code="11" @click="handleCancelLeave">撤销</div>
                 </div>
                 <!--个人信息悬浮框-->
                 <div class="peopleMessage" v-show="showInfo">
@@ -149,7 +149,7 @@
                             <Option :value="13">出差假/差</Option>
                             <Option :value="14">调休/调</Option>
                         </Select>
-                        <p v-show="subType === 1">{{sickleft.limit || ''}}，已使用{{sickleft.consumed || 0}}天</p>
+                        <p v-show="subType === 1">{{sickleft.limit || '暂无医疗期数据'}}，已使用{{sickleft.consumed || 0}}天</p>
                     </FormItem>
                     <FormItem label="请假天数">
                         <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
@@ -314,7 +314,7 @@
     import axios from 'axios';
     import JSzio from 'jszip';
     import FileSaver from 'file-saver';
-    import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft, exportImg} from '@/api/api';
+    import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft, exportImg, cancelLeave} from '@/api/api';
     import {getStations, getBackupUser} from '@/api/commonAPI';
     export default {
         data: function() {
@@ -747,8 +747,16 @@
                     endDateStr: endDateStr
                 };
                 return data;
+            },
+            // 撤销
+            handleCancelLeave: async function () {
+                let data = {
+                    scheduleInfoId: this.scheduleInfoId
+                };
+                let response = await cancelLeave(data);
+                console.log(response)
             }
-        }
+        }        
     };
 </script>
 <style scoped>

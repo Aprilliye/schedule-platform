@@ -31,6 +31,7 @@
                                 <th width="80">员工卡号</th>
                                 <th width="80">姓名</th>
                                 <th width="80">性别</th>
+                                <th width="80">年龄</th>
                                 <th width="80">电话</th>
                                 <th width="80">生日</th>
                                 <th width="80">岗位</th>
@@ -63,6 +64,7 @@
                                 <td>{{item.employeeCard}}</td>
                                 <td>{{item.userName}}</td>
                                 <td>{{item.gender}}</td>
+                                <td>{{countAge(item.idCardNumber)}}</td>
                                 <td>{{item.phoneNumber}}</td>
                                 <td>{{item.birthday}}</td>
                                 <td>{{item.positionName}}</td>
@@ -112,8 +114,7 @@
                         <i-input v-model="addUserData.userName"></i-input>
                     </FormItem>
                     <FormItem label="密码" prop="password" class="userModal">
-                        <i-input v-model="addUserData.password"></i-input>
-                        <span class="orange">请记录此密码作为下次登录用</span>
+                        <i-input v-model="addUserData.password" placeholder="请记录此密码作为下次登录用"></i-input>
                     </FormItem>
                      <FormItem label="站区" prop="districtId" class="userModal"  v-show="showDistrict">
                         <Select v-model="addUserData.districtId" @on-change="getAllStations(addUserData.districtId)">
@@ -135,17 +136,8 @@
                             <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
                         </Select>
                     </FormItem>
-                    <FormItem label="性别" prop="gender" class="userModal">
-                        <Select v-model="addUserData.gender">
-                            <Option value="男">男</Option>
-                            <Option value="女">女</Option>
-                        </Select>
-                    </FormItem>
                     <FormItem label="手机号" prop="phoneNumber" class="userModal">
                         <i-input v-model="addUserData.phoneNumber"></i-input>
-                    </FormItem>
-                    <FormItem label="生日" prop="birthday" class="userModal">
-                        <DatePicker v-model="addUserData.birthday" type="date" placeholder="请选择生日" clearable></DatePicker>
                     </FormItem>
                     <FormItem label="身份证" prop="idCardNumber" class="userModal">
                         <i-input  v-model="addUserData.idCardNumber"></i-input>
@@ -230,8 +222,7 @@
                     <i-input v-model="editUser.userName"></i-input>
                 </FormItem>
                 <FormItem label="密码" prop="password" class="userModal">
-                    <i-input v-model="editUser.password"></i-input>
-                    <span class="orange">请记录此密码作为下次登录用</span>
+                    <i-input v-model="editUser.password" placeholder="请记录此密码作为下次登录用"></i-input>
                 </FormItem>
                 <FormItem label="站区" prop="districtId" class="userModal" v-show="showDistrict">
                     <Select v-model="editUser.districtId" @on-change="getAllStations(editUser.districtId)">
@@ -253,17 +244,8 @@
                         <Option v-for="(item,index) in roles" :value="item.id" :key="index">{{item.name}}</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="性别" prop="gender" class="userModal">
-                    <Select v-model="editUser.gender">
-                        <Option value="男">男</Option>
-                        <Option value="女">女</Option>
-                    </Select>
-                </FormItem>
                 <FormItem label="手机号" prop="phoneNumber" class="userModal">
                     <i-input v-model="editUser.phoneNumber"></i-input>
-                </FormItem>
-                <FormItem label="生日" prop="birthday" class="userModal">
-                    <DatePicker v-model="editUser.birthday" type="date" placeholder="请选择生日" clearable></DatePicker>
                 </FormItem>
                 <FormItem label="身份证" prop="idCardNumber" class="userModal">
                     <i-input  v-model="editUser.idCardNumber"></i-input>
@@ -449,8 +431,8 @@
                     },
                 ],
                 rule:{
-                   employeeCard: [{required: true, message: '员工卡号不能为空', trigger: 'blur' }],
-                   employeeCode: [{required: true, message: '人员编码不能为空', trigger: 'blur' }],
+                   entryDate: [{type: 'date',required: true, message: '入职时间不能为空', trigger: 'change' }],
+                   beginWorkDate: [{type: 'date',required: true, message: '参加工作时间不能为空', trigger: 'change' }],
                    userName: [{required: true, message: '姓名不能为空', trigger: 'blur' }],
                    roleId: [{required: true, type: 'integer', message: '角色不能为空', trigger: 'change' }],
                    districtId: [{required: true, type: 'integer', message: '站区不能为空', trigger: 'change' }],
@@ -458,7 +440,6 @@
                    phoneNumber: [{required: true, message: '手机号不能为空', trigger: 'blur' }],
                    idCardNumber: [{required: true, message: '身份证不能为空', trigger: 'blur' }],
                    homeAddress: [{required: true, message: '住址不能为空', trigger: 'blur' }],
-                   gender: [{required: true, message: '性别不能为空', trigger: 'change' }]
                 },
                 userList:[],
                 selectedItmes: [],
@@ -655,6 +636,12 @@
             },
              //编辑人员提交验证
             editPersonModalMethod: function(name){
+                let e = window.event;
+                let target = $(e.target).parent();
+                target.attr('disabled', true);
+                setTimeout(function () {
+                    target.attr('disabled', false);
+                },3000);
                 let that = this;
                   this.$refs[name].validate((valid) => {
                     if (valid) {
@@ -720,20 +707,14 @@
                 // this.editUser.backup = item.backup.toString();
                 this.editPersonModal = true;
             },
-            // // 对象深度拷贝
-            // cloneObj:function(obj){
-            //     var newObj = {};
-            //     if (obj instanceof Array) {
-            //         newObj = [];
-            //     }
-            //     for (var key in obj) {
-            //         var val = obj[key];
-            //         newObj[key] = typeof val === 'object' ? arguments.callee(val) : val;
-            //     }
-            //     return newObj;
-            // },
             // 新增人员
             addUser: function (name) {
+                let e = window.event;
+                let target = $(e.target).parent();
+                target.attr('disabled', true);
+                setTimeout(function () {
+                    target.attr('disabled', false);
+                },3000);
                 let self = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
@@ -808,6 +789,12 @@
             cancelImport: function () {
                 $('#userFile').val('');
                 this.fileName = '';
+            },
+            // 计算年龄
+            countAge: function (idCard) {
+                let date = new Date();
+                let birthYear = parseInt(idCard.substring(6,10));
+                return date.getFullYear() - birthYear;
             }
         }
     }
