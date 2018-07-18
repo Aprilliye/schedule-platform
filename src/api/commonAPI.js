@@ -47,8 +47,8 @@ export const getRole = () => fetch('/role', {},'GET');
 /** 获取用户列表 */
 export const getUser = data => fetch('/user', data ,'GET');
 
-/** 获取备班用户列表 */  
-export const getBackupUser = districtId => fetch('/user/backuplist/' + districtId, {} ,'GET');
+/** 获取备班员列表 */  
+export const getBackupUser = (districtId, scheduleInfoId) => fetch('/user/backuplist/' + districtId + '?scheduleInfoId=' + scheduleInfoId, {} ,'GET');
 
 /** 修改用户 */
 export const updateUser = data => fetch('/user', data, 'PUT');

@@ -1,6 +1,6 @@
 <template>
-    <div class="container" >
-        <div class="page">
+    <div class="container">
+        <div class="page" style="padding-bottom: 200px;">
             <div class="content-header">
                 <div>
                     <button class="btnDefault" :class="{'bgBlue': bgBlueClass }" @click="swichData('week', new Date())">周表</button>
@@ -61,7 +61,7 @@
                             <th>实际工时</th>
                             <th>结余</th>
                         </tr>
-                        <tr v-for="item in data" :key="item.id" :backup="item.backup">
+                        <tr v-for="item in data" :key="item.id" :suiteid="item.scheduleInfoList[0].suiteId">
                             <td  :id="item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
                             <td>{{item.positionName}}</td>
                             <!--周表点击事件-->
@@ -75,8 +75,8 @@
                 <!--假期悬浮框-->
                 <div class="vocationDiv" v-show="showMenu">
                     <div @click="getAnnualHoliday" code="1">年假</div>
-                    <div @click="modal.editVocation = true; leaveType = 2;" code="2">假期编辑</div>
-                    <div @click="modal.shiftChange; leaveType = 3" code="3">班次变更</div>
+                    <div @click="updateHoliday" code="2">假期编辑</div>
+                    <div @click="changeClass" code="3">班次变更</div>
                     <div @click="modal.provisionalDisposition = true; leaveType = 4" code="4">临时安排</div>
                     <div @click="modal.absenteeism = true; leaveType = 5" code="5">旷工缺勤</div>
                     <div @click="modal.overtime = true; leaveType = 6" code="6">加班补班</div>
@@ -174,7 +174,7 @@
                 <Form :label-width="80">
                     <FormItem label="班次">
                         <Select v-model="instead">
-                            <Option value="西直门替班员">西直门替班员</Option>
+                            <Option :value="item.id" v-for="item in suites" :key="item.id">{{item.dutyName}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
@@ -314,7 +314,7 @@
     import axios from 'axios';
     import JSzio from 'jszip';
     import FileSaver from 'file-saver';
-    import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft, exportImg, cancelLeave} from '@/api/api';
+    import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft, exportImg, cancelLeave, getClass} from '@/api/api';
     import {getStations, getBackupUser} from '@/api/commonAPI';
     export default {
         data: function() {
@@ -389,7 +389,8 @@
                 currentSchedule: {},          //  鼠标悬浮人员信息
                 currentId: null,
                 annualHoliday: 0,
-                sickleft: 0
+                sickleft: 0,
+                suites: []
             };
         },
         created: function () {
@@ -397,7 +398,7 @@
             this.getStations();
             this.getAllPost();
             this.changeWeek();
-            this.getBackupUser();
+
             this.endDateStr = new Date(this.startDateStr.getTime() + 6*24*60*60*1000);
         },
         methods: {
@@ -419,9 +420,9 @@
                 }
                 this.$Message.error(response.meta.message);
             },
-            //  获取站务员
+            //  获取备班员
             getBackupUser: async function () {
-                let response = await getBackupUser(this.districtId);
+                let response = await getBackupUser(this.districtId, this.scheduleInfoId);
                 if(response.meta.code === 0){
                     this.userList = response.data;
                     return;
@@ -483,7 +484,7 @@
                                 }
                                 let target = $('#'+obj.id).siblings().filter('[code="'+ date +'"]');
                                 target.html(dutyName).attr('id', schedule.id).attr('hours', hours).attr('leavehours', leavehours).attr('countoriginal', countOriginal);
-                                color && target.css('background-color', color);
+                                color ? target.css('background-color', color) : target.removeAttr('style');
                             }
                         }
                         this.countHours();
@@ -592,10 +593,10 @@
                 if(!id){
                     return;
                 }
-                let scrollTop = $(window).scrollTop();
                 this.scheduleInfoId = id;
-                let left = obj.offset().left + 15;
-                let top = obj.offset().top - scrollTop + 40;
+                let containerW = $('.container').offset().left;
+                let left = obj.offset().left - containerW;
+                let top = obj.offset().top - 20;
                 $('.vocationDiv').css({'left': left + 'px', 'top': top + 'px'});                
                 //防止点击自己弹框消失
                 e.stopPropagation();
@@ -668,6 +669,7 @@
                 let id = parseInt(obj.attr('id'));
                 let index = obj.parent().index() - 2;
                 let schedules = this.data[index].scheduleInfoList;
+                let w = parseInt(obj.width());
                 for(let obj of schedules){
                     if(obj.id === id){
                         this.currentSchedule = obj;
@@ -675,12 +677,10 @@
                     }
                     
                 }
-                let backup = obj.parent().attr('backup');
-
-                if(obj.attr('style') && backup == '0'){
-                    let scrollTop = $(window).scrollTop();
-                    let left = obj.offset().left;
-                    let top = obj.offset().top - scrollTop + 40;
+                if(obj.attr('style')){
+                    let containerW = $('.container').offset().left;
+                    let left = obj.offset().left - containerW + w + 15;
+                    let top = obj.offset().top - 60;
                     $('.tdMessage').css({'left': left + 'px', 'top': top + 'px'});
                     this.modal.showLeaveInfo = true;
                 }
@@ -689,6 +689,7 @@
             getAnnualHoliday: async function () {
                 this.modal.annualLeave = true; 
                 this.leaveType = 1;
+                this.getBackupUser();
                 let response = await getAnnualHoliday(this.currentId);
                 if(response.meta.code === 0){
                     let data = response.data;
@@ -697,6 +698,25 @@
                     this.$Message.error('获取年假余量失败');
                 }
                 this.currentId = null;
+            },
+            // 假期编辑
+            updateHoliday: function () {
+                this.modal.editVocation = true; 
+                this.leaveType = 2;
+                this.getBackupUser();
+            },
+            // 班次变更
+            changeClass: async function () {
+                this.modal.shiftChange = true; 
+                this.leaveType = 3;
+                let suiteId = parseInt($('#'+ this.scheduleInfoId).parent().attr('suiteid'));
+                let response = await getClass(suiteId);
+                console.log(response)
+                if(response.meta.code === 0){
+                    this.suites = response.data.dutyclass;
+                    return;
+                } 
+                this.$Message.error('获取班次失败');
             },
             //  获取病假余量
             getSickleft: async function () {
@@ -754,7 +774,13 @@
                     scheduleInfoId: this.scheduleInfoId
                 };
                 let response = await cancelLeave(data);
-                console.log(response)
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.getScheduleInfo();
+                    return;
+                } 
+                this.$Message.error(message);
             }
         }        
     };
