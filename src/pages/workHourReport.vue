@@ -2,19 +2,19 @@
     <div class="container">
         <div class="content-header">
             <span>选择年份：</span>
-            <DatePicker v-model="year" type="year" placeholder="请选择日期" style="width: 200px" clearable></DatePicker>
+            <DatePicker v-model="year" type="year" placeholder="请选择日期" clearable></DatePicker>
             <span>选择季度：</span>
-            <Select style="width:200px" placeholder="请选择季度" v-model.trim="season" clearable @on-change="changeSeason">
+            <Select placeholder="请选择季度" v-model.trim="season" clearable @on-change="changeSeason">
                 <Option :value="1">第一季度</Option>
                 <Option :value="2">第二季度</Option>
                 <Option :value="3">第三季度</Option>
                 <Option :value="4">第四季度</Option>
             </Select>
             <span>选择月份：</span>
-            <DatePicker v-model="month" type="month" placeholder="请选择月份" style="width: 200px" clearable @on-change="changeMonth"></DatePicker>
+            <DatePicker v-model="month" type="month" placeholder="请选择月份" clearable @on-change="changeMonth"></DatePicker>
             <template v-if="roleId === 1">
                 <span>站区：</span>
-                <Select style="width:200px" placeholder="请选择站区" v-model="districtId">
+                <Select placeholder="请选择站区" v-model="districtId">
                     <Option v-for="item in districtList"  :key="item.id" :value="item.id">{{ item.districtName }}</Option>
                 </Select>
             </template>

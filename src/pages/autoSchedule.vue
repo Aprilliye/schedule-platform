@@ -4,7 +4,7 @@
             <div class="content-header">
                 <div class="tabItem">
                     <span>选择班制：</span>
-                    <Select v-model="suiteId" style="width:200px" @on-change="loadTemplate(suiteId)">
+                    <Select v-model="suiteId" @on-change="loadTemplate(suiteId)">
                         <Option v-for="item in suites" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
                     </Select>
                     <button class="btnDefault bgGreen" @click="selectDateModal=true">保存排班</button>
@@ -86,7 +86,7 @@
             :loading="true">
             <Form :label-width="110">
                 <FormItem label="选择开始日期">
-                    <DatePicker type="date" style="width:320px;" placeholder="请选择时间"  v-model.trim="startDate"></DatePicker>
+                    <DatePicker type="date" placeholder="请选择时间"  v-model.trim="startDate"></DatePicker>
                 </FormItem>
             </Form>
         </Modal>

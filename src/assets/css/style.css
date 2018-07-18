@@ -513,3 +513,8 @@ select {
   border-color: #e5e5e5;
   border-radius: 4px;
 }
+.content-header .ivu-input-wrapper,
+.content-header .ivu-select,
+.content-header .ivu-date-picker {
+  width: 200px;
+}

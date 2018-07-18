@@ -2,7 +2,7 @@
     <div class="container">
         <div class="content-header">
             <label style="margin-left: 10px">班制：</label>
-            <Select v-model="suite" style="width:200px" @on-change="getWorkFlow(suite)">
+            <Select v-model="suite" @on-change="getWorkFlow(suite)">
                 <Option v-for="item in suites" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
             </Select>
             <a class="btnDefault bgBlue btnworkflow" onclick="loadWorkFlow()">加载工作流程</a>

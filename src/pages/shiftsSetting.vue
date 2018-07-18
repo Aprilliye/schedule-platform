@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="content-header">
-            <Select v-model="position.current" placeholder="请选择岗位" style="width:200px;margin: 0px 0px 4px 20px " @on-change="getChangeSuite">
+            <Select v-model="position.current" placeholder="请选择岗位" style="margin: 0px 0px 4px 20px " @on-change="getChangeSuite">
                 <Option v-for="item in position.data" :value="item.id+'-'+item.backupPosition+'-'+item.positionName" :key="item.id">{{ item.positionName }}</Option>
             </Select>
             <a class="btnDefault bgGreen" @click="modal.addShift=true">新增班制</a>
@@ -135,7 +135,7 @@
                     <Input v-model="addFormValidateClass.userCount" placeholder=""/>
                 </FormItem>
                 <FormItem label="注意事项" prop="comment">
-                    <textarea  v-model="addFormValidateClass.comment" placeholder="" style="width:100%;"></textarea>
+                    <textarea  v-model="addFormValidateClass.comment" placeholder="" class="content"></textarea>
                 </FormItem>
             </Form>
         </Modal>
@@ -189,7 +189,7 @@
                     <Input v-model="editFormValidateClass.userCount" placeholder=""/>
                 </FormItem>
                 <FormItem label="注意事项" prop="comment">
-                    <textarea  v-model="editFormValidateClass.comment" placeholder="" style="width:100%;"></textarea>
+                    <textarea  v-model="editFormValidateClass.comment" placeholder="" class="content"></textarea>
                 </FormItem>
             </Form>
         </Modal>

@@ -2,7 +2,7 @@
     <div class="container">
         <div class="content-header">
             <span>选择班制：</span>
-            <Select v-model="suiteId" style="width:200px" @on-change="loadTemplate(suiteId)">
+            <Select v-model="suiteId" @on-change="loadTemplate(suiteId)">
                 <Option v-for="item in suites" :value="item.id" :key="item.shiftId">{{ item.dutyName }}</Option>
             </Select>
             <!-- <button type="button" class="btnDefault bgBlue">创建排班</button> -->

@@ -7,24 +7,24 @@
                     <button class="btnDefault" :class="{'bgBlue': !bgBlueClass }" @click="swichData('month', new Date())">月表</button>
                     <div class="tabItem" v-show="bgBlueClass">
                         <span>时间段：</span>
-                        <Select v-model="dayNum" style="width:200px" @on-change="changeWeek">
+                        <Select v-model="dayNum" @on-change="changeWeek">
                             <Option v-for="item in dayNumList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
-                        <DatePicker v-model="startDateStr" type="date" placeholder="请选择时间" style="width: 200px" @on-change="changeDate('start')"></DatePicker> 至
-                        <DatePicker v-model="endDateStr" type="date" placeholder="请选择时间" style="width: 200px" @on-change="changeDate('end')"></DatePicker>
+                        <DatePicker v-model="startDateStr" type="date" placeholder="请选择时间" @on-change="changeDate('start')"></DatePicker> 至
+                        <DatePicker v-model="endDateStr" type="date" placeholder="请选择时间" @on-change="changeDate('end')"></DatePicker>
                     </div>
                     <div class="tabItem" v-show="!bgBlueClass">
                         <span>选择月份：</span>
-                        <DatePicker v-model="month" type="month" placeholder="请选择月份" style="width: 200px" @on-change="changeMonth"></DatePicker>
+                        <DatePicker v-model="month" type="month" placeholder="请选择月份" @on-change="changeMonth"></DatePicker>
                     </div>
                 </div>
                 <div style="margin-top: 20px">
                     <span>站点：</span>
-                    <Select v-model="station" style="width:200px" clearable>
+                    <Select v-model="station" clearable>
                         <Option v-for="item in stationList" :value="item.id" :key="item.id">{{ item.stationName }}</Option>
                     </Select>
                     <span>岗位：</span>
-                    <Select v-model="post" style="width:200px" clearable>
+                    <Select v-model="post" clearable>
                         <Option v-for="item in postList" :value="item.id" :key="item.id">{{ item.positionName }}</Option>
                     </Select>
                     <p class="selectbutton">

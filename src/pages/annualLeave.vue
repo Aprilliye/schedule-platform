@@ -2,11 +2,13 @@
     <div class="container">
         <div class="content-header">
             <span>年份：</span>
-            <DatePicker v-model="year" type="year" placeholder="请选择年份" style="width: 200px" clearable></DatePicker>
+            <DatePicker v-model="year" type="year" placeholder="请选择年份" clearable></DatePicker>
             <span>站区：</span>
-            <Select v-model="districtId" style="width:200px" clearable>
+            <Select v-model="districtId" clearable>
                 <Option v-for="item in districtList" :value="item.id" :key="item.id">{{ item.districtName }}</Option>
             </Select>
+            <span>身份证号：</span>
+            <i-input placeholder="请输入身份证号" v-model.trim="idCardNo" clearable></i-input>
             <button class="btnDefault bgBlue" type="button" @click="getHoliday">查询</button>
             <button class="btnDefault bgGreen" type="button" @click="holidayModal = true">导入年假</button>
         </div>
@@ -68,7 +70,8 @@ export default {
             districtId: null,
             lineNumbers: ['2号线', '8号线', '10号线', '13号线', '新线'],
             holidayModal: false,
-            fileName: ''
+            fileName: '',
+            idCardNo: ''
         }
     },
     mounted: function () {
@@ -97,6 +100,8 @@ export default {
 
             let districtId = this.districtId;
             districtId && (data.districtId = districtId);
+            let idCardNo = this.idCardNo;
+            idCardNo && (data.idCardNo = idCardNo);
 
             let response = await getHoliday(data);
             let message = response.meta.message;
