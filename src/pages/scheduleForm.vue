@@ -61,7 +61,7 @@
                             <th>实际工时</th>
                             <th>结余</th>
                         </tr>
-                        <tr v-for="item in data" :key="item.id" :suiteid="item.scheduleInfoList[0].suiteId">
+                        <tr v-for="item in data" :key="item.id" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
                             <td  :id="item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
                             <td>{{item.positionName}}</td>
                             <!--周表点击事件-->
@@ -114,7 +114,7 @@
                         <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                         <p>年假剩余{{annualHoliday}}天</p>
                     </FormItem>
-                    <FormItem label="替班人">
+                    <FormItem label="替班人" v-show="backup">
                         <Select v-model="instead">
                             <Option v-for="item in userList" :value="item.id" :key="item.id">{{item.userName}}</Option>
                         </Select>
@@ -154,13 +154,13 @@
                     <FormItem label="请假天数">
                         <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
-                    <FormItem label="替班人">
+                    <FormItem label="替班人" v-show="backup">
                         <Select v-model="instead">
                             <Option v-for="item in userList" :value="item.id" :key="item.id">{{item.userName}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea v-model.trim="content" name="remark" class="vocationRemark"></textarea>
+                        <textarea v-model.trim="content" name="remark" class="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -178,7 +178,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea v-model.trim="content" name="remark" class="vocationRemark"></textarea>
+                        <textarea v-model.trim="content" name="remark" class="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -203,7 +203,7 @@
                         <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea v-model.trim="content" name="remark" class="vocationRemark"></textarea>
+                        <textarea v-model.trim="content" name="remark" class="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -219,7 +219,7 @@
                         <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea  name="remark" class="vocationRemark"  v-model.trim="content"></textarea>
+                        <textarea  name="remark" class="content"  v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -235,7 +235,7 @@
                         <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark" v-model.trim="content"></textarea>
+                        <textarea name="remark" class="content" v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -247,13 +247,13 @@
                 @on-cancel="cancel"
                 :loading="true">
                 <Form :label-width="80">
-                    <FormItem label="替班人员">
+                    <FormItem label="替班人员" v-show="backup">
                         <Select v-model="instead">
                             <Option v-for="item in userList" :value="item.id" :key="item.id">{{item.userName}}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark" v-model.trim="content"></textarea>
+                        <textarea name="remark" class="content" v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -269,7 +269,7 @@
                         <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark" v-model.trim="content"></textarea>
+                        <textarea name="remark" class="content" v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -285,7 +285,7 @@
                         <i-input v-model.trim="leaveCount" :required="true" clearable></i-input>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark" v-model.trim="content"></textarea>
+                        <textarea name="remark" class="content" v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -303,7 +303,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="备注">
-                        <textarea name="remark" class="vocationRemark" v-model.trim="content"></textarea>
+                        <textarea name="remark" class="content" v-model.trim="content"></textarea>
                     </FormItem>
                 </Form>
             </Modal>
@@ -390,7 +390,8 @@
                 currentId: null,
                 annualHoliday: 0,
                 sickleft: 0,
-                suites: []
+                suites: [],
+                backup: true,               //  控制是否显示备班员选项
             };
         },
         created: function () {
@@ -506,6 +507,12 @@
             },
             //  请假
             askForLeave: async function () {
+                let e = window.event;
+                let target = $(e.target).parent();
+                target.attr('disabled', true);
+                setTimeout(function () {
+                    target.attr('disabled', false);
+                },5000);
                 let scheduleInfoId = this.scheduleInfoId;
                 let leaveType = this.leaveType;
                 if(!scheduleInfoId){
@@ -550,7 +557,8 @@
                     for(let key in this.modal){
                         this.modal[key] = false;
                     }
-                    this.countHours();
+                    // this.countHours();
+                    this.getScheduleInfo();
                 }
                 
                 this.scheduleInfoId = null;
@@ -559,6 +567,10 @@
                 this.leaveCount = 0;
                 this.content = '';
                 this.instead = null;
+                for(let key in this.modal){
+                    this.modal[key] = false;
+                }
+                target.attr('disabled', false);
             },
             //  统计工时
             countHours: function () {
@@ -602,6 +614,8 @@
                 e.stopPropagation();
                 this.showMenu = true;
                 this.currentId = parseInt(obj.siblings('.scheduleName').attr('id'));
+                let backup = parseInt(obj.parent().attr('backup'));
+                this.backup = backup ? false : true;
             },
             //  显示站务员信息
             showUserInfo: function (item) {
@@ -689,8 +703,12 @@
             getAnnualHoliday: async function () {
                 this.modal.annualLeave = true; 
                 this.leaveType = 1;
-                this.getBackupUser();
+                let backup = parseInt($('#' + this.scheduleInfoId).parent().attr('backup'))
+                !backup && this.getBackupUser();
                 let response = await getAnnualHoliday(this.currentId);
+                if(!response){
+                    return;
+                }
                 if(response.meta.code === 0){
                     let data = response.data;
                     this.annualHoliday = data.limit - data.consumed;
@@ -711,7 +729,6 @@
                 this.leaveType = 3;
                 let suiteId = parseInt($('#'+ this.scheduleInfoId).parent().attr('suiteid'));
                 let response = await getClass(suiteId);
-                console.log(response)
                 if(response.meta.code === 0){
                     this.suites = response.data.dutyclass;
                     return;
@@ -722,6 +739,9 @@
             getSickleft: async function () {
                 if(this.subType == 1){
                     let response = await getSickleft(this.scheduleInfoId);
+                    if(!response){
+                        return;
+                    }
                     if(response.meta.code === 0){
                         let data = response.data;
                         this.sickleft = response.data;
