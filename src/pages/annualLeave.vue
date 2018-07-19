@@ -10,6 +10,7 @@
             <span>身份证号：</span>
             <i-input placeholder="请输入身份证号" v-model.trim="idCardNo" clearable></i-input>
             <button class="btnDefault bgBlue" type="button" @click="getHoliday">查询</button>
+            <button class="btnDefault bgBlue" type="button" @click="updateModal = true">新增</button>
             <button class="btnDefault bgGreen" type="button" @click="holidayModal = true">导入年假</button>
         </div>
         <div class="panel-body">
@@ -31,10 +32,31 @@
                 </FormItem>
             </Form>
         </Modal>
+        <!-- 设置年假 -->
+        <Modal title="设置年假"
+            v-model="updateModal"
+            :loading="true"
+            @on-ok="handleUpdate('updateValidate')"
+            @on-cancel="handleCancel">
+            <Form ref="updateValidate" :model="updateValidate" :rules="rule" :label-width="80">
+                <FormItem label="年份" prop="yearStr"> 
+                    <DatePicker v-model="updateValidate.yearStr" type="year" placeholder="请选择年份" clearable></DatePicker>
+                </FormItem>
+                <FormItem label="身份证号" prop="userIdCard">
+                    <Input v-model.trim="updateValidate.userIdCard" placeholder="" clearable/>
+                </FormItem>
+                <FormItem label="员工编码" prop="userCode">
+                    <Input v-model.trim="updateValidate.userCode" placeholder="" clearable/>
+                </FormItem>
+                <FormItem label="年假额度" prop="yearlyLimit">
+                    <Input v-model="updateValidate.yearlyLimit" placeholder=""/>
+                </FormItem>
+            </Form>
+        </Modal>
     </div>
 </template>
 <script>
-import {getDistricts, getHoliday, importHoliday} from '@/api/commonAPI';
+import {getDistricts, getHoliday, importHoliday, updateHoliday} from '@/api/commonAPI';
 export default {
     data: function () {
         return {
@@ -57,12 +79,41 @@ export default {
                     key: 'yearStr'
                 },
                 {
+                    title: '身份证号',
+                    key: 'userIdCard'
+                },
+                {
                     title: '站区',
                     key: 'districtName'
                 },
                 {
                     title: '年假额度',
                     key: 'yearlyLimit'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    key: 'action',
+                    render: (h, params) => {
+                        return h('div', [
+                            h('a', {
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        let data = params.row;
+                                        let item = this.updateValidate;
+                                        for(let key in item){
+                                            item[key] = data[key];
+                                        }
+                                        this.updateModal = true;
+                                        this.index = params.index;
+                                    }
+                                }
+                            }, '编辑'),
+                        ]);
+                    }
                 }
             ],
             data: [],
@@ -71,11 +122,25 @@ export default {
             lineNumbers: ['2号线', '8号线', '10号线', '13号线', '新线'],
             holidayModal: false,
             fileName: '',
-            idCardNo: ''
+            idCardNo: '',
+            updateModal: false,
+            updateValidate: {
+                userId: null,
+                userIdCard: '',
+                userCode: '',
+                yearStr: '',
+                yearlyLimit: null
+            },
+            rule: {
+                yearStr: {type: 'date', required: true, message: '年份不能为空', trigger: 'change' },
+                yearlyLimit: { required: true, message: '年假额度不能为空', trigger: 'blur' },
+            },
+            index: -1,
         }
     },
     mounted: function () {
         this.getDistricts();
+        this.getHoliday();
     },
     methods: {
         //  获取站区
@@ -151,6 +216,53 @@ export default {
         cancel: function () {
             $('#holidayFile').val('');
             this.fileName = '';
+        },
+        // 设置年假
+        handleUpdate: function (name) {
+            this.$refs[name].validate((valid) => {
+                if (valid) {
+                    this.setFuntion();
+                } else {
+                    this.$Message.error('操作失败');
+                }
+            })
+            
+        },
+        setFuntion: async function () {
+            let data = {};
+            let item = this.updateValidate;
+            for(let key in item){
+                if(item[key]){
+                    data[key] = item[key];
+                }
+            }
+            data.yearStr = String(item.yearStr.getFullYear());
+            data.yearlyLimit = parseInt(data.yearlyLimit);
+            let response = await updateHoliday(data);
+            let message = response.meta.message;
+            if(response.meta.code ===0){
+                this.$Message.success(message);
+                let data = response.data;
+                if(this.index > -1) {
+                    this.$set(this.data, this.index, data);
+                } else {
+                    this.data.unshift(data);
+                }
+            } else {
+                this.$Message.error(message);
+            }
+            this.updateModal = false;
+            this.index = -1;
+        },
+        handleCancel: function () {
+            this.updateValidate = {
+                userId: null,
+                userIdCard: '',
+                userCode: '',
+                yearStr: '',
+                yearlyLimit: null
+            };
+            this.index = -1;
         }
     }
 }
