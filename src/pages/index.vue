@@ -25,13 +25,13 @@
                             系统设置
                         </template>
                         <menu-item name="1-2"  v-if='setStationArea'>
-                            <router-link :to="{name: 'setStationArea'}" >
+                            <router-link :to="{name: 'district'}" >
                                 <span class="icon-18"></span>
                                 站区设置
                             </router-link>
                         </menu-item>
                         <menu-item name="1-1" class="active" v-if='Usermanage'>
-                            <router-link :to="{name: 'Usermanage'}" id="indexRouter">
+                            <router-link :to="{name: 'userManage'}" id="indexRouter">
                                 <span class="icon-19"></span>
                                 人员管理
                             </router-link>

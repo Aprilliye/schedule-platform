@@ -3,9 +3,9 @@ import Router from 'vue-router';
 import { routerMode } from '@/config/env.js';
 import Login from '@/pages/login';
 import Index  from '@/pages/index';
-import Usermanage from '@/pages/user-manage';
+import userManage from '@/pages/userManage';
 import annualLeave from '@/pages/annualLeave';
-import setStationArea from '@/pages/setStationArea';
+import district from '@/pages/district';
 import Role from '@/pages/role';
 import ScheduleForm from '@/pages/scheduleForm';
 import Workflow from '@/pages/workflow';
@@ -38,13 +38,13 @@ const router = new Router({
       path: '/home',
       name: 'Index',
       component: Index,
-      redirect: '/user-manage',
+      redirect: '/userManage',
       children:[
         //  人员管理页面  
         {
-          path: '/user-manage',
-          name: 'Usermanage',
-          component: Usermanage
+          path: '/userManage',
+          name: 'userManage',
+          component: userManage
         },
         //  年假管理
         {
@@ -54,9 +54,9 @@ const router = new Router({
         },
         //  站区设置页面
         {
-          path: '/setStationArea',
-          name: 'setStationArea',
-          component: setStationArea
+          path: '/district',
+          name: 'district',
+          component: district
         },
           //权限管理页面
         {

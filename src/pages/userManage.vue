@@ -10,9 +10,9 @@
                 <div class=" float-right">
                     <div class="search-input float-left">
                         <span class="icon-5"></span>
-                        <input type="text" placeholder="按员工卡号查询" name="roleName" v-model="fuzzyQueryModal">
+                        <input type="text" placeholder="按员工卡号查询" name="roleName" v-model.trim="userCardNo">
                     </div>
-                    <a class="btnDefault bgBlue queryBtn" @click="fuzzyQuery">查询</a>
+                    <a class="btnDefault bgBlue queryBtn" @click="getUserList">查询</a>
                 </div>
                 <div class="clear"></div>
             </div>
@@ -359,7 +359,7 @@
                 // 当前显示页数
                 currentPage:1,
                 showStation:true,
-                fuzzyQueryModal:'',
+                userCardNo:'',
                 showDistrict:false,
                 addPersonModal: false,
                 editPersonModal: false,
@@ -498,6 +498,8 @@
                    stationId: this.stationId,
                    positionId: this.positionId
                 }
+                let employeeCard = this.userCardNo;
+                employeeCard && (data.employeeCard = employeeCard);
                 let response = await getUser(data);
                 if (response.meta.code !== 0) {
                     this.$Loading.error();
@@ -513,24 +515,6 @@
                         this.userList = this.historyUserList.slice(0,this.pageSize);
                     }
                 }
-            },
-            // 模糊查询
-            fuzzyQuery: async function (){
-                let data = {
-                    districtId: this.districtId,
-                    stationId: this.stationId,
-                    positionId: this.positionId,
-                    employeeCard: this.fuzzyQueryModal
-                }
-                let response = await getUser(data);
-                if (response.meta.code !== 0) {
-                    this.$Loading.error();
-                    this.$Message.error(response.meta.message);
-                }else{
-                    this.$Loading.finish();
-                    this.userList = response.data;
-                }
-                this.fuzzyQueryModal='';
             },
             // 获取站区/站点
             request: async function(){

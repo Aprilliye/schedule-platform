@@ -377,6 +377,7 @@
                 let id = parseInt(obj.attr('id'));
                 let index = obj.parent().index() - 2;
                 let schedules = this.data[index].scheduleInfoList;
+                let w = parseInt(obj.width());
                 for(let obj of schedules){
                     if(obj.id === id){
                         this.currentSchedule = obj;
@@ -385,9 +386,9 @@
                     
                 }
                 if(obj.attr('style')){
-                    let scrollTop = $(window).scrollTop();
-                    let left = obj.offset().left;
-                    let top = obj.offset().top - scrollTop + 40;
+                    let containerW = $('.container').offset().left;
+                    let left = obj.offset().left - containerW + w + 15;
+                    let top = obj.offset().top - 60;
                     $('.tdMessage').css({'left': left + 'px', 'top': top + 'px'});
                     this.modal.showLeaveInfo = true;
                 }

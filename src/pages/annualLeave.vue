@@ -167,7 +167,6 @@ export default {
             districtId && (data.districtId = districtId);
             let idCardNo = this.idCardNo;
             idCardNo && (data.idCardNo = idCardNo);
-
             let response = await getHoliday(data);
             let message = response.meta.message;
             if(response.meta.code === 0){
