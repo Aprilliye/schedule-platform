@@ -311,9 +311,6 @@
     </div>
 </template>
 <script>
-    import axios from 'axios';
-    import JSzio from 'jszip';
-    import FileSaver from 'file-saver';
     import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft, exportImg, cancelLeave, getClass} from '@/api/api';
     import {getStations, getBackupUser} from '@/api/commonAPI';
     export default {
