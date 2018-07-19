@@ -452,9 +452,7 @@
                     positionId: null,
                     password: '',
                     roleId: null,
-                    gender: '',
                     phoneNumber: '',
-                    birthday: '',
                     idCardNumber: '',
                     entryDate: '',
                     beginWorkDate:'',
@@ -649,7 +647,6 @@
                 }
                 
                 // 日期类型格式转换
-                data.birthday && (data.birthday = that.$conversion(data.birthday));
                 data.entryDate && (data.entryDate = that.$conversion(data.entryDate));
                 data.beginWorkDate && (data.beginWorkDate = that.$conversion(data.beginWorkDate));
                 data.joinDate && (data.joinDate = that.$conversion(data.joinDate));
@@ -719,7 +716,6 @@
                     data.districtId = this.addUserData.districtId;
                 }
                 // 日期类型格式转换
-                data.birthday && (data.birthday = this.$conversion(data.birthday));
                 data.entryDate && (data.entryDate = this.$conversion(data.entryDate));
                 data.beginWorkDate && (data.beginWorkDate = this.$conversion(data.beginWorkDate));
                 data.joinDate && (data.joinDate = this.$conversion(data.joinDate));
