@@ -15,7 +15,7 @@
                     </div>
                     <div class="tabItem" v-show="!bgBlueClass">
                         <span>选择月份：</span>
-                        <DatePicker v-model="month" type="month" placeholder="请选择月份" @on-change="changeMonth"></DatePicker>
+                        <DatePicker v-model="month" type="month" placeholder="请选择月份"></DatePicker>
                     </div>
                 </div>
                 <div style="margin-top: 20px">
@@ -91,7 +91,7 @@
 </template>
 <script>
     import {getScheduleInfo, getAllPost, askForLeave} from '@/api/api';
-    import {getStations, getBackupUser} from '@/api/commonAPI';
+    import {getStations} from '@/api/commonAPI';
     export default {
         data: function() {
             return {
@@ -160,7 +160,6 @@
             this.getStations();
             this.getAllPost();
             this.changeWeek();
-            this.getBackupUser();
             this.endDateStr = new Date(this.startDateStr.getTime() + 6*24*60*60*1000);
         },
         methods: {
@@ -181,15 +180,6 @@
                     return;
                 }
                 this.$Message.error(response.meta.message);
-            },
-            //  获取站务员
-            getBackupUser: async function () {
-                let response = await getBackupUser(this.districtId);
-                if(response.meta.code === 0){
-                    this.userList = response.data;
-                    return;
-                }
-                this.$Message.error('站务员请求失败');
             },
             //  周表月表切换
             changeWeek: function () {
@@ -364,12 +354,6 @@
             getWeekDay: function (year, month, day) {
                 let weekDay = new Date(year, month-1, day).getDay();
                 return this.weekMap.get(weekDay);
-            },
-            //  选择月份
-            changeMonth: function () {
-                if(this.month){
-                    this.getMonthData(this.month);
-                }
             },
             //  显示请假信息
             showLeaveInfo: function (e) {

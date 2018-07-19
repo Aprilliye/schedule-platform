@@ -15,7 +15,7 @@
                     </div>
                     <div class="tabItem" v-show="!bgBlueClass">
                         <span>选择月份：</span>
-                        <DatePicker v-model="month" type="month" placeholder="请选择月份" @on-change="changeMonth"></DatePicker>
+                        <DatePicker v-model="month" type="month" placeholder="请选择月份"></DatePicker>
                     </div>
                 </div>
                 <div style="margin-top: 20px">
@@ -667,12 +667,6 @@
             getWeekDay: function (year, month, day) {
                 let weekDay = new Date(year, month-1, day).getDay();
                 return this.weekMap.get(weekDay);
-            },
-            //  选择月份
-            changeMonth: function () {
-                if(this.month){
-                    this.getMonthData(this.month);
-                }
             },
             //  显示请假信息
             showLeaveInfo: function (e) {
