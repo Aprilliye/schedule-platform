@@ -208,7 +208,7 @@
             title="编辑人员"
             v-model="editPersonModal"
             width="800"
-            @on-ok="editPersonModalMethod('editUser')"
+            @on-ok="editPerson('editUser')"
             :loading="true"
             :mask-closable="false">
             <Form ref="editUser" :model="editUser" :label-width="120" :rules="rule">
@@ -618,7 +618,7 @@
                 } 
             },
              //编辑人员提交验证
-            editPersonModalMethod: function(name){
+            editPerson: function(name){
                 let e = window.event;
                 let target = $(e.target).parent();
                 target.attr('disabled', true);
@@ -629,14 +629,13 @@
                   this.$refs[name].validate((valid) => {
                     if (valid) {
                         this.editPersonModal = false;
-                        this.$options.methods.beforeEditPersonModalMethod(that);
-                        this.$refs[name].resetFields();
+                        this.beforeEditPerson(that, name);
                     } else {
                         this.$Message.error('编辑人员失败');
                     }
                 })
             },
-            beforeEditPersonModalMethod: async function (that) {
+            beforeEditPerson: async function (that, name) {
                 let data ={};
                  for (let key in that.editUser) {
                     data[key] = that.editUser[key];
@@ -670,6 +669,7 @@
                     that.currentPage = 1;
                     that.$Message.success("修改人员成功");
                 } 
+                that.$refs[name].resetFields();
             },
             // 编辑人员
             editPersonMethod: function (item) {
