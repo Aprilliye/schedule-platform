@@ -25,7 +25,7 @@
                             系统设置
                         </template>
                         <menu-item name="1-2"  v-if='setStationArea'>
-                            <router-link :to="{name: 'district'}" >
+                            <router-link :to="{name: 'districtManage'}" >
                                 <span class="icon-18"></span>
                                 站区设置
                             </router-link>

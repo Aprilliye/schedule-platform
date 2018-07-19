@@ -80,8 +80,8 @@
                     <div @click="modal.provisionalDisposition = true; leaveType = 4" code="4">临时安排</div>
                     <div @click="modal.absenteeism = true; leaveType = 5" code="5">旷工缺勤</div>
                     <div @click="modal.overtime = true; leaveType = 6" code="6">加班补班</div>
-                    <div @click="modal.substitute; leaveType = 7" code="7">替班</div>
-                    <div @click="modal.transfer = true; leaveType = 8" code="8">调离</div>
+                    <div @click="handleInstead" code="7">替班</div>
+                    <div @click="handleTransfer" code="8">调离</div>
                     <div @click="modal.smallVocation = true; leaveType = 9" code="9">零星假</div>
                     <div @click="modal.other = true; leaveType = 10" code="10">其它</div>
                     <div code="11" @click="handleCancelLeave">撤销</div>
@@ -725,7 +725,13 @@
                 this.modal.shiftChange = true; 
                 this.leaveType = 3;
                 let suiteId = parseInt($('#'+ this.scheduleInfoId).parent().attr('suiteid'));
+                if(!suiteId){
+                    return;
+                }
                 let response = await getClass(suiteId);
+                if(!response){
+                    return;
+                }
                 if(response.meta.code === 0){
                     this.suites = response.data.dutyclass;
                     return;
@@ -798,6 +804,18 @@
                     return;
                 } 
                 this.$Message.error(message);
+            },
+            // 替班
+            handleInstead: function () {
+                this.modal.substitute = true; 
+                this.leaveType = 7;
+                this.getBackupUser();
+            },
+            // 调离
+            handleTransfer: function () {
+                this.modal.transfer = true; 
+                this.leaveType = 8;
+                this.getBackupUser();
             }
         }        
     };

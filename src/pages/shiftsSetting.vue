@@ -726,13 +726,12 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     let that = this;
-                    this.beforeAddTimeSlotMethods();
+                    this.beforeAddTimeSlotMethods(that);
                     this.modal.addTimeSlot = false;
                     this.$refs[name].resetFields();
                 } else {
                     this.$Message.error('新增失败');
                 }
-                this.addTimeValidate.timeSlot = [];
                 this.addTimeValidate.ifTimeSlot = false;
             })
         },
@@ -741,7 +740,7 @@ export default {
             let endTime = that.addTimeValidate.endTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
-            if(startInt > endTimeInt){
+            if(startTimeInt > endTimeInt){
                 this.$Message.warning('开始时间不能大于结束时间');
                 return;
             }
@@ -795,7 +794,7 @@ export default {
             let endTime = that.editTimeValidate.endTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
-            if(startInt > endTimeInt){
+            if(startTimeInt > endTimeInt){
                 this.$Message.warning('开始时间不能大于结束时间');
                 return;
             }
@@ -877,7 +876,7 @@ export default {
             let startTime = that.addFormValidateClass.startTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
-            if(startInt > endTimeInt){
+            if(startTimeInt > endTimeInt){
                 this.$Message.warning('开始时间不能大于结束时间');
                 return;
             }
@@ -942,7 +941,7 @@ export default {
             let startTime = that.editFormValidateClass.startTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
-            if(startInt > endTimeInt){
+            if(startTimeInt > endTimeInt){
                 this.$Message.warning('开始时间不能大于结束时间');
                 return;
             }
@@ -997,13 +996,6 @@ export default {
             }else{
                 this.$Message.error(message);
             }
-        },
-        //  选择时间段
-        selectTime: function (arr) {
-            if(arr[1] === ''){
-                arr = [];
-            }
-            this.addTimeValidate.timeSlot = arr;
         },
         handleCancel: function (name) {
             this.$refs[name].resetFields();

@@ -5,7 +5,7 @@ import Login from '@/pages/login';
 import Index  from '@/pages/index';
 import userManage from '@/pages/userManage';
 import annualLeave from '@/pages/annualLeave';
-import district from '@/pages/district';
+import districtManage from '@/pages/districtManage';
 import Role from '@/pages/role';
 import ScheduleForm from '@/pages/scheduleForm';
 import Workflow from '@/pages/workflow';
@@ -54,9 +54,9 @@ const router = new Router({
         },
         //  站区设置页面
         {
-          path: '/district',
-          name: 'district',
-          component: district
+          path: '/districtManage',
+          name: 'districtManage',
+          component: districtManage
         },
           //权限管理页面
         {
