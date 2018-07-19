@@ -88,7 +88,7 @@
         <!-- 新增班次表 -->
         <Modal title="新增班次"
             v-model="modal.addClass"
-            @on-ok="addClassMethods('addFormValidateClass')"
+            @on-ok="addClass('addFormValidateClass')"
             @on-cancel="handleCancel('addFormValidateClass')"
             :loading="true">
             <Form ref="addFormValidateClass" :model="addFormValidateClass" :rules="ruleValidate1" :label-width="80">
@@ -143,7 +143,7 @@
         <Modal title="编辑班次"
                v-model="modal.editShifyClass"
                :loading="true"
-               @on-ok="editShifyClassMethods('editFormValidateClass')"
+               @on-ok="editShifyClass('editFormValidateClass')"
                @on-cancel="handleCancel('editFormValidateClass')">
             <Form ref="editFormValidateClass" :model="editFormValidateClass" :rules="ruleValidate1" :label-width="80">
                 <FormItem label="班次名称" prop="dutyName">
@@ -265,7 +265,7 @@
         <Modal title="新增时间段"
             v-model="modal.addTimeSlot"
             :loading="true"
-            @on-ok="addTimeSlotMethods('addTimeValidate')"
+            @on-ok="addTimeSlot('addTimeValidate')"
             @on-cancel="handleCancelTime('addTimeValidate')">
             <Form ref="addTimeValidate" :model="addTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
                 <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
@@ -282,7 +282,7 @@
         <Modal title="编辑时间段"
                v-model="modal.editTimeSlot"
                :loading="true"
-               @on-ok="editTimeSlotMethods('editTimeValidate')"
+               @on-ok="editTimeSlot('editTimeValidate')"
                @on-cancel="handleCancel('editTimeValidate')">
             <Form ref="editTimeValidate" :model="editTimeValidate" :rules="ruleAddTimeValidate" :label-width="80">
                 <FormItem label="时间段" prop="timeSlot" element-id="timeSlot">
@@ -713,7 +713,7 @@ export default {
             }
         },
         //  新增时间段验证
-        addTimeSlotMethods: function (name) {
+        addTimeSlot: function (name) {
             let startTime = this.addTimeValidate.startTimeStr;
             let endTime = this.addTimeValidate.endTimeStr;
             if(startTime === '' || endTime === ''){
@@ -726,16 +726,14 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     let that = this;
-                    this.beforeAddTimeSlotMethods(that);
-                    this.modal.addTimeSlot = false;
-                    this.$refs[name].resetFields();
+                    this.beforeAddTimeSlot(that, name);
                 } else {
                     this.$Message.error('新增失败');
                 }
                 this.addTimeValidate.ifTimeSlot = false;
             })
         },
-        beforeAddTimeSlotMethods: async function (that) {
+        beforeAddTimeSlot: async function (that, name) {
             let startTime = that.addTimeValidate.startTimeStr;
             let endTime = that.addTimeValidate.endTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
@@ -757,14 +755,15 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 that.$Message.success("新增时间段成功");
+                that.modal.addTimeSlot = false;
+                that.$refs[name].resetFields();
                 that.getClass(that);
-                return;
-            }else{
+            } else{
                 that.$Message.error(message);
             }
         },
         //  编辑时间段验证
-        editTimeSlotMethods:function(name){
+        editTimeSlot:function(name){
             let startTime = this.editTimeValidate.startTimeStr;
             let endTime = this.editTimeValidate.endTimeStr;
             if(startTime === '' || endTime === ''){
@@ -777,25 +776,20 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     let that = this;
-                    this.$options.methods.beforeEditTimeSlotMethods(that);
-                    this.modal.editTimeSlot = false;
-                    this.$refs[name].resetFields();
-                    this.editTimeValidate.startTimeStr = '';
-                    this.editTimeValidate.endTimeStr = '';
-                    this.editTimeValidate.ifTimeSlot = false;
+                    this.$options.methods.beforeEditTimeSlot(that, name);
                 } else {
                     this.$Message.error('修改失败');
                 }
                 
             })
         },
-        beforeEditTimeSlotMethods: async function (that) {
+        beforeEditTimeSlot: async function (that, name) {
             let startTime = that.editTimeValidate.startTimeStr;
             let endTime = that.editTimeValidate.endTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
             if(startTimeInt > endTimeInt){
-                this.$Message.warning('开始时间不能大于结束时间');
+                that.$Message.warning('开始时间不能大于结束时间');
                 return;
             }
             if(endTime === '00:00' &&  endTimeInt < startTimeInt){
@@ -812,13 +806,17 @@ export default {
             if(response.meta.code === 0){
                 that.$Message.success("编辑时间段成功");
                 that.getClass(that);
-                return;
             }else{
                 that.$Message.error(message);
-             }
+            }
+            that.modal.editTimeSlot = false;
+            that.$refs[name].resetFields();
+            that.editTimeValidate.startTimeStr = '';
+            that.editTimeValidate.endTimeStr = '';
+            that.editTimeValidate.ifTimeSlot = false;
         },
         //  编辑时间段
-        editpeoplenumber:function(index){
+        editpeoplenumber: function(index) {
             let obj = this.onDutyData[index];
             this.currentPeriod = this.onDutyData[index].id;
             this.modal.editTimeSlot = true;
@@ -840,7 +838,7 @@ export default {
             }
         },
         //  新增班次验证
-        addClassMethods:function(name){
+        addClass: function(name) {
             let that = this;
             if($(".shiftColor").css('background-color')==='rgba(0, 0, 0, 0)'){
                 this.addFormValidateClass.shiftColorConfirn = true;
@@ -856,10 +854,7 @@ export default {
             }
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    this.$options.methods.beforeAddClassMethods(that);
-                    this.modal.addClass=false
-                    this.modal.editShifyClass=false
-                    this.$refs[name].resetFields();
+                    this.$options.methods.beforeAddClass(that, name);
                     $(".shiftColor").css("background-color","rgba(0, 0, 0, 0)");
                 } else {
                     this.$Message.error('修改失败');
@@ -870,14 +865,14 @@ export default {
                 this.addFormValidateClass.shiftColorConfirn = false;
             })
         },
-        beforeAddClassMethods: async function  (that) {
+        beforeAddClass: async function  (that, name) {
             //  let data = that.cloneObj(that.addFormValidateClass);
             let endTime = that.addFormValidateClass.endTimeStr;
             let startTime = that.addFormValidateClass.startTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
             if(startTimeInt > endTimeInt){
-                this.$Message.warning('开始时间不能大于结束时间');
+                that.$Message.warning('开始时间不能大于结束时间');
                 return;
             }
             if(endTime === '00:00' &&  endTimeInt < startTimeInt){
@@ -904,9 +899,12 @@ export default {
             }else{
                 that.$Message.error(message);
             }
+            that.modal.addClass = false;
+            that.modal.editShifyClass = false;
+            that.$refs[name].resetFields();
         },
         //  编辑班次验证提交
-        editShifyClassMethods:function(name){
+        editShifyClass: function(name) {
             if($(".shiftColor").css('background-color')==='rgba(0, 0, 0, 0)'){
                 this.editFormValidateClass.shiftColorConfirn = true;
                 return false;
@@ -922,27 +920,19 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     let that = this;
-                    this.$options.methods.beforeEditShifyClassMethods(that);
-                    this.modal.addClass=false
-                    this.modal.editShifyClass=false
-                    this.$refs[name].resetFields();
-                    $(".shiftColor").css("background-color","white");
-                    this.editFormValidateClass.startTimeStr = '';
-                    this.editFormValidateClass.endTimeStr = '';
-                    this.editFormValidateClass.ifTimeSlot = false;
-                    this.editFormValidateClass.shiftColorConfirn = false;
+                    this.$options.methods.beforeEditClass(that, name);
                 } else {
                     this.$Message.error('修改失败');
                 }
             })
         },
-        beforeEditShifyClassMethods: async function (that) {
+        beforeEditClass: async function (that, name) {
             let endTime = that.editFormValidateClass.endTimeStr;
             let startTime = that.editFormValidateClass.startTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
             if(startTimeInt > endTimeInt){
-                this.$Message.warning('开始时间不能大于结束时间');
+                that.$Message.warning('开始时间不能大于结束时间');
                 return;
             }
             if(endTime === '00:00' &&  endTimeInt < startTimeInt){
@@ -965,10 +955,17 @@ export default {
             if(response.meta.code === 0){
                 that.$Message.success("编辑班次成功");
                 that.getClass(that);
-                return;
             }else{
                 that.$Message.error(message);
             }
+            that.modal.addClass = false;
+            that.modal.editShifyClass = false
+            that.$refs[name].resetFields();
+            $(".shiftColor").css("background-color","white");
+            that.editFormValidateClass.startTimeStr = '';
+            that.editFormValidateClass.endTimeStr = '';
+            that.editFormValidateClass.ifTimeSlot = false;
+            that.editFormValidateClass.shiftColorConfirn = false;
         },
         //  编辑班次
         edite: function(index){

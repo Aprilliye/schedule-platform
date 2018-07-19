@@ -10,7 +10,7 @@
         </div>
         <div class="panel-body">
             <Table border :columns="columns" :data="data"></Table>
-            <Page :total="dataCount" :current='currentPage' :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
+            <Page :total="dataCount" :current.sync='currentPage' :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
         </div>
     </div>
 </template>
@@ -20,7 +20,7 @@ export default {
     data: function () {
         return {
             dataCount: 0,
-            currentPage:1,
+            currentPage: 1,
             historyUserList: [],
             // 每页显示记录条数
             pageSize:10,
@@ -35,7 +35,12 @@ export default {
                 },
                 {
                     title: '操作时间',
-                    key: 'createDate'
+                    key: 'createDate',
+                    render: (h, params) => {
+                        let date = new Date(params.row.createDate);
+                        let dateStr = this.conversion(date);
+                        return h('span', dateStr);
+                    }
                 },
                 {
                     title: '操作内容',
@@ -68,10 +73,10 @@ export default {
             let message = response.meta.message;
             if(response.meta.code === 0){
                 this.$Message.success(message);
-                this.dataCount = this.data.length;
                 // 获取分页
                 this.hostoryData = response.data;
                 this.dataCount = response.data.length;
+                this.currentPage = 1;
                 if(this.hostoryData.length < this.pageSize){
                     this.data = this.hostoryData;
                 }else{
@@ -80,6 +85,25 @@ export default {
                 return;
             }
             this.$Message.error(message);
+        },
+        // 时间戳转日期
+        conversion: function (date) {
+            let unixTimestamp = new Date(date);
+            let year = unixTimestamp.getFullYear();
+            let month = unixTimestamp.getMonth() + 1;
+            let day = unixTimestamp.getDate();
+            let hours = unixTimestamp.getHours();
+            let minutes = unixTimestamp.getMinutes();
+            let seconds = unixTimestamp.getSeconds();
+
+            let mm = month < 10 ? '0' + month : month + '';
+            let dd = day < 10 ? '0' + day : day + '';
+            let hh = hours<10 ? '0' + hours : hours + '';
+            let mi = minutes<10 ? '0' + minutes : minutes + '';
+            let ss = seconds<10 ? '0' + seconds : seconds + '';
+
+            let commonTime = year + "-" + mm + "-" + dd + " " + hh + ":" + mi + ":" + ss;
+            return commonTime;
         }
     }
 }

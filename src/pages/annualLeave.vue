@@ -15,7 +15,7 @@
         </div>
         <div class="panel-body">
             <Table border :columns="columns" :data="data"></Table>
-            <Page :total="dataCount" :current='currentPage' :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
+            <Page :total="dataCount" :current.sync='currentPage' :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
         </div>
         <!--导入年假-->
         <Modal
@@ -173,6 +173,7 @@ export default {
                 this.$Message.success(message);
                 this.hostoryData = response.data;
                 this.dataCount = response.data.length;
+                this.currentPage = 1;
                 if(this.hostoryData.length < this.pageSize){
                     this.data = this.hostoryData;
                 }else{

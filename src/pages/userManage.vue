@@ -91,7 +91,7 @@
                     </table>
                 </div>
             </div>
-            <Page :total="dataCount" :current='currentPage' :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
+            <Page :total="dataCount" :current.sync='currentPage' :page-size="pageSize" show-total class="paging" @on-change="changePage"></Page>
             <!-- 表格 end -->
         </form>
         <!--新增人员-->
@@ -507,6 +507,7 @@
                     // 获取分页
                     this.historyUserList = response.data;
                     this.dataCount = response.data.length;
+                    this.currentPage = 1;
                     if(this.historyUserList.length < this.pageSize){
                         this.userList = this.historyUserList;
                     }else{
