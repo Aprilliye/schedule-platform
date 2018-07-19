@@ -537,7 +537,7 @@ export default {
                             h('a', {
                                 on: {
                                     click: () => {
-                                        this.remove1(params.index)
+                                        this.handleDeleteSuite(params.index)
                                     }
                                 }
                             }, '删除')
@@ -584,7 +584,7 @@ export default {
                             h('a', {
                                 on: {
                                     click: () => {
-                                        this.remove2(params.index)
+                                        this.handleDeleteTimeSlot(params.index)
                                     }
                                 }
                             }, '删除')
@@ -598,7 +598,7 @@ export default {
         //  获取岗位
         this.getAllPost();
         // 获取站点
-        this.getCurrentStations();
+        this.handleGetStations();
     },
     methods:{
         // 对象深度拷贝
@@ -682,7 +682,7 @@ export default {
             }
         },
         //  获取站点
-        getCurrentStations: async function () {
+        handleGetStations: async function () {
             let id = this.districtId;
             let response = await getStations(id);
             let message = response.meta.message;
@@ -825,7 +825,7 @@ export default {
             this.editTimeValidate.userCount = obj.userCount.toString();
         },
         //  删除时间段
-        remove2: async function (index) {
+        handleDeleteTimeSlot: async function (index) {
             let id = this.onDutyData[index].id;
             let response = await detelePeriod(id);
             let message = response.meta.message;
@@ -855,7 +855,6 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     this.$options.methods.beforeAddClass(that, name);
-                    $(".shiftColor").css("background-color","rgba(0, 0, 0, 0)");
                 } else {
                     this.$Message.error('修改失败');
                 }
@@ -902,6 +901,7 @@ export default {
             that.modal.addClass = false;
             that.modal.editShifyClass = false;
             that.$refs[name].resetFields();
+            $(".shiftColor").css("background-color","rgba(0, 0, 0, 0)");
         },
         //  编辑班次验证提交
         editShifyClass: function(name) {
@@ -981,7 +981,7 @@ export default {
             $(".shiftColor").css("background-color",this.dutyData[index].classColor);
         },
         //  删除班次
-        remove1:async function (index) {
+        handleDeleteSuite: async function (index) {
             let id = this.dutyData[index].id;
             let suiteId = this.suiteId;
             let response = await deteleClass(id,suiteId);
@@ -1087,41 +1087,43 @@ export default {
             return arr;
         },
         //  新增班制
-        addSuite: function(name){
+        addSuite: function(name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    let that=this;
-                    this.$options.methods.addSuiteFun(that);
-                    this.modal.addShift=false;
-                    this.$refs[name].resetFields();
-                    this.stations = [];
+                    let that = this;
+                    this.addSuiteFun(that, name);
                 } else {
                     this.$Message.error('新增班制失败');
                     return false;
                 }
             })
         },
-        addSuiteFun:async function(that){
+        addSuiteFun:async function(that, name){
             let currentPosition = that.position.current.split('-');
             let data = that.cloneObj(that.addFormValidate);
             data.positionId = parseInt(currentPosition[0]);
             data.districtId = that.districtId;
             let response = await addSuites(data);   
-                let message = response.meta.message;
-                if(response.meta.code === 0){
-                    if (that.suites.length===0){
-                        that.suiteId = response.data.dutysuite.id
-                    }
-                        that.suites.push(response.data.dutysuite);
-                    // 显示班制内容
-                      let obj = that.suites[0]; 
-                        for(let key in obj){
-                        that.info[key] = obj[key];
-                        }
-                    that.$Message.success("新增班制成功");
-                }else{
-                    that.$Message.error(message);
+            let message = response.meta.message;
+            if(response.meta.code === 0){
+                if (that.suites.length === 0){
+                    that.suiteId = response.data.dutysuite.id
                 }
+                that.suites.push(response.data.dutysuite);
+                // 显示班制内容
+                let obj = that.suites[0]; 
+                that.suiteId = response.data.dutysuite.id;
+                that.getClass();
+                for(let key in obj){
+                    that.info[key] = obj[key];
+                }
+                that.$Message.success("新增班制成功");
+            }else{
+                that.$Message.error(message);
+            }
+            that.modal.addShift = false;
+            that.$refs[name].resetFields();
+            that.stations = [];
         },
         //  删除班制
         handleClose: async function () {
@@ -1149,15 +1151,13 @@ export default {
             this.$refs[name].validate((valid) => {
                 let that = this;
                 if (valid) {
-                    this.$options.methods.updateSuiteFun(that);
-                    this.$refs[name].resetFields();
-                    this.modal.editShift=false;
+                    this.$options.methods.updateSuiteFun(that, name);
                 } else {
                     this.$Message.error('修改失败');
                 }
             })
         },
-        updateSuiteFun: async function (that) {
+        updateSuiteFun: async function (that, name) {
             let data = that.cloneObj(that.formValidate);
             data.id = that.suiteId;
             let response = await updateSuites(data); 
@@ -1170,6 +1170,8 @@ export default {
             }else{
                 that.$Message.error(message);
             }
+            that.$refs[name].resetFields();
+            that.modal.editShift=false;
         },
         //  班次选择颜色
         getBackColor:function(){
