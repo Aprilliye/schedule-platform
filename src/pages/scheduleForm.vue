@@ -515,7 +515,7 @@
                 if(!scheduleInfoId){
                     return;
                 }
-                if(leaveType !== 2 || leaveType !== 4){
+                if(leaveType !== 2 && leaveType !== 4){
                     this.subType = 1;
                 }
                 if(!this.subType){
