@@ -454,13 +454,13 @@
                     roleId: null,
                     phoneNumber: '',
                     idCardNumber: '',
-                    entryDate: '',
-                    beginWorkDate:'',
+                    entryDate: null,
+                    beginWorkDate: null,
                     isMarried: '',
                     hasChild: '',
                     eduBackGround: '',
                     partyMember: '',
-                    joinDate: '',
+                    joinDate: null,
                     certNo: '',
                     certLevel: '',
                     homeAddress: '',
@@ -729,6 +729,14 @@
                     this.$refs[name].resetFields();
                     this.position = [];
                     this.stations = [];
+                    this.historyUserList = response.data;
+                    this.dataCount = response.data.length;
+                    this.currentPage = 1;
+                    if(this.historyUserList.length < this.pageSize){
+                        this.userList = this.historyUserList;
+                    }else{
+                        this.userList = this.historyUserList.slice(0,this.pageSize);
+                    }
                     return;
                 } 
                 this.$Message.error(message);
