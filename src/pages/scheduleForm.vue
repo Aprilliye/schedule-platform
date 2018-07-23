@@ -584,9 +584,7 @@
                     let balanceObj = $(this).next().next();
                     $(this).next().html(actualTotal);
                     balanceObj.html(balance);
-                    if(balance < 0){
-                        balanceObj.addClass('red');
-                    }
+                    balance<0 ? balanceObj.addClass('red') : balanceObj.removeClass('red')
                 })
             },
             clickHide: function(){

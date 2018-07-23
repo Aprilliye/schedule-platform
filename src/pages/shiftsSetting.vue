@@ -98,23 +98,14 @@
                 <FormItem label="班次代号" prop="dutyCode">
                     <Input v-model="addFormValidateClass.dutyCode" placeholder=""/>
                 </FormItem>
-                <FormItem label="班次颜色" prop="classColor">
+                <FormItem label="班次颜色" prop="classColor" class="colorLine">
                     <Poptip trigger="click" content="content">
                         <div class="shiftColor"></div>
                         <div class="ivu-form-item-error-tip" v-if="addFormValidateClass.shiftColorConfirn">班次颜色不能为空</div>
                         <div class="shiftColorBox" slot="content">
-                            <a style="background-color:rgb(110, 121, 190) " value="rgb(110, 121, 190)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(227, 82, 140) " value="rgb(227, 82, 140)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(228, 121, 121) " value="rgb(228, 121, 121)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(198, 65, 222) " value="rgb(198, 65, 222)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(62, 152, 175) " value="rgb(62, 152, 175)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(41, 173, 125) " value="rgb(41, 173, 125)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(119, 85, 247) " value="rgb(119, 85, 247)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(59, 199, 85) " value="rgb(59, 199, 85)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(214, 129, 73) " value="rgb(214, 129, 73)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(196, 167, 68) " value="rgb(196, 167, 68)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(199, 191, 65) " value="rgb(199, 191, 65)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(103, 188, 57) " value="rgb(103, 188, 57)" @click="getBackColor"></a>
+                            <a v-for="(item, index) in colors" :key="'color' + index" 
+                            :style="'background-color:' + item" 
+                            :value="item" @click="getBackColor"></a>
                         </div>
                     </Poptip>
                 </FormItem>
@@ -152,23 +143,14 @@
                 <FormItem label="班次代号" prop="dutyCode">
                     <Input v-model="editFormValidateClass.dutyCode" placeholder=""/>
                 </FormItem>
-                <FormItem label="班次颜色" prop="classColor">
+                <FormItem label="班次颜色" prop="classColor" class="colorLine">
                     <Poptip trigger="click" content="content">
                         <div class="shiftColor"></div>
                         <div class="ivu-form-item-error-tip" v-if="editFormValidateClass.shiftColorConfirn">班次颜色不能为空</div>
                         <div class="shiftColorBox" slot="content">
-                            <a style="background-color:rgb(110, 121, 190) " value="rgb(110, 121, 190)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(227, 82, 140) " value="rgb(227, 82, 140)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(228, 121, 121) " value="rgb(228, 121, 121)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(198, 65, 222) " value="rgb(198, 65, 222)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(62, 152, 175) " value="rgb(62, 152, 175)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(41, 173, 125) " value="rgb(41, 173, 125)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(119, 85, 247) " value="rgb(119, 85, 247)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(59, 199, 85) " value="rgb(59, 199, 85)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(214, 129, 73) " value="rgb(214, 129, 73)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(196, 167, 68) " value="rgb(196, 167, 68)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(199, 191, 65) " value="rgb(199, 191, 65)" @click="getBackColor"></a>
-                            <a style="background-color:rgb(103, 188, 57) " value="rgb(103, 188, 57)" @click="getBackColor"></a>
+                            <a v-for="(item, index) in colors" :key="'color' + index" 
+                            :style="'background-color:' + item" 
+                            :value="item" @click="getBackColor"></a>
                         </div>
                     </Poptip>
                 </FormItem>
@@ -592,6 +574,9 @@ export default {
                     }
                 }
             ],
+            colors: ['rgb(110, 121, 190)', 'rgb(227, 82, 140)', 'rgb(228, 121, 121)', 'rgb(198, 65, 222)', 
+            'rgb(62, 152, 175)', 'rgb(41, 173, 125)', 'rgb(119, 85, 247)', 'rgb(59, 199, 85)', 'rgb(214, 129, 73)',
+            'rgb(196, 167, 68)', 'rgb(199, 191, 65)', 'rgb(103, 188, 57)']
         }
     },
     mounted: function () {
