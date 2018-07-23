@@ -43,13 +43,13 @@
                     <DatePicker v-model="updateValidate.yearStr" type="year" placeholder="请选择年份" clearable></DatePicker>
                 </FormItem>
                 <FormItem label="身份证号" prop="userIdCard">
-                    <Input v-model.trim="updateValidate.userIdCard" placeholder="" clearable/>
+                    <Input v-model.trim="updateValidate.userIdCard" clearable/>
                 </FormItem>
                 <FormItem label="员工编码" prop="userCode">
-                    <Input v-model.trim="updateValidate.userCode" placeholder="" clearable/>
+                    <Input v-model.trim="updateValidate.userCode" clearable/>
                 </FormItem>
                 <FormItem label="年假额度" prop="yearlyLimit">
-                    <Input v-model="updateValidate.yearlyLimit" placeholder=""/>
+                    <Input v-model="updateValidate.yearlyLimit" @on-blur="blur"/>
                 </FormItem>
             </Form>
         </Modal>
@@ -133,7 +133,7 @@ export default {
             },
             rule: {
                 yearStr: {type: 'date', required: true, message: '年份不能为空', trigger: 'change' },
-                yearlyLimit: { required: true, message: '年假额度不能为空', trigger: 'blur' },
+                yearlyLimit: {type: 'number', required: true, message: '年假额度不能为空', trigger: 'blur' },
             },
             index: -1,
         }
@@ -143,6 +143,9 @@ export default {
         this.getHoliday();
     },
     methods: {
+        blur: function () {
+            this.updateValidate.yearlyLimit = parseInt(this.updateValidate.yearlyLimit) || 0;
+        },
         //  获取站区
         getDistricts: async function () {
             let response = await getDistricts();
@@ -231,6 +234,10 @@ export default {
         setFuntion: async function () {
             let data = {};
             let item = this.updateValidate;
+            if(!item.userCode && !item.userIdCard){
+                this.$Message.warning('身份证号和员工编码至少填写一项');
+                return;
+            }
             for(let key in item){
                 if(item[key]){
                     data[key] = item[key];
@@ -255,13 +262,7 @@ export default {
             this.index = -1;
         },
         handleCancel: function () {
-            this.updateValidate = {
-                userId: null,
-                userIdCard: '',
-                userCode: '',
-                yearStr: '',
-                yearlyLimit: null
-            };
+            this.$refs['updateValidate'].resetFields();
             this.index = -1;
         }
     }

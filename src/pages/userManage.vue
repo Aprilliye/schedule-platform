@@ -614,6 +614,15 @@
                 }else{
                     this.$Loading.finish();
                     this.userList = response.data;
+                    // 获取分页
+                    this.historyUserList = response.data;
+                    this.dataCount = response.data.length;
+                    this.currentPage = 1;
+                    if(this.historyUserList.length < this.pageSize){
+                        this.userList = this.historyUserList;
+                    }else{
+                        this.userList = this.historyUserList.slice(0,this.pageSize);
+                    }
                     this.$Message.success("删除人员成功");
                 } 
             },
@@ -650,6 +659,8 @@
                 data.entryDate && (data.entryDate = that.$conversion(data.entryDate));
                 data.beginWorkDate && (data.beginWorkDate = that.$conversion(data.beginWorkDate));
                 data.joinDate && (data.joinDate = that.$conversion(data.joinDate));
+                !data.employeeCard && delete data.employeeCard;
+                !data.employeeCode && delete data.employeeCode;
                 
                 let response = await updateUser(data);
                 if (response.meta.code !== 0) {
@@ -720,6 +731,8 @@
                 data.entryDate && (data.entryDate = this.$conversion(data.entryDate));
                 data.beginWorkDate && (data.beginWorkDate = this.$conversion(data.beginWorkDate));
                 data.joinDate && (data.joinDate = this.$conversion(data.joinDate));
+                !data.employeeCard && delete data.employeeCard;
+                !data.employeeCode && delete data.employeeCode;
                 let response = await addUser(data);
                 let message = response.meta.message;
                 if (response.meta.code === 0) {
