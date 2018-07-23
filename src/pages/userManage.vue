@@ -447,7 +447,7 @@
                     employeeCard: '',
                     employeeCode: '',
                     userName: '',
-                    districtId: null,
+                    districtId: this.$store.get('districtId'),
                     stationId: null,
                     positionId: null,
                     password: '',
@@ -720,7 +720,6 @@
                 data.entryDate && (data.entryDate = this.$conversion(data.entryDate));
                 data.beginWorkDate && (data.beginWorkDate = this.$conversion(data.beginWorkDate));
                 data.joinDate && (data.joinDate = this.$conversion(data.joinDate));
-
                 let response = await addUser(data);
                 let message = response.meta.message;
                 if (response.meta.code === 0) {
