@@ -5,7 +5,7 @@
                 <div class="float-left">
                     <button class="btnDefault bgGreen mansgebutton" type="button" @click="addPersonModal = true">新增人员</button>
                     <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="userPort" @click="importUserModal = true">导入</a>
-                    <a class="btnDefault">模板</a>
+                    <a class="btnDefault" @click="downloadTemplate">模板</a>
                 </div>
                 <div class=" float-right">
                     <div class="search-input float-left">
@@ -796,6 +796,10 @@
                 let date = new Date();
                 let birthYear = parseInt(idCard.substring(6,10));
                 return date.getFullYear() - birthYear;
+            },
+            // 下载模版
+            downloadTemplate: function () {
+                location.href = 'https://schedule-test.oss-cn-beijing.aliyuncs.com/%E4%BA%BA%E5%91%98%E4%BF%A1%E6%81%AF%E6%A8%A1%E6%9D%BF.xlsx';
             }
         }
     }
