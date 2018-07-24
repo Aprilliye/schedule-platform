@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'development') {
     //baseURL = 'http://192.168.2.233:8765';
     //baseURL = 'http://suspnp.com/schedule/api/';
 } else {
-    baseURL = '';
+    baseURL = 'http://47.100.181.56/api';
 }
 
 export { baseURL, routerMode, baseImageURL }
