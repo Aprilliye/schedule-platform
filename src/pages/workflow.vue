@@ -26,12 +26,12 @@
                                     <input type="text" style="display:none;" @blur="updateWorkFlow()">
                                 </td>
                                 <template v-for="n in 24">
-                                    <td class="timeTd" v-for="m in 6" :code="(n-1)*60 + m*10" @click="clickTd" :key="'td0-'+(n-1)*60 + m*10"></td>
+                                    <td class="timeTd" v-for="m in 6" :code="(n-1)*60 + (m-1)*10" @click="clickTd" :key="'td0-'+(n-1)*60 + m*10"></td>
                                 </template>
                             </tr>
                             <tr :trtype="1" :code="workflow.id" :key="'tr1-'+workflow.id">
                                 <template v-for="n in 24">
-                                    <td class="timeTd" v-for="m in 6" :code="(n-1)*60 + m*10" @click="clickTd" :key="'td1-'+(n-1)*60 + m*10"></td>
+                                    <td class="timeTd" v-for="m in 6" :code="(n-1)*60 + (m-1)*10" @click="clickTd" :key="'td1-'+(n-1)*60 + m*10"></td>
                                 </template>
                             </tr>
                         </template>
@@ -105,6 +105,7 @@
                 if(response.meta.code === 0){
                     this.suites = response.data;
                     this.suite = response.data[0].id;
+                    this.getWorkFlow(this.suite);
                     this.currentPositionId = response.data[0].positionId;
                     return;
                 }
@@ -128,7 +129,7 @@
                                     let end = content.endTime/10;
                                     let obj = $('tr[code="'+ content.workFlowId +'"][trtype="'+ content.lineNumber +'"]');
                                     let startTd = obj.find('td[code="'+ start*10 +'"]');
-                                    let colspan = end-start+1;
+                                    let colspan = end-start;
                                     for(let i = start+1;i<=end;i++){
                                         let target = obj.find(obj.find('td[code="'+ i*10 +'"]'));
                                         target.remove();
@@ -279,11 +280,11 @@
                 let endTd = $('.gray').eq(1);
                 this.editItem = this.temporary;
                 let startTime = startTd.attr('code');
-                let endTime = endTd.attr('code');
+                let endTime = parseInt(endTd.attr('code')) + 10;
                 let data = {
                     workFlowId: this.currentWorkflowId,
                     startTime: parseInt(startTime),
-                    endTime: parseInt(endTime),
+                    endTime: endTime,
                     content: this.workflowText,
                     color: this.temporary,
                     lineNumber: this.currentLineNumber
