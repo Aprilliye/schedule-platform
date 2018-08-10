@@ -15,6 +15,9 @@ Vue.use(VueRouter);
 
 Vue.use(iView);
 
+import Element from 'element-ui'; 
+Vue.use(Element)
+
 Vue.prototype.$store = store;
 Vue.prototype.$conversion = conversion;
 /* eslint-disable no-new */

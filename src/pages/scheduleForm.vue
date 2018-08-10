@@ -47,30 +47,77 @@
                 </div>
                 <div class="clear"></div>
                 <div class="postformtable">
+                    <div class="left">
+                        <table>
+                            <tr>
+                                <th>姓名</th>
+                                <th>岗位</th>
+                                <th>车站</th>
+                                <th>员工卡号</th>
+                            </tr>
+                        </table>
+                        <div class="inner">
+                            <table>
+                                <tr v-for="item in data" :key="item.id" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
+                                    <td  :id="item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
+                                    <td>{{item.positionName}}</td>
+                                    <td>{{item.stationName}}</td>
+                                    <td>{{item.employeeCard}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="head">
+                            <table>
+                                <colgroup></colgroup>
+                                <tr>
+                                    <th v-for="(item, index) in dateArr" :key="'th-0-'+ index">{{item}}</th>
+                                    <th colspan="3">总计：{{dateArr.length}}天</th>
+                                </tr>
+                                <tr>
+                                    <th v-for="(item, index) in weekArr" :key="'th-1-'+ index">{{item}}</th>
+                                    <th>计划工时</th>
+                                    <th>实际工时</th>
+                                    <th>结余</th>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="inner" @scroll="doScroll">
+                            <table>
+                                <colgroup></colgroup>
+                                    <tr v-for="item in data" :key="item.id" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
+                                    <!--周表点击事件-->
+                                    <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index" @click="clickTd" @mouseover="showLeaveInfo">--</td>
+                                    <td class="planWorkHour">0</td>
+                                    <td class="actualWorkHour">0</td>
+                                    <td class="balance">0</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                     <!--周表-->
-                    <table>
-                        <tr>
-                            <th rowspan="2">姓名</th>
-                            <th rowspan="2">岗位</th>
-                            <th v-for="(item, index) in dateArr" :key="'th-0-'+ index">{{item}}</th>
-                            <th colspan="3">总计：{{dateArr.length}}天</th>
-                        </tr>
-                        <tr>
-                            <th v-for="(item, index) in weekArr" :key="'th-1-'+ index">{{item}}</th>
-                            <th>计划工时</th>
-                            <th>实际工时</th>
-                            <th>结余</th>
-                        </tr>
-                        <tr v-for="item in data" :key="item.id" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
-                            <td  :id="item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
-                            <td>{{item.positionName}}</td>
-                            <!--周表点击事件-->
-                            <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index" @click="clickTd" @mouseover="showLeaveInfo">--</td>
-                            <td class="planWorkHour">0</td>
-                            <td class="actualWorkHour">0</td>
-                            <td class="balance">0</td>
-                        </tr>
-                    </table>
+                    <!-- <div class="table-body">
+                        <table>
+                            <thead>
+                                <colgroup>
+                                </colgroup>
+                                <tr>
+                                    <th v-for="(item, index) in dateArr" :key="'th-0-'+ index">{{item}}</th>
+                                    <th colspan="3">总计：{{dateArr.length}}天</th>
+                                </tr>
+                                <tr>
+                                    <th v-for="(item, index) in weekArr" :key="'th-1-'+ index">{{item}}</th>
+                                    <th>计划工时</th>
+                                    <th>实际工时</th>
+                                    <th>结余</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                    </div> -->
                 </div>
                 <!--假期悬浮框-->
                 <div class="vocationDiv" v-show="showMenu">
@@ -398,6 +445,14 @@
             this.changeWeek();
 
             this.endDateStr = new Date(this.startDateStr.getTime() + 6*24*60*60*1000);
+            
+        },
+        mounted: function () {
+            let width1 = $('.page').width() - 350;
+            let width2 = $('.right table').width();
+            console.log(width2)
+            $('.right').width(width1);
+            $('.right .inner').width(width2);
         },
         methods: {
             //  获取站点
@@ -431,14 +486,49 @@
             changeWeek: function () {
                 this.dateArr = [];
                 this.weekArr = [];
+                
                 if(this.startDateStr){
+                    // this.columns = [
+                    //     { title: '姓名', key: 'userName', width: 80, fixed: 'left'},
+                    //     { title: '岗位', key: 'positionName', width: 80, fixed: 'left'},
+                    //     { title: '车站', key: 'stationName', width: 80, fixed: 'left'},
+                    //     { title: '员工卡号', key: 'employeeCard', width: 100, fixed: 'left'},
+                    //     { 
+                    //         title: '排班', 
+                    //         key: 'scheduleInfoList', 
+                    //         children: []
+                    //     },
+                    // ];
+                    let arr = [];
                     for(let i=0;i<this.dayNum;i++){
                         let date = new Date(this.startDateStr.getTime() + i*24*60*60*1000);
                         let weekDay = this.weekMap.get(date.getDay());
+                        arr.push(
+                            {
+                                title: this.$conversion(date).substring(5),
+                                children: [
+                                    { 
+                                        title: weekDay, 
+                                        width: 100,
+                                    }
+                                ]
+                            }
+                        );
                         this.weekArr.push(weekDay);
                         this.dateArr.push(this.$conversion(date).substring(5));
                     }
+                    // this.columns.push(
+                    //     {
+                    //         title: '总计' + this.dayNum + '天',
+                    //         children: [
+                    //             { title: '计划工时', width: 100},
+                    //             { title: '实际工时', width: 100},
+                    //             { title: '结余', width: 80}
+                    //         ]
+                    //     }
+                    // )
                 }
+                
                 this.endDateStr = new Date(this.startDateStr.getTime() + this.dayNum*24*60*60*1000);
             },
             //  获取排班计划
@@ -808,6 +898,21 @@
                 this.modal.transfer = true; 
                 this.leaveType = 8;
                 this.getBackupUser();
+            },
+            // 排班表格滚动事件
+            doScroll: function () {
+                //固定和滚动
+                var right_div2 = document.getElementById("right_div2");
+                let rightInner = $('.right .inner');
+                let top = rightInner.scrollTop();
+                let leftInner = $('.left .inner');
+                leftInner.scrollTop(top);
+                // right_div2.onscroll = function(){
+                //     var right_div2_top = this.scrollTop;
+                //     var right_div2_left = this.scrollLeft;
+                //     document.getElementById("left_div2").scrollTop = right_div2_top;
+                //     document.getElementById("right_div1").scrollLeft = right_div2_left;
+                // }
             }
         }        
     };
