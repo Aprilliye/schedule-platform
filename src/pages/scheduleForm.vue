@@ -432,7 +432,7 @@
         mounted: function () {
             let width1 = $('.page').width() - 350;
             let width2 = $('.right table').width();
-            $('.right').width(width1);
+            $('.postformtable .right').width(width1);
         },
         methods: {
             //  获取站点

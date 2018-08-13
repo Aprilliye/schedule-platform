@@ -606,6 +606,7 @@ export default {
                 this.position.data = response.data;
                 if(response.data.length >0){
                     this.position.current = this.position.data[0].id+'-'+this.position.data[0].backupPosition+'-'+this.position.data[0].positionName;
+                    this.getChangeSuite();
                 }
                 return;
             }
@@ -723,10 +724,10 @@ export default {
             let endTime = that.addTimeValidate.endTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
-            if(startTimeInt > endTimeInt){
-                this.$Message.warning('开始时间不能大于结束时间');
-                return;
-            }
+            // if(startTimeInt > endTimeInt){
+            //     this.$Message.warning('开始时间不能大于结束时间');
+            //     return;
+            // }
             if(endTime === '00:00' &&  endTimeInt < startTimeInt){
                 endTime = '24:00';
             }
@@ -773,13 +774,13 @@ export default {
             let endTime = that.editTimeValidate.endTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
-            if(startTimeInt > endTimeInt){
-                that.$Message.warning('开始时间不能大于结束时间');
-                return;
-            }
             if(endTime === '00:00' &&  endTimeInt < startTimeInt){
                 endTime = '24:00';
             }
+            // if(startTimeInt > endTimeInt){
+            //     that.$Message.warning('开始时间不能大于结束时间');
+            //     return;
+            // }
             let data = {
                 id: that.currentPeriod,
                 startTimeStr: startTime,

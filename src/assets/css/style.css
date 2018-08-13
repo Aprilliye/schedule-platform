@@ -575,3 +575,12 @@ select {
 .ivu-table-cell {
   padding: 0;
 }
+.schedule table {
+  width: 100%;
+}
+.schedule table th span {
+  display: inline;
+}
+.schedule table td span {
+  width: 100%;
+}
