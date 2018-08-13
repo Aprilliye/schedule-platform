@@ -215,11 +215,19 @@ input,select{
             height: 40px;
             min-width: 70px;
             border: 2px solid #fff;
+            span{
+                display: block;
+                width: 70px;
+                text-align: center;
+            }
         }
         th{
             color: #fff;
             background: #767C85;
             min-width: 70px;
+            span{
+                color: #fff;
+            }
         }
         td{
             background: #DCDEE0;
@@ -228,6 +236,7 @@ input,select{
     .left{
         width: 320px;
         float: left;
+        margin-right: 2px;
         table{
             width: 100%;
         }
@@ -240,19 +249,20 @@ input,select{
         }
         .inner{
             overflow: hidden;
+            padding-bottom: 17px;
         }
     }
     .right{
         float: left !important;
-        overflow-x: auto;
         margin-left: -2px;
+        overflow: hidden;
         .head{
-            padding-right: 17px;
+            overflow: hidden;
         }
     }
     .inner{
-        height: 200px;
-        overflow-y: auto;
+        max-height: 500px;
+        overflow: auto;
     }
 }
 .scheduleForm{

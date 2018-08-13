@@ -223,10 +223,19 @@ select {
   min-width: 70px;
   border: 2px solid #fff;
 }
+.postformtable table th span,
+.postformtable table td span {
+  display: block;
+  width: 70px;
+  text-align: center;
+}
 .postformtable table th {
   color: #fff;
   background: #767C85;
   min-width: 70px;
+}
+.postformtable table th span {
+  color: #fff;
 }
 .postformtable table td {
   background: #DCDEE0;
@@ -234,6 +243,7 @@ select {
 .postformtable .left {
   width: 320px;
   float: left;
+  margin-right: 2px;
 }
 .postformtable .left table {
   width: 100%;
@@ -248,18 +258,19 @@ select {
 }
 .postformtable .left .inner {
   overflow: hidden;
+  padding-bottom: 17px;
 }
 .postformtable .right {
   float: left !important;
-  overflow-x: auto;
   margin-left: -2px;
+  overflow: hidden;
 }
 .postformtable .right .head {
-  padding-right: 17px;
+  overflow: hidden;
 }
 .postformtable .inner {
-  height: 200px;
-  overflow-y: auto;
+  max-height: 500px;
+  overflow: auto;
 }
 .scheduleForm td {
   text-align: center;

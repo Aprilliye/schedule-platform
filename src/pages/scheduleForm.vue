@@ -59,7 +59,7 @@
                         <div class="inner">
                             <table>
                                 <tr v-for="item in data" :key="item.id" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
-                                    <td  :id="item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
+                                    <td :id="'tr'+item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
                                     <td>{{item.positionName}}</td>
                                     <td>{{item.stationName}}</td>
                                     <td>{{item.employeeCard}}</td>
@@ -70,54 +70,36 @@
                     <div class="right">
                         <div class="head">
                             <table>
-                                <colgroup></colgroup>
                                 <tr>
-                                    <th v-for="(item, index) in dateArr" :key="'th-0-'+ index">{{item}}</th>
-                                    <th colspan="3">总计：{{dateArr.length}}天</th>
+                                    <th v-for="(item, index) in dateArr" :key="'th-0-'+ index">
+                                        <span>{{item}}</span>
+                                    </th>
+                                    <th colspan="3">
+                                        <span style="width:230px;">总计：{{dateArr.length}}天</span>
+                                    </th>
                                 </tr>
                                 <tr>
-                                    <th v-for="(item, index) in weekArr" :key="'th-1-'+ index">{{item}}</th>
-                                    <th>计划工时</th>
-                                    <th>实际工时</th>
-                                    <th>结余</th>
+                                    <th v-for="(item, index) in weekArr" :key="'th-1-'+ index">
+                                        <span>{{item}}</span>
+                                    </th>
+                                    <th><span>计划工时</span></th>
+                                    <th><span>实际工时</span></th>
+                                    <th><span>结余</span></th>
                                 </tr>
                             </table>
                         </div>
                         <div class="inner" @scroll="doScroll">
                             <table>
-                                <colgroup></colgroup>
-                                    <tr v-for="item in data" :key="item.id" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
+                                <tr v-for="item in data" :id="item.id" :key="item.id" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
                                     <!--周表点击事件-->
-                                    <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index" @click="clickTd" @mouseover="showLeaveInfo">--</td>
-                                    <td class="planWorkHour">0</td>
-                                    <td class="actualWorkHour">0</td>
-                                    <td class="balance">0</td>
+                                    <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index" @click="clickTd" ><span @mouseover="showLeaveInfo">--</span></td>
+                                    <td class="planWorkHour"><span>0</span></td>
+                                    <td class="actualWorkHour"><span>0</span></td>
+                                    <td class="balance"><span>0</span></td>
                                 </tr>
                             </table>
                         </div>
                     </div>
-                    <!--周表-->
-                    <!-- <div class="table-body">
-                        <table>
-                            <thead>
-                                <colgroup>
-                                </colgroup>
-                                <tr>
-                                    <th v-for="(item, index) in dateArr" :key="'th-0-'+ index">{{item}}</th>
-                                    <th colspan="3">总计：{{dateArr.length}}天</th>
-                                </tr>
-                                <tr>
-                                    <th v-for="(item, index) in weekArr" :key="'th-1-'+ index">{{item}}</th>
-                                    <th>计划工时</th>
-                                    <th>实际工时</th>
-                                    <th>结余</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                
-                            </tbody>
-                        </table>
-                    </div> -->
                 </div>
                 <!--假期悬浮框-->
                 <div class="vocationDiv" v-show="showMenu">
@@ -450,9 +432,7 @@
         mounted: function () {
             let width1 = $('.page').width() - 350;
             let width2 = $('.right table').width();
-            console.log(width2)
             $('.right').width(width1);
-            $('.right .inner').width(width2);
         },
         methods: {
             //  获取站点
@@ -488,17 +468,6 @@
                 this.weekArr = [];
                 
                 if(this.startDateStr){
-                    // this.columns = [
-                    //     { title: '姓名', key: 'userName', width: 80, fixed: 'left'},
-                    //     { title: '岗位', key: 'positionName', width: 80, fixed: 'left'},
-                    //     { title: '车站', key: 'stationName', width: 80, fixed: 'left'},
-                    //     { title: '员工卡号', key: 'employeeCard', width: 100, fixed: 'left'},
-                    //     { 
-                    //         title: '排班', 
-                    //         key: 'scheduleInfoList', 
-                    //         children: []
-                    //     },
-                    // ];
                     let arr = [];
                     for(let i=0;i<this.dayNum;i++){
                         let date = new Date(this.startDateStr.getTime() + i*24*60*60*1000);
@@ -517,16 +486,6 @@
                         this.weekArr.push(weekDay);
                         this.dateArr.push(this.$conversion(date).substring(5));
                     }
-                    // this.columns.push(
-                    //     {
-                    //         title: '总计' + this.dayNum + '天',
-                    //         children: [
-                    //             { title: '计划工时', width: 100},
-                    //             { title: '实际工时', width: 100},
-                    //             { title: '结余', width: 80}
-                    //         ]
-                    //     }
-                    // )
                 }
                 
                 this.endDateStr = new Date(this.startDateStr.getTime() + this.dayNum*24*60*60*1000);
@@ -570,8 +529,9 @@
                                         }
                                     }
                                 }
-                                let target = $('#'+obj.id).siblings().filter('[code="'+ date +'"]');
-                                target.html(dutyName).attr('id', schedule.id).attr('hours', hours).attr('leavehours', leavehours).attr('countoriginal', countOriginal);
+                                let target = $('#'+ obj.id).siblings().find('[code="'+ date +'"]');
+                                target.find('span').html(dutyName);
+                                target.attr('id', schedule.id).attr('hours', hours).attr('leavehours', leavehours).attr('countoriginal', countOriginal);
                                 color ? target.css('background-color', color) : target.removeAttr('style');
                             }
                         }
@@ -670,9 +630,9 @@
                         parseInt($(this).attr('countoriginal')) && (actualTotal += parseInt($(this).attr('hours')));
                     })
                     let balance = actualTotal-planTotal;
-                    $(this).html(planTotal);
-                    let balanceObj = $(this).next().next();
-                    $(this).next().html(actualTotal);
+                    $(this).find('span').html(planTotal);
+                    let balanceObj = $(this).next().next().find('span');
+                    $(this).next().find('span').html(actualTotal);
                     balanceObj.html(balance);
                     balance<0 ? balanceObj.addClass('red') : balanceObj.removeClass('red')
                 })
@@ -760,7 +720,7 @@
             showLeaveInfo: function (e) {
                 let obj = $(e.target);
                 let id = parseInt(obj.attr('id'));
-                let index = obj.parent().index() - 2;
+                let index = obj.closest('tr').index();
                 let schedules = this.data[index].scheduleInfoList;
                 let w = parseInt(obj.width());
                 for(let obj of schedules){
@@ -902,17 +862,13 @@
             // 排班表格滚动事件
             doScroll: function () {
                 //固定和滚动
-                var right_div2 = document.getElementById("right_div2");
                 let rightInner = $('.right .inner');
                 let top = rightInner.scrollTop();
+                let left = rightInner.scrollLeft();
                 let leftInner = $('.left .inner');
+                let head = $('.right .head');
                 leftInner.scrollTop(top);
-                // right_div2.onscroll = function(){
-                //     var right_div2_top = this.scrollTop;
-                //     var right_div2_left = this.scrollLeft;
-                //     document.getElementById("left_div2").scrollTop = right_div2_top;
-                //     document.getElementById("right_div1").scrollLeft = right_div2_left;
-                // }
+                head.scrollLeft(left);
             }
         }        
     };
