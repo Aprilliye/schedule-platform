@@ -90,9 +90,9 @@
                         </div>
                         <div class="inner" @scroll="doScroll">
                             <table>
-                                <tr v-for="item in data" :id="item.id" :key="item.id" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
+                                <tr v-for="item in data" :id="item.id" :key="item.id" :card="item.employeeCard" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
                                     <!--周表点击事件-->
-                                    <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index" @click="clickTd" ><span @mouseover="showLeaveInfo">--</span></td>
+                                    <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index"><span @mouseover="showLeaveInfo" @click="clickTd">--</span></td>
                                     <td class="planWorkHour"><span>0</span></td>
                                     <td class="actualWorkHour"><span>0</span></td>
                                     <td class="balance"><span>0</span></td>
@@ -103,6 +103,7 @@
                 </div>
                 <!--假期悬浮框-->
                 <div class="vocationDiv" v-show="showMenu">
+                    <div @click="modal.scheduleChange = true">换班</div>
                     <div @click="getAnnualHoliday" code="1">年假</div>
                     <div @click="updateHoliday" code="2">假期编辑</div>
                     <div @click="changeClass" code="3">班次变更</div>
@@ -115,6 +116,21 @@
                     <div @click="modal.other = true; leaveType = 10" code="10">其它</div>
                     <div code="11" @click="handleCancelLeave">撤销</div>
                 </div>
+                <!-- 换班模态框 -->
+                <Modal
+                    v-model="modal.scheduleChange"
+                    title="换班"
+                    @on-ok="changeSchedule"
+                    @on-cancel="cancel"
+                    :loading="true">
+                    <Form :label-width="80">
+                        <FormItem label="换班人">
+                            <Select v-model="changeEmployeeCard">
+                                <Option v-for="item in data" :value="item.employeeCard" :key="item.id" :disabled="employeeCard == item.id">{{item.userName}}</Option>
+                            </Select>
+                        </FormItem>
+                    </Form>
+                </Modal>
                 <!--个人信息悬浮框-->
                 <div class="peopleMessage" v-show="showInfo">
                     <span>电话</span><span>住址</span>
@@ -340,7 +356,7 @@
     </div>
 </template>
 <script>
-    import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft, exportImg, cancelLeave, getClass} from '@/api/api';
+    import {getScheduleInfo, getAllPost, askForLeave, getAnnualHoliday, getSickleft, exportImg, cancelLeave, getClass, changeSchedule} from '@/api/api';
     import {getStations, getBackupUser} from '@/api/commonAPI';
     export default {
         data: function() {
@@ -374,7 +390,8 @@
                     smallVocation:false,
                     other:false,
                     annualLeave:false,
-                    showLeaveInfo: false
+                    showLeaveInfo: false,
+                    scheduleChange: false
                 },
                 stationList: [],
                 postList: [],
@@ -418,6 +435,9 @@
                 sickleft: 0,
                 suites: [],
                 backup: true,               //  控制是否显示备班员选项
+                employeeCard: null,       // 换班的用户
+                changeEmployeeCard: null,        // 换班员的id
+                changeDateStr: '',              // 换班开始日期
             };
         },
         created: function () {
@@ -530,7 +550,7 @@
                                     }
                                 }
                                 let target = $('#'+ obj.id).siblings().find('[code="'+ date +'"]');
-                                target.find('span').html(dutyName);
+                                target.find('span').html(dutyName).attr('datestr', schedule.dateStr);
                                 target.attr('id', schedule.id).attr('hours', hours).attr('leavehours', leavehours).attr('countoriginal', countOriginal);
                                 color ? target.css('background-color', color) : target.removeAttr('style');
                             }
@@ -644,13 +664,15 @@
                 });
             },
             //  点击排班表格
-            clickTd: function(e){
-                let obj = $(e.target);
+            clickTd: function(e){ 
+                let obj = $(e.target).parent();
                 let id = parseInt(obj.attr('id'));
                 if(!id){
                     return;
                 }
+                this.employeeCard = obj.closest('tr').attr('card');
                 this.scheduleInfoId = id;
+                this.changeDateStr = $(e.target).attr('datestr');
                 let containerW = $('.container').offset().left;
                 let left = obj.offset().left - containerW;
                 let top = obj.offset().top - 20;
@@ -869,6 +891,16 @@
                 let head = $('.right .head');
                 leftInner.scrollTop(top);
                 head.scrollLeft(left);
+            },
+            // 换班
+            changeSchedule: function () {
+                let data = {
+                    startDateStr: this.changeDateStr,
+                    employeeCard: this.employeeCard,
+                    changeEmployeeCard: this.changeEmployeeCard
+                }
+                let response = changeSchedule(data);
+                console.log(response)
             }
         }        
     };

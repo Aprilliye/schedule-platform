@@ -115,3 +115,6 @@ export const getSickleft = id => fetch('/holiday/sickleft?scheduleInfoId=' + id,
 
 /** 导出个人排班表格 */
 export const exportImg = data => fetch('/schedule/scheduleinfo/export/img', data, 'GET');
+
+/** 换班 */
+export const changeSchedule = data => fetch('/change/scheduleinfo', data, 'GET');
