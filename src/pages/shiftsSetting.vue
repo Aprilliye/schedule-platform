@@ -856,10 +856,10 @@ export default {
             let startTime = that.addFormValidateClass.startTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
-            if(startTimeInt > endTimeInt){
-                that.$Message.warning('开始时间不能大于结束时间');
-                return;
-            }
+            // if(startTimeInt > endTimeInt){
+            //     that.$Message.warning('开始时间不能大于结束时间');
+            //     return;
+            // }
             if(endTime === '00:00' &&  endTimeInt < startTimeInt){
                 endTime = '24:00';
             }
@@ -917,10 +917,10 @@ export default {
             let startTime = that.editFormValidateClass.startTimeStr;
             let startTimeInt  = parseInt(startTime.substring(0,2));
             let endTimeInt = parseInt(endTime.substring(0,2));
-            if(startTimeInt > endTimeInt){
-                that.$Message.warning('开始时间不能大于结束时间');
-                return;
-            }
+            // if(startTimeInt > endTimeInt){
+            //     that.$Message.warning('开始时间不能大于结束时间');
+            //     return;
+            // }
             if(endTime === '00:00' &&  endTimeInt < startTimeInt){
                 endTime = '24:00';
             }

@@ -77,17 +77,17 @@
                             </router-link>
                         </menu-item>
                         <menu-item name="2-2" v-if="autoSchedule">
-                            <router-link :to="{name: 'autoSchedule'}" >
+                            <router-link :to="{name: 'manualSchedule'}" >
                                 <span class="icon-6"></span>
-                                新增排班
+                                手动排班
                             </router-link>
                         </menu-item>
-                        <menu-item name="2-3" v-if="candidateSchedule">
+                        <!-- <menu-item name="2-3" v-if="candidateSchedule">
                             <router-link :to="{name: 'candidateSchedule'}" >
                                 <Icon  type="clipboard" class="iconsize"></Icon>
                                 备班排班
                             </router-link>
-                        </menu-item>
+                        </menu-item> -->
                         <menu-item name="2-4" v-if="Workflow">
                             <router-link :to="{name: 'Workflow'}" >
                                 <Icon type="code-working" class="iconsize"></Icon>

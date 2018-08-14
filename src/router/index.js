@@ -15,7 +15,8 @@ import AutoSchedule from '@/pages/autoSchedule';
 import AddJurisdiction from '@/pages/addJurisdiction';
 import EditJurisdiction from '@/pages/editJurisdiction';
 import schedulePlan from '@/pages/schedulePlan';
-import candidateSchedule from '@/pages/candidateSchedule';
+// import candidateSchedule from '@/pages/candidateSchedule'; 备班排班
+import manualSchedule from '@/pages/manualSchedule';
 import operations from '@/pages/operations';
 import workHourReport from '@/pages/workHourReport';
 import iView from 'iview';
@@ -58,54 +59,54 @@ const router = new Router({
           name: 'districtManage',
           component: districtManage
         },
-          //权限管理页面
+        // 权限管理页面
         {
           path: '/role',
           name: 'Role',
           component: Role
         },
-          //排班表格页面
+        // 排班表格页面
         {
           path: '/scheduleForm',
           name: 'ScheduleForm',
           component: ScheduleForm
         },
-          //工作流程页面
+        // 工作流程页面
         {
           path: '/workflow',
           name: 'Workflow',
           component: Workflow
         },
-          //岗位设置
+        // 岗位设置
         {
           path: '/postSetting',
           name: 'PostSetting',
           component: PostSetting
         },
-          //班次设置
+        // 班次设置
         {
           path: '/shiftsSetting',
           name: 'ShiftsSetting',
           component: ShiftsSetting
         },
-        //权限管理新增权限页面
+        // 权限管理新增权限页面
         {
           path:'/addJurisdiction',
           name:'AddJurisdiction',
           component:AddJurisdiction
         },
-          //权限管理编辑权限页面
+        //  权限管理编辑权限页面
         {
           path:'/editJurisdiction',
           name:'EditJurisdiction',
           component:EditJurisdiction
         },
-        //  新增排班
-        {
-            path:'/autoSchedule',
-            name:'autoSchedule',
-            component:AutoSchedule
-        },
+        // //  新增排班
+        // {
+        //     path:'/autoSchedule',
+        //     name:'autoSchedule',
+        //     component:AutoSchedule
+        // },
         //  排班计划
         {
             path:'/schedulePlan',
@@ -113,10 +114,16 @@ const router = new Router({
             component: schedulePlan
         },
         //  备班排班
+        // {
+        //     path:'/candidateSchedule',
+        //     name: 'candidateSchedule',
+        //     component: candidateSchedule
+        // },
+        // 手动排班
         {
-            path:'/candidateSchedule',
-            name: 'candidateSchedule',
-            component: candidateSchedule
+            path: '/manualSchedule',
+            name: 'manualSchedule',
+            component: manualSchedule
         },
         //  操作记录
         {
