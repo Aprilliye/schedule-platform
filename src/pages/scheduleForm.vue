@@ -90,7 +90,7 @@
                         </div>
                         <div class="inner" @scroll="doScroll">
                             <table>
-                                <tr v-for="item in data" :id="item.id" :key="item.id" :card="item.employeeCard" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
+                                <tr v-for="item in data" :id="'user'+item.id" :key="item.id" :card="item.employeeCard" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
                                     <!--周表点击事件-->
                                     <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index"><span @mouseover="showLeaveInfo" @click="clickTd">--</span></td>
                                     <td class="planWorkHour"><span>0</span></td>
@@ -435,8 +435,8 @@
                 sickleft: 0,
                 suites: [],
                 backup: true,               //  控制是否显示备班员选项
-                employeeCard: null,       // 换班的用户
-                changeEmployeeCard: null,        // 换班员的id
+                employeeCard: '',       // 换班的用户
+                changeEmployeeCard: '',        // 换班员的id
                 changeDateStr: '',              // 换班开始日期
             };
         },
@@ -486,7 +486,6 @@
             changeWeek: function () {
                 this.dateArr = [];
                 this.weekArr = [];
-                
                 if(this.startDateStr){
                     let arr = [];
                     for(let i=0;i<this.dayNum;i++){
@@ -507,11 +506,11 @@
                         this.dateArr.push(this.$conversion(date).substring(5));
                     }
                 }
-                
                 this.endDateStr = new Date(this.startDateStr.getTime() + this.dayNum*24*60*60*1000);
             },
             //  获取排班计划
             getScheduleInfo: async function () {
+                this.changeWeek();
                 let data = this.getQueryDate();
                 if(!data){
                     return;
@@ -549,7 +548,7 @@
                                         }
                                     }
                                 }
-                                let target = $('#'+ obj.id).siblings().find('[code="'+ date +'"]');
+                                let target = $('#user'+ obj.id).find('[code="'+ date +'"]');
                                 target.find('span').html(dutyName).attr('datestr', schedule.dateStr);
                                 target.attr('id', schedule.id).attr('hours', hours).attr('leavehours', leavehours).attr('countoriginal', countOriginal);
                                 color ? target.css('background-color', color) : target.removeAttr('style');
@@ -566,6 +565,7 @@
                 if(!this.startDateStr || !this.endDateStr){
                     return;
                 }
+                
                 if(str === 'start'){
                     this.endDateStr = new Date(this.startDateStr.getTime() + (this.dayNum-1)*24*60*60*1000);
                     return;
@@ -672,7 +672,13 @@
                 }
                 this.employeeCard = obj.closest('tr').attr('card');
                 this.scheduleInfoId = id;
-                this.changeDateStr = $(e.target).attr('datestr');
+                let dateStr = $(e.target).attr('datestr');
+                this.changeDateStr = dateStr;
+                let roleId = this.$store.get('role');
+                // 如果是值班站长只能操作以后的排班
+                if(new Date() > new Date(dateStr) && roleId === 4){
+                    return;
+                }
                 let containerW = $('.container').offset().left;
                 let left = obj.offset().left - containerW;
                 let top = obj.offset().top - 20;
@@ -893,14 +899,21 @@
                 head.scrollLeft(left);
             },
             // 换班
-            changeSchedule: function () {
+            changeSchedule: async function () {
                 let data = {
                     startDateStr: this.changeDateStr,
                     employeeCard: this.employeeCard,
                     changeEmployeeCard: this.changeEmployeeCard
                 }
-                let response = changeSchedule(data);
-                console.log(response)
+                let response = await changeSchedule(data);
+                let message = response.meta.message;
+                if(response.meta.code === 0){
+                    this.$Message.success(message);
+                    this.modal.scheduleChange = false;
+                    this.getScheduleInfo();
+                    return;
+                }
+                this.$Message.error(message);
             }
         }        
     };
