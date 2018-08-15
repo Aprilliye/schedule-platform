@@ -591,3 +591,6 @@ select {
 .schedule table td span {
   width: 100%;
 }
+.ivu-menu-item a {
+  color: #4d4d4d;
+}
