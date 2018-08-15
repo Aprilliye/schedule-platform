@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="panel-body">
-                <div class="float-right" style="margin-top: 20px">
+                <div class="float-right" style="margin-top: 20px;">
                     <span><i class="colori" style="background-color: #fffc00;"></i>假期</span>
                     <span><i class="colori" style="background-color: #ff9191"></i>班次变更</span>
                     <span><i class="colori" style="background-color: #3A6BCE"></i>临时安排</span>
@@ -67,7 +67,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="right">
+                    <div class="right" style="margin-right: 0;">
                         <div class="head">
                             <table>
                                 <tr>
@@ -450,7 +450,7 @@
             
         },
         mounted: function () {
-            let width1 = $('.page').width() - 350;
+            let width1 = $('.page').width() - 320;
             let width2 = $('.right table').width();
             $('.postformtable .right').width(width1);
         },
@@ -484,6 +484,7 @@
             },
             //  周表月表切换
             changeWeek: function () {
+                this.changeDate();
                 this.dateArr = [];
                 this.weekArr = [];
                 if(this.startDateStr){
@@ -510,7 +511,6 @@
             },
             //  获取排班计划
             getScheduleInfo: async function () {
-                this.changeWeek();
                 let data = this.getQueryDate();
                 if(!data){
                     return;

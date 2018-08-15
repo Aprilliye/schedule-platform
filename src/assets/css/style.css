@@ -216,6 +216,9 @@ select {
   position: relative;
   overflow: hidden;
 }
+.postformtable table {
+  min-width: 100%;
+}
 .postformtable table th,
 .postformtable table td {
   width: 80px;
@@ -271,6 +274,10 @@ select {
 .postformtable .inner {
   max-height: 500px;
   overflow: auto;
+}
+.planTable {
+  overflow: auto;
+  max-height: 500px;
 }
 .scheduleForm td {
   text-align: center;

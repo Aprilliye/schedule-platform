@@ -145,7 +145,7 @@ export default {
                 let data = response.data;
                 this.userList = data.userlist;
                 this.dutyClass = data.dutyclass;
-                this.weeks = Math.ceil(data.weeks/4)*4;
+                this.weeks = Math.ceil(data.userlist.length/4)*4;
                 this.$nextTick(function () {
                     this.initTable(data.templatelist);
                     let users = data.scheduleUsers;
@@ -356,7 +356,8 @@ export default {
             for(let obj of data){
                 let hours = obj.workingLength/60;
                 this.totalHours += hours;
-                $('[weeknum="'+ obj.weekNum +'"][daynum="'+ obj.dayNum +'"]').html(obj.dutyName).css('background-color', obj.cellColor).attr('hours', hours).attr('id', obj.id);
+                let dutyName = obj.dutyName || '--';
+                $('[weeknum="'+ obj.weekNum +'"][daynum="'+ obj.dayNum +'"]').html(dutyName).css('background-color', obj.cellColor).attr('hours', hours).attr('id', obj.id);
                 let classId = obj.classId;
                 let m = obj.dayNum;
                 let span = $('#weekDay'+ m).find('[code="'+ classId +'"]').find('span');

@@ -34,7 +34,7 @@
                     <button type="button" class="btnDefault bgBlue" @click="getScheduleInfo">查询</button>
                 </div>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" style="padding-bottom:0;">
                 <div class="float-right" style="margin-top: 20px">
                     <span><i class="colori" style="background-color: #fffc00;"></i>假期</span>
                     <span><i class="colori" style="background-color: #ff9191"></i>班次变更</span>
@@ -44,9 +44,9 @@
                     <span><i class="colori" style="background-color: #008121"></i>替班</span>
                 </div>
                 <div class="clear"></div>
-                <div class="postformtable">
+                <div class="postformtable planTable">
                     <!--周表-->
-                    <table>
+                    <table style="min-width:100%;">
                         <tr>
                             <th rowspan="2">姓名</th>
                             <th rowspan="2">岗位</th>
@@ -60,7 +60,7 @@
                             <th>结余</th>
                         </tr>
                         <tr v-for="item in data" :key="item.id">
-                            <td  :id="item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
+                            <td  :id="'user'+item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
                             <td>{{item.positionName}}</td>
                             <!--周表点击事件-->
                             <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index"  @mouseover="showLeaveInfo">--</td>
@@ -183,6 +183,7 @@
             },
             //  周表月表切换
             changeWeek: function () {
+                this.changeDate();
                 this.dateArr = [];
                 this.weekArr = [];
                 if(this.startDateStr){
@@ -232,7 +233,6 @@
                 let message = response.meta.message;
                 if(response.meta.code === 0){
                     this.$Message.success(message);
-                    this.changeWeek();
                     let data = response.data
                     this.data = data;
                     this.$nextTick(function () {
@@ -258,7 +258,7 @@
                                         }
                                     }
                                 }
-                                let target = $('#'+obj.id).siblings().filter('[code="'+ date +'"]');
+                                let target = $('#user'+obj.id).siblings().filter('[code="'+ date +'"]');
                                 target.html(dutyName).attr('id', schedule.id).attr('hours', hours).attr('leavehours', leavehours).attr('countoriginal', countOriginal);
                                 color && target.css('background-color', color);
                             }
@@ -325,6 +325,7 @@
             },
             //  周表月表切换
             swichData: function (type, date) {
+                this.changeDate();
                 this.dateArr = [];
                 this.weekArr = [];
                 this.data = [];
