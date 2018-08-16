@@ -184,17 +184,6 @@
             //  周表月表切换
             changeWeek: function () {
                 this.changeDate();
-                this.dateArr = [];
-                this.weekArr = [];
-                if(this.startDateStr){
-                    for(let i=0;i<this.dayNum;i++){
-                        let date = new Date(this.startDateStr.getTime() + i*24*60*60*1000);
-                        let weekDay = this.weekMap.get(date.getDay());
-                        this.weekArr.push(weekDay);
-                        this.dateArr.push(this.$conversion(date).substring(5));
-                    }
-                }
-                this.endDateStr = new Date(this.startDateStr.getTime() + this.dayNum*24*60*60*1000);
             },
             //  获取排班计划
             getScheduleInfo: async function () {
@@ -274,11 +263,34 @@
                 if(!this.startDateStr || !this.endDateStr){
                     return;
                 }
-                if(str === 'start'){
+                if(str === 'end'){
+                    this.startDateStr = new Date(this.endDateStr.getTime() - (this.dayNum-1)*24*60*60*1000);
+                } else {
                     this.endDateStr = new Date(this.startDateStr.getTime() + (this.dayNum-1)*24*60*60*1000);
-                    return;
                 }
-                this.startDateStr = new Date(this.endDateStr.getTime() - (this.dayNum-1)*24*60*60*1000);
+                this.dateArr = [];
+                this.weekArr = [];
+                if(this.startDateStr){
+                    let arr = [];
+                    for(let i=0;i<this.dayNum;i++){
+                        let date = new Date(this.startDateStr.getTime() + i*24*60*60*1000);
+                        let weekDay = this.weekMap.get(date.getDay());
+                        arr.push(
+                            {
+                                title: this.$conversion(date).substring(5),
+                                children: [
+                                    { 
+                                        title: weekDay, 
+                                        width: 100,
+                                    }
+                                ]
+                            }
+                        );
+                        this.weekArr.push(weekDay);
+                        this.dateArr.push(this.$conversion(date).substring(5));
+                    }
+                }
+                this.endDateStr = new Date(this.startDateStr.getTime() + this.dayNum*24*60*60*1000);
             },
            
             //  统计工时
