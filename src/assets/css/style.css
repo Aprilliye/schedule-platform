@@ -229,7 +229,7 @@ select {
 .postformtable table th span,
 .postformtable table td span {
   display: block;
-  width: 70px;
+  width: 100%;
   text-align: center;
 }
 .postformtable table th {

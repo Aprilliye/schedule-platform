@@ -75,7 +75,7 @@
                                         <span>{{item}}</span>
                                     </th>
                                     <th colspan="3">
-                                        <span style="width:230px;">总计：{{dateArr.length}}天</span>
+                                        <span>总计：{{dateArr.length}}天</span>
                                     </th>
                                 </tr>
                                 <tr>
@@ -450,7 +450,7 @@
             
         },
         mounted: function () {
-            let width1 = $('.page').width() - 320;
+            let width1 = $('.page').width() - 340;
             let width2 = $('.right table').width();
             $('.postformtable .right').width(width1);
         },
@@ -485,29 +485,6 @@
             //  周表月表切换
             changeWeek: function () {
                 this.changeDate();
-                this.dateArr = [];
-                this.weekArr = [];
-                if(this.startDateStr){
-                    let arr = [];
-                    for(let i=0;i<this.dayNum;i++){
-                        let date = new Date(this.startDateStr.getTime() + i*24*60*60*1000);
-                        let weekDay = this.weekMap.get(date.getDay());
-                        arr.push(
-                            {
-                                title: this.$conversion(date).substring(5),
-                                children: [
-                                    { 
-                                        title: weekDay, 
-                                        width: 100,
-                                    }
-                                ]
-                            }
-                        );
-                        this.weekArr.push(weekDay);
-                        this.dateArr.push(this.$conversion(date).substring(5));
-                    }
-                }
-                this.endDateStr = new Date(this.startDateStr.getTime() + this.dayNum*24*60*60*1000);
             },
             //  获取排班计划
             getScheduleInfo: async function () {
@@ -565,12 +542,34 @@
                 if(!this.startDateStr || !this.endDateStr){
                     return;
                 }
-                
-                if(str === 'start'){
+                if(str === 'end'){
+                    this.startDateStr = new Date(this.endDateStr.getTime() - (this.dayNum-1)*24*60*60*1000);
+                } else {
                     this.endDateStr = new Date(this.startDateStr.getTime() + (this.dayNum-1)*24*60*60*1000);
-                    return;
                 }
-                this.startDateStr = new Date(this.endDateStr.getTime() - (this.dayNum-1)*24*60*60*1000);
+                this.dateArr = [];
+                this.weekArr = [];
+                if(this.startDateStr){
+                    let arr = [];
+                    for(let i=0;i<this.dayNum;i++){
+                        let date = new Date(this.startDateStr.getTime() + i*24*60*60*1000);
+                        let weekDay = this.weekMap.get(date.getDay());
+                        arr.push(
+                            {
+                                title: this.$conversion(date).substring(5),
+                                children: [
+                                    { 
+                                        title: weekDay, 
+                                        width: 100,
+                                    }
+                                ]
+                            }
+                        );
+                        this.weekArr.push(weekDay);
+                        this.dateArr.push(this.$conversion(date).substring(5));
+                    }
+                }
+                this.endDateStr = new Date(this.startDateStr.getTime() + this.dayNum*24*60*60*1000);
             },
             //  请假
             askForLeave: async function () {
@@ -730,6 +729,7 @@
                     return;
                 } 
                 this.bgBlueClass = true;
+                console.log(111)
                 this.changeWeek();
             },
             //  根据月份获取天数
