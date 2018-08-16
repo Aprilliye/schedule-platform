@@ -7,27 +7,16 @@
             </Select>
             <!-- <button type="button" class="btnDefault bgBlue">创建排班</button> -->
             <button type="button" class="btnDefault bgGreen" @click="selectDateModal = true">保存排班</button>
-            <p class="result" v-show="showResult">
+            <!-- <p class="result" v-show="showResult">
                 <span>日平均<b>{{result.dayAverage || 0}}</b>小时，</span>
                 <span>周平均<b>{{result.weekAverage || 0}}</b>小时，</span>
                 <span>30日平均<b>{{result.monthAverage || 0}}</b>小时，</span>
                 <span>365日平均<b>{{result.yearAverage || 0}}</b>小时，</span>
                 <span>最少人数<b>{{result.minPeople || 0}}</b>人</span>
-            </p>
+            </p> -->
         </div>
         <div class="schedule postformtable">
             <table class="scheduleForm" >
-                <!-- <tr>
-                    <th>站务员</th>
-                    <th>一</th>
-                    <th>二</th>
-                    <th>三</th>
-                    <th>四</th>
-                    <th>五</th>
-                    <th>六</th>
-                    <th>日</th>
-                    <th>总工时</th>
-                </tr> -->
                 <tr id="theHead0">
                     <th>站务员</th>
                     <th v-for="i in 7" :key="'th'+i">
@@ -109,13 +98,6 @@ export default {
             startDate: '',
             weeks: 0,
             showResult: false,
-            result: {
-                dayAverage: 0,
-                weekAverage: 0,
-                monthAverage: 0,
-                yearAverage: 0,
-                minPeople: 0
-            },
             totalHours: 0,
         }
     },
@@ -166,7 +148,6 @@ export default {
                             obj.removeClass('red');
                         }
                     }
-                    this.calcAverage();
                     $(".workHours").each(function (n) {
                         self.calcWeeklyTime(n);
                     });
@@ -353,6 +334,7 @@ export default {
         initTable: function (data) {
             $('td[id]').html('').removeAttr('id').removeAttr('style').removeAttr('hours').removeAttr('class');
             $('.shiftsList span').removeClass();
+            $('[id^="weekDay"]').find('[code] span').html('0');
             for(let obj of data){
                 let hours = obj.workingLength/60;
                 this.totalHours += hours;
@@ -366,28 +348,6 @@ export default {
                 span.html(num);
             }
             this.countHours();
-        },
-        //  计算工时平均值
-        calcAverage: function () {
-            let length = this.weeks;
-            if(length === 0){
-                for(let obj in this.result){
-                    this.result[obj] = 0;
-                }
-                return;
-            }
-            let daily = this.totalHours / length / 7;
-            let weekly = daily * 7;
-            let monthly = daily * 30;
-            let yearly = daily * 365;
-            this.weekMinHours = weekly * 0.9;
-            this.weekMaxHours = weekly * 1.1;
-            this.result.dayAverage = Math.round(daily * 1000) / 1000;
-            this.result.weekAverage = Math.round(weekly * 1000) / 1000;
-            this.result.monthAverage = Math.round(monthly * 1000) / 1000;
-            this.result.yearAverage = Math.round(yearly * 1000) / 1000;
-            this.result.minPeople = length;
-            this.showResult = true;
         },
         //  计算周工时
         calcWeeklyTime: function (n) {

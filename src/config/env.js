@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'development') {
     baseURL = 'http://192.168.2.175:8765';
     // baseURL = 'http://digital.sagacn.com/api';
 } else {
-    baseURL = 'http://digital.sagacn.com/api';
+    baseURL = 'http://47.100.181.56/api';
 }
 
 export { baseURL, routerMode, baseImageURL }
