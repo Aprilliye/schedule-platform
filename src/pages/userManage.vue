@@ -757,8 +757,6 @@
             // 取消提交清空验证信息
             cancel:function (name){
                 this.$refs[name].resetFields();
-                this.position = [];
-                this.stations = [];
             },
             // 导入人员
             handleImportUsers: async function () {
