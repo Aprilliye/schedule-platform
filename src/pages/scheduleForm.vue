@@ -32,7 +32,6 @@
                         <input type="text" v-model.trim="userName" placeholder="姓名/编号" style="border: 0">
                     </p>
                     <button type="button" class="btnDefault bgBlue" @click="getScheduleInfo">查询</button>
-                    <!-- <button type="button" class="btnDefault">导出</button> -->
                     <button type="button" class="btnDefault" @click="exportImg">导出个人</button>
                 </div>
             </div>
@@ -92,7 +91,7 @@
                             <table>
                                 <tr v-for="item in data" :id="'user'+item.id" :key="item.id" :card="item.employeeCard" :backup="item.backup" :suiteid="item.scheduleInfoList[0].suiteId">
                                     <!--周表点击事件-->
-                                    <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index"><span @mouseover="showLeaveInfo" @click="clickTd">--</span></td>
+                                    <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index" @mouseleave="modal.showLeaveInfo = false;"><span @mouseover="showLeaveInfo" @click="clickTd">--</span></td>
                                     <td class="planWorkHour"><span>0</span></td>
                                     <td class="actualWorkHour"><span>0</span></td>
                                     <td class="balance"><span>0</span></td>
@@ -138,7 +137,7 @@
                     <div class="clear"></div>
                 </div>
                 <!--请假信息悬浮框-->
-                <div class="tdMessage" @mouseleave="modal.showLeaveInfo = false">
+                <div class="tdMessage" v-show="modal.showLeaveInfo">
                     <div v-for="item in currentSchedule.leaveList" :key="item.id">
                         <p>假期类型：{{item.leaveDesc || ''}}</p>
                         <p>替班员：{{item.exchangeUserName}}</p>
@@ -673,9 +672,9 @@
                 this.scheduleInfoId = id;
                 let dateStr = $(e.target).attr('datestr');
                 this.changeDateStr = dateStr;
-                let roleId = this.$store.get('role');
+                let roleId = this.$store.get('roleId');
                 // 如果是值班站长只能操作以后的排班
-                if(new Date() > new Date(dateStr) && roleId === 4){
+                if(new Date() >= new Date(dateStr) && roleId === 4){
                     return;
                 }
                 let containerW = $('.container').offset().left;
@@ -747,7 +746,10 @@
             },
             //  显示请假信息
             showLeaveInfo: function (e) {
-                let obj = $(e.target);
+                let obj = $(e.target).parent();
+                if(!obj.attr('style')){
+                    return;
+                }
                 let id = parseInt(obj.attr('id'));
                 let index = obj.closest('tr').index();
                 let schedules = this.data[index].scheduleInfoList;

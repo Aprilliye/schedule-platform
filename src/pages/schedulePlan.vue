@@ -60,10 +60,10 @@
                             <th>结余</th>
                         </tr>
                         <tr v-for="item in data" :key="item.id">
-                            <td  :id="'user'+item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
+                            <td :id="'user'+item.id" class="scheduleName" @mouseover="showUserInfo(item)" @mouseout="showInfo=false">{{item.userName}}</td>
                             <td>{{item.positionName}}</td>
                             <!--周表点击事件-->
-                            <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index"  @mouseover="showLeaveInfo">--</td>
+                            <td v-for="(item, index) in dateArr" :code="item" :key="'aa'+ index" @mouseover="showLeaveInfo" @mouseleave="modal.showLeaveInfo = false">--</td>
                             <td class="planWorkHour">0</td>
                             <td class="actualWorkHour">0</td>
                             <td class="balance">0</td>
@@ -77,12 +77,12 @@
                     <div class="clear"></div>
                 </div>
                 <!--请假信息悬浮框-->
-                <div class="tdMessage" v-show="modal.showLeaveInfo" @mouseleave="modal.showLeaveInfo = false">
+                <div class="tdMessage" v-show="modal.showLeaveInfo">
                     <div v-for="item in currentSchedule.leaveList" :key="item.id">
                         <p>假期类型：{{item.leaveDesc || ''}}</p>
-                        <p>替班员：--</p>
-                        <p>备注：{{item.content || ''}}</p>
-                        <!-- <p>创建时间：{{item.leaveDesc || ''}}</p> -->
+                        <p>替班员：{{item.exchangeUserName}}</p>
+                        <p>时长：{{item.leaveHours}} 小时</p>
+                        <p>备注：{{item.comment || ''}}</p>
                     </div>
                 </div>
             </div>
@@ -371,6 +371,9 @@
             //  显示请假信息
             showLeaveInfo: function (e) {
                 let obj = $(e.target);
+                if(!obj.attr('style')){
+                    return;
+                }
                 let id = parseInt(obj.attr('id'));
                 let index = obj.parent().index() - 2;
                 let schedules = this.data[index].scheduleInfoList;
