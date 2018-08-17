@@ -674,7 +674,21 @@
                 this.changeDateStr = dateStr;
                 let roleId = this.$store.get('roleId');
                 // 如果是值班站长只能操作以后的排班
-                if(new Date() >= new Date(dateStr) && roleId === 4){
+                // 最多可修改上一个月的排班
+                let date1 = new Date();
+                let year1 = date1.getFullYear();
+                let month1 = date1.getMonth() + 1;
+                let day1 = date1.getDate();
+                let date2 = new Date(dateStr);
+                let year2 = date2.getFullYear();
+                let month2 = date2.getMonth() + 1;
+                if(month1 - month2 > 1 || year2> year1){
+                    return;
+                }
+                if(month1 === 1 && (month2 !== 12 || year1 - year2 !== 1)){
+                    return;
+                }
+                if(new Date(year1 + '-' + month1 + '-' + day1) >= new Date(dateStr) && roleId === 4){
                     return;
                 }
                 let containerW = $('.container').offset().left;

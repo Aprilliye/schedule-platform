@@ -69,7 +69,7 @@
             :loading="true">
             <Form :label-width="110">
                 <FormItem label="选择开始日期">
-                    <DatePicker type="date" style="width:320px;" placeholder="请选择时间"  v-model.trim="startDate"></DatePicker>
+                    <DatePicker type="date" :options="options" style="width:320px;" placeholder="请选择时间"  v-model.trim="startDate"></DatePicker>
                 </FormItem>
             </Form>
         </Modal>
@@ -99,6 +99,11 @@ export default {
             weeks: 0,
             showResult: false,
             totalHours: 0,
+            options: {
+                disabledDate (date){
+                    return date && date.valueOf() < Date.now() - 86400000;
+                }
+            }
         }
     },
     created: function () {
