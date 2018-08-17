@@ -51,16 +51,18 @@
                     this.$Message.error(response.meta.message);
                 }else{
                     let user = response.data.user;
-                    let role = user.roles[0].id;
+                    let roleId = user.roles[0].id;
                     this.$store.set(DISTRICTID, user.districtId);
                     this.$store.set(STATIONID, user.stationId);
                     this.$store.set(USERNAME, user.userName);
                     this.$store.set(POSITIONID, user.positionId);
                     this.$store.set(SCHEDULE_IDENTIFY, response.data.token);
-                    this.$store.set(ROLEID, role);
+                    this.$store.set(ROLEID, roleId);
                     this.$store.set(DISTRICTID_NAME, user.districtName);
-                    if(role === 3){
+                    if(roleId === 3){
                         this.$router.push({ path: "/schedulePlan" });
+                    } else if(roleId === 4) {
+                        this.$router.push({ path: "/scheduleForm" });
                     }else{
                         this.$router.push({ path: "/home" });
                     }
