@@ -594,3 +594,7 @@ select {
 .ivu-menu-item a {
   color: #4d4d4d;
 }
+.manualSchedule td > p {
+  cursor: pointer;
+  line-height: 30px;
+}

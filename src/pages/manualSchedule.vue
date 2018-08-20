@@ -16,7 +16,7 @@
             </p> -->
         </div>
         <div class="schedule postformtable">
-            <table class="scheduleForm" >
+            <table class="scheduleForm manualSchedule">
                 <tr id="theHead0">
                     <th>站务员</th>
                     <th v-for="i in 7" :key="'th'+i">
@@ -78,6 +78,7 @@
 <script>
 import {result} from '@/assets/data/data.js';
 import {getSuites, loadTemplate, setSheduleUser, resetSheduleUser, setTemplateClass, deleteTemplateClass, saveSchedule} from '@/api/api';
+var self = null;
 export default {
     data: function () {
         return {
@@ -103,11 +104,13 @@ export default {
                 disabledDate (date){
                     return date && date.valueOf() < Date.now() - 86400000;
                 }
-            }
+            },
+            currentUserId: null,
         }
     },
     created: function () {
         this.getSuites();
+        self = this;
     },
     methods: {
         //  获取班制
@@ -140,8 +143,9 @@ export default {
                     $('.userList span').removeAttr('class');
                     for(let i=0;i< users.length;i++){
                         let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
-                        let m = obj.dayNum;
-                        obj.html(users[i].userName).attr('userid', users[i].userId);
+                        obj.append('<p id="'+ users[i].userId +'">'+ users[i].userName +'</p>');
+                        // // let m = obj.dayNum;
+                        // obj.html(users[i].userName).attr('userid', users[i].userId);
                         $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
                     }
                     let ps = $('#theHead0').find('p');
@@ -172,7 +176,6 @@ export default {
         cancel: function () {
             this.weekNum = null;
             this.dayNum = null;
-            this.temporaryUser = null;
             this.temporary = {};
             this.id = null;
             $('.td-active').removeClass('td-active');
@@ -189,21 +192,26 @@ export default {
         },
         //  选择站务员
         clickUser: function (item) {
-            this.temporaryUser = item;
             let obj = $('.userList').find('span[code="'+ item.id +'"]');
-            obj.toggleClass('active').siblings().removeClass('active');
+            obj.toggleClass('active');
         },
         setSheduleUser: async function () {
-            if(!this.temporaryUser){
+            let arr = [];
+            $('.userList span.active').each(function () {
+                arr.push($(this).attr('code'));
+            })
+            if(arr.length === 0){
                 this.$Message.warning('请选择站务员');
                 return;
             }
-            let userId = this.temporaryUser.id;
-            let user = this.temporaryUser;
+            if(arr.length>25){
+                this.$Message.warning('站务员数量超过上线');
+                return;
+            }
             let data = {
                 suiteId: this.suiteId,
                 weekNum: this.weekNum,
-                userId: userId
+                userIds: arr.join(',')
             }
             let response = await setSheduleUser(data);
             let message = response.meta.message;
@@ -213,7 +221,6 @@ export default {
             } else {
                 this.$Message.error(message);
             }
-            this.temporaryUser = null;
             this.weekNum = null;
             this.userId = null;
             this.showUserModal = false;
@@ -221,8 +228,7 @@ export default {
         },
         //  重置站务员
         resetSheduleUser: async function () {
-            let obj = $('.userName[weeknum="'+ this.weekNum +'"]');
-            let userId = obj.attr('userid');
+            let userId = this.currentUserId;
             if(!userId){
                 return;
             }
@@ -266,7 +272,13 @@ export default {
                 suiteId: this.suiteId,
                 weekNum: this.weekNum,
                 dayNum: this.dayNum,
-                classId: this.temporary.id
+                classId: this.temporary.id,
+                relevance: 0
+
+            }
+            if(this.temporary.relevant){
+                data.relevance = 1;
+                data.reClassId = this.temporary.relevant.id;
             }
             let response = await setTemplateClass(data);
             let message = response.meta.message;
@@ -407,4 +419,16 @@ export default {
         },
     }
 }
+
+$(document).on('click', '.userName p', function (e) {
+    e.stopPropagation();
+    let obj = $(this).closest('td');
+    let n = parseInt(obj.attr('weeknum'));
+    $('#usersModal').find('.active').removeClass('active');
+    self.showUserModal = true;
+    $(".userName").removeClass("td-active");
+    obj.addClass("td-active");
+    self.weekNum = n;
+    self.currentUserId = parseInt($(this).attr('id'));
+})
 </script>
