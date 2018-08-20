@@ -598,3 +598,9 @@ select {
   cursor: pointer;
   line-height: 30px;
 }
+.openTable td p {
+  display: none;
+}
+.openTable td p:nth-child(1) {
+  display: block;
+}

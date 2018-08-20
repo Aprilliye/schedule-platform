@@ -16,7 +16,10 @@
             </p> -->
         </div>
         <div class="schedule postformtable">
-            <table class="scheduleForm manualSchedule">
+            <p style="padding: 10px;">
+                <Checkbox v-model="open">{{open ? '展开表格' : '收起表格'}}</Checkbox>
+            </p>
+            <table class="scheduleForm manualSchedule" :class="{'openTable': open}">
                 <tr id="theHead0">
                     <th>站务员</th>
                     <th v-for="i in 7" :key="'th'+i">
@@ -106,6 +109,7 @@ export default {
                 }
             },
             currentUserId: null,
+            open: false
         }
     },
     created: function () {
