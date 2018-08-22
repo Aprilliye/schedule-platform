@@ -41,9 +41,9 @@
                         <td>{{item.averWorkerCount}}</td>
                         <td>{{item.plannedHours}}</td>
                         <td>{{item.actualHours}}</td>
-                        <td>{{item.workedRate + '%'}}</td>
+                        <td>{{item.workedRate ? Math.round(item.workedRate*100) + '%' : 0}}</td>
                         <td>{{item.extraHours}}</td>
-                        <td>{{item.offWorkRate + '%'}}</td>
+                        <td>{{item.offWorkRate ? Math.round(item.offWorkRate*100) + '%' : 0}}</td>
                     </tr>
                 </template>
             </table>
