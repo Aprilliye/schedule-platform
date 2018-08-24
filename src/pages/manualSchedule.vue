@@ -152,15 +152,15 @@ export default {
                         // obj.html(users[i].userName).attr('userid', users[i].userId);
                         $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
                     }
-                    let ps = $('#theHead0').find('p');
-                    for(let i=0;i<ps.length;i++){
-                        let obj = ps.eq(i);
-                        if(obj.attr('shiftnum') !== obj.find('span').html()){
-                            obj.addClass('red');
-                        } else {
-                            obj.removeClass('red');
-                        }
-                    }
+                    // let ps = $('#theHead0').find('p');
+                    // for(let i=0;i<ps.length;i++){
+                    //     let obj = ps.eq(i);
+                    //     if(obj.attr('shiftnum') !== obj.find('span').html()){
+                    //         obj.addClass('red');
+                    //     } else {
+                    //         obj.removeClass('red');
+                    //     }
+                    // }
                     $(".workHours").each(function (n) {
                         self.calcWeeklyTime(n);
                     });
@@ -355,20 +355,18 @@ export default {
         initTable: function (data) {
             $('td[id]').html('').removeAttr('id').removeAttr('style').removeAttr('hours').removeAttr('class');
             $('.shiftsList span').removeClass();
-            $('[id^="weekDay"]').find('[code] span').html('0');
             for(let obj of data){
                 let hours = obj.workingLength/60;
                 this.totalHours += hours;
                 let dutyName = obj.dutyName || '--';
-                $('[weeknum="'+ obj.weekNum +'"][daynum="'+ obj.dayNum +'"]').html(dutyName).css('background-color', obj.cellColor).attr('hours', hours).attr('id', obj.id);
+                $('[weeknum="'+ obj.weekNum +'"][daynum="'+ obj.dayNum +'"]').html(dutyName).css('background-color', obj.cellColor).attr('hours', hours).attr('id', obj.id).attr('dutycode', obj.dutyCode);
                 let classId = obj.classId;
-                let m = obj.dayNum;
-                let span = $('#weekDay'+ m).find('[code="'+ classId +'"]').find('span');
-                let num = parseInt(span.html());
-                num++;
-                span.html(num);
             }
             this.countHours();
+            let self = this;
+            setTimeout(function () {
+                self.calcClassNum();
+            },500)
         },
         //  计算周工时
         calcWeeklyTime: function (n) {
@@ -379,11 +377,11 @@ export default {
                 hours += parseInt(works.eq(i).attr('data-hours'));
             }
             //  低于或者高于平均值的百分之十显示红色
-            if(hours>this.weekMaxHours || hours<this.weekMinHours){
-                currentTd.find('span').addClass('red');
-            } else {
-                currentTd.find('span').removeClass('red');
-            }
+            // if(hours>this.weekMaxHours || hours<this.weekMinHours){
+            //     currentTd.find('span').addClass('red');
+            // } else {
+            //     currentTd.find('span').removeClass('red');
+            // }
             currentTd.find('span').html(hours);
             //  如果排班为空，显示删除本行按钮
             if (hours == 0) {
@@ -421,6 +419,20 @@ export default {
             }
             $(header).html(html);
         },
+        // 计算班次数
+        calcClassNum: function () {
+            $('[id^="weekDay"]').find('p span').html('0');
+            $('td[dutycode]').each(function () {
+                let dutyCode = $(this).attr('dutycode');
+                let dayNum = $(this).attr('daynum');
+                let weekNum = $(this).attr('weeknum');
+                let userNum = $(this).closest('tr').find('.userName p').length;
+                let span = $('#weekDay' + dayNum).find('[code="'+ dutyCode +'"] span');
+                let num = parseInt(span.html());
+                num += userNum;
+                span.html(num);
+            })
+        }
     }
 }
 
