@@ -32,9 +32,9 @@
                         <td>{{list.first.averWorkerCount}}</td>
                         <td>{{list.first.plannedHours}}</td>
                         <td>{{list.first.actualHours}}</td>
-                        <td>{{list.first.workedRate}}</td>
+                        <td>{{list.first.workedRate ? Math.round(list.first.workedRate*100) + '%' : 0}}</td>
                         <td>{{list.first.extraHours}}</td>
-                        <td>{{list.first.offWorkRate}}</td>
+                        <td>{{list.first.offWorkRate ? Math.round(list.first.offWorkRate*100) + '%' : 0}}</td>
                     </tr>
                     <tr v-for="item in list.other" :key="item.id">
                         <td>{{item.districtName}}</td>
