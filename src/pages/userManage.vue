@@ -4,7 +4,7 @@
             <div class="content-header">
                 <div class="float-left">
                     <button class="btnDefault bgGreen mansgebutton" type="button" @click="addPersonModal = true">新增人员</button>
-                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show ="userPort" @click="importUserModal = true">导入</a>
+                    <a class="btnDefault" href="#" data-toggle="modal" data-target="#export" v-show="roleId===1||roleId===2" @click="importUserModal = true">导入</a>
                     <a class="btnDefault" @click="downloadTemplate">模板</a>
                 </div>
                 <div class=" float-right">
