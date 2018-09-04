@@ -118,3 +118,6 @@ export const exportImg = data => fetch('/schedule/scheduleinfo/export/img', data
 
 /** 换班 */
 export const changeSchedule = data => fetch('/change/scheduleinfo', data, 'GET');
+
+/** 删除某个站务员 */
+export const deleteUser = (suiteId, userId) => fetch('/schedule/delete/' + suiteId +'/' + userId, {}, 'DELETE');

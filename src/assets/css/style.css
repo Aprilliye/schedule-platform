@@ -604,3 +604,20 @@ select {
 .openTable td p:nth-child(1) {
   display: block;
 }
+.userName p {
+  position: relative;
+}
+.userName p .delete {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  right: 0px;
+  top: 7px;
+  background-image: url(../img/delete.svg);
+  background-size: 100% 100%;
+  display: none;
+  z-index: 100;
+}
+.userName p:hover .delete {
+  display: block;
+}

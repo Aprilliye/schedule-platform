@@ -30,7 +30,12 @@
                     <th>周工时</th>
                 </tr>
                 <tr v-for="n in weeks" :key="n">
-                    <td @click="clickUserTd(n-1)" class="userName" :weeknum="n-1"></td>
+                    <td @click="clickUserTd(n-1)" class="userName" :weeknum="n-1">
+                        <p v-for="item in users" :key="'user'+ item.id" v-if="item.weekNum === n-1">
+                            {{item.userName}}
+                            <span class="delete" @click.stop="deleteUser(suiteId, item.userId)"></span>
+                        </p>
+                    </td>
                     <td v-for="i in 7" @click="beforeSelectClass" :key="'item.userId-'+i" :weeknum="n-1" :daynum="i-1"></td>
                     <td class="totalHours"></td>
                 </tr>
@@ -80,7 +85,7 @@
 </template>
 <script>
 import {result} from '@/assets/data/data.js';
-import {getSuites, loadTemplate, setSheduleUser, resetSheduleUser, setTemplateClass, deleteTemplateClass, saveSchedule} from '@/api/api';
+import {getSuites, loadTemplate, setSheduleUser, resetSheduleUser, setTemplateClass, deleteTemplateClass, saveSchedule, deleteUser} from '@/api/api';
 var self = null;
 export default {
     data: function () {
@@ -109,7 +114,8 @@ export default {
                 }
             },
             currentUserId: null,
-            open: false
+            open: false,
+            users: []
         }
     },
     created: function () {
@@ -143,24 +149,14 @@ export default {
                 this.$nextTick(function () {
                     this.initTable(data.templatelist);
                     let users = data.scheduleUsers;
-                    $('.userName').html('').removeAttr('userid');
+                    this.users = users;
+                    // $('.userName').html('').removeAttr('userid');
                     $('.userList span').removeAttr('class');
                     for(let i=0;i< users.length;i++){
-                        let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
-                        obj.append('<p id="'+ users[i].userId +'">'+ users[i].userName +'</p>');
-                        // // let m = obj.dayNum;
-                        // obj.html(users[i].userName).attr('userid', users[i].userId);
+                        // let obj = $('.userName[weeknum="'+ users[i].weekNum +'"]');
+                        // obj.append('<p id="'+ users[i].userId +'">'+ users[i].userName +'<span class="delete"></span></p>');
                         $('.userList [code="'+ users[i].userId +'"]').addClass('selected');
                     }
-                    // let ps = $('#theHead0').find('p');
-                    // for(let i=0;i<ps.length;i++){
-                    //     let obj = ps.eq(i);
-                    //     if(obj.attr('shiftnum') !== obj.find('span').html()){
-                    //         obj.addClass('red');
-                    //     } else {
-                    //         obj.removeClass('red');
-                    //     }
-                    // }
                     $(".workHours").each(function (n) {
                         self.calcWeeklyTime(n);
                     });
@@ -432,19 +428,26 @@ export default {
                 num += userNum;
                 span.html(num);
             })
+        },
+        // 删除单个站务员
+        deleteUser: async function (suiteId, userId) {
+            let response = await deleteUser(suiteId, userId);
+            if(response.meta.code === 0){
+                this.loadTemplate(this.suiteId);
+            }
         }
     }
 }
 
-$(document).on('click', '.userName p', function (e) {
-    e.stopPropagation();
-    let obj = $(this).closest('td');
-    let n = parseInt(obj.attr('weeknum'));
-    $('#usersModal').find('.active').removeClass('active');
-    self.showUserModal = true;
-    $(".userName").removeClass("td-active");
-    obj.addClass("td-active");
-    self.weekNum = n;
-    self.currentUserId = parseInt($(this).attr('id'));
-})
+// $(document).on('click', '.userName p', function (e) {
+//     e.stopPropagation();
+//     let obj = $(this).closest('td');
+//     let n = parseInt(obj.attr('weeknum'));
+//     $('#usersModal').find('.active').removeClass('active');
+//     self.showUserModal = true;
+//     $(".userName").removeClass("td-active");
+//     obj.addClass("td-active");
+//     self.weekNum = n;
+//     self.currentUserId = parseInt($(this).attr('id'));
+// })
 </script>

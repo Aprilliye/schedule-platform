@@ -625,3 +625,22 @@ input,select{
         }
     }
 }
+.userName p{
+    position: relative;
+    .delete{
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        right: 0px;
+        top: 7px;
+        background-image: url(../img/delete.svg);
+        background-size: 100% 100%;
+        display: none;
+        z-index: 100;
+    }
+    &:hover{
+        .delete{
+            display: block;
+        }
+    }
+}
