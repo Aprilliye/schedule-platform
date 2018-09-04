@@ -7,13 +7,6 @@
             </Select>
             <!-- <button type="button" class="btnDefault bgBlue">创建排班</button> -->
             <button type="button" class="btnDefault bgGreen" @click="selectDateModal = true">保存排班</button>
-            <!-- <p class="result" v-show="showResult">
-                <span>日平均<b>{{result.dayAverage || 0}}</b>小时，</span>
-                <span>周平均<b>{{result.weekAverage || 0}}</b>小时，</span>
-                <span>30日平均<b>{{result.monthAverage || 0}}</b>小时，</span>
-                <span>365日平均<b>{{result.yearAverage || 0}}</b>小时，</span>
-                <span>最少人数<b>{{result.minPeople || 0}}</b>人</span>
-            </p> -->
         </div>
         <div class="schedule postformtable">
             <p style="padding: 10px;">

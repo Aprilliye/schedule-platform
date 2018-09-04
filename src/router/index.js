@@ -138,7 +138,12 @@ const router = new Router({
           component: workHourReport
       },
       ]
-    }
+    },
+    {
+        path: '/*',
+        name: 'Login',
+        component: Login
+      },
   ]
 });
 router.beforeEach((to, from, next) => {
