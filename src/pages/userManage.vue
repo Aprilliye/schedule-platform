@@ -774,7 +774,7 @@
                 if(response.meta.code === 0){
                     this.$Message.success(message);
                 } else {
-                    this.$Message.error(message);
+                    this.$Message.error(response.data);
                 }
                 this.importUserModal = false;
                 $('#userFile').val('');
