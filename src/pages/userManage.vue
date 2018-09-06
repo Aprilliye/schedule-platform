@@ -770,9 +770,8 @@
                 formData.append('file', file);
                 this.fileName = file.name;
                 let response = await importUsers(formData);
-                let message = response.meta.message;
                 if(response.meta.code === 0){
-                    this.$Message.success(message);
+                    this.$Message.success('导入成功');
                 } else {
                     this.$Message.error(response.data);
                 }
