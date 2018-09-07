@@ -677,7 +677,7 @@
                     }else{
                         that.userList = that.historyUserList.slice(0,that.pageSize);
                     }
-                    that.currentPage = 1;
+                    // that.currentPage = 1;
                     that.$Message.success("修改人员成功");
                 } 
                 that.$refs[name].resetFields();
