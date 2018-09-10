@@ -64,7 +64,7 @@
                                 <td>{{item.employeeCard}}</td>
                                 <td>{{item.userName}}</td>
                                 <td>{{item.gender}}</td>
-                                <td>{{countAge(item.idCardNumber) || ''}}</td>
+                                <td>{{countAge(item.idCardNumber) |}}</td>
                                 <td>{{item.phoneNumber}}</td>
                                 <td>{{item.birthday}}</td>
                                 <td>{{item.positionName}}</td>
@@ -791,6 +791,9 @@
             },
             // 计算年龄
             countAge: function (idCard) {
+                if(!idCard){
+                    return;
+                }
                 let date = new Date();
                 let birthYear = parseInt(idCard.substring(6,10));
                 return date.getFullYear() - birthYear;
