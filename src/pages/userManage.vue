@@ -64,7 +64,7 @@
                                 <td>{{item.employeeCard}}</td>
                                 <td>{{item.userName}}</td>
                                 <td>{{item.gender}}</td>
-                                <td>{{countAge(item.idCardNumber)}}</td>
+                                <td>{{countAge(item.idCardNumber) || ''}}</td>
                                 <td>{{item.phoneNumber}}</td>
                                 <td>{{item.birthday}}</td>
                                 <td>{{item.positionName}}</td>
