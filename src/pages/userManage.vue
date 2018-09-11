@@ -64,7 +64,7 @@
                                 <td>{{item.employeeCard}}</td>
                                 <td>{{item.userName}}</td>
                                 <td>{{item.gender}}</td>
-                                <td>{{countAge(item.idCardNumber) |}}</td>
+                                <td>{{countAge(item.idCardNumber) || ''}}</td>
                                 <td>{{item.phoneNumber}}</td>
                                 <td>{{item.birthday}}</td>
                                 <td>{{item.positionName}}</td>
@@ -568,8 +568,6 @@
                 if (id) {
                     // 清空
                     this.addUserData.stationId = '';
-                    // this.editUser.stationId = '';
-                    // this.editUser.positionId = '';
                     this.addUserData.positionId = '';
                     this.stations = [];
                     this.position = [];
@@ -617,11 +615,13 @@
                     // 获取分页
                     this.historyUserList = response.data;
                     this.dataCount = response.data.length;
-                    this.currentPage = 1;
+                    // this.currentPage = 1;
                     if(this.historyUserList.length < this.pageSize){
                         this.userList = this.historyUserList;
                     }else{
-                        this.userList = this.historyUserList.slice(0,this.pageSize);
+                        let start = (this.currentPage-1)*10;
+                        let end = (this.currentPage-1)*10 + this.pageSize;
+                        that.userList = that.historyUserList.slice(start, end);
                     }
                     this.$Message.success("删除人员成功");
                 } 
@@ -675,9 +675,10 @@
                     if(that.historyUserList.length < that.pageSize){
                         that.userList = that.historyUserList;
                     }else{
-                        that.userList = that.historyUserList.slice(0,that.pageSize);
+                        let start = (that.currentPage-1)*10;
+                        let end = (that.currentPage-1)*10 + that.pageSize;
+                        that.userList = that.historyUserList.slice(start, end);
                     }
-                    // that.currentPage = 1;
                     that.$Message.success("修改人员成功");
                 } 
                 that.$refs[name].resetFields();
