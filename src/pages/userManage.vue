@@ -615,13 +615,11 @@
                     // 获取分页
                     this.historyUserList = response.data;
                     this.dataCount = response.data.length;
-                    // this.currentPage = 1;
+                    this.currentPage = 1;
                     if(this.historyUserList.length < this.pageSize){
                         this.userList = this.historyUserList;
                     }else{
-                        let start = (this.currentPage-1)*10;
-                        let end = (this.currentPage-1)*10 + this.pageSize;
-                        that.userList = that.historyUserList.slice(start, end);
+                        this.userList = this.historyUserList.slice(0, this.pageSize);
                     }
                     this.$Message.success("删除人员成功");
                 } 
