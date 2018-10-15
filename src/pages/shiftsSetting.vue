@@ -118,7 +118,7 @@
                     <Input v-model="addFormValidateClass.restMinutes" placeholder=""/>
                 </FormItem>
                 <FormItem label="班次关联" prop="relevantDuty">
-                    <Select v-model="addFormValidateClass.relevantDuty">
+                    <Select v-model="addFormValidateClass.relevantDuty" clearable>
                         <Option v-for="item in dutyData" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
                     </Select>
                 </FormItem>
@@ -163,7 +163,7 @@
                     <Input v-model="editFormValidateClass.restMinutes" placeholder=""/>
                 </FormItem>
                 <FormItem label="班次关联" prop="relevantDuty"> 
-                    <Select v-model="editFormValidateClass.relevantDuty">
+                    <Select v-model="editFormValidateClass.relevantDuty" clearable>
                         <Option v-for="item in dutyData" :value="item.id" :key="item.id">{{ item.dutyName }}</Option>
                     </Select>
                 </FormItem>
@@ -1095,9 +1095,9 @@ export default {
                 if (that.suites.length === 0){
                     that.suiteId = response.data.dutysuite.id
                 }
-                that.suites.push(response.data.dutysuite);
                 // 显示班制内容
-                let obj = that.suites[0]; 
+                let obj = response.data.dutysuite; 
+                that.suites.push(obj);
                 that.suiteId = response.data.dutysuite.id;
                 that.getClass();
                 for(let key in obj){
@@ -1109,7 +1109,8 @@ export default {
             }
             that.modal.addShift = false;
             that.$refs[name].resetFields();
-            that.stations = [];
+            that.getChangeSuite();
+            // that.stations = [];
         },
         //  删除班制
         handleClose: async function () {
